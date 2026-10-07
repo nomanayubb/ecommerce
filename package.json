@@ -1,0 +1,10 @@
+{
+  "name": "commerce-platform",
+  "private": true,
+  "workspaces": ["apps/*"],
+  "scripts": {
+    "infra": "docker compose up -d",
+    "migrate": "npm run migrate -w apps/api",
+    "dev:api": "npm run dev -w apps/api"
+  }
+}

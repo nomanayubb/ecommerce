@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    environment: { POSTGRES_USER: shop, POSTGRES_PASSWORD: shop, POSTGRES_DB: shop }
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]
+  typesense:
+    image: typesense/typesense:27.1
+    command: --data-dir /data --api-key=dev-key
+    ports: ["8108:8108"]
+    volumes: [tsdata:/data]
+volumes: { pgdata: {}, tsdata: {} }
