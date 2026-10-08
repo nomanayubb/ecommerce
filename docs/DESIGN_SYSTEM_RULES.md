@@ -22,3 +22,5 @@ Only these hues (plus neutral tints/alphas of them) may appear. Warm "kitchen" c
 6. **Reuse before create.** Use `.btn .btn-primary .btn-ghost .eyebrow .gold-rule .lift` and shared components (Logo, ProductCard, Breadcrumbs). A new pattern joins the shared set, then is reused everywhere.
 7. **Performance & a11y budget.** Heavy effects (3D, particles, cursor, sound) are lazy-loaded, off by default on touch / low-power / reduced-motion, keyboard accessible, WCAG AA contrast in light, dark and OLED.
 8. **Verify together.** After each batch, check home, list, product, bag, checkout and admin in all three themes at mobile and desktop widths so nothing drifts.
+
+9. **Swappable brand kit.** The palette above is AVERIXA instance of a brand kit; nothing brand-specific may be hard-coded. See `docs/NEW_PROJECT_GUIDE.md` (how to rebrand, plus the list of hard-coded values still to remove).

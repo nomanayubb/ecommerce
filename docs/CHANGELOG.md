@@ -54,3 +54,6 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 
 ## 2026-10-08 - Feature backlogs + design-system rules saved
 - Added `docs/FEATURES_VISUAL_100.md`, `FEATURES_THEME_100.md`, `FEATURES_KITCHEN_130.md` (user lists with honest status) and `docs/DESIGN_SYSTEM_RULES.md` (everything aligned with each other + the logo; palette table derived from the logo; tokens only, one icon set, one motion language, pack-aware, reuse, perf/a11y, verify together). No code changed.
+
+## 2026-10-08 - Reusable-theme requirement recorded
+- Added `docs/NEW_PROJECT_GUIDE.md` (brand kit = logo source + branding row + theme packs; rebrand steps; list of hard-coded brand values to remove) and rule 9 in `DESIGN_SYSTEM_RULES.md`. No code changed.

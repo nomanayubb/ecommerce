@@ -38,3 +38,5 @@ _Last updated: 2026-10-08. Update after every task (see `.claude/rules/workflow.
 
 ## Spec feature coverage (of 100)
 Roughly 15 partially done (see CHANGELOG). Full spec is the user's original PRD; summary of deviations is in `docs/SPEC_NOTES.md`.
+
+- Make the theme fully swappable for the next project: remove the hard-coded brand values listed in `docs/NEW_PROJECT_GUIDE.md`, add font-pairing presets, extend branding settings (hero style, footer content, free-delivery threshold, copy). User requirement 2026-10-08.

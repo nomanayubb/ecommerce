@@ -32,7 +32,7 @@ Flat line-art logo: ink `#1E1E20`, gold `#C89C3A`, cream `#FAF6EE`; tagline "You
 - Unused leftovers from an earlier session in `apps/*/public/logo-*.webp`, `brand/` (3D v1 logo kit) — safe to delete once confirmed.
 
 ## Feature backlogs + design rules
-Three user-supplied lists live in `docs/FEATURES_*.md` (status per item). Every new element must obey `docs/DESIGN_SYSTEM_RULES.md` (everything aligned with each other, the logo and its palette). Read only the list you are working on.
+Reusing the theme for another project: `docs/NEW_PROJECT_GUIDE.md`. Three user-supplied lists live in `docs/FEATURES_*.md` (status per item). Every new element must obey `docs/DESIGN_SYSTEM_RULES.md` (everything aligned with each other, the logo and its palette). Read only the list you are working on.
 
 ## Hard facts
 - Payment methods allowed = env `ENABLED_PAYMENT_METHODS` (default `COD`). EasyPaisa/JazzCash adapters not built (no API access yet).
