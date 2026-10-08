@@ -37,7 +37,11 @@ export function Reveal({ children, delay = 0, className = "" }: { children: Reac
 /** Subtle 3D tilt that follows the pointer. Only on fine pointers and when motion is "full". */
 export function Tilt({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const allowed = () => matchMedia("(pointer: fine)").matches && document.documentElement.dataset.motion === "full";
+  const allowed = () => {
+    const d = document.documentElement.dataset;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches && d.motionPref !== "on";
+    return matchMedia("(pointer: fine)").matches && d.motion === "full" && d.motionPref !== "off" && !reduced;
+  };
   return (
     <div
       ref={ref}

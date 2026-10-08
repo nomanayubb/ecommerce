@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { CategoryNode } from "@/lib/api";
 import { useCart } from "./CartProvider";
-import { BagIcon, ContrastIcon, MenuIcon, SearchIcon } from "./icons";
+import { BagIcon, ContrastIcon, MenuIcon, MotionIcon, SearchIcon } from "./icons";
 
 const THEMES = ["dark", "oled", "light"] as const;
 
@@ -34,6 +34,31 @@ function ThemeToggle({ labelled = false, className = "" }: { labelled?: boolean;
     <button onClick={next} className={`flex items-center gap-3 p-2 text-muted transition hover:text-accent ${className}`} aria-label={`Theme: ${theme}. Click to change`} title={`Theme: ${theme}`}>
       <ContrastIcon size={18} />
       {labelled && <span className="text-xs uppercase tracking-widest">Theme: {theme}</span>}
+    </button>
+  );
+}
+
+/** Visitor override for animations: lets people re-enable motion even if the OS asks for reduced motion (default follows the OS). */
+function MotionToggle({ labelled = false, className = "" }: { labelled?: boolean; className?: string }) {
+  const [on, setOn] = useState(true);
+  const effective = () => {
+    const d = document.documentElement.dataset;
+    if (d.motion === "off" || d.motionPref === "off") return false;
+    if (d.motionPref === "on") return true;
+    return !matchMedia("(prefers-reduced-motion: reduce)").matches;
+  };
+  useEffect(() => setOn(effective()), []);
+  const toggle = () => {
+    const next = on ? "off" : "on";
+    document.documentElement.dataset.motionPref = next;
+    try { localStorage.setItem("motion-pref", next); } catch {}
+    setOn(next === "on");
+  };
+  return (
+    <button onClick={toggle} aria-pressed={on} aria-label={`Animations ${on ? "on" : "off"}. Click to turn ${on ? "off" : "on"}`} title={`Animations: ${on ? "on" : "off"}`}
+      className={`flex items-center gap-3 p-2 transition hover:text-accent ${on ? "text-accent" : "text-muted"} ${className}`}>
+      <MotionIcon size={18} />
+      {labelled && <span className="text-xs uppercase tracking-widest">Animations: {on ? "on" : "off"}</span>}
     </button>
   );
 }
@@ -89,7 +114,7 @@ export function Header({ categories, brand }: { categories: CategoryNode[]; bran
               <Link key={c.id} href={`/products?category=${c.slug}`} className="block py-2 uppercase tracking-widest">{c.name}</Link>
             ))}
             <Link href="/products" className="block py-2 uppercase tracking-widest text-accent">All products</Link>
-            <div className="mt-2 border-t border-line pt-2"><ThemeToggle labelled className="!px-0" /></div>
+            <div className="mt-2 border-t border-line pt-2"><ThemeToggle labelled className="!px-0" /><MotionToggle labelled className="!px-0" /></div>
           </nav>
         </details>
         <Link href="/" className="logo-reveal flex shrink-0 items-center py-3" aria-label={brand.name}>
@@ -103,6 +128,7 @@ export function Header({ categories, brand }: { categories: CategoryNode[]; bran
           <input name="q" placeholder="Search" aria-label="Search products" className="w-36 border-b border-line bg-transparent py-1 pl-6 pr-1 text-sm outline-none transition-all placeholder:text-muted focus:w-52 focus:border-accent" />
         </form>
         <Link href="/products" className="ml-auto p-2 text-muted transition hover:text-accent lg:hidden" aria-label="Search"><SearchIcon size={20} /></Link>
+        <MotionToggle className="hidden sm:flex" />
         <ThemeToggle className="hidden sm:flex" />
         <button onClick={() => setOpen(true)} className="relative flex items-center gap-2 p-2 transition hover:text-accent" aria-label={`Open bag, ${count} items`}>
           <BagIcon size={22} />

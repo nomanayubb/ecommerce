@@ -98,13 +98,36 @@ html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *
 .header-bar { transition: transform .35s cubic-bezier(.2,.7,.2,1); }
 .header-hidden { transform: translateY(-100%); }
 /* Animation intensity (branding setting). off = none, subtle = no looping/3D, full = everything */
-[data-motion="off"] *, [data-motion="off"] *::before, [data-motion="off"] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-[data-motion="off"] .reveal, .reveal-off .reveal { opacity: 1 !important; transform: none !important; }
-[data-motion="subtle"] .hero-anim, [data-motion="subtle"] .decor { animation: none !important; }
+[data-motion="off"] *, [data-motion="off"] *::before, [data-motion="off"] *::after,
+[data-motion-pref="off"] *, [data-motion-pref="off"] *::before, [data-motion-pref="off"] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+[data-motion="off"] .reveal, [data-motion-pref="off"] .reveal { opacity: 1 !important; transform: none !important; }
+[data-motion="subtle"] .hero-anim, [data-motion="subtle"] .decor, [data-motion="subtle"] .hero-glow, [data-motion="subtle"] .float-g, [data-motion="subtle"] .btn-shimmer::after { animation: none !important; }
 [data-motion="subtle"] .tilt { transform: none !important; }
+
+
+/* ===== Hero motion (clearly visible; one-shot entrances + gentle loops) ===== */
+.hero-glow { position: absolute; width: 560px; height: 560px; border-radius: 9999px; pointer-events: none; filter: blur(8px);
+  background: radial-gradient(circle, rgb(var(--accent-bright) / .34) 0%, rgb(var(--accent-bright) / 0) 65%); left: 38%; top: -20%;
+  animation: glow-drift 14s ease-in-out infinite alternate; }
+@keyframes glow-drift { from { transform: translate(-18%, -6%) scale(.9); } to { transform: translate(34%, 26%) scale(1.15); } }
+.draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2.6s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(var(--i, 0) * 200ms + 400ms); }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.float-g { animation: float-g 8s ease-in-out infinite alternate; }
+@keyframes float-g { from { transform: translateY(-14px); } to { transform: translateY(14px); } }
+.kword { display: inline-block; animation: kword .9s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 140ms + 200ms); }
+@keyframes kword { from { opacity: 0; transform: translateY(.55em) skewY(4deg); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
+.btn-shimmer { position: relative; overflow: hidden; }
+.btn-shimmer::after { content: ""; position: absolute; inset: 0; pointer-events: none; transform: translateX(-130%);
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / .5) 50%, transparent 70%); animation: shimmer 5s ease-in-out 2.2s infinite; }
+@keyframes shimmer { 0%, 55% { transform: translateX(-130%); } 100% { transform: translateX(130%); } }
+/* Static fallback: show everything fully drawn/visible when motion is off or the OS asks for reduced motion */
+[data-motion="off"] .draw, [data-motion-pref="off"] .draw { stroke-dasharray: none; stroke-dashoffset: 0; }
 @media (prefers-reduced-motion: reduce) {
-  .js .reveal { opacity: 1; transform: none; transition: none; }
-  .hero-anim, .logo-reveal, .tilt { animation: none; transition: none; }
+  html:not([data-motion-pref="on"]) .js .reveal { opacity: 1; transform: none; transition: none; }
+  html:not([data-motion-pref="on"]) :is(.hero-anim, .hero-glow, .float-g, .kword, .logo-reveal, .tilt, .fade-up) { animation: none; transition: none; }
+  html:not([data-motion-pref="on"]) .draw { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
+  html:not([data-motion-pref="on"]) .btn-shimmer::after { animation: none; }
+  html:not([data-motion-pref="on"]) .decor { display: none; }
 }
 
 /* theme-pack decoration */

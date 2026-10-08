@@ -9,14 +9,17 @@ import { applyPack } from "@/themes";
 function HeroArt() {
   return (
     <svg aria-hidden viewBox="0 0 600 600" className="pointer-events-none absolute right-0 top-1/2 hidden h-[112%] -translate-y-1/2 opacity-90 lg:block" fill="none" strokeLinecap="square">
-      <g stroke="rgb(var(--accent-bright))" strokeWidth="2">
-        <path d="M120 540 L300 60 L360 60" opacity=".9" />
-        <path d="M200 540 L360 130" opacity=".55" />
-        <path d="M300 340 L520 340 L560 200 L600 200" />
-        <path d="M330 340 L350 420 L520 420 L548 340" opacity=".8" />
-      </g>
-      <g stroke="rgb(var(--accent-bright))" strokeWidth="2" opacity=".85">
-        <circle cx="380" cy="470" r="16" /><circle cx="490" cy="470" r="16" />
+      <g className="float-g">
+        <g stroke="rgb(var(--accent-bright))" strokeWidth="2">
+          <path className="draw" style={{ "--i": 0 } as React.CSSProperties} pathLength={1} d="M120 540 L300 60 L360 60" opacity=".9" />
+          <path className="draw" style={{ "--i": 1 } as React.CSSProperties} pathLength={1} d="M200 540 L360 130" opacity=".55" />
+          <path className="draw" style={{ "--i": 2 } as React.CSSProperties} pathLength={1} d="M300 340 L520 340 L560 200 L600 200" />
+          <path className="draw" style={{ "--i": 3 } as React.CSSProperties} pathLength={1} d="M330 340 L350 420 L520 420 L548 340" opacity=".8" />
+        </g>
+        <g stroke="rgb(var(--accent-bright))" strokeWidth="2" opacity=".85">
+          <circle className="draw" style={{ "--i": 4 } as React.CSSProperties} pathLength={1} cx="380" cy="470" r="16" />
+          <circle className="draw" style={{ "--i": 5 } as React.CSSProperties} pathLength={1} cx="490" cy="470" r="16" />
+        </g>
       </g>
       <g stroke="rgb(var(--on-dark))" strokeOpacity=".12" strokeWidth="1">
         {Array.from({ length: 10 }, (_, i) => <path key={i} d={`M${60 + i * 56} 600 L${300 + i * 30} 0`} />)}
@@ -47,17 +50,20 @@ export default async function Home() {
   return (
     <>
       <section className={`${packGrad ? "" : "hero-anim"} fade-up relative -mx-4 overflow-hidden px-6 py-20 text-ondark sm:mx-0 sm:px-14 sm:py-28`} style={{ background: grad }}>
+        <div className="hero-glow" aria-hidden />
         <HeroArt />
         <div className="relative max-w-xl">
           <p className="eyebrow">{branding.name}</p>
           <h1 className="mt-5 text-4xl font-semibold uppercase leading-[1.08] tracking-[0.04em] sm:text-6xl">
-            {branding.tagline || "Your world. Our store."}
+            {(branding.tagline || "Your world. Our store.").split(" ").map((w, i) => (
+              <span key={i} className="kword" style={{ "--i": i } as React.CSSProperties}>{w}&nbsp;</span>
+            ))}
           </h1>
           <p className="mt-6 max-w-md text-base leading-relaxed text-ondark/70">
             {branding.heroText || "Considered products, honest prices, delivered to your door. Pay when it arrives."}
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
-            <Link href="/products" className="btn bg-gold text-darksurface hover:bg-ondark">Shop the collection</Link>
+            <Link href="/products" className="btn btn-shimmer bg-gold text-darksurface hover:bg-ondark">Shop the collection</Link>
             <Link href="/products?sort=price_asc" className="btn border border-ondark/40 text-ondark hover:border-gold hover:text-gold">Best prices</Link>
           </div>
         </div>

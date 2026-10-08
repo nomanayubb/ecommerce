@@ -36,3 +36,4 @@ export const PackageIcon = (p: Props) => <Icon {...p}><path d="M3 8l9-5 9 5v8l-9
 export const SupportIcon = (p: Props) => <Icon {...p}><path d="M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v5H4zM17 14h3v5h-3z" /><path d="M20 19c0 2-2 3-5 3h-2" stroke={A} /></Icon>;
 export const StarIcon = (p: Props) => <Icon {...p}><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7L12 3z" stroke={A} /></Icon>;
 export const ContrastIcon = (p: Props) => <Icon {...p}><circle cx="12" cy="12" r="8" /><path d="M12 4a8 8 0 0 1 0 16z" fill={A} stroke={A} /></Icon>;
+export const MotionIcon = (p: Props) => <Icon {...p}><path d="M3 12h4l2-6 4 12 2-6h6" stroke={A} /><path d="M3 5v14" /></Icon>;

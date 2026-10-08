@@ -33,7 +33,7 @@ export async function generateViewport(): Promise<Viewport> {
 }
 
 // Runs before first paint so the saved theme never flashes.
-const themeScript = `document.documentElement.classList.add("js");try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}`;
+const themeScript = `document.documentElement.classList.add("js");try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t;var m=localStorage.getItem("motion-pref");if(m)document.documentElement.dataset.motionPref=m}catch(e){}`;
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const [categories, site] = await Promise.all([
