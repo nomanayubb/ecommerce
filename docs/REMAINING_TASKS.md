@@ -1,15 +1,14 @@
 # Remaining tasks
 
-_Last updated: 2026-10-07. Update after every task (see `.claude/rules/workflow.md`)._
+_Last updated: 2026-10-08. Update after every task (see `.claude/rules/workflow.md`)._
 
 ## Blockers
-- **Docker Desktop engine won't start** (WSL VM never comes up; WSL kernel was missing, user ran `wsl --update`, engine still stuck for hours). Decision pending: install Postgres 16 + Memurai natively (`winget install PostgreSQL.PostgreSQL.16`, `winget install Memurai.MemuraiDeveloper`) — recommended — or repair/reinstall Docker.
-- ~~GitHub~~ connected: remote `origin` = https://github.com/nomanayubb/ecommerce (main). Push after each commit.
-- **EasyPaisa / JazzCash**: API access not available yet → adapters deferred. Plug into `paymentInstructions()` in `apps/api/src/routes/checkout.ts` and add the method to `ENABLED_PAYMENT_METHODS`.
+- Docker Desktop engine won't start (WSL VM stuck) -> worked around with embedded Postgres. Optional later: fix Docker or install Redis (Memurai) for caching.
+- **EasyPaisa / JazzCash**: API access not available yet -> adapters deferred. Plug into `paymentInstructions()` in `apps/api/src/routes/checkout.ts`, add method to `ENABLED_PAYMENT_METHODS`.
 
 ## Next up (in order)
-1. Get a database running (native Postgres + Redis), run `npm run migrate`, `npm run seed -w apps/api`.
-2. Start API + web, test for real: register/login, `/products`, `/categories/tree`, `/cart/validate`, `/checkout/process` (COD), stock decrement, concurrent checkout, storefront pages. Fix what breaks.
+1. (done 2026-10-08) DB running, API + web tested. Still untested: register/login flow by customer, wholesale pricing, webhook, browser UI (cart drawer, checkout form, theme toggle) — verify in a browser.
+2. Add rate limiting on auth + checkout.
 3. Seed script: add sample brands, products, variants, price tiers, images so the storefront isn't empty.
 4. Admin panel (`apps/admin`): products CRUD, category tree manager, orders list/status, bulk edit grid.
 5. Typesense: index sync worker + switch `GET /products` to it (keep Postgres fallback).

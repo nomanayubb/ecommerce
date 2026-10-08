@@ -16,8 +16,9 @@ Do not browse the repo, `node_modules`, lockfiles, or unrelated files. Rules are
 - `docs/` — ARCHITECTURE, REMAINING_TASKS, CHANGELOG, SPEC_NOTES
 
 ## Current status (update on every milestone)
-Built and type-checked, NOT yet run end to end: API (auth, catalog, cart/checkout, basic admin), storefront (home, list, product page, cart drawer, COD checkout).
-Blocker: Docker Desktop engine won't start (WSL VM). Plan: install Postgres 16 + Memurai (Redis) natively, then migrate/seed/run/test.
+RUNNING and tested locally (2026-10-08): API + storefront + embedded Postgres. Redis not installed (cache fails open).
+Start dev (3 terminals, repo root): `npm run dev:db -w api` -> `npm run migrate && npm run seed -w api` (first time) -> `npm run dev:api` -> `npm run dev -w web`.
+Docker is broken on this PC (WSL VM) and the winget Postgres installer returns 403, so DB = `embedded-postgres` (npm), data in `apps/api/.pgdata`, creds shop/shop (dev only).
 
 ## Hard facts
 - Payment methods allowed = env `ENABLED_PAYMENT_METHODS` (default `COD`). EasyPaisa/JazzCash adapters not built (no API access yet).

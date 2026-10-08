@@ -21,3 +21,10 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 
 ## 2026-10-08 — GitHub connected
 - Added remote `origin` (https://github.com/nomanayubb/ecommerce) and pushed `main`. Verified: push succeeded.
+
+## 2026-10-08 — Local stack running + tested
+- winget Postgres installer 403'd and Docker engine is stuck -> added `embedded-postgres` (devDep of api), `apps/api/scripts/dev-db.mjs` (`npm run dev:db -w api`), data in git-ignored `apps/api/.pgdata`.
+- Migration: replaced `uuid_generate_v4()` with built-in `gen_random_uuid()` and dropped the uuid-ossp extension (not in embedded builds). `.env.example` DB creds now shop/shop (dev).
+- `lib/redis.ts`: `enableOfflineQueue:false` so a missing Redis fails fast instead of queueing.
+- Verified against the real running API: migrate+seed, admin login, product create with tier, tier pricing (2 x 1000 + 250 ship), over-stock rejected (409), EASYPAISA rejected by gate, 5 concurrent COD orders on stock 3 -> 3x201 + 2x409, stock ends at 0, wholesale_price not leaked, admin orders list.
+- Verified storefront (next dev): `/`, `/products`, `/products?q=`, `/products/[slug]`, `/checkout` all return 200 with real data. NOT verified in a browser (JS interactions).

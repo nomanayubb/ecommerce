@@ -1,8 +1,7 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TYPE user_role AS ENUM ('SUPER_ADMIN','ADMIN','WAREHOUSE','CUSTOMER','WHOLESALE');
 CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email VARCHAR(255) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   first_name VARCHAR(100), last_name VARCHAR(100), phone VARCHAR(50),
@@ -15,7 +14,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE categories (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   parent_id UUID REFERENCES categories(id) ON DELETE SET NULL,
   name VARCHAR(255) NOT NULL, slug VARCHAR(255) UNIQUE NOT NULL,
   description TEXT, image_url VARCHAR(500),
@@ -25,14 +24,14 @@ CREATE TABLE categories (
 CREATE INDEX idx_categories_parent ON categories(parent_id);
 
 CREATE TABLE brands (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name VARCHAR(255) NOT NULL, slug VARCHAR(255) UNIQUE NOT NULL,
   logo_url VARCHAR(500), description TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE products (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   brand_id UUID REFERENCES brands(id) ON DELETE SET NULL,
   title VARCHAR(255) NOT NULL, slug VARCHAR(255) UNIQUE NOT NULL,
   description TEXT,
@@ -56,7 +55,7 @@ CREATE TABLE product_categories (
   PRIMARY KEY (product_id, category_id)
 );
 CREATE TABLE product_variants (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
   title VARCHAR(255) NOT NULL, sku VARCHAR(100) UNIQUE NOT NULL,
   price NUMERIC(12,2) NOT NULL,
@@ -66,7 +65,7 @@ CREATE TABLE product_variants (
 );
 
 CREATE TABLE price_tiers (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
   min_qty INT NOT NULL, unit_price NUMERIC(12,2) NOT NULL,
   UNIQUE (product_id, min_qty)
@@ -75,7 +74,7 @@ CREATE TABLE price_tiers (
 CREATE TYPE order_status AS ENUM ('PENDING','PROCESSING','SHIPPED','DELIVERED','CANCELED','REFUNDED');
 CREATE TYPE payment_status AS ENUM ('UNPAID','PAID','FAILED','REFUNDED');
 CREATE TABLE orders (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   order_number SERIAL UNIQUE,
   user_id UUID REFERENCES users(id) ON DELETE SET NULL,
   shipping_address JSONB NOT NULL, billing_address JSONB NOT NULL,
@@ -92,7 +91,7 @@ CREATE TABLE orders (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE TABLE order_items (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
   product_id UUID REFERENCES products(id) ON DELETE SET NULL,
   variant_id UUID REFERENCES product_variants(id) ON DELETE SET NULL,
@@ -102,7 +101,7 @@ CREATE TABLE order_items (
 );
 
 CREATE TABLE themes (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name VARCHAR(255) NOT NULL, is_active BOOLEAN NOT NULL DEFAULT FALSE,
   version VARCHAR(50) NOT NULL DEFAULT '1.0.0',
   css_variables JSONB NOT NULL DEFAULT '{}'::jsonb,
