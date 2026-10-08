@@ -129,6 +129,65 @@ export const SECTIONS: SectionDef[] = [
     type: "promise", label: "Brand promise (3D logo)", group: "Engagement", description: "Statement with the interactive 3D logo.",
     fields: [t("eyebrow", "Small heading", "", { help: "Empty = 'The <store> promise'" }), ta("text", "Statement", "", { help: "Empty = promise text from Brand & theme", maxLength: 400 }), tog("show3dLogo", "Show the 3D logo")],
   },
+  {
+    type: "timeline", label: "Timeline", group: "Content", description: "Milestones in order, e.g. the story of the company. Animates as it scrolls into view.",
+    fields: [t("eyebrow", "Small heading", "Our story"), t("heading", "Heading", "How we got here")],
+    block: { type: "milestone", label: "Milestone", max: 12, fields: [t("year", "Year or date", "", { maxLength: 20 }), t("title", "Title", ""), ta("text", "Text", "", { maxLength: 400 }), url("imageUrl", "Photo (optional)", "")] },
+  },
+  {
+    type: "team", label: "Team members", group: "Content", description: "Grid of people with photo, role and a short bio.",
+    fields: [t("eyebrow", "Small heading", "The team"), t("heading", "Heading", "People behind the shop"), sel("columns", "Columns", [["3", "3"], ["4", "4"]], "4")],
+    block: { type: "member", label: "Person", max: 16, fields: [t("name", "Name", ""), t("role", "Role", ""), ta("bio", "Short bio", "", { maxLength: 300 }), url("imageUrl", "Photo", "")] },
+  },
+  {
+    type: "contact", label: "Contact", group: "Engagement", description: "Contact details, a message form that lands in admin > Messages, and an optional map.",
+    fields: [
+      t("eyebrow", "Small heading", "Contact"), t("heading", "Heading", "Get in touch"), ta("intro", "Intro", "Questions about an order or a product? Send us a message and we will reply by email.", { maxLength: 400 }),
+      t("email", "Public email", ""), t("phone", "Phone / WhatsApp", ""), ta("address", "Address", "", { maxLength: 300 }), ta("hours", "Opening hours", "", { maxLength: 300 }),
+      tog("showForm", "Show the message form", true),
+      t("coords", "Map position (latitude, longitude)", "", { help: "e.g. 31.5204, 74.3587. Empty = no map. Copy from the address bar of any map site.", maxLength: 40 }),
+    ],
+  },
+  {
+    type: "map", label: "Map with places", group: "Content", description: "Interactive map plus a list. Use it for a store locator or to show where products are sourced.",
+    fields: [t("eyebrow", "Small heading", "Find us"), t("heading", "Heading", "Our locations"), ta("intro", "Intro", "", { maxLength: 300 })],
+    block: { type: "place", label: "Place", max: 20, fields: [t("name", "Name", ""), ta("address", "Address / description", "", { maxLength: 300 }), t("coords", "Position (latitude, longitude)", "", { help: "e.g. 24.8607, 67.0011", maxLength: 40 }), url("href", "Link (optional)", ""), t("phone", "Phone (optional)", "")] },
+  },
+  {
+    type: "gallery", label: "Photo gallery", group: "Engagement", description: "Grid of photos: customer creations, behind the scenes, or an Instagram-style wall. Add only photos you have permission to show.",
+    fields: [t("eyebrow", "Small heading", "Community"), t("heading", "Heading", "Made with our products"), sel("columns", "Columns", [["3", "3"], ["4", "4"]], "4"), url("followHref", "Follow link (e.g. your Instagram)", ""), t("followLabel", "Follow button label", "Follow us")],
+    block: { type: "photo", label: "Photo", max: 24, fields: [url("imageUrl", "Photo", ""), t("caption", "Caption", ""), t("credit", "Credit (name or @handle)", ""), url("href", "Link (optional)", "")] },
+  },
+  {
+    type: "events", label: "Events and countdown", group: "Engagement", description: "Upcoming events with a live countdown to the next one (cooking classes, launches, live shopping). Past events hide themselves.",
+    fields: [t("eyebrow", "Small heading", "Coming up"), t("heading", "Heading", "Upcoming events")],
+    block: { type: "event", label: "Event", max: 12, fields: [t("title", "Title", ""), { key: "startsAt", label: "Starts", type: "datetime", default: "" }, ta("text", "Details", "", { maxLength: 300 }), url("href", "Link", ""), t("buttonLabel", "Button label", "Details")] },
+  },
+  {
+    type: "podcast", label: "Podcast / audio embed", group: "Content", description: "Embeds a player from Spotify, Apple Podcasts, SoundCloud or YouTube.",
+    fields: [t("eyebrow", "Small heading", "Listen"), t("heading", "Heading", "The podcast"), ta("text", "Text", "", { maxLength: 300 }), url("embedUrl", "Player link", "", { help: "Paste the share link from Spotify, Apple Podcasts, SoundCloud or YouTube" })],
+  },
+  {
+    type: "video-story", label: "Video story", group: "Content", description: "A video with a caption: behind the scenes, how it is made, a founder message.",
+    fields: [t("eyebrow", "Small heading", "Behind the scenes"), t("heading", "Heading", ""), ta("text", "Text", "", { maxLength: 400 }), url("videoUrl", "Video (.mp4 / .webm, YouTube or Vimeo link)", ""), url("posterUrl", "Cover photo", ""), sel("layout", "Layout", [["side", "Text beside video"], ["wide", "Wide video, text below"]], "side")],
+  },
+  {
+    type: "stats", label: "Numbers and progress", group: "Content", description: "Big counting numbers and progress bars, e.g. a sustainability dashboard. Use only figures you can stand behind.",
+    fields: [t("eyebrow", "Small heading", "Impact"), t("heading", "Heading", "Our progress"), ta("note", "Note under the numbers (source, year)", "", { maxLength: 300 })],
+    block: { type: "stat", label: "Number", max: 8, fields: [t("value", "Number", "0", { help: "Digits only, e.g. 85 or 12000", maxLength: 12 }), t("prefix", "Before (e.g. Rs.)", "", { maxLength: 8 }), t("suffix", "After (e.g. % or kg)", "", { maxLength: 12 }), t("label", "What it counts", ""), num("progress", "Progress bar (0 = none, 1-100 = fill)", 0, 0, 100)] },
+  },
+  {
+    type: "blog-grid", label: "Latest articles", group: "Content", description: "Newest articles from your blog (admin > Blog).",
+    fields: [t("eyebrow", "Small heading", "Journal"), t("heading", "Heading", "From the journal"), num("count", "How many", 3, 1, 9), t("tag", "Only this tag (optional)", "", { maxLength: 40 })],
+  },
+  {
+    type: "recipe-grid", label: "Recipes", group: "Products", description: "Recipes from admin > Recipes, optionally for one season or difficulty.",
+    fields: [t("eyebrow", "Small heading", "Kitchen"), t("heading", "Heading", "Cook something good"), num("count", "How many", 4, 1, 8), t("season", "Season / occasion (optional)", "", { help: "e.g. summer, ramadan", maxLength: 30 }), sel("difficulty", "Difficulty", [["", "Any"], ["EASY", "Easy"], ["MEDIUM", "Medium"], ["HARD", "Advanced"]], "")],
+  },
+  {
+    type: "custom-code", label: "Custom HTML (developers)", group: "Content", description: "Raw HTML shown as written (embeds, widgets). Only paste code you trust: it runs on your shop pages.",
+    fields: [{ key: "html", label: "HTML", type: "textarea", default: "", maxLength: 10000 }],
+  },
   { type: "spacer", label: "Spacer", group: "Content", description: "Empty vertical space.", fields: [num("height", "Height (px)", 48, 8, 240)] },
 ];
 

@@ -1,5 +1,6 @@
 import { HeroParticles, Magnetic, KineticHeading, ParallaxLayers, FloatingDoodles, CompareSlider, MascotStory } from "./HeroFx";
 import { Scene3D } from "./Scene3D";
+import { Timeline, Team, Contact, PlaceMap, Gallery as PhotoGallery, Events, Podcast, VideoStory, Stats, BlogGrid, RecipeGrid, CustomCode } from "./Extra";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { api, type ProductDetail, type ProductSummary } from "@/lib/api";
@@ -374,6 +375,8 @@ const MAP: Record<string, (p: P) => any> = {
   "image-with-text": ImageWithText, "rich-text": RichText, multicolumn: Multicolumn, testimonials: Testimonials, "logo-bar": LogoBar, faq: Faq,
   "countdown-banner": CountdownBanner, newsletter: Newsletter, promise: PromiseSection,
   "recently-viewed": ({ s }) => <RecentlyViewed title={s.settings.heading || "Recently viewed"} />,
+  timeline: Timeline, team: Team, contact: Contact, map: PlaceMap, gallery: PhotoGallery, events: Events, podcast: Podcast, "video-story": VideoStory, stats: Stats,
+  "blog-grid": BlogGrid, "recipe-grid": RecipeGrid, "custom-code": CustomCode,
   spacer: ({ s }) => <div aria-hidden style={{ height: Number(s.settings.height) || 48 }} />,
 };
 
