@@ -4,6 +4,17 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
 
 /** Silently renews the 15-minute access token from the refresh cookie so signed-in pages keep working. */
 export async function middleware(req: NextRequest) {
+  // Custom pages: answer a real 404 status for pages that do not exist or are unpublished (streaming pages cannot do this).
+  if (req.nextUrl.pathname.startsWith("/p/")) {
+    const slug = req.nextUrl.pathname.slice(3).split("/")[0];
+    const missing = () => NextResponse.rewrite(new URL("/page-not-found", req.url), { status: 404 });
+    if (!/^[a-z0-9-]{1,60}$/.test(slug)) return missing();
+    try {
+      const r = await fetch(`${API}/templates?key=${encodeURIComponent(`page:${slug}`)}`, { cache: "no-store" });
+      if (r.status === 404) return missing();
+    } catch { /* API down: let the page handle it */ }
+  }
+
   const at = req.cookies.get("ax_at")?.value;
   const rt = req.cookies.get("ax_rt")?.value;
   const protectedPath = req.nextUrl.pathname.startsWith("/account");

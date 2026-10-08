@@ -37,6 +37,9 @@ Reusing the theme for another project: `docs/NEW_PROJECT_GUIDE.md`. Three user-s
 ## Customer accounts (batch 5)
 Customers sign up/in at `/register` `/login`; session = httpOnly cookies via Next route handlers + proxy (see `docs/ARCHITECTURE.md` 4g). Reviews need admin approval (admin > Reviews). No emails are sent yet (no provider). QA cleanup: `npx tsx scripts/cleanup-qa.ts` in `apps/api` (removes `qa.*@example.test` data).
 
+## Section pages (batch 6)
+Home and custom pages (`/p/<slug>`) are JSON section templates edited in admin > Pages (draft, publish, versions, presets, preview). Section types are defined only in `apps/api/src/lib/sections.ts`; renderers in `apps/web/src/components/sections/index.tsx`. See `docs/ARCHITECTURE.md` 4h. Clean QA data with `apps/api/scripts/cleanup-qa.ts`; `reset-home-template.ts` restores the default home.
+
 ## Hard facts
 - Payment methods allowed = env `ENABLED_PAYMENT_METHODS` (default `COD`). EasyPaisa/JazzCash adapters not built (no API access yet).
 - Prices are always computed server-side (`apps/api/src/lib/pricing.ts`). Never trust client prices.

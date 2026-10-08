@@ -8,6 +8,7 @@ import { BrandLogo, useBrand } from "@/lib/brand";
 
 const NAV = [
   { href: "/", label: "Dashboard" },
+  { href: "/pages", label: "Pages" },
   { href: "/products", label: "Products" },
   { href: "/orders", label: "Orders" },
   { href: "/reviews", label: "Reviews" },

@@ -75,6 +75,21 @@ body {
 @keyframes fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .fade-up, .lift, .btn { animation: none; transition: none; } html { scroll-behavior: auto; } }
 
+/* ===== Theme options (admin > Brand & theme) ===== */
+h1, h2, h3 { font-family: var(--font-heading, var(--font)); }
+/* Button style */
+[data-button="outline"] .btn-primary { background: transparent; color: rgb(var(--brand)); box-shadow: inset 0 0 0 1px rgb(var(--brand)); }
+[data-button="outline"] .btn-primary:hover { background: rgb(var(--brand)); color: rgb(var(--on-brand)); }
+[data-button="pill"] .btn { border-radius: 9999px; }
+/* Product card style */
+[data-card="minimal"] .pcard { background: transparent; border-color: transparent; }
+[data-card="minimal"] .pcard:hover { border-color: rgb(var(--line)); }
+[data-card="compact"] .pcard-img { aspect-ratio: 1 / 1; }
+[data-card="compact"] .pcard h3 { font-size: .8rem; min-height: 0; }
+/* Badge style */
+[data-badge="outline"] .badge-discount { background: transparent; box-shadow: inset 0 0 0 1px rgb(var(--accent)); color: rgb(var(--accent)); }
+[data-badge="pill"] .badge-discount { border-radius: 9999px; margin-left: .75rem; }
+
 /* ===== Premium layer (batch 1) ===== */
 /* Reveal on scroll: only hidden when JS is present (zero-JS fallback keeps content visible). */
 .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }

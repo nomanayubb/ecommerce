@@ -9,6 +9,7 @@ import { CartProvider } from "@/components/CartProvider";
 import { CartDrawer } from "@/components/CartDrawer";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { ScrollProgress } from "@/components/Motion";
 import { SiteProvider } from "@/components/Site";
 import { SessionProvider } from "@/components/SessionProvider";
@@ -47,10 +48,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     getSite(),
   ]);
   const { branding, pack } = applyPack(site.branding);
-  const { store } = site;
+  const { store, footer } = site;
+  const messages = (branding.announcements?.length ? branding.announcements : branding.announcement ? [branding.announcement] : []).filter(Boolean);
   const logos = { logoUrl: branding.logoUrl, logoUrlDark: branding.logoUrlDark };
   return (
-    <html lang="en" data-theme={branding.defaultTheme} data-motion={branding.motion ?? "full"} suppressHydrationWarning>
+    <html lang="en" data-theme={branding.defaultTheme} data-motion={branding.motion ?? "full"} data-button={branding.buttonStyle ?? "solid"} data-card={branding.cardStyle ?? "classic"} data-badge={branding.badgeStyle ?? "solid"} suppressHydrationWarning>
       <head>
         <style dangerouslySetInnerHTML={{ __html: brandingCss(branding) }} />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
@@ -62,14 +64,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <SessionProvider>
         <CartProvider>
         <ShopperProvider>
-          {branding.announcement && (
-            <div className="bg-darksurface px-4 py-2 text-center text-[0.68rem] font-medium uppercase tracking-[0.25em] text-gold">
-              {branding.announcement}
-            </div>
-          )}
-          <Header categories={categories} brand={{ name: branding.name, ...logos }} />
-          <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
-          <Footer brand={{ name: branding.name, tagline: branding.tagline, footerText: branding.footerText, ...logos }} categories={categories} store={store} />
+          <AnnouncementBar messages={messages} />
+          <Header categories={categories} brand={{ name: branding.name, ...logos }} cta={branding.headerCta} />
+          <main className="mx-auto max-w-[var(--maxw)] px-4 py-8">{children}</main>
+          <Footer brand={{ name: branding.name, tagline: branding.tagline, footerText: branding.footerText, ...logos }} categories={categories} store={store} footer={footer} social={branding.social ?? {}} />
           <CartDrawer />
           <QuickView />
           <CompareTray />

@@ -7,41 +7,41 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 ## Core theme architecture (1-15)
 
-1. [ ] Modular section blocks (drag-and-drop editor)
+1. [x] Modular section blocks (drag-and-drop editor)
 2. [x] Global style settings in one place
 3. [x] CSS variables for theme-wide changes
 4. [x] Design tokens system (spacing, type, radius scales)
-5. [ ] Section presets (save & reuse)
+5. [x] Section presets (save & reuse)
 6. [~] Template hierarchy (product, collection, blog, page, 404)
 7. [ ] Alternate templates (e.g. product.sale.json)
-8. [ ] JSON template system
+8. [x] JSON template system
 9. [ ] Metafield-driven sections
 10. [ ] Multi-language ready (RTL support)
 11. [~] Multi-currency aware layouts
 12. [~] Responsive breakpoint system
-13. [ ] Theme versioning with changelog
+13. [~] Theme versioning with changelog
 14. [ ] Child theme support
 15. [~] Zero-JS fallback for critical content
 
 ## Section library (16-35)
 
 16. [~] Hero banner (image, video, slideshow)
-17. [ ] Split hero (text + image)
+17. [x] Split hero (text + image)
 18. [ ] Fullscreen video hero with overlay
-19. [ ] Featured collection grid (2/3/4 col)
-20. [ ] Featured product spotlight
-21. [ ] Product carousel/slider
+19. [x] Featured collection grid (2/3/4 col)
+20. [x] Featured product spotlight
+21. [x] Product carousel/slider
 22. [x] Collection list with images
-23. [ ] Image with text overlay
-24. [ ] Image with text (side-by-side)
-25. [ ] Rich text section
-26. [ ] Multi-column content
-27. [ ] Testimonials slider
-28. [ ] Logo list / brand bar
+23. [x] Image with text overlay
+24. [x] Image with text (side-by-side)
+25. [x] Rich text section
+26. [x] Multi-column content
+27. [x] Testimonials slider
+28. [x] Logo list / brand bar
 29. [~] Newsletter signup (inline + popup)
-30. [ ] FAQ accordion
-31. [ ] Countdown timer section
-32. [ ] Banner with countdown (sale)
+30. [x] FAQ accordion
+31. [x] Countdown timer section
+32. [x] Banner with countdown (sale)
 33. [ ] Instagram/UGC feed
 34. [ ] Blog post grid
 35. [ ] Custom code section for devs
@@ -53,7 +53,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 38. [~] Mega menu with images + columns
 39. [x] Dropdown menus with animations
 40. [~] Mobile drawer menu with accordions
-41. [~] Announcement bar (rotating messages)
+41. [x] Announcement bar (rotating messages)
 42. [ ] Announcement bar with countdown
 43. [~] Search bar in header
 44. [ ] Predictive search dropdown
@@ -62,7 +62,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 47. [~] Account icon with dropdown
 48. [ ] Currency selector in header
 49. [ ] Language selector in header
-50. [ ] Header CTA button
+50. [x] Header CTA button
 
 ## Product page sections (51-70)
 
@@ -115,16 +115,16 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 ## Theme settings & UX (91-100)
 
-91. [~] Color scheme presets (5-10 palettes)
-92. [ ] Typography presets (font pairings)
-93. [ ] Button style options
+91. [x] Color scheme presets (5-10 palettes)
+92. [x] Typography presets (font pairings)
+93. [x] Button style options
 94. [x] Border radius global control
 95. [x] Animation intensity setting (off/subtle/full)
-96. [ ] Layout width control (boxed/full)
-97. [ ] Product card style options (3-4 variants)
-98. [ ] Badge style options
-99. [ ] Social media icons with links
-100. [~] Footer builder (columns, newsletter, payment icons)
+96. [x] Layout width control (boxed/full)
+97. [x] Product card style options (3-4 variants)
+98. [x] Badge style options
+99. [x] Social media icons with links
+100. [x] Footer builder (columns, newsletter, payment icons)
 
 ---
-Total 100: 20 done, 20 partly, 60 not started (as of 2026-10-09).
+Total 100: 46 done, 18 partly, 36 not started (as of 2026-10-09).

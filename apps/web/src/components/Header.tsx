@@ -90,7 +90,7 @@ function MegaItem({ node }: { node: CategoryNode }) {
   );
 }
 
-export function Header({ categories, brand }: { categories: CategoryNode[]; brand: { name: string; logoUrl: string; logoUrlDark?: string } }) {
+export function Header({ categories, brand, cta }: { categories: CategoryNode[]; brand: { name: string; logoUrl: string; logoUrlDark?: string }; cta?: { label: string; href: string } }) {
   const { count, setOpen } = useCart();
   const { wish } = useShopper();
   const { user } = useSession();
@@ -110,7 +110,7 @@ export function Header({ categories, brand }: { categories: CategoryNode[]; bran
 
   return (
     <header className={`header-bar sticky top-0 z-30 border-b border-line bg-bg/85 backdrop-blur-md ${hidden ? "header-hidden" : ""}`}>
-      <div className="mx-auto flex max-w-7xl items-center gap-1 px-4 sm:gap-5">
+      <div className="mx-auto flex max-w-[var(--maxw)] items-center gap-1 px-4 sm:gap-5">
         <details className="relative lg:hidden">
           <summary className="cursor-pointer list-none p-2" aria-label="Menu"><MenuIcon size={22} /></summary>
           <nav className="absolute left-0 top-full w-64 border border-line bg-card p-4 text-sm shadow-2xl">
@@ -138,6 +138,7 @@ export function Header({ categories, brand }: { categories: CategoryNode[]; bran
           <input name="q" placeholder="Search" aria-label="Search products" className="w-36 border-b border-line bg-transparent py-1 pl-6 pr-1 text-sm outline-none transition-all placeholder:text-muted focus:w-52 focus:border-accent" />
         </form>
         <Link href="/products" className="ml-auto hidden p-2 text-muted transition hover:text-accent sm:block lg:hidden" aria-label="Search"><SearchIcon size={20} /></Link>
+        {cta?.label && cta.href && <Link href={cta.href} className="btn btn-primary hidden !px-4 !py-2 xl:inline-flex">{cta.label}</Link>}
         <MotionToggle className="hidden lg:flex" />
         <ThemeToggle className="hidden lg:flex" />
         <Link href={user ? "/account" : "/login"} className="hidden p-2 transition hover:text-accent sm:block" aria-label={user ? "My account" : "Sign in"} title={user ? "My account" : "Sign in"}><UserIcon size={22} /></Link>

@@ -9,6 +9,7 @@ import { adminRoutes } from "./routes/admin.js";
 import { settingsRoutes } from "./routes/settings.js";
 import { accountRoutes } from "./routes/account.js";
 import { engagementRoutes } from "./routes/engagement.js";
+import { templateRoutes } from "./routes/templates.js";
 import { CartError } from "./lib/pricing.js";
 
 export type Role = "SUPER_ADMIN" | "ADMIN" | "WAREHOUSE" | "CUSTOMER" | "WHOLESALE";
@@ -48,6 +49,7 @@ await app.register(checkoutRoutes, { prefix: "/api/v1" });
 await app.register(settingsRoutes, { prefix: "/api/v1" });
 await app.register(accountRoutes, { prefix: "/api/v1" });
 await app.register(engagementRoutes, { prefix: "/api/v1" });
+await app.register(templateRoutes, { prefix: "/api/v1" });
 await app.register(adminRoutes, { prefix: "/api/v1/admin" });
 
 await app.listen({ port: Number(process.env.PORT ?? 4000), host: "0.0.0.0" });

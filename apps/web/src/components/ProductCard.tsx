@@ -12,14 +12,14 @@ export function ProductCard({ p }: { p: ProductSummary }) {
   return (
     <Tilt>
       <div className="group/card relative">
-      <Link href={`/products/${p.slug}`} className="lift group block border border-line bg-card">
-        <div className="relative aspect-[4/5] overflow-hidden bg-line/40">
+      <Link href={`/products/${p.slug}`} className="lift pcard group block border border-line bg-card">
+        <div className="pcard-img relative aspect-[4/5] overflow-hidden bg-line/40">
           {p.images[0] && (
             <img src={p.images[0]} alt={p.title} loading="lazy" width={600} height={750}
               className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${soldOut ? "opacity-50 grayscale" : ""}`} />
           )}
           {p.discount_pct && !soldOut && (
-            <span className="absolute left-0 top-4 bg-accent px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-onbrand">-{p.discount_pct}%</span>
+            <span className="badge-discount absolute left-0 top-4 bg-accent px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-onbrand">-{p.discount_pct}%</span>
           )}
           {badge && !soldOut && (
             <span className="glass absolute bottom-3 left-3 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-fg">{badge}</span>

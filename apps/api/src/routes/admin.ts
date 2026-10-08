@@ -2,7 +2,8 @@ import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
 import { pool } from "../lib/db.js";
 import { cached, delPattern } from "../lib/redis.js";
-import { brandingSchema, saveBranding, saveStore, storeSchema } from "./settings.js";
+import { brandingSchema, footerSchema, saveBranding, saveFooter, saveStore, storeSchema } from "./settings.js";
+import { templateAdminRoutes } from "./templates.js";
 
 const STAFF = new Set(["SUPER_ADMIN", "ADMIN", "WAREHOUSE"]);
 
@@ -44,6 +45,8 @@ export const adminRoutes: FastifyPluginAsync = async (app) => {
   const adminOnly = async (req: any, reply: any) => {
     if (req.user.role === "WAREHOUSE") return reply.status(403).send({ success: false, error: "Forbidden" });
   };
+
+  await app.register(templateAdminRoutes);
 
   app.post("/products", { preHandler: adminOnly }, async (req, reply) => {
     const b = productSchema.parse(req.body);
@@ -133,6 +136,12 @@ export const adminRoutes: FastifyPluginAsync = async (app) => {
     const b = brandingSchema.parse(req.body);
     await saveBranding(b);
     return { branding: b };
+  });
+
+  app.put("/footer-settings", { preHandler: adminOnly }, async (req) => {
+    const f = footerSchema.parse(req.body);
+    await saveFooter(f);
+    return { footer: f };
   });
 
   app.put("/store-settings", { preHandler: adminOnly }, async (req) => {

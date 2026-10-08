@@ -39,3 +39,9 @@ export const ContrastIcon = (p: Props) => <Icon {...p}><circle cx="12" cy="12" r
 export const MotionIcon = (p: Props) => <Icon {...p}><path d="M3 12h4l2-6 4 12 2-6h6" stroke={A} /><path d="M3 5v14" /></Icon>;
 export const CompareIcon = (p: Props) => <Icon {...p}><path d="M4 5h6v14H4zM14 9h6v10h-6z" /><path d="M7 9v6M17 13v3" stroke={A} /></Icon>;
 export const EyeIcon = (p: Props) => <Icon {...p}><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" stroke={A} /></Icon>;
+export const InstagramIcon = (p: Props) => <Icon {...p}><path d="M4 4h16v16H4z" /><circle cx="12" cy="12" r="3.8" stroke={A} /><path d="M16.5 7.5h.01" stroke={A} strokeWidth={2.5} /></Icon>;
+export const FacebookIcon = (p: Props) => <Icon {...p}><path d="M14 21v-8h3l.5-3.5H14V7.5c0-1 .5-1.5 1.6-1.5H18V3h-3c-2.6 0-4 1.5-4 4v2.5H8V13h3v8z" /><path d="M11 13h3" stroke={A} /></Icon>;
+export const TikTokIcon = (p: Props) => <Icon {...p}><path d="M14 3v12.5a3.5 3.5 0 1 1-3.5-3.5" /><path d="M14 3c.4 2.6 2.2 4.4 5 4.6" stroke={A} /></Icon>;
+export const YouTubeIcon = (p: Props) => <Icon {...p}><path d="M3 6h18v12H3z" /><path d="M10 9.5l5 2.5-5 2.5z" stroke={A} /></Icon>;
+export const WhatsAppIcon = (p: Props) => <Icon {...p}><path d="M4 20l1.3-4.2A8 8 0 1 1 8.5 19z" /><path d="M9 9c0 3 3 6 6 6" stroke={A} /></Icon>;
+export const XIcon = (p: Props) => <Icon {...p}><path d="M4 4l16 16" /><path d="M20 4L4 20" stroke={A} /></Icon>;

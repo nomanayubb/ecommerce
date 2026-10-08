@@ -28,6 +28,17 @@ export const brandingSchema = z.object({
   heroText: text(300),
   promiseText: text(300),
   footerText: text(300),
+  headingFont: z.enum(["inherit", "system", "serif", "rounded", "mono"]).default("inherit"),
+  buttonStyle: z.enum(["solid", "outline", "pill"]).default("solid"),
+  cardStyle: z.enum(["classic", "minimal", "compact"]).default("classic"),
+  badgeStyle: z.enum(["solid", "outline", "pill"]).default("solid"),
+  layoutWidth: z.enum(["boxed", "wide", "full"]).default("boxed"),
+  announcements: z.array(z.string().trim().max(200)).max(5).default([]),
+  headerCta: z.object({ label: z.string().trim().max(30).default(""), href: url.default("") }).default({}),
+  social: z.object({
+    instagram: url.default(""), facebook: url.default(""), tiktok: url.default(""),
+    youtube: url.default(""), whatsapp: url.default(""), x: url.default(""),
+  }).default({}),
   motion: z.enum(["off", "subtle", "full"]).default("full"),
   pack: z.string().regex(/^[a-z0-9-]{1,40}$/).default("default"),
 });
@@ -46,7 +57,25 @@ const load = async <T>(key: string, fallback?: T) => {
   return (rows[0]?.value ?? fallback) as T;
 };
 
+/** Footer builder: link columns + switches. */
+export const footerSchema = z.object({
+  columns: z.array(z.object({
+    title: z.string().trim().max(40),
+    links: z.array(z.object({ label: z.string().trim().min(1).max(40), href: url })).max(8),
+  })).max(4),
+  showNewsletter: z.boolean().default(true),
+  showPerks: z.boolean().default(true),
+  showPayments: z.boolean().default(true),
+  note: z.string().trim().max(200).default(""),
+});
+export type FooterSettings = z.infer<typeof footerSchema>;
+export const DEFAULT_FOOTER: FooterSettings = {
+  columns: [{ title: "Shop", links: [{ label: "All products", href: "/products" }, { label: "Track your order", href: "/track" }, { label: "My account", href: "/account" }] }],
+  showNewsletter: true, showPerks: true, showPayments: true, note: "",
+};
+
 export const loadBranding = () => cached("settings:branding", 60, () => load<Branding>("branding"));
+export const loadFooter = () => cached("settings:footer", 60, () => load<FooterSettings>("footer", DEFAULT_FOOTER));
 export const loadStore = () => cached("settings:store", 60, () => load<Store>("store", STORE_DEFAULT));
 
 const save = async (key: string, value: unknown) => {
@@ -58,10 +87,11 @@ const save = async (key: string, value: unknown) => {
 };
 export const saveBranding = (b: Branding) => save("branding", b);
 export const saveStore = (s: Store) => save("store", s);
+export const saveFooter = (f: FooterSettings) => save("footer", f);
 
 export const settingsRoutes: FastifyPluginAsync = async (app) => {
   app.get("/settings", async () => {
-    const [branding, store] = await Promise.all([loadBranding(), loadStore()]);
-    return { branding, store };
+    const [branding, store, footer] = await Promise.all([loadBranding(), loadStore(), loadFooter()]);
+    return { branding, store, footer };
   });
 };

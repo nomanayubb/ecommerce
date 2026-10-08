@@ -37,6 +37,8 @@ export function brandingCss(b: Branding): string {
   const accentLight = pick(b.accentColor, "#b88c2c");
   const radius = Math.min(28, Math.max(0, Math.round(Number(b.radius)) || 0));
   const font = FONTS[b.font] ?? FONTS.system;
+  const heading = b.headingFont && b.headingFont !== "inherit" ? FONTS[b.headingFont] ?? font : "var(--font)";
+  const maxw = { boxed: "80rem", wide: "100rem", full: "100%" }[b.layoutWidth ?? "boxed"] ?? "80rem";
 
   const light =
     `--bg:${str(cream)};--fg:${str(ink)};--muted:${str(mix(ink, cream, 0.38))};--card:${str(mix(cream, WHITE, 0.55))};--line:${str(mix(cream, ink, 0.12))};` +
@@ -46,7 +48,7 @@ export function brandingCss(b: Branding): string {
     `--brand:${str(brandDark)};--on-brand:${onColor(brandDark)};--accent:${str(brandDark)};`;
 
   return (
-    `html:root{${light}--dark:${str(dark)};--on-dark:${str(cream)};--accent-bright:${str(brandDark)};--radius:${radius}px;--font:${font}}` +
+    `html:root{${light}--dark:${str(dark)};--on-dark:${str(cream)};--accent-bright:${str(brandDark)};--radius:${radius}px;--font:${font};--font-heading:${heading};--maxw:${maxw}}` +
     `html[data-theme="dark"]{${darkTheme(dark)}}` +
     `html[data-theme="oled"]{${darkTheme(BLACK)}}`
   );
