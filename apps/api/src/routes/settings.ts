@@ -19,6 +19,7 @@ export const brandingSchema = z.object({
   font: z.enum(["system", "serif", "rounded", "mono"]),
   defaultTheme: z.enum(["light", "dark", "oled"]),
   announcement: z.string().max(200),
+  motion: z.enum(["off", "subtle", "full"]).default("full"),
   pack: z.string().regex(/^[a-z0-9-]{1,40}$/).default("default"),
 });
 export type Branding = z.infer<typeof brandingSchema>;

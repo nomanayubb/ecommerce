@@ -20,7 +20,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
 <path d="M${cx} ${cy + 20} L${cx + 15} ${cy + 80} L${cx + 130} ${cy + 80} L${cx + 150} ${cy + 20}" opacity=".8"/>
 <circle cx="${cx + 35}" cy="${cy + 108}" r="11" opacity=".9"/><circle cx="${cx + 110}" cy="${cy + 108}" r="11" opacity=".9"/></g>
 <rect x="24" y="24" width="${w - 48}" height="${h - 48}" fill="none" stroke="#d4aa46" stroke-opacity=".25"/>
-<text x="${cx}" y="${h - 70}" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="22" letter-spacing="7" fill="#f5f0e6" fill-opacity=".75">${title}</text>
-<text x="${cx}" y="${h - 42}" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" letter-spacing="6" fill="#d4aa46">AVERIXA</text></svg>`;
+${wide ? "" : `<text x="${cx}" y="${h - 70}" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="22" letter-spacing="7" fill="#f5f0e6" fill-opacity=".75">${title}</text>
+<text x="${cx}" y="${h - 42}" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" letter-spacing="6" fill="#d4aa46">AVERIXA</text>`}</svg>`;
   return new Response(svg, { headers: { "content-type": "image/svg+xml", "cache-control": "public, max-age=86400, immutable" } });
 }

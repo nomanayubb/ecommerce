@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { pkr, type ProductDetail } from "@/lib/api";
 import { useCart } from "./CartProvider";
+import { CashIcon, PackageIcon, SupportIcon, TruckIcon } from "./icons";
 
 export function BuyPanel({ p }: { p: ProductDetail }) {
   const { add } = useCart();
@@ -90,8 +91,8 @@ export function BuyPanel({ p }: { p: ProductDetail }) {
       {p.moq > 1 && <p className="text-xs text-muted">Minimum order quantity: {p.moq}</p>}
 
       <ul className="grid gap-3 border-t border-line pt-6 text-sm text-muted sm:grid-cols-2">
-        {["Cash on delivery available", "Free delivery over Rs. 5,000", "Checked and packed with care", "Easy support if anything is off"].map((t) => (
-          <li key={t} className="flex items-start gap-2"><span className="mt-0.5 text-accent">◆</span>{t}</li>
+        {([[CashIcon, "Cash on delivery available"], [TruckIcon, "Free delivery over Rs. 5,000"], [PackageIcon, "Checked and packed with care"], [SupportIcon, "Easy support if anything is off"]] as const).map(([Ic, t]) => (
+          <li key={t} className="flex items-center gap-3"><Ic size={20} className="shrink-0 text-fg" />{t}</li>
         ))}
       </ul>
 

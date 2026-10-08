@@ -57,3 +57,11 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 
 ## 2026-10-08 - Reusable-theme requirement recorded
 - Added `docs/NEW_PROJECT_GUIDE.md` (brand kit = logo source + branding row + theme packs; rebrand steps; list of hard-coded brand values to remove) and rule 9 in `DESIGN_SYSTEM_RULES.md`. No code changed.
+
+## 2026-10-08 - Batch 1: premium-feel visuals + icon set + motion setting
+- Icon set `components/icons/index.tsx` (16 duotone icons: 24px grid, 1.75 stroke, square caps, currentColor + accent) used in header (bag, search, menu, theme), footer perks, product trust list.
+- `components/Motion.tsx`: `ScrollProgress` (gold top bar), `Reveal` (IntersectionObserver fade/slide with stagger; visible without JS), `Tilt` (3D tilt on fine pointers, only when motion=full).
+- CSS: glass surfaces, film grain, animated hero gradient, logo reveal on load, smooth theme cross-fade, header hide-on-scroll-down / show-on-scroll-up, motion levels via `data-motion` (off/subtle/full) + `prefers-reduced-motion`.
+- Branding setting `motion` (API zod enum default full, admin select, `<html data-motion>`). Home: bento category grid, reveals, glass promise block. Product cards: tilt + tag badges (Bestseller/Limited/New/Low stock). Placeholder art omits title text on wide tiles.
+- Verified (browser + API): invalid motion rejected; header hides at scrollY 700; progress bar 28%; 4/14 reveals on first scroll; reveals all visible when motion=off; duotone icons render. tsc clean (api/web/admin).
+- NOT verified: looping hero animation and tilt visually (this browser reports prefers-reduced-motion, which correctly disables them); light/OLED modes; 1280px+ layouts.

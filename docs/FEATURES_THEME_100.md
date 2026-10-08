@@ -119,7 +119,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 92. [ ] Typography presets (font pairings)
 93. [ ] Button style options
 94. [x] Border radius global control
-95. [ ] Animation intensity setting (off/subtle/full)
+95. [x] Animation intensity setting (off/subtle/full)
 96. [ ] Layout width control (boxed/full)
 97. [ ] Product card style options (3-4 variants)
 98. [ ] Badge style options
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [~] Footer builder (columns, newsletter, payment icons)
 
 ---
-Total 100: 14 done, 16 partly, 70 not started (as of 2026-10-08).
+Total 100: 15 done, 16 partly, 69 not started (as of 2026-10-08).

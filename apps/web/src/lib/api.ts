@@ -10,6 +10,7 @@ export interface ProductSummary {
   images: string[];
   brand_name: string | null;
   discount_pct: string | null;
+  tags?: string[];
 }
 export interface Variant {
   id: string;
@@ -48,9 +49,9 @@ export const pkr = (n: number | string) => `Rs. ${Number(n).toLocaleString("en-P
 
 export interface Branding {
   name: string; tagline: string; logoUrl: string; logoUrlDark?: string; brandColor: string; brandColorDark: string; accentColor?: string;
-  radius: number; font: "system" | "serif" | "rounded" | "mono"; defaultTheme: "light" | "dark" | "oled"; announcement: string; pack?: string;
+  radius: number; font: "system" | "serif" | "rounded" | "mono"; defaultTheme: "light" | "dark" | "oled"; announcement: string; pack?: string; motion?: "off" | "subtle" | "full";
 }
 export const DEFAULT_BRANDING: Branding = {
   name: "AVERIXA", tagline: "Your world. Our store.", logoUrl: "/brand/logo-horizontal.webp", logoUrlDark: "/brand/logo-horizontal-dark.webp", brandColor: "#1c1c1e", brandColorDark: "#d4aa46", accentColor: "#b88c2c",
-  radius: 2, font: "system", defaultTheme: "dark", announcement: "", pack: "default",
+  radius: 2, font: "system", defaultTheme: "dark", announcement: "", pack: "default", motion: "full",
 };

@@ -7,21 +7,21 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 ## Visual & design (1-20)
 
-1. [~] Dark/Light mode toggle with smooth transitions
-2. [ ] Glassmorphism cards
-3. [ ] Micro-interactions on every button
+1. [x] Dark/Light mode toggle with smooth transitions
+2. [x] Glassmorphism cards
+3. [~] Micro-interactions on every button
 4. [~] Skeleton loaders instead of spinners
 5. [~] Scroll-triggered animations (fade, slide, parallax)
 6. [ ] Custom cursor that changes on interactive elements
-7. [ ] Animated gradient backgrounds on hero
-8. [ ] 3D product cards with tilt on mouse move
+7. [x] Animated gradient backgrounds on hero
+8. [x] 3D product cards with tilt on mouse move
 9. [ ] Neumorphism for select UI elements
-10. [ ] Bento grid layouts for featured collections
-11. [~] Sticky mini-header that appears on scroll up
-12. [ ] Progress bar at top showing page scroll
-13. [ ] Animated logo on page load
+10. [x] Bento grid layouts for featured collections
+11. [x] Sticky mini-header that appears on scroll up
+12. [x] Progress bar at top showing page scroll
+13. [~] Animated logo on page load
 14. [ ] Morphing SVG illustrations
-15. [ ] Noise/grain texture overlays
+15. [x] Noise/grain texture overlays
 16. [ ] Aurora/gradient mesh backgrounds
 17. [ ] Liquid hover effects on product images
 18. [ ] Kinetic typography on hero headlines
@@ -49,7 +49,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 37. [ ] Estimated delivery date by zip code
 38. [ ] Wishlist/favorites with heart animation
 39. [ ] Save for later cart functionality
-40. [~] Product badges (New, Bestseller, Limited)
+40. [x] Product badges (New, Bestseller, Limited)
 
 ## Cart & checkout (41-55)
 
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [ ] Analytics dashboard with heatmaps
 
 ---
-Total 100: 9 done, 12 partly, 79 not started (as of 2026-10-08).
+Total 100: 18 done, 11 partly, 71 not started (as of 2026-10-08).

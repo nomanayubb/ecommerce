@@ -9,6 +9,7 @@ import { CartProvider } from "@/components/CartProvider";
 import { CartDrawer } from "@/components/CartDrawer";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { ScrollProgress } from "@/components/Motion";
 
 const getBranding = () =>
   api<{ branding: Branding }>("/settings", { revalidate: 30 }).then((r) => r.branding).catch(() => DEFAULT_BRANDING);
@@ -29,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = { themeColor: "#0f0f11" };
 
 // Runs before first paint so the saved theme never flashes.
-const themeScript = `try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}`;
+const themeScript = `document.documentElement.classList.add("js");try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}`;
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const [categories, saved] = await Promise.all([
@@ -39,12 +40,13 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const { branding, pack } = applyPack(saved);
   const logos = { logoUrl: branding.logoUrl, logoUrlDark: branding.logoUrlDark };
   return (
-    <html lang="en" data-theme={branding.defaultTheme} suppressHydrationWarning>
+    <html lang="en" data-theme={branding.defaultTheme} data-motion={branding.motion ?? "full"} suppressHydrationWarning>
       <head>
         <style dangerouslySetInnerHTML={{ __html: brandingCss(branding) }} />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
+        <ScrollProgress />
         <Decor decor={pack.decor} />
         <CartProvider>
           {branding.announcement && (

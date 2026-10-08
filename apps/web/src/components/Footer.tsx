@@ -1,22 +1,24 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import type { CategoryNode } from "@/lib/api";
 import { Logo } from "./Header";
+import { CashIcon, SupportIcon, TruckIcon, ShieldIcon } from "./icons";
 
-const PERKS = [
-  ["Free delivery", "On orders over Rs. 5,000"],
-  ["Cash on delivery", "Pay when it arrives"],
-  ["Secure checkout", "Your data stays private"],
-  ["Easy support", "We reply within a day"],
+const PERKS: [ReactNode, string, string][] = [
+  [<TruckIcon key="t" size={26} />, "Free delivery", "On orders over Rs. 5,000"],
+  [<CashIcon key="c" size={26} />, "Cash on delivery", "Pay when it arrives"],
+  [<ShieldIcon key="s" size={26} />, "Secure checkout", "Your data stays private"],
+  [<SupportIcon key="h" size={26} />, "Easy support", "We reply within a day"],
 ];
 
 export function Footer({ brand, categories }: { brand: { name: string; tagline: string; logoUrl: string; logoUrlDark?: string }; categories: CategoryNode[] }) {
   return (
     <footer className="mt-24 border-t border-line bg-card">
       <div className="mx-auto grid max-w-7xl gap-px bg-line px-0 sm:grid-cols-2 lg:grid-cols-4">
-        {PERKS.map(([t, d]) => (
-          <div key={t} className="bg-card px-6 py-6">
-            <p className="eyebrow">{t}</p>
-            <p className="mt-1 text-sm text-muted">{d}</p>
+        {PERKS.map(([icon, t, d]) => (
+          <div key={t} className="flex items-center gap-4 bg-card px-6 py-6">
+            <span className="text-fg">{icon}</span>
+            <div><p className="eyebrow">{t}</p><p className="mt-1 text-sm text-muted">{d}</p></div>
           </div>
         ))}
       </div>

@@ -51,7 +51,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 39. [ ] Eco icons
 40. [ ] Safety icons (dishwasher/oven safe, BPA-free)
 41. [ ] Animated SVG icons on hover
-42. [ ] Duotone icon style
+42. [x] Duotone icon style
 43. [ ] Line + fill toggle by theme mode
 44. [ ] Custom icon font for performance
 45. [ ] Icon tooltips
@@ -64,7 +64,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 52. [ ] Icon micro-interactions
 53. [ ] Seasonal icon variants
 54. [ ] RTL-compatible icons
-55. [ ] Icon accessibility (aria-labels, contrast)
+55. [~] Icon accessibility (aria-labels, contrast)
 
 ## 3D character & mascot (56-75)
 
@@ -151,4 +151,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 130. [ ] Back-to-top as rising souffle
 
 ---
-Total 130: 0 done, 0 partly, 130 not started (as of 2026-10-08).
+Total 130: 1 done, 1 partly, 128 not started (as of 2026-10-08).

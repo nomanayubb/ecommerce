@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { api, DEFAULT_BRANDING, type Branding, type CategoryNode, type ProductSummary } from "@/lib/api";
 import { ProductCard } from "@/components/ProductCard";
+import { Reveal } from "@/components/Motion";
+import { ArrowRightIcon } from "@/components/icons";
 import { applyPack } from "@/themes";
 
 /** Angular line art echoing the logo's strokes. Decorative only. */
@@ -23,6 +25,15 @@ function HeroArt() {
   );
 }
 
+function SectionHead({ eyebrow, title, href }: { eyebrow: string; title: string; href?: string }) {
+  return (
+    <div className="mb-6 flex items-end justify-between">
+      <div><p className="eyebrow">{eyebrow}</p><h2 className="mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">{title}</h2></div>
+      {href && <Link href={href} className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] transition hover:text-accent">View all <ArrowRightIcon size={16} /></Link>}
+    </div>
+  );
+}
+
 export default async function Home() {
   const [{ items }, categories, saved] = await Promise.all([
     api<{ items: ProductSummary[] }>("/products?pageSize=8").catch(() => ({ items: [] as ProductSummary[] })),
@@ -30,11 +41,12 @@ export default async function Home() {
     api<{ branding: Branding }>("/settings", { revalidate: 30 }).then((r) => r.branding).catch(() => DEFAULT_BRANDING),
   ]);
   const { branding, pack } = applyPack(saved);
-  const grad = pack.decor?.heroGradient ?? "linear-gradient(120deg,#0b0b0d 0%,#17171a 55%,#2a2318 100%)";
+  const packGrad = pack.decor?.heroGradient;
+  const grad = packGrad ?? "linear-gradient(120deg,#0b0b0d 0%,#17171a 40%,#2a2318 70%,#0b0b0d 100%)";
 
   return (
     <>
-      <section className="fade-up relative -mx-4 overflow-hidden px-6 py-20 text-[#f5f0e6] sm:mx-0 sm:px-14 sm:py-28" style={{ background: grad }}>
+      <section className={`${packGrad ? "" : "hero-anim"} fade-up relative -mx-4 overflow-hidden px-6 py-20 text-[#f5f0e6] sm:mx-0 sm:px-14 sm:py-28`} style={{ background: grad }}>
         <HeroArt />
         <div className="relative max-w-xl">
           <p className="eyebrow">{branding.name}</p>
@@ -53,41 +65,41 @@ export default async function Home() {
 
       {categories.length > 0 && (
         <section className="mt-16">
-          <div className="mb-6 flex items-end justify-between">
-            <div><p className="eyebrow">Explore</p><h2 className="mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">Shop by category</h2></div>
-          </div>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-            {categories.slice(0, 6).map((c, i) => (
-              <Link key={c.id} href={`/products?category=${c.slug}`} className="lift group relative block aspect-[4/3] overflow-hidden border border-line">
-                <img src={`/ph/${c.slug}?ar=4x3`} alt="" loading="lazy" width={800} height={600} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="absolute bottom-0 p-5 text-[#f5f0e6]">
-                  <p className="text-[0.65rem] uppercase tracking-[0.3em] text-[#d4aa46]">{String(i + 1).padStart(2, "0")}</p>
-                  <p className="mt-1 text-lg font-semibold uppercase tracking-[0.15em]">{c.name}</p>
-                </div>
-              </Link>
+          <Reveal><SectionHead eyebrow="Explore" title="Shop by category" /></Reveal>
+          {/* Bento: first tile is large, the rest tile around it */}
+          <div className="grid auto-rows-[190px] grid-cols-2 gap-4 md:auto-rows-[210px] md:grid-cols-4">
+            {categories.slice(0, 5).map((c, i) => (
+              <Reveal key={c.id} delay={i * 90} className={i === 0 ? "col-span-2 row-span-2" : i < 3 ? "md:col-span-2" : ""}>
+                <Link href={`/products?category=${c.slug}`} className="lift group relative block h-full overflow-hidden border border-line">
+                  <img src={`/ph/${c.slug}?ar=4x3`} alt="" loading="lazy" width={800} height={600} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute bottom-0 p-5 text-[#f5f0e6]">
+                    <p className="text-[0.65rem] uppercase tracking-[0.3em] text-[#d4aa46]">{String(i + 1).padStart(2, "0")}</p>
+                    <p className={`mt-1 font-semibold uppercase tracking-[0.15em] ${i === 0 ? "text-2xl" : "text-lg"}`}>{c.name}</p>
+                  </div>
+                </Link>
+              </Reveal>
             ))}
           </div>
         </section>
       )}
 
       <section className="mt-20">
-        <div className="mb-6 flex items-end justify-between">
-          <div><p className="eyebrow">Just in</p><h2 className="mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">New arrivals</h2></div>
-          <Link href="/products" className="text-xs font-semibold uppercase tracking-[0.2em] hover:text-accent">View all →</Link>
-        </div>
+        <Reveal><SectionHead eyebrow="Just in" title="New arrivals" href="/products" /></Reveal>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {items.map((p) => <ProductCard key={p.id} p={p} />)}
+          {items.map((p, i) => <Reveal key={p.id} delay={(i % 4) * 80}><ProductCard p={p} /></Reveal>)}
         </div>
         {items.length === 0 && <p className="text-muted">No products yet.</p>}
       </section>
 
-      <section className="mt-24 border border-line bg-card px-6 py-14 text-center sm:px-16">
-        <p className="eyebrow">The {branding.name} promise</p>
-        <p className="mx-auto mt-4 max-w-2xl text-xl font-medium leading-relaxed sm:text-2xl">
-          Every order is checked, packed with care and sent with tracking. If it is not right, we make it right.
-        </p>
-      </section>
+      <Reveal className="mt-24">
+        <section className="glass px-6 py-14 text-center sm:px-16">
+          <p className="eyebrow">The {branding.name} promise</p>
+          <p className="mx-auto mt-4 max-w-2xl text-xl font-medium leading-relaxed sm:text-2xl">
+            Every order is checked, packed with care and sent with tracking. If it is not right, we make it right.
+          </p>
+        </section>
+      </Reveal>
     </>
   );
 }

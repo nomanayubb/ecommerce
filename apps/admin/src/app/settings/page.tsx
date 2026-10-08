@@ -5,7 +5,7 @@ import { api } from "@/lib/api";
 
 interface Branding {
   name: string; tagline: string; logoUrl: string; logoUrlDark: string; brandColor: string; brandColorDark: string; accentColor: string;
-  radius: number; font: "system" | "serif" | "rounded" | "mono"; defaultTheme: "light" | "dark" | "oled"; announcement: string; pack: string;
+  radius: number; font: "system" | "serif" | "rounded" | "mono"; defaultTheme: "light" | "dark" | "oled"; announcement: string; pack: string; motion: "off" | "subtle" | "full";
 }
 
 // Keep in sync with apps/web/src/themes/index.ts
@@ -76,6 +76,13 @@ export default function Settings() {
           </select>
         </label>
       </div>
+      <label className={label}>Animation intensity
+        <select className={input} value={b.motion ?? "full"} onChange={(e) => set("motion", e.target.value as Branding["motion"])}>
+          <option value="full">Full (reveals, tilt, animated hero)</option>
+          <option value="subtle">Subtle (reveals only)</option>
+          <option value="off">Off (no motion)</option>
+        </select>
+      </label>
       <label className={label}>Announcement bar (empty = hidden)
         <input className={input} value={b.announcement} onChange={(e) => set("announcement", e.target.value)} />
       </label>
