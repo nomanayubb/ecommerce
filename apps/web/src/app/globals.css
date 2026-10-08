@@ -290,3 +290,12 @@ html[data-logomorph][data-scrolled] .logo-mini { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) :is(.header-peek, .splash, .splash-logo, .splash-sweep, .loader-hop) { animation: none; } html:not([data-motion-pref="on"]) .splash { display: none; } }
 [data-motion="off"] .splash, [data-motion-pref="off"] .splash { display: none; }
 
+/* ===== Batch 9C: recipe cards that flip (hover/focus on fine pointers only; no flip with reduced motion) ===== */
+.rflip { perspective: 1100px; }
+.rflip-inner { transform-style: preserve-3d; transition: transform .7s cubic-bezier(.2,.7,.2,1); }
+.rflip-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.rflip-back { transform: rotateY(180deg); }
+@media (hover: hover) and (pointer: fine) { .rflip:hover .rflip-inner, .rflip:focus-visible .rflip-inner { transform: rotateY(180deg); } }
+[data-motion="off"] .rflip:hover .rflip-inner, [data-motion-pref="off"] .rflip:hover .rflip-inner { transform: none !important; }
+@media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) .rflip:hover .rflip-inner, html:not([data-motion-pref="on"]) .rflip:focus-visible .rflip-inner { transform: none; } }
+

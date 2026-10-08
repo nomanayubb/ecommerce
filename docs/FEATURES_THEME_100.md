@@ -43,7 +43,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 31. [x] Countdown timer section
 32. [x] Banner with countdown (sale)
 33. [ ] Instagram/UGC feed
-34. [ ] Blog post grid
+34. [~] Blog post grid
 35. [ ] Custom code section for devs
 
 ## Header & navigation (36-50)
@@ -107,10 +107,10 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 83. [ ] Contact form with map
 84. [ ] Store locator with map
 85. [ ] FAQ page with categories
-86. [ ] Blog post with sidebar
-87. [ ] Blog with featured post
-88. [ ] Author bio section
-89. [ ] Related posts carousel
+86. [~] Blog post with sidebar
+87. [x] Blog with featured post
+88. [x] Author bio section
+89. [~] Related posts carousel
 90. [ ] Newsletter landing page
 
 ## Theme settings & UX (91-100)
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [x] Footer builder (columns, newsletter, payment icons)
 
 ---
-Total 100: 57 done, 19 partly, 24 not started (as of 2026-10-09).
+Total 100: 59 done, 22 partly, 19 not started (as of 2026-10-09).

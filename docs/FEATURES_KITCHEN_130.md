@@ -8,29 +8,29 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 ## Kitchen product adventure (1-30)
 
 1. [x] 3D rotating kitchen appliances
-2. [ ] Recipe finder using your kitchen products
-3. [ ] What can I cook? ingredient-to-product matcher
+2. [x] Recipe finder using your kitchen products
+3. [x] What can I cook? ingredient-to-product matcher
 4. [x] AR kitchen preview on your counter
 5. [x] Video recipe demos per product
-6. [ ] Chef-curated bundles
-7. [ ] Cooking difficulty badges
-8. [ ] Prep-time estimator on recipe cards
-9. [ ] Nutrition calculator for recipe bundles
-10. [ ] Kitchen quiz to find your cookware
+6. [x] Chef-curated bundles
+7. [x] Cooking difficulty badges
+8. [x] Prep-time estimator on recipe cards
+9. [x] Nutrition calculator for recipe bundles
+10. [x] Kitchen quiz to find your cookware
 11. [ ] Ingredient compatibility checker
-12. [ ] Seasonal recipe collections
-13. [ ] Meal planner using purchased products
-14. [ ] Shopping list generator from recipes
-15. [ ] Cooking timer on product pages
-16. [~] Temperature guides
+12. [x] Seasonal recipe collections
+13. [x] Meal planner using purchased products
+14. [x] Shopping list generator from recipes
+15. [x] Cooking timer on product pages
+16. [x] Temperature guides
 17. [x] Care & maintenance animated tutorials
 18. [ ] Warranty visualizer
 19. [x] Material explainer (ceramic, steel, cast iron)
-20. [ ] Compare cookware materials tool
+20. [x] Compare cookware materials tool
 21. [ ] Sizzle animations on hover
 22. [x] Splash effect when adding to cart
 23. [x] Ingredient particle effects (floating herbs/spices)
-24. [ ] Animated recipe cards with flip
+24. [x] Animated recipe cards with flip
 25. [x] Warm palette (terracotta, sage, cream)
 26. [x] Wood texture backgrounds
 27. [x] Marble/granite patterns
@@ -125,9 +125,9 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 104. [x] Loading as stirring/chopping animation
 105. [~] Toast notifications with mascot
 106. [x] Product cards with 3D tilt
-107. [ ] Cards that flip to show recipe
+107. [~] Cards that flip to show recipe
 108. [ ] Cards with ingredient hover reveal
-109. [ ] Cards with cooked-with tag
+109. [x] Cards with cooked-with tag
 110. [x] Cards with animated price count-up
 111. [x] Cards with video autoplay on hover
 112. [x] Cards with color extraction
@@ -139,7 +139,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 118. [ ] Behind-the-scenes video section
 119. [ ] Sustainability dashboard
 120. [ ] Interactive sourcing map
-121. [ ] Recipe blog with 3D illustrations
+121. [~] Recipe blog with 3D illustrations
 122. [ ] Community gallery (customer creations)
 123. [ ] Live cooking events countdown
 124. [ ] Podcast embed section
@@ -151,4 +151,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 130. [~] Back-to-top as rising souffle
 
 ---
-Total 130: 66 done, 15 partly, 49 not started (as of 2026-10-09).
+Total 130: 81 done, 16 partly, 33 not started (as of 2026-10-09).

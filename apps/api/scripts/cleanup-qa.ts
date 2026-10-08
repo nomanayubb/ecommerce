@@ -1,5 +1,5 @@
 // Removes test data created by QA runs: users qa.*@example.test (+ their orders/reviews/addresses), qa newsletter + alerts,
-// orders placed as "Qa Buyer" / "QA Test" (stock is put back), QA* coupons, QA questions.
+// orders placed as "Qa Buyer" / "QA Test" (stock is put back), QA* coupons, QA questions, qa-* recipes/posts/bundles, qa contact messages.
 // Safe to re-run. Usage: npx tsx scripts/cleanup-qa.ts
 import { pool } from "../src/lib/db.js";
 
@@ -16,7 +16,9 @@ const orders = await pool.query(`DELETE FROM orders WHERE ${QA_ORDER} RETURNING 
 const users = await pool.query("DELETE FROM users WHERE email LIKE 'qa.%@example.test' RETURNING 1");
 const subs = await pool.query("DELETE FROM subscribers WHERE email LIKE 'qa.%@example.test' RETURNING 1");
 const alerts = await pool.query("DELETE FROM stock_alerts WHERE email LIKE 'qa.%@example.test' RETURNING 1");
+const msgs = await pool.query("DELETE FROM contact_messages WHERE email LIKE 'qa.%@example.test' RETURNING 1");
+const content = await pool.query("WITH r AS (DELETE FROM recipes WHERE slug LIKE 'qa-%' RETURNING 1), p AS (DELETE FROM posts WHERE slug LIKE 'qa-%' RETURNING 1), b AS (DELETE FROM bundles WHERE slug LIKE 'qa-%' RETURNING 1) SELECT (SELECT count(*) FROM r) AS recipes, (SELECT count(*) FROM p) AS posts, (SELECT count(*) FROM b) AS bundles");
 const coupons = await pool.query("DELETE FROM coupons WHERE code LIKE 'QA%' RETURNING 1");
 const qa = await pool.query("SELECT to_regclass('product_qa') AS t").then(async (r) => (r.rows[0].t ? pool.query("DELETE FROM product_qa WHERE name = 'QA Test' RETURNING 1") : { rowCount: 0 }));
-console.log(`removed: ${users.rowCount} users (reviews/addresses cascade), ${orders.rowCount} orders (stock lines restored: ${back.rows[0].restored}), ${subs.rowCount} subscribers, ${alerts.rowCount} stock alerts, ${coupons.rowCount} coupons, ${qa.rowCount} questions`);
+console.log(`removed: ${users.rowCount} users (reviews/addresses cascade), ${orders.rowCount} orders (stock lines restored: ${back.rows[0].restored}), ${subs.rowCount} subscribers, ${alerts.rowCount} stock alerts, ${coupons.rowCount} coupons, ${qa.rowCount} questions, ${msgs.rowCount} messages, QA content ${JSON.stringify(content.rows[0])}`);
 await pool.end();

@@ -10,6 +10,9 @@ import { Reviews } from "@/components/Reviews";
 import { Stars } from "@/components/Stars";
 import { RecentlyViewed, RecordView } from "@/components/RecentlyViewed";
 import { CareSteps, LiveViewers, ProductQA, SpecsTable, type Meta } from "@/components/PdpExtras";
+import { CookingTimer } from "@/components/CookingTimer";
+import { RecipeCard } from "@/components/RecipeBits";
+import type { RecipeCardData } from "@/lib/content";
 
 const load = (slug: string) => api<ProductDetail>(`/products/${slug}`).catch(() => null);
 
@@ -26,6 +29,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
   if (!p) notFound();
   const { store } = await getSite();
   const related = await api<{ items: ProductSummary[] }>(`/products/${slug}/related`).then((r) => r.items).catch(() => []);
+  const recipes = await api<{ items: RecipeCardData[] }>(`/products/${slug}/recipes`).then((r) => r.items).catch(() => [] as RecipeCardData[]);
 
   const meta = (p.metafields ?? {}) as Meta;
   const jsonLd = {
@@ -50,6 +54,8 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
   if (meta.specs?.length) rich.push(["Specifications", <SpecsTable key="s" specs={meta.specs} />]);
   if (meta.material) rich.push([`Material: ${meta.material}`, <p key="m" className="text-sm leading-relaxed text-muted">{meta.materialNote || `Made from ${meta.material.toLowerCase()}.`}</p>]);
   if (meta.care?.length) rich.push(["Care & maintenance", <CareSteps key="c" steps={meta.care} />]);
+  const cookable = recipes.length > 0 || (p.tags ?? []).some((t) => ["oven-safe", "induction", "microwave-safe", "cookware"].includes(t));
+  if (cookable) rich.push(["Cooking timer", <CookingTimer key="t" compact minutes={10} />]);
 
   return (
     <>
@@ -87,6 +93,14 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
 
       <Reviews slug={slug} />
       <ProductQA slug={slug} />
+
+      {recipes.length > 0 && (
+        <section className="mt-20 border-t border-line pt-12">
+          <p className="eyebrow">Kitchen</p>
+          <h2 className="mb-6 mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">Cooked with this</h2>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">{recipes.slice(0, 4).map((r) => <RecipeCard key={r.id} r={r} />)}</div>
+        </section>
+      )}
 
       {related.length > 0 && (
         <section className="mt-24 pb-16 md:pb-0">

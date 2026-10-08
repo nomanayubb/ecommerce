@@ -12,6 +12,7 @@ export interface ProductSummary {
   discount_pct: string | null;
   tags?: string[];
   video_url?: string | null;
+  recipe_count?: number;
   rating_avg?: string | null;
   rating_count?: number;
 }
@@ -69,7 +70,7 @@ export interface Branding {
   inkColor?: string; creamColor?: string; darkColor?: string; heroText?: string; promiseText?: string; footerText?: string;
   headingFont?: "inherit" | "system" | "serif" | "rounded" | "mono"; buttonStyle?: "solid" | "outline" | "pill";
   cardStyle?: "classic" | "minimal" | "compact" | "soft"; visuals?: Partial<Visuals>; badgeStyle?: "solid" | "outline" | "pill"; layoutWidth?: "boxed" | "wide" | "full";
-  searchHints?: string[]; effects?: Partial<Effects>; announcements?: string[]; headerCta?: { label: string; href: string };
+  searchHints?: string[]; navLinks?: { label: string; href: string }[]; effects?: Partial<Effects>; announcements?: string[]; headerCta?: { label: string; href: string };
   social?: { instagram?: string; facebook?: string; tiktok?: string; youtube?: string; whatsapp?: string; x?: string };
 }
 export const DEFAULT_BRANDING: Branding = {

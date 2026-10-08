@@ -123,6 +123,7 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
             {categories.map((c) => (
               <Link key={c.id} href={`/products?category=${c.slug}`} className="block py-2 uppercase tracking-widest">{c.name}</Link>
             ))}
+            {(useSite().branding.navLinks ?? []).map((l) => <Link key={l.href + l.label} href={l.href} className="block py-2 uppercase tracking-widest text-accent">{l.label}</Link>)}
             <Link href="/products" className="block py-2 uppercase tracking-widest text-accent">All products</Link>
             <Link href={user ? "/account" : "/login"} className="block py-2 uppercase tracking-widest">{user ? "My account" : "Sign in"}</Link>
             <Link href="/track" className="block py-2 uppercase tracking-widest">Track order</Link>
@@ -137,6 +138,7 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
         </Link>
         <nav className="hidden flex-1 justify-center gap-8 lg:flex">
           {categories.map((c) => <MegaItem key={c.id} node={c} />)}
+          {(useSite().branding.navLinks ?? []).map((l) => <Link key={l.href + l.label} href={l.href} className="px-3 py-4 text-xs font-semibold uppercase tracking-[0.2em] transition hover:text-accent">{l.label}</Link>)}
         </nav>
         <div className="ml-auto hidden lg:block"><SearchBox hints={hints} className="w-36 border-b border-line bg-transparent py-1 pl-6 pr-1 text-sm outline-none transition-all placeholder:text-muted focus:w-52 focus:border-accent" /></div>
         <Link href="/products" className="ml-auto hidden p-2 text-muted transition hover:text-accent sm:block lg:hidden" aria-label="Search"><SearchIcon size={20} /></Link>

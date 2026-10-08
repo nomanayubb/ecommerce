@@ -11,7 +11,7 @@ interface Branding {
   buttonStyle: "solid" | "outline" | "pill"; cardStyle: "classic" | "minimal" | "compact" | "soft"; badgeStyle: "solid" | "outline" | "pill"; layoutWidth: "boxed" | "wide" | "full";
   headerCta: { label: string; href: string };
   visuals: Visuals;
-  searchHints: string[]; effects: Record<"ripple" | "flyToCart" | "backToTop" | "cookieNotice" | "newsletterPopup" | "iconBadges", boolean>;
+  searchHints: string[]; navLinks: { label: string; href: string }[]; effects: Record<"ripple" | "flyToCart" | "backToTop" | "cookieNotice" | "newsletterPopup" | "iconBadges", boolean>;
   social: Record<"instagram" | "facebook" | "tiktok" | "youtube" | "whatsapp" | "x", string>;
 }
 type Visuals = {
@@ -73,7 +73,7 @@ export default function Settings() {
   useEffect(() => {
     api<{ branding: Branding; store: Store; footer: Footer }>("/settings")
       .then((r) => {
-        setB({ ...r.branding, announcements: r.branding.announcements ?? [], headerCta: r.branding.headerCta ?? { label: "", href: "" }, social: { ...({ instagram: "", facebook: "", tiktok: "", youtube: "", whatsapp: "", x: "" } as Branding["social"]), ...(r.branding.social ?? {}) }, headingFont: r.branding.headingFont ?? "inherit", buttonStyle: r.branding.buttonStyle ?? "solid", cardStyle: r.branding.cardStyle ?? "classic", badgeStyle: r.branding.badgeStyle ?? "solid", layoutWidth: r.branding.layoutWidth ?? "boxed", searchHints: r.branding.searchHints ?? [], visuals: { ...DEFAULT_VISUALS, ...(r.branding.visuals ?? {}) }, effects: { ...({ ripple: true, flyToCart: true, backToTop: true, cookieNotice: true, newsletterPopup: false, iconBadges: true } as Branding["effects"]), ...(r.branding.effects ?? {}) } });
+        setB({ ...r.branding, announcements: r.branding.announcements ?? [], headerCta: r.branding.headerCta ?? { label: "", href: "" }, social: { ...({ instagram: "", facebook: "", tiktok: "", youtube: "", whatsapp: "", x: "" } as Branding["social"]), ...(r.branding.social ?? {}) }, headingFont: r.branding.headingFont ?? "inherit", buttonStyle: r.branding.buttonStyle ?? "solid", cardStyle: r.branding.cardStyle ?? "classic", badgeStyle: r.branding.badgeStyle ?? "solid", layoutWidth: r.branding.layoutWidth ?? "boxed", searchHints: r.branding.searchHints ?? [], navLinks: r.branding.navLinks ?? [], visuals: { ...DEFAULT_VISUALS, ...(r.branding.visuals ?? {}) }, effects: { ...({ ripple: true, flyToCart: true, backToTop: true, cookieNotice: true, newsletterPopup: false, iconBadges: true } as Branding["effects"]), ...(r.branding.effects ?? {}) } });
         setStore(r.store); setFooter(r.footer);
         setLinksText(r.footer.columns.map((c) => c.links.map((l) => `${l.label} | ${l.href}`).join("\n")));
       })
@@ -92,7 +92,7 @@ export default function Settings() {
         title: c.title.trim(),
         links: (linksText[footer!.columns.indexOf(c)] ?? "").split("\n").map((l) => l.trim()).filter(Boolean).map((l) => { const [lab, ...rest] = l.split("|"); return { label: lab.trim(), href: (rest.join("|").trim() || "/") }; }),
       }));
-      await api("/admin/settings", { method: "PUT", body: JSON.stringify({ ...b, announcements: b!.announcements.map((a) => a.trim()).filter(Boolean).slice(0, 5), searchHints: b!.searchHints.map((a) => a.trim()).filter(Boolean).slice(0, 6) }) });
+      await api("/admin/settings", { method: "PUT", body: JSON.stringify({ ...b, announcements: b!.announcements.map((a) => a.trim()).filter(Boolean).slice(0, 5), searchHints: b!.searchHints.map((a) => a.trim()).filter(Boolean).slice(0, 6), navLinks: b!.navLinks.filter((l) => l.label.trim() && l.href.trim()) }) });
       await api("/admin/store-settings", { method: "PUT", body: JSON.stringify(store) });
       await api("/admin/footer-settings", { method: "PUT", body: JSON.stringify({ ...footer, columns }) });
       setMsg({ ok: true, text: "Saved. The storefront updates within about 30 seconds." });
@@ -203,6 +203,12 @@ export default function Settings() {
         ))}
         <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={b.visuals.mascotVoice} onChange={(e) => set("visuals", { ...b.visuals, mascotVoice: e.target.checked })} />Mascot speaks its tips aloud (only for visitors who switched sound on)</label>
         <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={b.visuals.sound} onChange={(e) => set("visuals", { ...b.visuals, sound: e.target.checked })} />Offer UI sounds (hover tick, add-to-bag pop, order chime, logo jingle). Visitors get a speaker switch in the header and it starts off</label>
+      </Group>
+
+      <Group title="Menu links">
+        <label className={label}>Extra links in the header menu, one per line: Label | /address (up to 6, e.g. Recipes | /recipes, Journal | /blog, Guides | /guides, Sets | /bundles)
+          <textarea rows={4} className={input} value={b.navLinks.map((l) => `${l.label} | ${l.href}`).join("\n")} onChange={(e) => set("navLinks", e.target.value.split("\n").slice(0, 6).map((ln) => { const [lab, ...rest] = ln.split("|"); return { label: lab.trim(), href: rest.join("|").trim() }; }))} />
+        </label>
       </Group>
 
       <Group title="Shopper experience">

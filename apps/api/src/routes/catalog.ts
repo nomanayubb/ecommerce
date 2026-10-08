@@ -67,7 +67,9 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
       const total = Number((await pool.query(`SELECT count(*) ${from}`, args)).rows[0].count);
       const { rows } = await pool.query(
         `SELECT p.id, p.title, p.slug, p.marked_price, p.selling_price, p.stock_quantity, p.images, p.tags,
-                p.metafields->>'videoUrl' AS video_url, b.name AS brand_name, b.slug AS brand_slug,
+                p.metafields->>'videoUrl' AS video_url,
+                (SELECT count(*)::int FROM recipe_products rp JOIN recipes rc ON rc.id = rp.recipe_id WHERE rp.product_id = p.id AND rc.status = 'PUBLISHED') AS recipe_count,
+                b.name AS brand_name, b.slug AS brand_slug,
                 (SELECT round(avg(rv.rating)::numeric, 1) FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_avg,
                 ${RATING_COUNT} AS rating_count,
                 CASE WHEN p.marked_price > p.selling_price
