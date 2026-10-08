@@ -115,6 +115,7 @@ html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *
 .float-g { animation: float-g 8s ease-in-out infinite alternate; }
 @keyframes float-g { from { transform: translateY(-14px); } to { transform: translateY(14px); } }
 .kword { display: inline-block; animation: kword .9s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i, 0) * 140ms + 200ms); }
+@keyframes kword-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes kword { from { opacity: 0; transform: translateY(.55em) skewY(4deg); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
 .btn-shimmer { position: relative; overflow: hidden; }
 .btn-shimmer::after { content: ""; position: absolute; inset: 0; pointer-events: none; transform: translateX(-130%);
@@ -124,8 +125,9 @@ html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *
 [data-motion="off"] .draw, [data-motion-pref="off"] .draw { stroke-dasharray: none; stroke-dashoffset: 0; }
 @media (prefers-reduced-motion: reduce) {
   html:not([data-motion-pref="on"]) .js .reveal { opacity: 1; transform: none; transition: none; }
-  html:not([data-motion-pref="on"]) :is(.hero-anim, .hero-glow, .float-g, .kword, .logo-reveal, .tilt, .fade-up) { animation: none; transition: none; }
-  html:not([data-motion-pref="on"]) .draw { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
+  /* Reduced motion keeps only gentle one-shot entrances (fade-in headline, line art drawing in); all looping/moving effects stay off. */
+  html:not([data-motion-pref="on"]) :is(.hero-anim, .hero-glow, .float-g, .logo-reveal, .tilt, .fade-up) { animation: none; transition: none; }
+  html:not([data-motion-pref="on"]) .kword { animation-name: kword-fade; }
   html:not([data-motion-pref="on"]) .btn-shimmer::after { animation: none; }
   html:not([data-motion-pref="on"]) .decor { display: none; }
 }

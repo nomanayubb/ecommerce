@@ -103,7 +103,7 @@ export default async function Home() {
       <RecentlyViewed />
 
       <Reveal className="mt-24">
-        <section className={`glass px-6 py-14 sm:px-16 ${(branding.logoUrl || "").includes("logo-horizontal") ? "grid items-center gap-10 text-center md:grid-cols-[240px_1fr] md:text-left" : "text-center"}`}>
+        <section className={`border border-line bg-card px-6 py-14 sm:px-16 ${(branding.logoUrl || "").includes("logo-horizontal") ? "grid items-center gap-10 text-center md:grid-cols-[240px_1fr] md:text-left" : "text-center"}`}>
           {(branding.logoUrl || "").includes("logo-horizontal") && (
             <Logo3D src={branding.logoUrl.replace("logo-horizontal", "logo-mark")} srcDark={(branding.logoUrlDark || branding.logoUrl).replace("logo-horizontal", "logo-mark")} alt={branding.name} size={200} />
           )}

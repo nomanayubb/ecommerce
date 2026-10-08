@@ -40,3 +40,11 @@ Reusing the theme for another project: `docs/NEW_PROJECT_GUIDE.md`. Three user-s
 - Secrets live only in `apps/api/.env` (git-ignored). Never print or commit them.
 - GitHub: `origin` = https://github.com/nomanayubb/ecommerce, branch `main`. Commit + push after each task.
 - Windows host; shell commands via Bash (POSIX) or PowerShell.
+
+## Live tracker = the user's screen vision (READ-ONLY project: never edit its files)
+Located at `C:\Users\noman\Desktop\live-tracker` (the `D:\live-tracker` copy is old). Tracker = EYES (frames: `.live_frame.jpg` full-screen sharp frame + `.live_screen_state.txt`), `clicker.py` = HANDS (focus a window, press keys, click). The embedded browser draws no animation frames and cannot show real motion, so use the tracker to verify visuals/animation on the user's real Chrome.
+- Only start it when the user says "tracker on". Documented start (README is the source of truth, `SETUP.txt` is outdated): `cd live-tracker && ./venv/Scripts/python.exe dual_tracker.py "Firefox"` (run in background; needs ~30s to load OCR). Do NOT edit its code or switch files; `.tracker_fullscreen` already forces real full-screen capture, a stale `.tracker_window_config.txt` ("Claude") is harmless then.
+- Open the site in the user's browser with `Start-Process "http://localhost:3000/"` (no mouse needed). Bring Chrome forward / press keys only through `clicker.Clicker("Google Chrome", shots=False)` inside ONE script run (focus reverts when a script exits), run with `venv\Scripts\python.exe -B` and write copies/frames only to the scratchpad. Examples: `scripts/screen-check/verify_motion.py` (measures frame-to-frame change; clicks the header Animations icon after a safety check), `view_sections.py`.
+- Prove motion by comparing frames over time (mean pixel change per second), not by one screenshot. Check the foreground window is Chrome first (focus returns to the Claude app after tool calls).
+- Privacy: it records the whole screen. Read only the latest frame/state; never open its `*_history.jsonl`/click logs. Stop it when done (kill only the `dual_tracker.py` PIDs) and say so.
+- Findings so far (2026-10-09): on the user's PC Windows animation effects are OFF, so by default the hero was static (measured 0.0 change); after pressing the Animations icon the glow/line art changed 2.4-5.0 per second.

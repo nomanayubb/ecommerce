@@ -42,7 +42,7 @@ export function Footer({ brand, categories, store }: { brand: { name: string; ta
           <p className="mt-1 text-muted/70">More payment methods coming soon.</p>
         </div>
       </div>
-      <div className="flex flex-col items-center justify-between gap-3 border-t border-line px-4 py-5 sm:flex-row">
+      <div className="flex flex-col items-center justify-between gap-3 border-t border-line px-4 py-5 sm:flex-row md:pr-28">
         <p className="text-[0.7rem] uppercase tracking-[0.25em] text-muted">
         © {new Date().getFullYear()} {brand.name}. All rights reserved.
       </p>
