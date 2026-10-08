@@ -51,3 +51,6 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Placeholder product art: `app/ph/[slug]/route.ts` serves on-brand SVGs (`/ph/<slug>?ar=4x3&v=2`); seed now uses them (and updates images on re-seed). Old test product `test-phone` archived.
 - Verified in the in-app browser with real clicks: desktop list/PDP, picked size M + qty 12 -> tier price Rs. 1,299 each = Rs. 15,588, bag drawer, cart persisted across navigation (localStorage), checkout form -> COD order #4 placed -> confirmation; mobile (375px) PDP with sticky bar. tsc clean. Fixed: bag badge wrapping on mobile.
 - NOT verified: light/OLED modes, tablet widths, quick checks of error/loading states, admin inner pages.
+
+## 2026-10-08 - Feature backlogs + design-system rules saved
+- Added `docs/FEATURES_VISUAL_100.md`, `FEATURES_THEME_100.md`, `FEATURES_KITCHEN_130.md` (user lists with honest status) and `docs/DESIGN_SYSTEM_RULES.md` (everything aligned with each other + the logo; palette table derived from the logo; tokens only, one icon set, one motion language, pack-aware, reuse, perf/a11y, verify together). No code changed.

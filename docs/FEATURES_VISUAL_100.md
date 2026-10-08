@@ -1,0 +1,130 @@
+# Visual & experience features (100)
+
+User-supplied backlog 2026-10-08. All items must follow `docs/DESIGN_SYSTEM_RULES.md` (one design system, aligned with the logo and its palette).
+
+Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an item changes.
+
+
+## Visual & design (1-20)
+
+1. [~] Dark/Light mode toggle with smooth transitions
+2. [ ] Glassmorphism cards
+3. [ ] Micro-interactions on every button
+4. [~] Skeleton loaders instead of spinners
+5. [~] Scroll-triggered animations (fade, slide, parallax)
+6. [ ] Custom cursor that changes on interactive elements
+7. [ ] Animated gradient backgrounds on hero
+8. [ ] 3D product cards with tilt on mouse move
+9. [ ] Neumorphism for select UI elements
+10. [ ] Bento grid layouts for featured collections
+11. [~] Sticky mini-header that appears on scroll up
+12. [ ] Progress bar at top showing page scroll
+13. [ ] Animated logo on page load
+14. [ ] Morphing SVG illustrations
+15. [ ] Noise/grain texture overlays
+16. [ ] Aurora/gradient mesh backgrounds
+17. [ ] Liquid hover effects on product images
+18. [ ] Kinetic typography on hero headlines
+19. [ ] Smooth page transitions (View Transitions API)
+20. [~] Custom 404 page with interactive game/easter egg
+
+## Product experience (21-40)
+
+21. [ ] 360° product rotation viewer
+22. [ ] AR view in your room (model-viewer)
+23. [~] Zoom on hover with magnifier lens
+24. [ ] Video previews on product hover
+25. [ ] Quick view modal without page reload
+26. [ ] Size guide with fit predictor
+27. [ ] Color swatches that update images live
+28. [ ] Product comparison tool (side-by-side)
+29. [ ] Recently viewed products carousel
+30. [ ] Complete the look bundle suggestions
+31. [x] Stock scarcity indicators
+32. [ ] Live viewer count
+33. [ ] Countdown timer for flash sales
+34. [ ] Customer photo gallery (UGC)
+35. [ ] Video reviews embedded
+36. [ ] Q&A section on product pages
+37. [ ] Estimated delivery date by zip code
+38. [ ] Wishlist/favorites with heart animation
+39. [ ] Save for later cart functionality
+40. [~] Product badges (New, Bestseller, Limited)
+
+## Cart & checkout (41-55)
+
+41. [x] Slide-out cart drawer
+42. [x] Free shipping progress bar in cart
+43. [ ] Cart upsells
+44. [x] Sticky Add to Cart bar on mobile
+45. [ ] Express checkout buttons (Apple/Google Pay)
+46. [x] Guest checkout option
+47. [ ] Address autocomplete
+48. [ ] Saved payment methods
+49. [ ] Order summary accordion
+50. [ ] Promo code field with instant validation
+51. [ ] Gift message option
+52. [ ] Cart abandonment save (email capture)
+53. [ ] Multi-currency switcher
+54. [ ] Tax calculator by region
+55. [ ] One-click reorder from history
+
+## Search & navigation (56-70)
+
+56. [ ] Instant search with thumbnails
+57. [ ] Search suggestions as you type
+58. [ ] Voice search
+59. [ ] Visual search (upload image)
+60. [ ] AI-powered semantic search
+61. [~] Mega menu with images
+62. [~] Mega footer with columns
+63. [x] Breadcrumb navigation
+64. [~] Filter sidebar with live counts
+65. [ ] Multi-select filters
+66. [ ] Sort with animations
+67. [ ] Infinite scroll with load more
+68. [x] Category image tiles
+69. [ ] Trending searches section
+70. [ ] Search history for logged-in users
+
+## User account (71-80)
+
+71. [ ] Social login (Google, Apple, Facebook)
+72. [ ] Passwordless login (magic link)
+73. [ ] Order tracking with live map
+74. [ ] Loyalty points dashboard
+75. [ ] Referral program with unique links
+76. [ ] Wishlist sharing
+77. [ ] Address book with multiple addresses
+78. [ ] Subscription management
+79. [ ] Reward tiers with progress
+80. [ ] Personalized recommendations
+
+## Engagement & trust (81-90)
+
+81. [ ] Live chat widget (AI + human)
+82. [ ] Chatbot for FAQ
+83. [ ] Push notifications opt-in
+84. [ ] Exit-intent popup with offer
+85. [ ] Spin-to-win wheel
+86. [~] Trust badges (SSL, secure payment)
+87. [ ] Verified reviews with photos
+88. [ ] Instagram feed integration
+89. [ ] TikTok shop integration
+90. [ ] Live shopping events
+
+## Technical & advanced (91-100)
+
+91. [ ] PWA (installable app)
+92. [ ] Offline browsing capability
+93. [x] Lazy loading images/videos
+94. [ ] WebP/AVIF auto-format
+95. [ ] CDN for global speed
+96. [ ] Core Web Vitals optimized (90+)
+97. [x] Schema markup for SEO
+98. [~] Accessibility (WCAG AA, keyboard nav)
+99. [ ] AI product recommendations
+100. [ ] Analytics dashboard with heatmaps
+
+---
+Total 100: 9 done, 12 partly, 79 not started (as of 2026-10-08).
