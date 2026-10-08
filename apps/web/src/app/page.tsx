@@ -8,7 +8,7 @@ import { applyPack } from "@/themes";
 /** Angular line art echoing the logo's strokes. Decorative only. */
 function HeroArt() {
   return (
-    <svg aria-hidden viewBox="0 0 600 600" className="pointer-events-none absolute right-0 top-1/2 hidden h-[112%] -translate-y-1/2 opacity-90 md:block" fill="none" strokeLinecap="square">
+    <svg aria-hidden viewBox="0 0 600 600" className="pointer-events-none absolute right-0 top-1/2 hidden h-[112%] -translate-y-1/2 opacity-90 lg:block" fill="none" strokeLinecap="square">
       <g stroke="rgb(var(--accent-bright))" strokeWidth="2">
         <path d="M120 540 L300 60 L360 60" opacity=".9" />
         <path d="M200 540 L360 130" opacity=".55" />
