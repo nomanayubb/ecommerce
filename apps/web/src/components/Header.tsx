@@ -8,16 +8,18 @@ import { BagIcon, ContrastIcon, HeartIcon, MenuIcon, MotionIcon, SearchIcon, Use
 import { useSession } from "./SessionProvider";
 import { useShopper } from "./Shopper";
 import { SearchBox } from "./SearchBox";
+import { SoundToggle } from "./Visuals";
+import { useSite } from "./Site";
 
 const THEMES = ["dark", "oled", "light"] as const;
 
 export function Logo({ logo, logoDark, name, className = "h-9" }: { logo: string; logoDark?: string; name: string; className?: string }) {
-  if (!logo) return <span className="text-lg font-semibold uppercase tracking-[0.3em]">{name}</span>;
+  if (!logo) return <span data-logo className="text-lg font-semibold uppercase tracking-[0.3em]">{name}</span>;
   return (
-    <>
+    <span data-logo className="contents">
       <img src={logo} alt={name} width={185} height={36} className={`logo-on-light w-auto max-w-none ${className}`} />
       <img src={logoDark || logo} alt={name} width={185} height={36} className={`logo-on-dark w-auto max-w-none ${className}`} />
-    </>
+    </span>
   );
 }
 
@@ -135,6 +137,7 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
         <Link href="/products" className="ml-auto hidden p-2 text-muted transition hover:text-accent sm:block lg:hidden" aria-label="Search"><SearchIcon size={20} /></Link>
         {cta?.label && cta.href && <Link href={cta.href} className="btn btn-primary hidden !px-4 !py-2 xl:inline-flex">{cta.label}</Link>}
         <MotionToggle className="hidden lg:flex" />
+        {useSite().branding.visuals?.sound && <SoundToggle className="hidden lg:flex" />}
         <ThemeToggle className="hidden lg:flex" />
         <Link href={user ? "/account" : "/login"} className="hidden p-2 transition hover:text-accent sm:block" aria-label={user ? "My account" : "Sign in"} title={user ? "My account" : "Sign in"}><UserIcon size={22} /></Link>
         <Link href="/wishlist" className="relative p-2 transition hover:text-accent" aria-label={`Wishlist, ${wish.length} saved`}>

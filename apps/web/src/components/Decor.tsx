@@ -15,6 +15,7 @@ export function Decor({ decor }: { decor?: DecorConfig }) {
               left: `${(i * 37 + 11) % 100}%`,
               fontSize: (p.size ?? 20) * (0.7 + ((i * 13) % 6) / 10),
               opacity: p.opacity ?? 0.6,
+              color: p.tint ? "rgb(var(--accent))" : undefined,
               animationDuration: `${12 + ((i * 7) % 14)}s`,
               animationDelay: `-${(i * 5) % 17}s`,
             }}

@@ -55,12 +55,19 @@ export const pkr = (n: number | string) => `Rs. ${Number(n).toLocaleString("en-P
 
 export type Effects = { ripple: boolean; flyToCart: boolean; backToTop: boolean; cookieNotice: boolean; newsletterPopup: boolean; iconBadges: boolean };
 export const DEFAULT_EFFECTS: Effects = { ripple: true, flyToCart: true, backToTop: true, cookieNotice: true, newsletterPopup: false, iconBadges: true };
+export type Visuals = {
+  cursor: "none" | "ring" | "whisk"; background: "none" | "aurora" | "mesh" | "wood" | "marble" | "paper"; transition: "none" | "fade" | "wipe";
+  imageHover: "zoom" | "liquid" | "none"; particles: "none" | "herbs" | "spices" | "flour" | "steam" | "sparkles" | "petals" | "snow";
+  scrollIndicator: "bar" | "cup"; headerStyle: "flat" | "layered" | "gradient"; loader: "ring" | "stir" | "chop" | "pulse";
+  addSplash: boolean; sound: boolean; mascotOutfit: "none" | "chef" | "auto";
+};
+export const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", transition: "none", imageHover: "zoom", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none" };
 export interface Branding {
   name: string; tagline: string; logoUrl: string; logoUrlDark?: string; brandColor: string; brandColorDark: string; accentColor?: string;
   radius: number; font: "system" | "serif" | "rounded" | "mono"; defaultTheme: "light" | "dark" | "oled"; announcement: string; pack?: string; motion?: "off" | "subtle" | "full";
   inkColor?: string; creamColor?: string; darkColor?: string; heroText?: string; promiseText?: string; footerText?: string;
   headingFont?: "inherit" | "system" | "serif" | "rounded" | "mono"; buttonStyle?: "solid" | "outline" | "pill";
-  cardStyle?: "classic" | "minimal" | "compact"; badgeStyle?: "solid" | "outline" | "pill"; layoutWidth?: "boxed" | "wide" | "full";
+  cardStyle?: "classic" | "minimal" | "compact" | "soft"; visuals?: Partial<Visuals>; badgeStyle?: "solid" | "outline" | "pill"; layoutWidth?: "boxed" | "wide" | "full";
   searchHints?: string[]; effects?: Partial<Effects>; announcements?: string[]; headerCta?: { label: string; href: string };
   social?: { instagram?: string; facebook?: string; tiktok?: string; youtube?: string; whatsapp?: string; x?: string };
 }

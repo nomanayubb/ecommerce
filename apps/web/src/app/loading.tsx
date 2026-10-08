@@ -1,6 +1,11 @@
-export default function Loading() {
+import { getSite } from "@/lib/api";
+import { Loader } from "@/components/Loader";
+
+export default async function Loading() {
+  const { branding } = await getSite();
   return (
     <div aria-busy="true" aria-label="Loading" className="animate-pulse">
+      <div className="mb-6 flex justify-center"><Loader variant={branding.visuals?.loader ?? "ring"} size={44} /></div>
       <div className="mb-8 h-4 w-40 bg-line" />
       <div className="mb-10 h-10 w-72 bg-line" />
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">

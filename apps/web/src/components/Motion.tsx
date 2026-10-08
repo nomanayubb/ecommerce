@@ -2,21 +2,39 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
-/** Thin gold progress bar showing how far down the page you are. */
-export function ScrollProgress() {
+/** Page progress: a thin gold bar, or (kitchen look) a measuring cup that fills as you scroll. */
+export function ScrollProgress({ mode = "bar" }: { mode?: "bar" | "cup" }) {
   const bar = useRef<HTMLDivElement>(null);
+  const liquid = useRef<SVGRectElement>(null);
+  const label = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     let raf = 0;
     const update = () => {
       raf = 0;
       const h = document.documentElement.scrollHeight - innerHeight;
-      if (bar.current) bar.current.style.transform = `scaleX(${h > 0 ? Math.min(1, scrollY / h) : 0})`;
+      const p = h > 0 ? Math.min(1, scrollY / h) : 0;
+      if (bar.current) bar.current.style.transform = `scaleX(${p})`;
+      if (liquid.current) { const full = 30; liquid.current.setAttribute("y", String(7 + full * (1 - p))); liquid.current.setAttribute("height", String(full * p)); }
+      if (label.current) label.current.textContent = `${Math.round(p * 100)}%`;
+      document.documentElement.toggleAttribute("data-scrolled", scrollY > 8);
     };
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
     addEventListener("scroll", onScroll, { passive: true });
     update();
     return () => { removeEventListener("scroll", onScroll); if (raf) cancelAnimationFrame(raf); };
-  }, []);
+  }, [mode]);
+  if (mode === "cup") {
+    return (
+      <div aria-hidden className="pointer-events-none fixed right-2 top-1/2 z-[70] hidden -translate-y-1/2 flex-col items-center gap-1 sm:flex">
+        <svg viewBox="0 0 28 44" width={26} height={42} fill="none" stroke="currentColor" strokeWidth={1.5} className="text-muted">
+          <clipPath id="cupclip"><path d="M5 7h18l-2 31H7z" /></clipPath>
+          <rect ref={liquid} x="0" y="37" width="28" height="0" fill="rgb(var(--accent))" fillOpacity=".85" clipPath="url(#cupclip)" />
+          <path d="M5 7h18l-2 31H7z" /><path d="M23 12h3a2 2 0 0 1 0 6h-3" /><path d="M8 17h4M8 24h6M8 31h4" strokeOpacity=".5" />
+        </svg>
+        <span ref={label} className="text-[0.55rem] tracking-widest text-muted">0%</span>
+      </div>
+    );
+  }
   return <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 z-[70] h-0.5"><div ref={bar} className="h-full origin-left bg-accent" style={{ transform: "scaleX(0)" }} /></div>;
 }
 

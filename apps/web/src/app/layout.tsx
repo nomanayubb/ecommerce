@@ -1,7 +1,9 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { api, getSite, type CategoryNode } from "@/lib/api";
+import { api, getSite, DEFAULT_VISUALS, type CategoryNode } from "@/lib/api";
+import { PARTICLE_PRESETS } from "@/themes/presets";
+import { VisualsHost } from "@/components/Visuals";
 import { brandingCss } from "@/lib/branding";
 import { applyPack } from "@/themes";
 import { Decor } from "@/components/Decor";
@@ -51,16 +53,24 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const { branding, pack } = applyPack(site.branding);
   const { store, footer } = site;
   const messages = (branding.announcements?.length ? branding.announcements : branding.announcement ? [branding.announcement] : []).filter(Boolean);
+  const visuals = { ...DEFAULT_VISUALS, ...branding.visuals };
+  // A theme pack's own particles win; otherwise the store's chosen particle look.
+  const decor = pack.decor?.particles || visuals.particles === "none" ? pack.decor : { ...pack.decor, particles: PARTICLE_PRESETS[visuals.particles] };
   const logos = { logoUrl: branding.logoUrl, logoUrlDark: branding.logoUrlDark };
   return (
-    <html lang="en" data-theme={branding.defaultTheme} data-motion={branding.motion ?? "full"} data-button={branding.buttonStyle ?? "solid"} data-card={branding.cardStyle ?? "classic"} data-badge={branding.badgeStyle ?? "solid"} suppressHydrationWarning>
+    <html lang="en" data-theme={branding.defaultTheme} data-motion={branding.motion ?? "full"} data-button={branding.buttonStyle ?? "solid"} data-card={branding.cardStyle ?? "classic"} data-badge={branding.badgeStyle ?? "solid"} data-bg={visuals.background === "none" ? undefined : visuals.background} data-header={visuals.headerStyle} data-imghover={visuals.imageHover} data-sound={visuals.sound ? "1" : "0"} suppressHydrationWarning>
       <head>
         <style dangerouslySetInnerHTML={{ __html: brandingCss(branding) }} />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
-        <ScrollProgress />
-        <Decor decor={pack.decor} />
+        {visuals.imageHover === "liquid" && (
+          <svg width="0" height="0" aria-hidden="true" focusable="false" style={{ position: "absolute" }}>
+            <filter id="liquid" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="2" result="n"><animate attributeName="baseFrequency" dur="6s" values="0.012 0.018;0.02 0.026;0.012 0.018" repeatCount="indefinite" /></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="16" /></filter>
+          </svg>
+        )}
+        <ScrollProgress mode={visuals.scrollIndicator} />
+        <Decor decor={decor} />
         <SiteProvider value={{ branding, store }}>
         <SessionProvider>
         <CartProvider>
@@ -75,6 +85,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <MascotAssistant />
           <ConfettiHost />
           <EffectsHost effects={branding.effects} brandName={branding.name} />
+          <VisualsHost visuals={visuals} />
         </ShopperProvider>
         </CartProvider>
         </SessionProvider>

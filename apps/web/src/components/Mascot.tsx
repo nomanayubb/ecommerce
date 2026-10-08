@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "./CartProvider";
 import { motionAllowed } from "@/lib/motion";
+import { useSite } from "./Site";
 
 export type Mood = "idle" | "happy" | "sad" | "wave" | "confused" | "celebrate" | "carry";
 const A = "rgb(var(--accent))";
@@ -13,7 +14,19 @@ const A = "rgb(var(--accent))";
  * (thin 2px angular strokes, gold + ink, basket + handle + wheels, antenna echoing the A).
  * Pure SVG; moods change eyes, mouth, props and animation.
  */
+export type Outfit = "chef" | "santa" | "crescent" | "pumpkin";
+
+/** Which little accessory the mascot wears: chosen in admin (chef) or automatic from the active theme pack. */
+function useOutfit(): Outfit | null {
+  const { branding } = useSite();
+  const mode = branding.visuals?.mascotOutfit ?? "none";
+  if (mode === "chef") return "chef";
+  if (mode === "auto") return ({ eid: "crescent", halloween: "pumpkin", christmas: "santa" } as Record<string, Outfit>)[branding.pack ?? ""] ?? null;
+  return null;
+}
+
 export function MascotFigure({ mood = "idle", size = 64, className = "" }: { mood?: Mood; size?: number; className?: string }) {
+  const outfit = useOutfit();
   const happy = mood === "happy" || mood === "celebrate" || mood === "wave";
   return (
     <svg
@@ -26,6 +39,10 @@ export function MascotFigure({ mood = "idle", size = 64, className = "" }: { moo
         ) : (
           <><path d="M32 26V15" /><circle cx="32" cy="12" r="2.5" stroke={A} /></>
         )}
+        {outfit === "chef" && <g stroke={A}><path d="M25 12h14M26 12l-1-4a4.5 4.5 0 0 1 3.5-5.5 4.5 4.5 0 0 1 3.5 1 4.5 4.5 0 0 1 3.5-1A4.5 4.5 0 0 1 39 8l-1 4" /></g>}
+        {outfit === "santa" && <g stroke={A}><path d="M25 13l7-12 7 12zM24 13h16" /><circle cx="32" cy="1.5" r="1.6" /></g>}
+        {outfit === "crescent" && <g stroke={A}><path d="M44 3a6 6 0 1 0 5 8 5 5 0 0 1-5-8z" /></g>}
+        {outfit === "pumpkin" && <g stroke={A}><path d="M26 6a6 5 0 0 1 12 0 6 5 0 0 1-12 0zM32 1V0M29 6v2M35 6v2" /></g>}
         <path d="M12 26h40l-5 20H17z" />
         <path d="M52 26l4-12h6" stroke={A} />
         <circle cx="22" cy="53" r="4" stroke={A} /><circle cx="42" cy="53" r="4" stroke={A} />

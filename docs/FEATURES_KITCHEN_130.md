@@ -28,13 +28,13 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 19. [x] Material explainer (ceramic, steel, cast iron)
 20. [ ] Compare cookware materials tool
 21. [ ] Sizzle animations on hover
-22. [ ] Splash effect when adding to cart
-23. [ ] Ingredient particle effects (floating herbs/spices)
+22. [x] Splash effect when adding to cart
+23. [x] Ingredient particle effects (floating herbs/spices)
 24. [ ] Animated recipe cards with flip
-25. [ ] Warm palette (terracotta, sage, cream)
-26. [ ] Wood texture backgrounds
-27. [ ] Marble/granite patterns
-28. [ ] Copper/gold accents for luxury cookware
+25. [x] Warm palette (terracotta, sage, cream)
+26. [x] Wood texture backgrounds
+27. [x] Marble/granite patterns
+28. [x] Copper/gold accents for luxury cookware
 29. [ ] Hand-drawn ingredient illustrations
 30. [ ] Food photography parallax scroll
 
@@ -76,7 +76,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 61. [x] Mascot 404 page
 62. [~] Mascot guides (points to CTAs, tips)
 63. [x] Mascot celebrates (confetti on purchase)
-64. [ ] Mascot seasonal outfits
+64. [x] Mascot seasonal outfits
 65. [ ] Mascot voice lines (optional audio)
 66. [ ] 3D animated logo on page load
 67. [ ] Logo morphs into mascot on scroll
@@ -85,14 +85,14 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 70. [ ] Logo as 3D badge on packaging
 71. [x] Interactive 3D logo (rotate with mouse)
 72. [ ] Logo splash screen (3D reveal)
-73. [ ] Logo sound effect (optional jingle)
+73. [x] Logo sound effect (optional jingle)
 74. [ ] Logo color-shift by theme
 75. [x] Logo breathing mini-animation in footer
 
 ## Headers, banners & heroes (76-95)
 
-76. [ ] 3D layered header (depth on scroll)
-77. [ ] Header with animated gradient border
+76. [x] 3D layered header (depth on scroll)
+77. [x] Header with animated gradient border
 78. [ ] Header with mascot peeking
 79. [x] Header search with rotating placeholder
 80. [x] Header cart icon bounce on add
@@ -118,11 +118,11 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 97. [x] Add-to-cart fly animation
 98. [x] Heart burst when wishlisting
 99. [x] Confetti on checkout (brand colors)
-100. [ ] Page transition wipes
-101. [~] Scroll progress as filling measuring cup
-102. [ ] Cursor becomes whisk/spoon in kitchen sections
-103. [ ] Hover sounds (optional)
-104. [ ] Loading as stirring/chopping animation
+100. [x] Page transition wipes
+101. [x] Scroll progress as filling measuring cup
+102. [x] Cursor becomes whisk/spoon in kitchen sections
+103. [x] Hover sounds (optional)
+104. [x] Loading as stirring/chopping animation
 105. [~] Toast notifications with mascot
 106. [x] Product cards with 3D tilt
 107. [ ] Cards that flip to show recipe
@@ -144,11 +144,11 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 123. [ ] Live cooking events countdown
 124. [ ] Podcast embed section
 125. [ ] Newsletter with mascot waving
-126. [ ] Animated footer (waves, particles)
+126. [~] Animated footer (waves, particles)
 127. [ ] Footer with mini sleeping mascot
 128. [x] Newsletter popup with mascot
 129. [x] Cookie consent with playful copy + icon
 130. [~] Back-to-top as rising souffle
 
 ---
-Total 130: 30 done, 14 partly, 86 not started (as of 2026-10-09).
+Total 130: 45 done, 14 partly, 71 not started (as of 2026-10-09).

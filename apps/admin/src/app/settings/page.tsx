@@ -8,11 +8,19 @@ interface Branding {
   name: string; tagline: string; logoUrl: string; logoUrlDark: string; brandColor: string; brandColorDark: string; accentColor: string;
   radius: number; font: Font; headingFont: "inherit" | Font; defaultTheme: "light" | "dark" | "oled"; announcement: string; announcements: string[];
   pack: string; motion: "off" | "subtle" | "full"; inkColor: string; creamColor: string; darkColor: string; heroText: string; promiseText: string; footerText: string;
-  buttonStyle: "solid" | "outline" | "pill"; cardStyle: "classic" | "minimal" | "compact"; badgeStyle: "solid" | "outline" | "pill"; layoutWidth: "boxed" | "wide" | "full";
+  buttonStyle: "solid" | "outline" | "pill"; cardStyle: "classic" | "minimal" | "compact" | "soft"; badgeStyle: "solid" | "outline" | "pill"; layoutWidth: "boxed" | "wide" | "full";
   headerCta: { label: string; href: string };
+  visuals: Visuals;
   searchHints: string[]; effects: Record<"ripple" | "flyToCart" | "backToTop" | "cookieNotice" | "newsletterPopup" | "iconBadges", boolean>;
   social: Record<"instagram" | "facebook" | "tiktok" | "youtube" | "whatsapp" | "x", string>;
 }
+type Visuals = {
+  cursor: "none" | "ring" | "whisk"; background: "none" | "aurora" | "mesh" | "wood" | "marble" | "paper"; transition: "none" | "fade" | "wipe";
+  imageHover: "zoom" | "liquid" | "none"; particles: "none" | "herbs" | "spices" | "flour" | "steam" | "sparkles" | "petals" | "snow";
+  scrollIndicator: "bar" | "cup"; headerStyle: "flat" | "layered" | "gradient"; loader: "ring" | "stir" | "chop" | "pulse";
+  addSplash: boolean; sound: boolean; mascotOutfit: "none" | "chef" | "auto";
+};
+const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", transition: "none", imageHover: "zoom", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none" };
 interface Store { freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number }
 interface Footer { columns: { title: string; links: { label: string; href: string }[] }[]; showNewsletter: boolean; showPerks: boolean; showPayments: boolean; note: string }
 
@@ -27,6 +35,9 @@ const SCHEMES: { name: string; v: Pick<Branding, "inkColor" | "creamColor" | "da
   { name: "Rose", v: { inkColor: "#3b1d2a", creamColor: "#fbf4f6", darkColor: "#1b0d14", brandColor: "#3b1d2a", brandColorDark: "#f08fb0", accentColor: "#c2476f" } },
   { name: "Terracotta", v: { inkColor: "#3d2214", creamColor: "#fbf3ec", darkColor: "#1a0f09", brandColor: "#3d2214", brandColorDark: "#e8a07a", accentColor: "#b5562b" } },
   { name: "Ocean", v: { inkColor: "#0b2a3c", creamColor: "#f1f8fb", darkColor: "#061a26", brandColor: "#0b2a3c", brandColorDark: "#4cc9f0", accentColor: "#0a7ea4" } },
+  { name: "Kitchen terracotta", v: { inkColor: "#3a1f12", creamColor: "#fbf1e6", darkColor: "#1c0f09", brandColor: "#3a1f12", brandColorDark: "#e07b4f", accentColor: "#b4532a" } },
+  { name: "Sage & cream", v: { inkColor: "#26332a", creamColor: "#f6f4ea", darkColor: "#111a14", brandColor: "#26332a", brandColorDark: "#a8c3a0", accentColor: "#5f7f5a" } },
+  { name: "Copper & ink", v: { inkColor: "#1b1b1f", creamColor: "#f8f1ea", darkColor: "#0e0e11", brandColor: "#1b1b1f", brandColorDark: "#d98a5f", accentColor: "#b4642f" } },
   { name: "Monochrome", v: { inkColor: "#111111", creamColor: "#f6f6f6", darkColor: "#0a0a0a", brandColor: "#111111", brandColorDark: "#ffffff", accentColor: "#555555" } },
 ];
 const TYPE_PRESETS: { name: string; font: Font; heading: Branding["headingFont"]; note: string }[] = [
@@ -61,7 +72,7 @@ export default function Settings() {
   useEffect(() => {
     api<{ branding: Branding; store: Store; footer: Footer }>("/settings")
       .then((r) => {
-        setB({ ...r.branding, announcements: r.branding.announcements ?? [], headerCta: r.branding.headerCta ?? { label: "", href: "" }, social: { ...({ instagram: "", facebook: "", tiktok: "", youtube: "", whatsapp: "", x: "" } as Branding["social"]), ...(r.branding.social ?? {}) }, headingFont: r.branding.headingFont ?? "inherit", buttonStyle: r.branding.buttonStyle ?? "solid", cardStyle: r.branding.cardStyle ?? "classic", badgeStyle: r.branding.badgeStyle ?? "solid", layoutWidth: r.branding.layoutWidth ?? "boxed", searchHints: r.branding.searchHints ?? [], effects: { ...({ ripple: true, flyToCart: true, backToTop: true, cookieNotice: true, newsletterPopup: false, iconBadges: true } as Branding["effects"]), ...(r.branding.effects ?? {}) } });
+        setB({ ...r.branding, announcements: r.branding.announcements ?? [], headerCta: r.branding.headerCta ?? { label: "", href: "" }, social: { ...({ instagram: "", facebook: "", tiktok: "", youtube: "", whatsapp: "", x: "" } as Branding["social"]), ...(r.branding.social ?? {}) }, headingFont: r.branding.headingFont ?? "inherit", buttonStyle: r.branding.buttonStyle ?? "solid", cardStyle: r.branding.cardStyle ?? "classic", badgeStyle: r.branding.badgeStyle ?? "solid", layoutWidth: r.branding.layoutWidth ?? "boxed", searchHints: r.branding.searchHints ?? [], visuals: { ...DEFAULT_VISUALS, ...(r.branding.visuals ?? {}) }, effects: { ...({ ripple: true, flyToCart: true, backToTop: true, cookieNotice: true, newsletterPopup: false, iconBadges: true } as Branding["effects"]), ...(r.branding.effects ?? {}) } });
         setStore(r.store); setFooter(r.footer);
         setLinksText(r.footer.columns.map((c) => c.links.map((l) => `${l.label} | ${l.href}`).join("\n")));
       })
@@ -147,7 +158,7 @@ export default function Settings() {
         <label className={label}>Corner radius: {b.radius}px<input type="range" min={0} max={28} value={b.radius} onChange={(e) => set("radius", Number(e.target.value))} className="w-full" /></label>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className={label}>Button style<select className={input} value={b.buttonStyle} onChange={(e) => set("buttonStyle", e.target.value as Branding["buttonStyle"])}><option value="solid">Solid</option><option value="outline">Outline</option><option value="pill">Solid, pill-shaped</option></select></label>
-          <label className={label}>Product card style<select className={input} value={b.cardStyle} onChange={(e) => set("cardStyle", e.target.value as Branding["cardStyle"])}><option value="classic">Classic (framed)</option><option value="minimal">Minimal (no frame)</option><option value="compact">Compact (square photo)</option></select></label>
+          <label className={label}>Product card style<select className={input} value={b.cardStyle} onChange={(e) => set("cardStyle", e.target.value as Branding["cardStyle"])}><option value="classic">Classic (framed)</option><option value="minimal">Minimal (no frame)</option><option value="soft">Soft (raised, neumorphic)</option><option value="compact">Compact (square photo)</option></select></label>
           <label className={label}>Discount badge style<select className={input} value={b.badgeStyle} onChange={(e) => set("badgeStyle", e.target.value as Branding["badgeStyle"])}><option value="solid">Solid</option><option value="outline">Outline</option><option value="pill">Pill</option></select></label>
           <label className={label}>Page width<select className={input} value={b.layoutWidth} onChange={(e) => set("layoutWidth", e.target.value as Branding["layoutWidth"])}><option value="boxed">Boxed (1280px)</option><option value="wide">Wide (1600px)</option><option value="full">Full width</option></select></label>
         </div>
@@ -162,6 +173,31 @@ export default function Settings() {
           <label className={label}>Header button label (empty = none)<input className={input} maxLength={30} value={b.headerCta.label} onChange={(e) => set("headerCta", { ...b.headerCta, label: e.target.value })} /></label>
           <label className={label}>Header button link<input className={input} placeholder="/products" value={b.headerCta.href} onChange={(e) => set("headerCta", { ...b.headerCta, href: e.target.value })} /></label>
         </div>
+      </Group>
+
+      <Group title="Visual effects">
+        <p className="text-xs text-muted">Optional looks and motion. Everything respects the Motion setting and each visitor's own animation switch. Leave on "None" for the calmest, fastest store.</p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {([
+            ["cursor", "Cursor", [["none", "Normal"], ["ring", "Ring that follows the mouse"], ["whisk", "Whisk"]]],
+            ["background", "Page background", [["none", "Plain"], ["aurora", "Aurora glow (animated)"], ["mesh", "Gradient mesh"], ["wood", "Wood grain"], ["marble", "Marble"], ["paper", "Paper"]]],
+            ["transition", "Page transition", [["none", "None"], ["fade", "Quick fade"], ["wipe", "Wipe with loader"]]],
+            ["imageHover", "Product photo on hover", [["zoom", "Slow zoom"], ["liquid", "Liquid ripple"], ["none", "No effect"]]],
+            ["particles", "Floating particles", [["none", "None"], ["herbs", "Herbs and leaves"], ["spices", "Spices"], ["flour", "Flour dust"], ["steam", "Steam"], ["sparkles", "Gold sparkles"], ["petals", "Petals"], ["snow", "Snow"]]],
+            ["scrollIndicator", "Scroll progress", [["bar", "Thin top bar"], ["cup", "Measuring cup that fills"]]],
+            ["headerStyle", "Header style", [["flat", "Flat"], ["layered", "Layered (deepens on scroll)"], ["gradient", "Animated gradient edge"]]],
+            ["loader", "Loading animation", [["ring", "Ring"], ["pulse", "Dots"], ["stir", "Stirring pot"], ["chop", "Chopping"]]],
+            ["mascotOutfit", "Mascot outfit", [["none", "None"], ["chef", "Chef hat"], ["auto", "Automatic (follows the occasion theme)"]]],
+          ] as const).map(([k, l, opts]) => (
+            <label key={k} className={label}>{l}
+              <select className={input} value={b.visuals[k]} onChange={(e) => set("visuals", { ...b.visuals, [k]: e.target.value } as Visuals)}>
+                {opts.map(([v, t]) => <option key={v} value={v}>{t}</option>)}
+              </select>
+            </label>
+          ))}
+        </div>
+        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={b.visuals.addSplash} onChange={(e) => set("visuals", { ...b.visuals, addSplash: e.target.checked })} />Splash of drops from the bag icon when something is added</label>
+        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={b.visuals.sound} onChange={(e) => set("visuals", { ...b.visuals, sound: e.target.checked })} />Offer UI sounds (hover tick, add-to-bag pop, order chime, logo jingle). Visitors get a speaker switch in the header and it starts off</label>
       </Group>
 
       <Group title="Shopper experience">

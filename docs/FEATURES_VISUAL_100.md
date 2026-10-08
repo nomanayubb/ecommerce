@@ -12,20 +12,20 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 3. [~] Micro-interactions on every button
 4. [~] Skeleton loaders instead of spinners
 5. [~] Scroll-triggered animations (fade, slide, parallax)
-6. [ ] Custom cursor that changes on interactive elements
+6. [x] Custom cursor that changes on interactive elements
 7. [x] Animated gradient backgrounds on hero
 8. [x] 3D product cards with tilt on mouse move
-9. [ ] Neumorphism for select UI elements
+9. [x] Neumorphism for select UI elements
 10. [x] Bento grid layouts for featured collections
 11. [x] Sticky mini-header that appears on scroll up
 12. [x] Progress bar at top showing page scroll
 13. [~] Animated logo on page load
 14. [ ] Morphing SVG illustrations
 15. [x] Noise/grain texture overlays
-16. [ ] Aurora/gradient mesh backgrounds
-17. [ ] Liquid hover effects on product images
+16. [x] Aurora/gradient mesh backgrounds
+17. [x] Liquid hover effects on product images
 18. [ ] Kinetic typography on hero headlines
-19. [ ] Smooth page transitions (View Transitions API)
+19. [x] Smooth page transitions (View Transitions API)
 20. [~] Custom 404 page with interactive game/easter egg
 
 ## Product experience (21-40)
