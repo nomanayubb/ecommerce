@@ -80,7 +80,7 @@ export default function NewProduct() {
       <label className={label}>Tags (comma separated)<input name="tags" className={input} /></label>
       <label className={label}>Description<textarea name="description" rows={4} className={input} /></label>
       {error && <p role="alert" className="text-sm text-red-500">{error}</p>}
-      <button disabled={busy} className="rounded bg-brand px-6 py-2 font-medium text-white disabled:opacity-50">{busy ? "Saving…" : "Create product"}</button>
+      <button disabled={busy} className="rounded bg-brand px-6 py-2 font-medium text-onbrand disabled:opacity-50">{busy ? "Saving…" : "Create product"}</button>
     </form>
   );
 }

@@ -42,7 +42,7 @@ export default function Products() {
         <form onSubmit={(e) => { e.preventDefault(); load(); }}>
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title or SKU" className="rounded border border-line bg-card px-3 py-1.5 text-sm" />
         </form>
-        <button disabled={!dirty} onClick={save} className="rounded bg-brand px-4 py-1.5 text-sm text-white disabled:opacity-40">
+        <button disabled={!dirty} onClick={save} className="rounded bg-brand px-4 py-1.5 text-sm text-onbrand disabled:opacity-40">
           Save {dirty || ""} change{dirty === 1 ? "" : "s"}
         </button>
         <Link href="/products/new" className="rounded border border-line px-4 py-1.5 text-sm">New product</Link>

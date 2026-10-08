@@ -69,7 +69,7 @@ export function CartDrawer() {
               <Link
                 href="/checkout"
                 onClick={() => setOpen(false)}
-                className={`block rounded bg-brand py-3 text-center font-medium text-white ${lines.length ? "" : "pointer-events-none opacity-50"}`}
+                className={`block rounded bg-brand py-3 text-center font-medium text-onbrand ${lines.length ? "" : "pointer-events-none opacity-50"}`}
               >
                 Checkout
               </Link>

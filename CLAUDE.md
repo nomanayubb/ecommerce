@@ -24,6 +24,9 @@ Docker is broken on this PC (WSL VM) and the winget Postgres installer returns 4
 ## Design intent (user requirement)
 Everything visual must be swappable from files/settings so another project can reuse the code: brand name, logo, colors, radius, font, announcement come from DB `site_settings.branding` (admin "Brand & theme"); occasion looks (Halloween, Eid, Christmas, Black Friday, Independence) are **theme packs** = one data file each in `apps/web/src/themes/packs/`. User wants ~100 "beauty elements" grouped by occasion category; build them as parametric pieces driven by pack data. User will send their logo to match the design.
 
+## Brand: Averixa (logo received 2026-10-08)
+Palette = charcoal (brand) + gold (accent) + warm cream surfaces; tokens live in `apps/*/src/app/globals.css` (`--brand --accent --on-brand --hero-a/b`), brand name/logo/colors in DB branding (seeded by `seed.ts`). Brand kit generator: `brand/make_variants.py` (source `brand/source/logo-original.jpg` -> `brand/out/*`, copied to `apps/{web,admin}/public`). A 2nd, flatter logo version was shown inline but is NOT on disk; user wants the best of both (flat/geometric wordmark of v2 + gold depth and clear cart of v1). Needs the file to process.
+
 ## Hard facts
 - Payment methods allowed = env `ENABLED_PAYMENT_METHODS` (default `COD`). EasyPaisa/JazzCash adapters not built (no API access yet).
 - Prices are always computed server-side (`apps/api/src/lib/pricing.ts`). Never trust client prices.

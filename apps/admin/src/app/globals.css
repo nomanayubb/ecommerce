@@ -3,29 +3,38 @@
 @tailwind utilities;
 
 :root {
-  --bg: 255 255 255;
-  --fg: 15 23 42;
-  --muted: 100 116 139;
-  --card: 248 250 252;
-  --line: 226 232 240;
-  --brand: 79 70 229;
-  --radius: 8px;
+  /* Averixa palette: warm cream surfaces, charcoal brand, gold accent. Swap these to rebrand. */
+  --bg: 251 247 240;
+  --fg: 26 26 31;
+  --muted: 104 112 130;
+  --card: 255 254 251;
+  --line: 230 222 207;
+  --brand: 30 30 35;
+  --on-brand: 255 255 255;
+  --accent: 201 156 52;
+  --hero-a: 40 40 48;
+  --hero-b: 13 13 16;
+  --radius: 10px;
   --font: ui-sans-serif, system-ui, sans-serif;
 }
 [data-theme="dark"] {
-  --bg: 15 23 42;
-  --fg: 241 245 249;
-  --muted: 148 163 184;
-  --card: 30 41 59;
-  --line: 51 65 85;
-  --brand: 129 140 248;
+  --bg: 13 13 16;
+  --fg: 245 240 230;
+  --muted: 156 163 180;
+  --card: 24 24 30;
+  --line: 46 46 56;
+  --brand: 224 184 84;
+  --on-brand: 13 13 16;
+  --accent: 224 184 84;
 }
 [data-theme="oled"] {
   --bg: 0 0 0;
-  --fg: 241 245 249;
-  --muted: 148 163 184;
-  --card: 10 10 10;
-  --line: 38 38 38;
-  --brand: 129 140 248;
+  --fg: 245 240 230;
+  --muted: 156 163 180;
+  --card: 10 10 12;
+  --line: 32 36 48;
+  --brand: 224 184 84;
+  --on-brand: 0 0 0;
+  --accent: 224 184 84;
 }
 body { font-family: var(--font); background: rgb(var(--bg)); color: rgb(var(--fg)); }

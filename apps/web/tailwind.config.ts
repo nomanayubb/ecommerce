@@ -17,6 +17,8 @@ export default {
         card: "rgb(var(--card) / <alpha-value>)",
         line: "rgb(var(--line) / <alpha-value>)",
         brand: "rgb(var(--brand) / <alpha-value>)",
+        onbrand: "rgb(var(--on-brand) / <alpha-value>)",
+        accent: "rgb(var(--accent) / <alpha-value>)",
       },
     },
   },

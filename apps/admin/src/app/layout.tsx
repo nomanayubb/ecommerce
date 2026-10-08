@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Shell } from "@/components/Shell";
 
-export const metadata: Metadata = { title: "Admin", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "Admin", robots: { index: false, follow: false }, icons: { icon: "/favicon.ico" } };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

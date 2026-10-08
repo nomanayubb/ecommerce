@@ -61,7 +61,7 @@ export function BuyPanel({ p }: { p: ProductDetail }) {
         <button
           disabled={stock === 0 || qty > stock}
           onClick={() => add({ productId: p.id, variantId, title: variant ? `${p.title} - ${variant.title}` : p.title, price: unit, image: p.images[0], quantity: qty })}
-          className="flex-1 rounded bg-brand py-3 font-medium text-white disabled:opacity-50"
+          className="flex-1 rounded bg-brand py-3 font-medium text-onbrand disabled:opacity-50"
         >
           {stock === 0 ? "Out of stock" : "Add to cart"}
         </button>

@@ -33,11 +33,12 @@ export default function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <form onSubmit={submit} className="w-full max-w-sm space-y-3 rounded-xl border border-line bg-card p-6">
-        <h1 className="text-xl font-bold">Admin sign in</h1>
+        <img src="/logo-full.webp" alt="Logo" className="mx-auto h-28 w-auto" />
+        <h1 className="text-center text-xl font-bold">Admin sign in</h1>
         <input name="email" type="email" required placeholder="Email" autoComplete="username" className={input} />
         <input name="password" type="password" required placeholder="Password" autoComplete="current-password" className={input} />
         {error && <p role="alert" className="text-sm text-red-500">{error}</p>}
-        <button disabled={busy} className="w-full rounded bg-brand py-2 font-medium text-white disabled:opacity-50">
+        <button disabled={busy} className="w-full rounded bg-brand py-2 font-medium text-onbrand disabled:opacity-50">
           {busy ? "Signing in…" : "Sign in"}
         </button>
       </form>

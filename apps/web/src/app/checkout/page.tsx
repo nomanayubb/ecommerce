@@ -57,7 +57,7 @@ export default function Checkout() {
       <input name="city" required placeholder="City" className={input} />
       <p className="text-sm text-muted">Payment: Cash on Delivery. Shipping is calculated by the server; items {pkr(subtotal)}.</p>
       {error && <p role="alert" className="text-sm text-red-500">{error}</p>}
-      <button disabled={busy} className="w-full rounded bg-brand py-3 font-medium text-white disabled:opacity-50">
+      <button disabled={busy} className="w-full rounded bg-brand py-3 font-medium text-onbrand disabled:opacity-50">
         {busy ? "Placing order…" : "Place order"}
       </button>
     </form>

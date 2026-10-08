@@ -3,7 +3,7 @@ import { pkr, type ProductSummary } from "@/lib/api";
 
 export function ProductCard({ p }: { p: ProductSummary }) {
   return (
-    <Link href={`/products/${p.slug}`} className="group block rounded border border-line bg-card p-3">
+    <Link href={`/products/${p.slug}`} className="group block rounded-lg border border-line bg-card p-3 transition duration-200 hover:-translate-y-0.5 hover:border-accent hover:shadow-lg">
       <div className="relative aspect-square overflow-hidden rounded bg-line/40">
         {p.images[0] && <img src={p.images[0]} alt={p.title} className="h-full w-full object-cover transition group-hover:scale-105" />}
         {p.discount_pct && <span className="absolute left-2 top-2 rounded bg-red-600 px-2 py-0.5 text-xs text-white">-{p.discount_pct}%</span>}

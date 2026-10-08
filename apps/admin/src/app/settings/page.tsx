@@ -73,7 +73,7 @@ export default function Settings() {
         <input className={input} value={b.announcement} onChange={(e) => set("announcement", e.target.value)} />
       </label>
       {msg && <p className="text-sm text-muted">{msg}</p>}
-      <button className="rounded bg-brand px-6 py-2 font-medium text-white">Save</button>
+      <button className="rounded bg-brand px-6 py-2 font-medium text-onbrand">Save</button>
     </form>
   );
 }

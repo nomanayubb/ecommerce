@@ -17,6 +17,15 @@ if (!admin || process.env.RESET_ADMIN) {
   console.log("admin exists (RESET_ADMIN=1 to issue a new password)");
 }
 
+// Brand defaults (only while the settings row is still the untouched migration default).
+await pool.query(
+  `UPDATE site_settings SET value = value || $1::jsonb WHERE key = 'branding' AND value->>'name' = 'Store'`,
+  [JSON.stringify({
+    name: "Averixa", tagline: "Your world · Our store", logoUrl: "/logo-mark.webp",
+    brandColor: "#1e1e23", brandColorDark: "#e0b854", radius: 10, font: "system", defaultTheme: "light", pack: "default",
+  })]
+);
+
 const cat = async (name: string, slug: string, parent: string | null = null, order = 0) =>
   (await pool.query(
     `INSERT INTO categories (name, slug, parent_id, sort_order) VALUES ($1,$2,$3,$4)

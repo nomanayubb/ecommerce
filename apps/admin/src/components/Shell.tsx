@@ -29,7 +29,7 @@ export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen">
       <aside className="w-52 shrink-0 border-r border-line bg-card p-4">
-        <p className="mb-6 text-lg font-bold">Admin</p>
+        <div className="mb-6 flex items-center gap-2"><img src="/logo-mark.webp" alt="" className="h-8 w-auto" /><span className="font-semibold uppercase tracking-[0.2em]">Admin</span></div>
         <nav className="space-y-1 text-sm">
           {NAV.map((n) => (
             <Link

@@ -36,3 +36,9 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - `apps/web`: layout reads branding -> injects CSS vars (brand colors, radius, font), logo in header, announcement bar; `src/themes/` pack system (5 occasion packs) + `Decor` particles/corner component.
 - Verified live: validation rejects `javascript:` logo and bad colors; unauthenticated PUT -> 401; switching to Halloween via the admin API changed the rendered storefront (brand color, dark default, serif font, announcement, 28 decor nodes) after the 30s ISR window; admin login page 200. tsc clean in api/web/admin.
 - NOT verified: admin pages in a real browser (login flow, grid save, order status UI), mobile layout.
+
+## 2026-10-08 — Averixa brand kit + theme
+- `brand/make_variants.py`: from the logo JPG builds 10 variants (transparent lockup/mark, horizontal, mono, white reverse, app icon, badge, stacked-on-dark) + web assets (webp mark/lockups, favicon.ico, icons 192/512, og-image) + contact sheet. Alpha is derived from distance to the cream background with colour un-premultiply (no halo). Navy mono variant is muddy; not used.
+- Theme: new palette tokens (charcoal brand, gold accent, cream bg, dark/OLED), `--on-brand` auto-contrast (`lib/branding.ts onBrand`), Tailwind `onbrand`/`accent` colours; header logo mark + letterspaced wordmark + gold hairline; hero redesigned (gradient, tagline eyebrow, gold CTA, logo art); footer component; product card hover lift; admin sidebar/login logos; favicon/OG metadata.
+- `seed.ts` sets Averixa branding while the settings row is still the untouched default.
+- Verified: tsc clean (web/admin/api); services restarted; home page screenshot in the in-app browser shows the new theme. Fixed hero logo being clipped at the right edge. NOT verified: other pages visually, dark/OLED, mobile, admin pages in a browser.
