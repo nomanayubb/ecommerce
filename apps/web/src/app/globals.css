@@ -130,6 +130,15 @@ html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *
   html:not([data-motion-pref="on"]) .decor { display: none; }
 }
 
+/* Wishlist heart burst: ring + sparks around the heart */
+.heart-burst { position: absolute; inset: 0; pointer-events: none; }
+.heart-burst::before, .heart-burst::after { content: ""; position: absolute; inset: -4px; border: 1.5px solid rgb(var(--accent)); animation: burst .6s cubic-bezier(.2,.7,.2,1) forwards; }
+.heart-burst::after { inset: -10px; border-style: dashed; opacity: .6; animation-delay: .05s; }
+@keyframes burst { from { transform: scale(.5) rotate(0); opacity: 1; } to { transform: scale(1.6) rotate(45deg); opacity: 0; } }
+html:not([data-motion-pref="on"]) .heart-burst { display: var(--burst-display, block); }
+@media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) .heart-burst { display: none; } }
+[data-motion="off"] .heart-burst, [data-motion-pref="off"] .heart-burst { display: none; }
+
 /* theme-pack decoration */
 .decor-p { position: absolute; will-change: transform; }
 .decor-fall  { top: -8%;  animation: decor-fall linear infinite; }

@@ -34,20 +34,20 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 22. [ ] AR view in your room (model-viewer)
 23. [~] Zoom on hover with magnifier lens
 24. [ ] Video previews on product hover
-25. [ ] Quick view modal without page reload
+25. [x] Quick view modal without page reload
 26. [ ] Size guide with fit predictor
 27. [ ] Color swatches that update images live
-28. [ ] Product comparison tool (side-by-side)
-29. [ ] Recently viewed products carousel
-30. [ ] Complete the look bundle suggestions
+28. [x] Product comparison tool (side-by-side)
+29. [x] Recently viewed products carousel
+30. [~] Complete the look bundle suggestions
 31. [x] Stock scarcity indicators
 32. [ ] Live viewer count
 33. [ ] Countdown timer for flash sales
 34. [ ] Customer photo gallery (UGC)
 35. [ ] Video reviews embedded
 36. [ ] Q&A section on product pages
-37. [ ] Estimated delivery date by zip code
-38. [ ] Wishlist/favorites with heart animation
+37. [~] Estimated delivery date by zip code
+38. [x] Wishlist/favorites with heart animation
 39. [ ] Save for later cart functionality
 40. [x] Product badges (New, Bestseller, Limited)
 
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [ ] Analytics dashboard with heatmaps
 
 ---
-Total 100: 18 done, 11 partly, 71 not started (as of 2026-10-08).
+Total 100: 22 done, 13 partly, 65 not started (as of 2026-10-08).

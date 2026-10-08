@@ -11,6 +11,9 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ScrollProgress } from "@/components/Motion";
 import { SiteProvider } from "@/components/Site";
+import { ShopperProvider } from "@/components/Shopper";
+import { QuickView } from "@/components/QuickView";
+import { CompareTray } from "@/components/CompareTray";
 
 const getBranding = () => getSite().then((s) => s.branding);
 
@@ -54,6 +57,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <Decor decor={pack.decor} />
         <SiteProvider value={{ branding, store }}>
         <CartProvider>
+        <ShopperProvider>
           {branding.announcement && (
             <div className="bg-darksurface px-4 py-2 text-center text-[0.68rem] font-medium uppercase tracking-[0.25em] text-gold">
               {branding.announcement}
@@ -63,6 +67,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
           <Footer brand={{ name: branding.name, tagline: branding.tagline, footerText: branding.footerText, ...logos }} categories={categories} store={store} />
           <CartDrawer />
+          <QuickView />
+          <CompareTray />
+        </ShopperProvider>
         </CartProvider>
         </SiteProvider>
       </body>

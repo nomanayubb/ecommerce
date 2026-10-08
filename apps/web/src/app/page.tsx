@@ -2,6 +2,7 @@ import Link from "next/link";
 import { api, getSite, type CategoryNode, type ProductSummary } from "@/lib/api";
 import { ProductCard } from "@/components/ProductCard";
 import { Reveal } from "@/components/Motion";
+import { RecentlyViewed } from "@/components/RecentlyViewed";
 import { ArrowRightIcon } from "@/components/icons";
 import { applyPack } from "@/themes";
 
@@ -97,6 +98,8 @@ export default async function Home() {
         </div>
         {items.length === 0 && <p className="text-muted">No products yet.</p>}
       </section>
+
+      <RecentlyViewed />
 
       <Reveal className="mt-24">
         <section className="glass px-6 py-14 text-center sm:px-16">

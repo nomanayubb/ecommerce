@@ -6,6 +6,7 @@ import { BuyPanel } from "@/components/BuyPanel";
 import { Gallery } from "@/components/Gallery";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ProductCard } from "@/components/ProductCard";
+import { RecentlyViewed, RecordView } from "@/components/RecentlyViewed";
 
 const load = (slug: string) => api<ProductDetail>(`/products/${slug}`).catch(() => null);
 
@@ -21,7 +22,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
   const p = await load(slug);
   if (!p) notFound();
   const { store } = await getSite();
-  const related = await api<{ items: ProductSummary[] }>("/products?pageSize=5").then((r) => r.items.filter((x) => x.id !== p.id).slice(0, 4)).catch(() => []);
+  const related = await api<{ items: ProductSummary[] }>(`/products/${slug}/related`).then((r) => r.items).catch(() => []);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -43,6 +44,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <RecordView p={{ id: p.id, slug, title: p.title, price: Number(p.selling_price), marked: Number(p.marked_price), image: p.images[0], brand: p.brand_name }} />
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Shop", href: "/products" }, { name: p.title }]} />
       <div className="grid gap-10 md:grid-cols-2 lg:gap-16">
         <Gallery images={p.images} title={p.title} />
@@ -66,12 +68,13 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
       {related.length > 0 && (
         <section className="mt-24 pb-16 md:pb-0">
           <div className="mb-6 flex items-end justify-between">
-            <div><p className="eyebrow">Discover</p><h2 className="mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">You may also like</h2></div>
+            <div><p className="eyebrow">Complete the look</p><h2 className="mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">You may also like</h2></div>
             <Link href="/products" className="text-xs font-semibold uppercase tracking-[0.2em] hover:text-accent">View all →</Link>
           </div>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">{related.map((r) => <ProductCard key={r.id} p={r} />)}</div>
         </section>
       )}
+      <RecentlyViewed exclude={slug} />
     </>
   );
 }

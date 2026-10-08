@@ -23,7 +23,7 @@ function Icon({ size = 20, title, children, ...rest }: Props & { children: React
 
 export const BagIcon = (p: Props) => <Icon {...p}><path d="M5 8h14l-1 12H6L5 8z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" stroke={A} /></Icon>;
 export const SearchIcon = (p: Props) => <Icon {...p}><circle cx="10.5" cy="10.5" r="6" /><path d="M15 15l5.5 5.5" stroke={A} /></Icon>;
-export const HeartIcon = (p: Props) => <Icon {...p}><path d="M12 20L4.5 11.5 7 6l5 3 5-3 2.5 5.5L12 20z" /><path d="M12 9v5" stroke={A} /></Icon>;
+export const HeartIcon = ({ filled, ...p }: Props & { filled?: boolean }) => <Icon {...p}><path d="M12 20L4.5 11.5 7 6l5 3 5-3 2.5 5.5L12 20z" fill={filled ? A : "none"} stroke={filled ? A : "currentColor"} /><path d="M12 9v5" stroke={filled ? "rgb(var(--on-brand))" : A} /></Icon>;
 export const UserIcon = (p: Props) => <Icon {...p}><path d="M12 4l3 3v3l-3 3-3-3V7l3-3z" /><path d="M5 20l2-4h10l2 4" stroke={A} /></Icon>;
 export const MenuIcon = (p: Props) => <Icon {...p}><path d="M4 7h16M4 17h16" /><path d="M4 12h10" stroke={A} /></Icon>;
 export const CloseIcon = (p: Props) => <Icon {...p}><path d="M6 6l12 12" /><path d="M18 6L6 18" stroke={A} /></Icon>;
@@ -37,3 +37,5 @@ export const SupportIcon = (p: Props) => <Icon {...p}><path d="M4 14v-2a8 8 0 0 
 export const StarIcon = (p: Props) => <Icon {...p}><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7L12 3z" stroke={A} /></Icon>;
 export const ContrastIcon = (p: Props) => <Icon {...p}><circle cx="12" cy="12" r="8" /><path d="M12 4a8 8 0 0 1 0 16z" fill={A} stroke={A} /></Icon>;
 export const MotionIcon = (p: Props) => <Icon {...p}><path d="M3 12h4l2-6 4 12 2-6h6" stroke={A} /><path d="M3 5v14" /></Icon>;
+export const CompareIcon = (p: Props) => <Icon {...p}><path d="M4 5h6v14H4zM14 9h6v10h-6z" /><path d="M7 9v6M17 13v3" stroke={A} /></Icon>;
+export const EyeIcon = (p: Props) => <Icon {...p}><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" stroke={A} /></Icon>;

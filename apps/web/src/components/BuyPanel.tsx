@@ -4,9 +4,10 @@ import { useMemo, useState } from "react";
 import { pkr, type ProductDetail } from "@/lib/api";
 import { useCart } from "./CartProvider";
 import { useSite } from "./Site";
+import { DeliveryEstimate } from "./DeliveryEstimate";
 import { CashIcon, PackageIcon, SupportIcon, TruckIcon } from "./icons";
 
-export function BuyPanel({ p }: { p: ProductDetail }) {
+export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; compact?: boolean; onAdded?: () => void }) {
   const { add } = useCart();
   const { store } = useSite();
   const [variantId, setVariantId] = useState<string | null>(p.variants.find((v) => v.stock_quantity > 0)?.id ?? p.variants[0]?.id ?? null);
@@ -28,6 +29,7 @@ export function BuyPanel({ p }: { p: ProductDetail }) {
   const addToBag = () => {
     add({ productId: p.id, variantId, title: variant ? `${p.title} - ${variant.title}` : p.title, price: unit, image: p.images[0], quantity: qty });
     setAdded(true);
+    onAdded?.();
     setTimeout(() => setAdded(false), 1800);
   };
 
@@ -92,14 +94,15 @@ export function BuyPanel({ p }: { p: ProductDetail }) {
       </div>
       {p.moq > 1 && <p className="text-xs text-muted">Minimum order quantity: {p.moq}</p>}
 
-      <ul className="grid gap-3 border-t border-line pt-6 text-sm text-muted sm:grid-cols-2">
+      {!compact && <DeliveryEstimate />}
+      {!compact && (<ul className="grid gap-3 border-t border-line pt-6 text-sm text-muted sm:grid-cols-2">
         {([[CashIcon, "Cash on delivery available"], [TruckIcon, store.freeShippingThreshold > 0 ? `Free delivery over ${pkr(store.freeShippingThreshold)}` : "Free delivery"], [PackageIcon, "Checked and packed with care"], [SupportIcon, "Easy support if anything is off"]] as const).map(([Ic, t]) => (
           <li key={t} className="flex items-center gap-3"><Ic size={20} className="shrink-0 text-fg" />{t}</li>
         ))}
-      </ul>
+      </ul>)}
 
       {/* Mobile sticky bar */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/95 p-3 backdrop-blur md:hidden">{cta}</div>
+      {!compact && <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/95 p-3 backdrop-blur md:hidden">{cta}</div>}
     </div>
   );
 }

@@ -116,7 +116,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 96. [ ] Button ripple/splash on click
 97. [ ] Add-to-cart fly animation
-98. [ ] Heart burst when wishlisting
+98. [x] Heart burst when wishlisting
 99. [ ] Confetti on checkout (brand colors)
 100. [ ] Page transition wipes
 101. [ ] Scroll progress as filling measuring cup
@@ -124,7 +124,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 103. [ ] Hover sounds (optional)
 104. [ ] Loading as stirring/chopping animation
 105. [ ] Toast notifications with mascot
-106. [ ] Product cards with 3D tilt
+106. [x] Product cards with 3D tilt
 107. [ ] Cards that flip to show recipe
 108. [ ] Cards with ingredient hover reveal
 109. [ ] Cards with cooked-with tag
@@ -151,4 +151,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 130. [ ] Back-to-top as rising souffle
 
 ---
-Total 130: 1 done, 1 partly, 128 not started (as of 2026-10-08).
+Total 130: 3 done, 1 partly, 126 not started (as of 2026-10-08).

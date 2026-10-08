@@ -58,7 +58,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 43. [~] Search bar in header
 44. [ ] Predictive search dropdown
 45. [x] Cart icon with live item count
-46. [ ] Wishlist icon in header
+46. [x] Wishlist icon in header
 47. [ ] Account icon with dropdown
 48. [ ] Currency selector in header
 49. [ ] Language selector in header
@@ -68,7 +68,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 51. [x] Product gallery (thumbnails left/bottom)
 52. [x] Gallery zoom on hover
-53. [ ] Gallery lightbox on click
+53. [x] Gallery lightbox on click
 54. [ ] Video in gallery
 55. [ ] 360° spin viewer
 56. [ ] Model/AR viewer (3D)
@@ -79,12 +79,12 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 61. [~] Sticky add-to-cart bar
 62. [ ] Dynamic checkout buy buttons
 63. [~] Trust badges row
-64. [ ] Shipping estimator
+64. [~] Shipping estimator
 65. [ ] Product tabs (description, specs, reviews)
 66. [x] Accordion product info
-67. [ ] Complementary products section
+67. [~] Complementary products section
 68. [~] Related products carousel
-69. [ ] Recently viewed section
+69. [x] Recently viewed section
 70. [~] Product badges (sale %, new, sold out)
 
 ## Cart & checkout sections (71-80)
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [~] Footer builder (columns, newsletter, payment icons)
 
 ---
-Total 100: 17 done, 15 partly, 68 not started (as of 2026-10-08).
+Total 100: 20 done, 17 partly, 63 not started (as of 2026-10-08).

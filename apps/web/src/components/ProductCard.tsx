@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { pkr, type ProductSummary } from "@/lib/api";
 import { Tilt } from "./Motion";
+import { CardActions } from "./CardActions";
 
 const TAG_BADGES: [string, string][] = [["bestseller", "Bestseller"], ["limited", "Limited"], ["new", "New"]];
 
@@ -9,6 +10,7 @@ export function ProductCard({ p }: { p: ProductSummary }) {
   const badge = TAG_BADGES.find(([t]) => p.tags?.includes(t))?.[1] ?? (p.stock_quantity > 0 && p.stock_quantity <= 5 ? "Low stock" : null);
   return (
     <Tilt>
+      <div className="group/card relative">
       <Link href={`/products/${p.slug}`} className="lift group block border border-line bg-card">
         <div className="relative aspect-[4/5] overflow-hidden bg-line/40">
           {p.images[0] && (
@@ -19,7 +21,7 @@ export function ProductCard({ p }: { p: ProductSummary }) {
             <span className="absolute left-0 top-4 bg-accent px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-onbrand">-{p.discount_pct}%</span>
           )}
           {badge && !soldOut && (
-            <span className="glass absolute right-3 top-3 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-fg">{badge}</span>
+            <span className="glass absolute bottom-3 left-3 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-fg">{badge}</span>
           )}
           {soldOut && <span className="absolute inset-x-0 bottom-0 bg-bg/80 py-2 text-center text-[0.65rem] font-semibold uppercase tracking-[0.25em] backdrop-blur">Sold out</span>}
         </div>
@@ -32,6 +34,8 @@ export function ProductCard({ p }: { p: ProductSummary }) {
           </p>
         </div>
       </Link>
+      <CardActions p={p} />
+      </div>
     </Tilt>
   );
 }

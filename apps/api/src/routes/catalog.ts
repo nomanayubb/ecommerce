@@ -80,6 +80,25 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
     return { ...p, variants: variants.rows, priceTiers: tiers.rows };
   });
 
+  // Same-category products first (up to 4), topped up with newest if the category is small.
+  app.get<{ Params: { slug: string } }>("/products/:slug/related", async (req, reply) => {
+    const cols = `p.id, p.title, p.slug, p.marked_price, p.selling_price, p.stock_quantity, p.images, p.tags, b.name AS brand_name,
+      CASE WHEN p.marked_price > p.selling_price THEN round((p.marked_price - p.selling_price) / p.marked_price * 100) END AS discount_pct`;
+    const base = (await pool.query("SELECT id FROM products WHERE slug = $1 AND status = 'PUBLISHED'", [req.params.slug])).rows[0];
+    if (!base) return reply.status(404).send({ success: false, error: "Not found" });
+    const same = (await pool.query(
+      `SELECT DISTINCT ${cols} FROM products p LEFT JOIN brands b ON b.id = p.brand_id
+       JOIN product_categories pc ON pc.product_id = p.id
+       WHERE p.status = 'PUBLISHED' AND p.id <> $1 AND pc.category_id IN (SELECT category_id FROM product_categories WHERE product_id = $1)
+       LIMIT 4`, [base.id])).rows;
+    if (same.length >= 4) return { items: same };
+    const more = (await pool.query(
+      `SELECT ${cols} FROM products p LEFT JOIN brands b ON b.id = p.brand_id
+       WHERE p.status = 'PUBLISHED' AND p.id <> $1 AND p.id <> ALL($2::uuid[]) ORDER BY p.created_at DESC LIMIT $3`,
+      [base.id, same.map((r) => r.id), 4 - same.length])).rows;
+    return { items: [...same, ...more] };
+  });
+
   app.get("/categories/tree", async () =>
     cached("catalog:categories:tree", 300, async () => {
       const { rows } = await pool.query(

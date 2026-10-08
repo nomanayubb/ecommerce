@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { CategoryNode } from "@/lib/api";
 import { useCart } from "./CartProvider";
-import { BagIcon, ContrastIcon, MenuIcon, MotionIcon, SearchIcon } from "./icons";
+import { BagIcon, ContrastIcon, HeartIcon, MenuIcon, MotionIcon, SearchIcon } from "./icons";
+import { useShopper } from "./Shopper";
 
 const THEMES = ["dark", "oled", "light"] as const;
 
@@ -90,6 +91,7 @@ function MegaItem({ node }: { node: CategoryNode }) {
 
 export function Header({ categories, brand }: { categories: CategoryNode[]; brand: { name: string; logoUrl: string; logoUrlDark?: string } }) {
   const { count, setOpen } = useCart();
+  const { wish } = useShopper();
   const [hidden, setHidden] = useState(false);
   const last = useRef(0);
 
@@ -106,10 +108,14 @@ export function Header({ categories, brand }: { categories: CategoryNode[]; bran
 
   return (
     <header className={`header-bar sticky top-0 z-30 border-b border-line bg-bg/85 backdrop-blur-md ${hidden ? "header-hidden" : ""}`}>
-      <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 sm:gap-5">
+      <div className="mx-auto flex max-w-7xl items-center gap-1 px-4 sm:gap-5">
         <details className="relative md:hidden">
           <summary className="cursor-pointer list-none p-2" aria-label="Menu"><MenuIcon size={22} /></summary>
           <nav className="absolute left-0 top-full w-64 border border-line bg-card p-4 text-sm shadow-2xl">
+            <form action="/products" role="search" className="mb-3 flex items-center gap-2 border-b border-line pb-2">
+              <SearchIcon size={16} className="text-muted" />
+              <input name="q" placeholder="Search products" aria-label="Search products" className="w-full bg-transparent py-1 text-sm outline-none placeholder:text-muted" />
+            </form>
             {categories.map((c) => (
               <Link key={c.id} href={`/products?category=${c.slug}`} className="block py-2 uppercase tracking-widest">{c.name}</Link>
             ))}
@@ -117,7 +123,7 @@ export function Header({ categories, brand }: { categories: CategoryNode[]; bran
             <div className="mt-2 border-t border-line pt-2"><ThemeToggle labelled className="!px-0" /><MotionToggle labelled className="!px-0" /></div>
           </nav>
         </details>
-        <Link href="/" className="logo-reveal flex shrink-0 items-center py-3" aria-label={brand.name}>
+        <Link href="/" className="logo-reveal mr-auto flex shrink-0 items-center py-3 sm:mr-0" aria-label={brand.name}>
           <Logo logo={brand.logoUrl} logoDark={brand.logoUrlDark} name={brand.name} className="h-7 sm:h-9" />
         </Link>
         <nav className="hidden flex-1 justify-center gap-8 md:flex">
@@ -127,9 +133,13 @@ export function Header({ categories, brand }: { categories: CategoryNode[]; bran
           <SearchIcon size={16} className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-muted" />
           <input name="q" placeholder="Search" aria-label="Search products" className="w-36 border-b border-line bg-transparent py-1 pl-6 pr-1 text-sm outline-none transition-all placeholder:text-muted focus:w-52 focus:border-accent" />
         </form>
-        <Link href="/products" className="ml-auto p-2 text-muted transition hover:text-accent lg:hidden" aria-label="Search"><SearchIcon size={20} /></Link>
+        <Link href="/products" className="ml-auto hidden p-2 text-muted transition hover:text-accent sm:block lg:hidden" aria-label="Search"><SearchIcon size={20} /></Link>
         <MotionToggle className="hidden sm:flex" />
         <ThemeToggle className="hidden sm:flex" />
+        <Link href="/wishlist" className="relative p-2 transition hover:text-accent" aria-label={`Wishlist, ${wish.length} saved`}>
+          <HeartIcon size={22} filled={wish.length > 0} />
+          {wish.length > 0 && <span className="absolute -right-0.5 -top-0.5 min-w-4 rounded-full bg-accent px-1 text-center text-[0.6rem] font-semibold leading-4 text-onbrand">{wish.length}</span>}
+        </Link>
         <button onClick={() => setOpen(true)} className="relative flex items-center gap-2 p-2 transition hover:text-accent" aria-label={`Open bag, ${count} items`}>
           <BagIcon size={22} />
           <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-[0.65rem] font-semibold leading-5 text-onbrand">{count}</span>
