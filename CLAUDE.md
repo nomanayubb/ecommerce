@@ -23,4 +23,5 @@ Blocker: Docker Desktop engine won't start (WSL VM). Plan: install Postgres 16 +
 - Payment methods allowed = env `ENABLED_PAYMENT_METHODS` (default `COD`). EasyPaisa/JazzCash adapters not built (no API access yet).
 - Prices are always computed server-side (`apps/api/src/lib/pricing.ts`). Never trust client prices.
 - Secrets live only in `apps/api/.env` (git-ignored). Never print or commit them.
+- GitHub: `origin` = https://github.com/nomanayubb/ecommerce, branch `main`. Commit + push after each task.
 - Windows host; shell commands via Bash (POSIX) or PowerShell.

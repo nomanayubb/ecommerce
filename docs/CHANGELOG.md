@@ -18,3 +18,6 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 
 ## 2026-10-07 — Docs, rules, memory system
 - Added `CLAUDE.md`, `.claude/rules/{efficiency,workflow,git}.md`, `docs/{ARCHITECTURE,REMAINING_TASKS,CHANGELOG,SPEC_NOTES}.md`. Initialised git repo locally.
+
+## 2026-10-08 — GitHub connected
+- Added remote `origin` (https://github.com/nomanayubb/ecommerce) and pushed `main`. Verified: push succeeded.

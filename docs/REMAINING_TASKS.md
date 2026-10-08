@@ -4,7 +4,7 @@ _Last updated: 2026-10-07. Update after every task (see `.claude/rules/workflow.
 
 ## Blockers
 - **Docker Desktop engine won't start** (WSL VM never comes up; WSL kernel was missing, user ran `wsl --update`, engine still stuck for hours). Decision pending: install Postgres 16 + Memurai natively (`winget install PostgreSQL.PostgreSQL.16`, `winget install Memurai.MemuraiDeveloper`) — recommended — or repair/reinstall Docker.
-- **GitHub not connected**: `gh` not logged in, no remote, repo not yet created. Needs user: `gh auth login`, repo name, visibility (recommend private).
+- ~~GitHub~~ connected: remote `origin` = https://github.com/nomanayubb/ecommerce (main). Push after each commit.
 - **EasyPaisa / JazzCash**: API access not available yet → adapters deferred. Plug into `paymentInstructions()` in `apps/api/src/routes/checkout.ts` and add the method to `ENABLED_PAYMENT_METHODS`.
 
 ## Next up (in order)
