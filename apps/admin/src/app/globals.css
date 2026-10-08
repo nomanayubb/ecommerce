@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 255 255 255;
+  --fg: 15 23 42;
+  --muted: 100 116 139;
+  --card: 248 250 252;
+  --line: 226 232 240;
+  --brand: 79 70 229;
+  --radius: 8px;
+  --font: ui-sans-serif, system-ui, sans-serif;
+}
+[data-theme="dark"] {
+  --bg: 15 23 42;
+  --fg: 241 245 249;
+  --muted: 148 163 184;
+  --card: 30 41 59;
+  --line: 51 65 85;
+  --brand: 129 140 248;
+}
+[data-theme="oled"] {
+  --bg: 0 0 0;
+  --fg: 241 245 249;
+  --muted: 148 163 184;
+  --card: 10 10 10;
+  --line: 38 38 38;
+  --brand: 129 140 248;
+}
+body { font-family: var(--font); background: rgb(var(--bg)); color: rgb(var(--fg)); }

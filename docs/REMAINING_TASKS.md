@@ -6,11 +6,17 @@ _Last updated: 2026-10-08. Update after every task (see `.claude/rules/workflow.
 - Docker Desktop engine won't start (WSL VM stuck) -> worked around with embedded Postgres. Optional later: fix Docker or install Redis (Memurai) for caching.
 - **EasyPaisa / JazzCash**: API access not available yet -> adapters deferred. Plug into `paymentInstructions()` in `apps/api/src/routes/checkout.ts`, add method to `ENABLED_PAYMENT_METHODS`.
 
+## Design backlog (user request 2026-10-08)
+- Logo: user will send it; extract palette, set as default branding, polish storefront + admin to an "elite" look.
+- "100 beauty elements": grow `themes/` into a library of parametric elements (particles, corner art, dividers, badges, hover effects, backgrounds, cursor effects, banners, countdown ribbons...) grouped by occasion pack. Done so far: particles, corners, hero gradient (see `themes/types.ts`) and 5 packs.
+- Admin: logo upload (DAM) instead of URL; pack list should come from one source (currently duplicated in admin settings page).
+- Admin UI polish (currently functional/plain).
+
 ## Next up (in order)
 1. (done 2026-10-08) DB running, API + web tested. Still untested: register/login flow by customer, wholesale pricing, webhook, browser UI (cart drawer, checkout form, theme toggle) — verify in a browser.
 2. Add rate limiting on auth + checkout.
 3. Seed script: add sample brands, products, variants, price tiers, images so the storefront isn't empty.
-4. Admin panel (`apps/admin`): products CRUD, category tree manager, orders list/status, bulk edit grid.
+4. Admin panel extras: product edit page (variants, tiers, images), category tree manager, customers, RBAC UI.
 5. Typesense: index sync worker + switch `GET /products` to it (keep Postgres fallback).
 6. Storefront gaps: faceted filter sidebar, quick view, compare, wishlist, search dropdown, account/orders pages, order tracking, 4-level mega menu, announcement bar, currency switcher, PWA.
 7. Mascot component (spec section 4A) — wire to cart events.
@@ -23,6 +29,8 @@ _Last updated: 2026-10-08. Update after every task (see `.claude/rules/workflow.
 - API: auth, catalog, cart validate, checkout (stock locking), basic admin, payment-method gate.
 - Web: layout/theme toggle/mega menu, product list, PDP, cart drawer, COD checkout.
 - Project docs + rules (this set of files).
+- Sample seed data (12 products, 3-level categories, brands, variants, tiers).
+- Admin panel v1 (`apps/admin`), settings/branding API, theme-pack system.
 
 ## Spec feature coverage (of 100)
 Roughly 15 partially done (see CHANGELOG). Full spec is the user's original PRD; summary of deviations is in `docs/SPEC_NOTES.md`.

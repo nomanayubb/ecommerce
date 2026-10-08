@@ -51,6 +51,15 @@ Order flow: client sends `{productId, variantId?, quantity}` only → server re-
 | `components/ProductCard.tsx` | Grid card with discount badge. |
 | `lib/api.ts` | `api()` fetch wrapper (GET → ISR revalidate, others no-store), shared types, `pkr()` formatter. |
 
+## 4b. Branding + theme packs
+- DB `site_settings(key,value jsonb)`; row `branding` = {name, tagline, logoUrl, brandColor, brandColorDark, radius, font(system|serif|rounded|mono), defaultTheme, announcement, pack}. API `routes/settings.ts` (zod schema, Redis cache 60s, public `GET /settings`); `PUT /admin/settings` in `routes/admin.ts`.
+- Web: `app/layout.tsx` -> `themes/index.ts applyPack()` merges the active pack's tokens over saved branding -> `lib/branding.ts brandingCss()` emits `html:root{--brand,--radius,--font}` + dark/oled brand override (specificity beats globals.css) -> `Decor` renders pack particles/corners (CSS-only, deterministic, hidden for reduced-motion). Tailwind `rounded*` use `--radius`.
+- Add an occasion: new `themes/packs/<id>.ts` (type `Pack` in `themes/types.ts`), register in `themes/index.ts`, add to `PACKS` list in `apps/admin/src/app/settings/page.tsx`.
+- Storefront caches settings 30s (`revalidate`), so changes appear within ~30s.
+
+## 4c. Admin (`apps/admin/src`)
+`components/Shell.tsx` (auth gate by sessionStorage token, sidebar), `lib/api.ts` (fetch with bearer, 401 -> /login), pages: `login`, `/` dashboard, `products` (+`/new`), `orders`, `settings`. Staff-only; WAREHOUSE cannot create products or change settings.
+
 ## 5. Known gaps / traps
 - Free-shipping threshold and flat fee are duplicated in `lib/pricing.ts` and `CartDrawer.tsx`; move to a settings table when admin exists.
 - Cart drawer shows client-side prices; fine because checkout re-prices, but cart validation on open is a TODO.

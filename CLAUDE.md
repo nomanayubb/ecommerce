@@ -11,14 +11,18 @@ Do not browse the repo, `node_modules`, lockfiles, or unrelated files. Rules are
 
 ## Map
 - `apps/api` — Fastify + TypeScript API (`src/server.ts`, `src/routes/*`, `src/lib/*`, `migrations/*.sql`)
-- `apps/web` — Next.js 15 App Router storefront (Tailwind, Framer Motion)
+- `apps/web` — Next.js 15 storefront :3000 (Tailwind, Framer Motion). Theme packs in `src/themes/`
+- `apps/admin` — Next.js admin panel :3001 (login, dashboard, products grid + create, orders, brand & theme settings)
 - `docker-compose.yml` — Postgres 16, Redis 7, Typesense 27 (dev). Docker is broken on this PC, see blockers.
 - `docs/` — ARCHITECTURE, REMAINING_TASKS, CHANGELOG, SPEC_NOTES
 
 ## Current status (update on every milestone)
 RUNNING and tested locally (2026-10-08): API + storefront + embedded Postgres. Redis not installed (cache fails open).
-Start dev (3 terminals, repo root): `npm run dev:db -w api` -> `npm run migrate && npm run seed -w api` (first time) -> `npm run dev:api` -> `npm run dev -w web`.
+Start dev (3 terminals, repo root): `npm run dev:db -w api` -> `npm run migrate && npm run seed -w api` (first time) -> `npm run dev:api` -> `npm run dev -w web` -> `npm run dev -w admin`.
 Docker is broken on this PC (WSL VM) and the winget Postgres installer returns 403, so DB = `embedded-postgres` (npm), data in `apps/api/.pgdata`, creds shop/shop (dev only).
+
+## Design intent (user requirement)
+Everything visual must be swappable from files/settings so another project can reuse the code: brand name, logo, colors, radius, font, announcement come from DB `site_settings.branding` (admin "Brand & theme"); occasion looks (Halloween, Eid, Christmas, Black Friday, Independence) are **theme packs** = one data file each in `apps/web/src/themes/packs/`. User wants ~100 "beauty elements" grouped by occasion category; build them as parametric pieces driven by pack data. User will send their logo to match the design.
 
 ## Hard facts
 - Payment methods allowed = env `ENABLED_PAYMENT_METHODS` (default `COD`). EasyPaisa/JazzCash adapters not built (no API access yet).

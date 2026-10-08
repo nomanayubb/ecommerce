@@ -41,12 +41,14 @@ function MegaItem({ node }: { node: CategoryNode }) {
   );
 }
 
-export function Header({ categories }: { categories: CategoryNode[] }) {
+export function Header({ categories, brand }: { categories: CategoryNode[]; brand: { name: string; logoUrl: string } }) {
   const { count, setOpen } = useCart();
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-bg/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center gap-6 px-4">
-        <Link href="/" className="py-3 text-lg font-bold">Store</Link>
+        <Link href="/" className="flex items-center py-3 text-lg font-bold">
+          {brand.logoUrl ? <img src={brand.logoUrl} alt={brand.name} className="h-8 w-auto" /> : brand.name}
+        </Link>
         <nav className="hidden flex-1 gap-6 text-sm md:flex">
           {categories.map((c) => <MegaItem key={c.id} node={c} />)}
         </nav>

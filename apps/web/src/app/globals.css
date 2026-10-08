@@ -9,6 +9,8 @@
   --card: 248 250 252;
   --line: 226 232 240;
   --brand: 79 70 229;
+  --radius: 8px;
+  --font: ui-sans-serif, system-ui, sans-serif;
 }
 [data-theme="dark"] {
   --bg: 15 23 42;
@@ -26,4 +28,14 @@
   --line: 38 38 38;
   --brand: 129 140 248;
 }
-body { background: rgb(var(--bg)); color: rgb(var(--fg)); }
+body { font-family: var(--font); background: rgb(var(--bg)); color: rgb(var(--fg)); }
+
+/* theme-pack decoration */
+.decor-p { position: absolute; will-change: transform; }
+.decor-fall  { top: -8%;  animation: decor-fall linear infinite; }
+.decor-rise  { top: 105%; animation: decor-rise linear infinite; }
+.decor-float { top: 20%;  animation: decor-float ease-in-out infinite alternate; }
+@keyframes decor-fall  { to { transform: translateY(115vh) rotate(180deg); } }
+@keyframes decor-rise  { to { transform: translateY(-115vh) rotate(-180deg); } }
+@keyframes decor-float { from { transform: translate(0,0) rotate(-8deg); } to { transform: translate(24px,60vh) rotate(8deg); } }
+@media (prefers-reduced-motion: reduce) { .decor { display: none; } }

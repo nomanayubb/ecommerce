@@ -45,3 +45,12 @@ export async function api<T>(path: string, init?: RequestInit & { revalidate?: n
 }
 
 export const pkr = (n: number | string) => `Rs. ${Number(n).toLocaleString("en-PK")}`;
+
+export interface Branding {
+  name: string; tagline: string; logoUrl: string; brandColor: string; brandColorDark: string;
+  radius: number; font: "system" | "serif" | "rounded" | "mono"; defaultTheme: "light" | "dark" | "oled"; announcement: string; pack?: string;
+}
+export const DEFAULT_BRANDING: Branding = {
+  name: "Store", tagline: "", logoUrl: "", brandColor: "#4f46e5", brandColorDark: "#818cf8",
+  radius: 8, font: "system", defaultTheme: "light", announcement: "", pack: "default",
+};

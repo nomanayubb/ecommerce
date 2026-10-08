@@ -28,3 +28,11 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - `lib/redis.ts`: `enableOfflineQueue:false` so a missing Redis fails fast instead of queueing.
 - Verified against the real running API: migrate+seed, admin login, product create with tier, tier pricing (2 x 1000 + 250 ship), over-stock rejected (409), EASYPAISA rejected by gate, 5 concurrent COD orders on stock 3 -> 3x201 + 2x409, stock ends at 0, wholesale_price not leaked, admin orders list.
 - Verified storefront (next dev): `/`, `/products`, `/products?q=`, `/products/[slug]`, `/checkout` all return 200 with real data. NOT verified in a browser (JS interactions).
+
+## 2026-10-08 — Seed data, admin panel, branding + theme packs
+- `seed.ts`: idempotent; admin created once (RESET_ADMIN=1 reissues password); 12 products, brands, 3-level categories, variants, price tiers (picsum.photos placeholder images).
+- API: `GET /admin/products`, `GET /settings` (public), `PUT /admin/settings` (ADMIN+, zod: hex colors, http(s)/relative logo URL only), migration `002_site_settings.sql` (`site_settings` key/value; `branding` row; includes `pack`).
+- `apps/admin` (port 3001): sessionStorage JWT login, dashboard, products (inline bulk edit of price/stock/status), new product form, orders (status change), Brand & theme settings.
+- `apps/web`: layout reads branding -> injects CSS vars (brand colors, radius, font), logo in header, announcement bar; `src/themes/` pack system (5 occasion packs) + `Decor` particles/corner component.
+- Verified live: validation rejects `javascript:` logo and bad colors; unauthenticated PUT -> 401; switching to Halloween via the admin API changed the rendered storefront (brand color, dark default, serif font, announcement, 28 decor nodes) after the 30s ISR window; admin login page 200. tsc clean in api/web/admin.
+- NOT verified: admin pages in a real browser (login flow, grid save, order status UI), mobile layout.

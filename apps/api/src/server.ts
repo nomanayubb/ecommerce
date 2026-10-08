@@ -6,6 +6,7 @@ import { authRoutes } from "./routes/auth.js";
 import { catalogRoutes } from "./routes/catalog.js";
 import { checkoutRoutes } from "./routes/checkout.js";
 import { adminRoutes } from "./routes/admin.js";
+import { settingsRoutes } from "./routes/settings.js";
 import { CartError } from "./lib/pricing.js";
 
 export type Role = "SUPER_ADMIN" | "ADMIN" | "WAREHOUSE" | "CUSTOMER" | "WHOLESALE";
@@ -36,6 +37,7 @@ app.get("/health", async () => ({ ok: true }));
 await app.register(authRoutes, { prefix: "/api/v1/auth" });
 await app.register(catalogRoutes, { prefix: "/api/v1" });
 await app.register(checkoutRoutes, { prefix: "/api/v1" });
+await app.register(settingsRoutes, { prefix: "/api/v1" });
 await app.register(adminRoutes, { prefix: "/api/v1/admin" });
 
 await app.listen({ port: Number(process.env.PORT ?? 4000), host: "0.0.0.0" });

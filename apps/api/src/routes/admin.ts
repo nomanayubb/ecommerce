@@ -2,6 +2,7 @@ import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
 import { pool } from "../lib/db.js";
 import { cached, delPattern } from "../lib/redis.js";
+import { brandingSchema, saveBranding } from "./settings.js";
 
 const STAFF = new Set(["SUPER_ADMIN", "ADMIN", "WAREHOUSE"]);
 
@@ -79,6 +80,23 @@ export const adminRoutes: FastifyPluginAsync = async (app) => {
     }
   });
 
+  app.get("/products", async (req) => {
+    const q = z.object({
+      q: z.string().optional(),
+      status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).optional(),
+      page: z.coerce.number().int().min(1).default(1),
+    }).parse(req.query);
+    const { rows } = await pool.query(
+      `SELECT id, title, slug, sku, status, marked_price, selling_price, stock_quantity, images
+       FROM products
+       WHERE ($1::text IS NULL OR title ILIKE '%' || $1 || '%' OR sku ILIKE '%' || $1 || '%')
+         AND ($2::text IS NULL OR status = $2)
+       ORDER BY created_at DESC LIMIT 100 OFFSET $3`,
+      [q.q ?? null, q.status ?? null, (q.page - 1) * 100]
+    );
+    return rows;
+  });
+
   app.put("/products/bulk", async (req) => {
     const { updates } = z
       .object({
@@ -109,6 +127,12 @@ export const adminRoutes: FastifyPluginAsync = async (app) => {
     }
     await delPattern("catalog:*");
     return { updated: updates.length };
+  });
+
+  app.put("/settings", { preHandler: adminOnly }, async (req) => {
+    const b = brandingSchema.parse(req.body);
+    await saveBranding(b);
+    return { branding: b };
   });
 
   app.get("/orders", async (req) => {
