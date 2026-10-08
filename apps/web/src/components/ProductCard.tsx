@@ -4,6 +4,8 @@ import { Tilt } from "./Motion";
 import { CardActions } from "./CardActions";
 import { Stars } from "./Stars";
 import { TagIcons } from "./TagIcons";
+import { HoverVideo } from "./HoverVideo";
+import { isFileVideo } from "@/lib/media";
 
 const TAG_BADGES: [string, string][] = [["bestseller", "Bestseller"], ["limited", "Limited"], ["new", "New"]];
 
@@ -19,6 +21,7 @@ export function ProductCard({ p }: { p: ProductSummary }) {
             <img src={p.images[0]} alt={p.title} loading="lazy" width={600} height={750}
               className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${soldOut ? "opacity-50 grayscale" : ""}`} />
           )}
+          {isFileVideo(p.video_url) && !soldOut && <HoverVideo src={p.video_url!} />}
           {p.discount_pct && !soldOut && (
             <span className="badge-discount absolute left-0 top-4 bg-accent px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-onbrand">-{p.discount_pct}%</span>
           )}

@@ -69,12 +69,12 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 51. [x] Product gallery (thumbnails left/bottom)
 52. [x] Gallery zoom on hover
 53. [x] Gallery lightbox on click
-54. [ ] Video in gallery
-55. [ ] 360° spin viewer
-56. [ ] Model/AR viewer (3D)
+54. [x] Video in gallery
+55. [x] 360° spin viewer
+56. [x] Model/AR viewer (3D)
 57. [x] Variant picker (swatches, dropdowns, pills)
-58. [ ] Color swatches with images
-59. [ ] Size chart modal
+58. [x] Color swatches with images
+59. [x] Size chart modal
 60. [x] Quantity selector (+/-)
 61. [~] Sticky add-to-cart bar
 62. [ ] Dynamic checkout buy buttons
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [x] Footer builder (columns, newsletter, payment icons)
 
 ---
-Total 100: 51 done, 19 partly, 30 not started (as of 2026-10-09).
+Total 100: 56 done, 19 partly, 25 not started (as of 2026-10-09).

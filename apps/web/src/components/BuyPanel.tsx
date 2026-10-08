@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { pkr, type ProductDetail } from "@/lib/api";
 import { useCart } from "./CartProvider";
 import { useSite } from "./Site";
 import { DeliveryEstimate } from "./DeliveryEstimate";
 import { StockAlert } from "./NewsletterForm";
 import { TagIcons } from "./TagIcons";
+import { SizeGuideButton, type Meta } from "./PdpExtras";
 import { CashIcon, PackageIcon, SupportIcon, TruckIcon } from "./icons";
 
 export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; compact?: boolean; onAdded?: () => void }) {
@@ -17,6 +18,28 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
   const [added, setAdded] = useState(false);
 
   const variant = p.variants.find((v) => v.id === variantId);
+
+  // Variants that share attributes (colour, size, ...) are shown as one picker per attribute instead of one long list.
+  const attrKeys = useMemo(() => {
+    const skip = new Set(["colorHex"]);
+    const keys = [...new Set(p.variants.flatMap((v) => Object.keys(v.variant_attributes ?? {})))].filter((k) => !skip.has(k));
+    const order = (k: string) => (/colou?r/i.test(k) ? 0 : /size/i.test(k) ? 1 : 2);
+    keys.sort((a, c) => order(a) - order(c));
+    return p.variants.length > 1 && keys.length > 0 && p.variants.every((v) => keys.every((k) => v.variant_attributes?.[k])) ? keys : [];
+  }, [p.variants]);
+  const guide = (p.metafields as Meta | undefined)?.sizeGuide ?? null;
+  const pick = (key: string, value: string) => {
+    const want = { ...(variant?.variant_attributes ?? {}), [key]: value };
+    // Prefer an in-stock variant matching every chosen value; otherwise relax the other choices.
+    const exact = p.variants.find((v) => attrKeys.every((k) => v.variant_attributes[k] === want[k]) && v.stock_quantity > 0)
+      ?? p.variants.find((v) => v.variant_attributes[key] === value && v.stock_quantity > 0)
+      ?? p.variants.find((v) => v.variant_attributes[key] === value);
+    if (exact) setVariantId(exact.id);
+  };
+  // Show the photo that belongs to the chosen variant (colour swatch).
+  useEffect(() => {
+    if (variant?.image_index != null) window.dispatchEvent(new CustomEvent("pdp-image", { detail: variant.image_index }));
+  }, [variant?.image_index, variantId]); // eslint-disable-line react-hooks/exhaustive-deps
   const stock = variant ? variant.stock_quantity : p.stock_quantity;
   const unit = useMemo(() => {
     let price = Number(variant ? variant.price : p.selling_price);
@@ -56,7 +79,47 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
         {soldOut ? "Currently unavailable" : stock <= 5 ? `Only ${stock} left in stock` : "In stock, ships within 1–2 days"}
       </p>
 
-      {p.variants.length > 0 && (
+      {attrKeys.length > 0 ? (
+        <div className="space-y-5">
+          {attrKeys.map((k) => {
+            const values = [...new Set(p.variants.map((v) => v.variant_attributes[k]))];
+            const isColor = /colou?r/i.test(k);
+            const isSize = /size/i.test(k);
+            return (
+              <fieldset key={k}>
+                <legend className="mb-3 flex w-full items-center justify-between">
+                  <span className="eyebrow">{k.replace(/^\w/, (c) => c.toUpperCase())}<span className="ml-2 normal-case tracking-normal text-fg">{variant?.variant_attributes[k]}</span></span>
+                  {isSize && guide && <SizeGuideButton guide={guide} title={p.title} />}
+                </legend>
+                <div className="flex flex-wrap gap-2">
+                  {values.map((val) => {
+                    const sample = p.variants.find((v) => v.variant_attributes[k] === val)!;
+                    const available = p.variants.some((v) => v.variant_attributes[k] === val && v.stock_quantity > 0 && attrKeys.every((o) => o === k || v.variant_attributes[o] === variant?.variant_attributes[o]));
+                    const anyStock = p.variants.some((v) => v.variant_attributes[k] === val && v.stock_quantity > 0);
+                    const on = variant?.variant_attributes[k] === val;
+                    if (isColor) {
+                      const css = sample.variant_attributes.colorHex || (typeof CSS !== "undefined" && CSS.supports("color", val) ? val : "");
+                      return (
+                        <button key={val} type="button" onClick={() => pick(k, val)} disabled={!anyStock} aria-pressed={on} aria-label={`${val}${anyStock ? "" : ", sold out"}`} title={val}
+                          className={`relative h-9 w-9 rounded-full border-2 p-0.5 transition disabled:cursor-not-allowed disabled:opacity-35 ${on ? "border-accent" : "border-line hover:border-fg/60"} ${available || on ? "" : "opacity-60"}`}>
+                          <span className="block h-full w-full rounded-full border border-line/60" style={css ? { background: css } : undefined}>{!css && <span className="grid h-full place-items-center text-[0.5rem]">{val.slice(0, 2)}</span>}</span>
+                          {!anyStock && <span aria-hidden className="pointer-events-none absolute inset-0 grid place-items-center text-lg text-fg/70">/</span>}
+                        </button>
+                      );
+                    }
+                    return (
+                      <button key={val} type="button" onClick={() => pick(k, val)} disabled={!anyStock} aria-pressed={on}
+                        className={`min-w-12 border px-4 py-2.5 text-sm transition disabled:cursor-not-allowed disabled:opacity-35 disabled:line-through ${on ? "border-accent bg-accent/10 text-accent" : available ? "border-line hover:border-fg/60" : "border-line text-muted hover:border-fg/40"}`}>
+                        {val}
+                      </button>
+                    );
+                  })}
+                </div>
+              </fieldset>
+            );
+          })}
+        </div>
+      ) : p.variants.length > 0 && (
         <fieldset>
           <legend className="eyebrow mb-3">Option{variant ? <span className="ml-2 normal-case tracking-normal text-fg">{variant.title}</span> : null}</legend>
           <div className="flex flex-wrap gap-2">

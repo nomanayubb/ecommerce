@@ -57,7 +57,7 @@ export default function Products() {
             const e = edits[p.id] ?? {};
             return (
               <tr key={p.id} className={edits[p.id] ? "bg-brand/5" : ""}>
-                <td className={cell}>{p.title}</td>
+                <td className={cell}><Link href={`/products/edit?id=${p.id}`} className="underline-offset-4 hover:underline">{p.title}</Link></td>
                 <td className={`${cell} text-muted`}>{p.sku}</td>
                 <td className={cell}>
                   <input type="number" min={0} className={input} value={e.sellingPrice ?? Number(p.selling_price)} onChange={(ev) => edit(p.id, { sellingPrice: Number(ev.target.value) })} />

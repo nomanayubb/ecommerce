@@ -5,6 +5,8 @@ import { cached, delPattern } from "../lib/redis.js";
 import { brandingSchema, footerSchema, saveBranding, saveFooter, saveStore, storeSchema } from "./settings.js";
 import { templateAdminRoutes } from "./templates.js";
 import { couponAdminRoutes } from "./coupons.js";
+import { productAdminRoutes } from "./productsAdmin.js";
+import { qaAdminRoutes } from "./qa.js";
 
 const STAFF = new Set(["SUPER_ADMIN", "ADMIN", "WAREHOUSE"]);
 
@@ -49,6 +51,8 @@ export const adminRoutes: FastifyPluginAsync = async (app) => {
 
   await app.register(templateAdminRoutes);
   await app.register(couponAdminRoutes);
+  await app.register(productAdminRoutes);
+  await app.register(qaAdminRoutes);
 
   app.post("/products", { preHandler: adminOnly }, async (req, reply) => {
     const b = productSchema.parse(req.body);

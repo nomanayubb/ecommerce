@@ -82,6 +82,9 @@ Theme options live in `site_settings.branding` (heading font, button/card/badge 
 ## 4j. Coupons, gift options, cart extras (batch 8B)
 Pricing stays server-side in `lib/pricing.ts`: order is subtotal, then coupon discount (`lib/coupons.ts`), then delivery (free over the threshold on the discounted amount, or by a free-delivery coupon), then gift wrap. `/cart/validate` takes `couponCode` + `giftWrap` and never throws on a bad code (returns `couponError`); `/checkout/process` throws. Storefront cart state beyond lines is in `CartProvider` (`extras`: coupon, note, gift wrap/message; `saved`: save-for-later), all in localStorage. `components/CartExtras.tsx` holds the shared pieces (pricing hook, `PromoField`, `GiftOptions`, `Upsells`) used by the drawer and checkout.
 
+## 4k. Product page media and rich content (batch 8C)
+One product edit path: `routes/productsAdmin.ts`. Rich content lives in `products.metafields` under fixed keys (`videoUrl`, `spinImages`, `sizeGuide`, `specs`, `care`, `material`, `materialNote`); other keys in metafields are preserved on save. Colour swatches come from variant attributes `color` + `colorHex`; `product_variants.image_index` is the photo shown when that variant is picked (Gallery listens for the `pdp-image` window event). `components/PdpExtras.tsx` holds the video player, 360 viewer, model-viewer wrapper (npm `@google/model-viewer`, imported only when the 3D tab opens), size guide + finder, specs/care, live viewers and Q&A. Card hover video uses `metafields.videoUrl` (direct files only) via `components/HoverVideo.tsx`.
+
 ## 5. Known gaps / traps
 - Free-shipping threshold and flat fee are duplicated in `lib/pricing.ts` and `CartDrawer.tsx`; move to a settings table when admin exists.
 - Cart drawer shows client-side prices; fine because checkout re-prices, but cart validation on open is a TODO.

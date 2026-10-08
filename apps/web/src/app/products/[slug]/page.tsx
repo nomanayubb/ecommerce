@@ -9,6 +9,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { Reviews } from "@/components/Reviews";
 import { Stars } from "@/components/Stars";
 import { RecentlyViewed, RecordView } from "@/components/RecentlyViewed";
+import { CareSteps, LiveViewers, ProductQA, SpecsTable, type Meta } from "@/components/PdpExtras";
 
 const load = (slug: string) => api<ProductDetail>(`/products/${slug}`).catch(() => null);
 
@@ -26,6 +27,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
   const { store } = await getSite();
   const related = await api<{ items: ProductSummary[] }>(`/products/${slug}/related`).then((r) => r.items).catch(() => []);
 
+  const meta = (p.metafields ?? {}) as Meta;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -43,6 +45,11 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
     ["Delivery & returns", `Orders are packed within 1–2 working days. Free delivery over ${pkr(store.freeShippingThreshold)}, otherwise a flat ${pkr(store.shippingFee)}. Cash on delivery is available. If something is not right, contact us within 7 days.`],
     ["Payment", "Pay in cash when your order arrives. More payment methods are coming soon."],
   ];
+  // Optional rich sections, shown only when the shop filled them in (admin > Products > edit).
+  const rich: [string, React.ReactNode][] = [];
+  if (meta.specs?.length) rich.push(["Specifications", <SpecsTable key="s" specs={meta.specs} />]);
+  if (meta.material) rich.push([`Material: ${meta.material}`, <p key="m" className="text-sm leading-relaxed text-muted">{meta.materialNote || `Made from ${meta.material.toLowerCase()}.`}</p>]);
+  if (meta.care?.length) rich.push(["Care & maintenance", <CareSteps key="c" steps={meta.care} />]);
 
   return (
     <>
@@ -50,12 +57,13 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
       <RecordView p={{ id: p.id, slug, title: p.title, price: Number(p.selling_price), marked: Number(p.marked_price), image: p.images[0], brand: p.brand_name }} />
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Shop", href: "/products" }, { name: p.title }]} />
       <div className="grid gap-10 md:grid-cols-2 lg:gap-16">
-        <Gallery images={p.images} title={p.title} />
+        <Gallery images={p.images} title={p.title} videoUrl={meta.videoUrl || undefined} spinImages={meta.spinImages} modelUrl={p.model_3d_url || undefined} />
         <div className="md:sticky md:top-24 md:self-start">
           {p.brand_name && <p className="eyebrow">{p.brand_name}</p>}
           <h1 className="mt-2 text-3xl font-semibold leading-tight tracking-wide">{p.title}</h1>
           <div className="mb-6 mt-3 h-5">{!!p.rating_count && <a href="#reviews" className="inline-block" aria-label="Read reviews"><Stars value={Number(p.rating_avg)} size={16} count={p.rating_count} /></a>}</div>
           <BuyPanel p={p} />
+          <div className="mt-4"><LiveViewers slug={slug} /></div>
           <div className="mt-8 divide-y divide-line border-y border-line">
             {details.map(([t, body], i) => (
               <details key={t} open={i === 0} className="group py-4">
@@ -65,11 +73,20 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
                 <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{body}</p>
               </details>
             ))}
+            {rich.map(([t, node]) => (
+              <details key={t} className="group py-4">
+                <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase tracking-[0.2em]">
+                  {t}<span className="text-accent transition group-open:rotate-45">+</span>
+                </summary>
+                <div className="mt-3">{node}</div>
+              </details>
+            ))}
           </div>
         </div>
       </div>
 
       <Reviews slug={slug} />
+      <ProductQA slug={slug} />
 
       {related.length > 0 && (
         <section className="mt-24 pb-16 md:pb-0">

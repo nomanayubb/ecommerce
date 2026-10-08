@@ -7,11 +7,11 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 ## Kitchen product adventure (1-30)
 
-1. [ ] 3D rotating kitchen appliances
+1. [x] 3D rotating kitchen appliances
 2. [ ] Recipe finder using your kitchen products
 3. [ ] What can I cook? ingredient-to-product matcher
-4. [ ] AR kitchen preview on your counter
-5. [ ] Video recipe demos per product
+4. [x] AR kitchen preview on your counter
+5. [x] Video recipe demos per product
 6. [ ] Chef-curated bundles
 7. [ ] Cooking difficulty badges
 8. [ ] Prep-time estimator on recipe cards
@@ -22,10 +22,10 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 13. [ ] Meal planner using purchased products
 14. [ ] Shopping list generator from recipes
 15. [ ] Cooking timer on product pages
-16. [ ] Temperature guides
-17. [ ] Care & maintenance animated tutorials
+16. [~] Temperature guides
+17. [x] Care & maintenance animated tutorials
 18. [ ] Warranty visualizer
-19. [ ] Material explainer (ceramic, steel, cast iron)
+19. [x] Material explainer (ceramic, steel, cast iron)
 20. [ ] Compare cookware materials tool
 21. [ ] Sizzle animations on hover
 22. [ ] Splash effect when adding to cart
@@ -129,7 +129,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 108. [ ] Cards with ingredient hover reveal
 109. [ ] Cards with cooked-with tag
 110. [ ] Cards with animated price count-up
-111. [ ] Cards with video autoplay on hover
+111. [x] Cards with video autoplay on hover
 112. [ ] Cards with color extraction
 113. [~] Cards with rating star animation
 114. [x] Cards with stock meter bar
@@ -151,4 +151,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 130. [~] Back-to-top as rising souffle
 
 ---
-Total 130: 24 done, 13 partly, 93 not started (as of 2026-10-09).
+Total 130: 30 done, 14 partly, 86 not started (as of 2026-10-09).

@@ -11,6 +11,7 @@ export interface ProductSummary {
   brand_name: string | null;
   discount_pct: string | null;
   tags?: string[];
+  video_url?: string | null;
   rating_avg?: string | null;
   rating_count?: number;
 }
@@ -21,12 +22,15 @@ export interface Variant {
   price: string;
   stock_quantity: number;
   variant_attributes: Record<string, string>;
+  image_index?: number | null;
 }
 export interface ProductDetail extends ProductSummary {
   description: string | null;
   variants: Variant[];
   priceTiers: { min_qty: number; unit_price: string }[];
   moq: number;
+  model_3d_url?: string | null;
+  metafields?: Record<string, unknown>;
 }
 export interface CategoryNode {
   id: string;

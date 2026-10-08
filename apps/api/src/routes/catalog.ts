@@ -67,7 +67,7 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
       const total = Number((await pool.query(`SELECT count(*) ${from}`, args)).rows[0].count);
       const { rows } = await pool.query(
         `SELECT p.id, p.title, p.slug, p.marked_price, p.selling_price, p.stock_quantity, p.images, p.tags,
-                b.name AS brand_name, b.slug AS brand_slug,
+                p.metafields->>'videoUrl' AS video_url, b.name AS brand_name, b.slug AS brand_slug,
                 (SELECT round(avg(rv.rating)::numeric, 1) FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_avg,
                 ${RATING_COUNT} AS rating_count,
                 CASE WHEN p.marked_price > p.selling_price
@@ -116,7 +116,7 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
     // wholesale_price is only exposed via cart pricing for approved buyers.
     delete p.wholesale_price;
     const [variants, tiers] = await Promise.all([
-      pool.query("SELECT id, title, sku, price, stock_quantity, variant_attributes FROM product_variants WHERE product_id = $1", [p.id]),
+      pool.query("SELECT id, title, sku, price, stock_quantity, variant_attributes, image_index FROM product_variants WHERE product_id = $1", [p.id]),
       pool.query("SELECT min_qty, unit_price FROM price_tiers WHERE product_id = $1 ORDER BY min_qty", [p.id]),
     ]);
     return { ...p, variants: variants.rows, priceTiers: tiers.rows };

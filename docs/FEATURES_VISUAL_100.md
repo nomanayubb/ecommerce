@@ -30,22 +30,22 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 ## Product experience (21-40)
 
-21. [ ] 360° product rotation viewer
-22. [ ] AR view in your room (model-viewer)
+21. [x] 360° product rotation viewer
+22. [x] AR view in your room (model-viewer)
 23. [~] Zoom on hover with magnifier lens
-24. [ ] Video previews on product hover
+24. [x] Video previews on product hover
 25. [x] Quick view modal without page reload
-26. [ ] Size guide with fit predictor
-27. [ ] Color swatches that update images live
+26. [x] Size guide with fit predictor
+27. [x] Color swatches that update images live
 28. [x] Product comparison tool (side-by-side)
 29. [x] Recently viewed products carousel
 30. [~] Complete the look bundle suggestions
 31. [x] Stock scarcity indicators
-32. [ ] Live viewer count
+32. [x] Live viewer count
 33. [ ] Countdown timer for flash sales
 34. [ ] Customer photo gallery (UGC)
-35. [ ] Video reviews embedded
-36. [ ] Q&A section on product pages
+35. [~] Video reviews embedded
+36. [x] Q&A section on product pages
 37. [~] Estimated delivery date by zip code
 38. [x] Wishlist/favorites with heart animation
 39. [x] Save for later cart functionality
