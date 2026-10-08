@@ -66,6 +66,9 @@ Design tokens live in `apps/{web,admin}/src/app/globals.css` (identical core). `
 ## 4e. Storefront pages (professional pass)
 `/products` (server): filters live in the URL, category tree from `/categories/tree`. `/products/[slug]`: `Gallery` (client), `BuyPanel` (client, tier price preview mirrors `lib/pricing.ts` min-rule), `Breadcrumbs` (+JSON-LD). `/checkout` (client): posts `/cart/validate` for authoritative totals, then `/checkout/process` (COD only). `app/ph/[slug]/route.ts`: SVG placeholder art for products without photos. States: `not-found.tsx`, `loading.tsx`, `error.tsx`.
 
+## 4f. Shopper tools, mascot, motion (batches 3-4)
+`components/Shopper.tsx` (context: wishlist, compare <=4, recently viewed <=8, quick view; localStorage keys `wishlist compare recent`), `CardActions` (heart/compare/quick view on cards), `QuickView`, `CompareTray`, `RecentlyViewed` (+`LiteCard`, `RecordView`), `DeliveryEstimate`, `Gallery` (lightbox), pages `/wishlist` `/compare`; API `GET /products/:slug/related`. Motion: `lib/motion.ts` (`motionAllowed`, `fireConfetti`, `mascotSay`), `Motion.tsx` (ScrollProgress, Reveal, Tilt), `Mascot.tsx`, `Confetti.tsx`, `Logo3D.tsx`; visitor override `data-motion-pref` + `localStorage motion-pref`; site setting `data-motion`. CSS for all of it is in `globals.css` (custom classes in `@layer components`, reduced-motion scoped with `html:not([data-motion-pref="on"])`).
+
 ## 5. Known gaps / traps
 - Free-shipping threshold and flat fee are duplicated in `lib/pricing.ts` and `CartDrawer.tsx`; move to a settings table when admin exists.
 - Cart drawer shows client-side prices; fine because checkout re-prices, but cart validation on open is a TODO.

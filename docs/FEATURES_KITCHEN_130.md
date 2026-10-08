@@ -68,14 +68,14 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 ## 3D character & mascot (56-75)
 
-56. [ ] 3D mascot (chef character / kitchen spirit)
-57. [ ] Mascot on homepage hero (waving, idle)
-58. [ ] Mascot reacts to scroll (follows cursor, blinks)
+56. [~] 3D mascot (chef character / kitchen spirit)
+57. [~] Mascot on homepage hero (waving, idle)
+58. [~] Mascot reacts to scroll (follows cursor, blinks)
 59. [ ] Mascot loading animation
-60. [ ] Mascot empty states (sad empty cart, happy full)
-61. [ ] Mascot 404 page
-62. [ ] Mascot guides (points to CTAs, tips)
-63. [ ] Mascot celebrates (confetti on purchase)
+60. [x] Mascot empty states (sad empty cart, happy full)
+61. [x] Mascot 404 page
+62. [~] Mascot guides (points to CTAs, tips)
+63. [x] Mascot celebrates (confetti on purchase)
 64. [ ] Mascot seasonal outfits
 65. [ ] Mascot voice lines (optional audio)
 66. [ ] 3D animated logo on page load
@@ -83,7 +83,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 68. [ ] 3D logo watermark on product images
 69. [ ] Logo particles on hover
 70. [ ] Logo as 3D badge on packaging
-71. [ ] Interactive 3D logo (rotate with mouse)
+71. [x] Interactive 3D logo (rotate with mouse)
 72. [ ] Logo splash screen (3D reveal)
 73. [ ] Logo sound effect (optional jingle)
 74. [ ] Logo color-shift by theme
@@ -117,13 +117,13 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 96. [ ] Button ripple/splash on click
 97. [ ] Add-to-cart fly animation
 98. [x] Heart burst when wishlisting
-99. [ ] Confetti on checkout (brand colors)
+99. [x] Confetti on checkout (brand colors)
 100. [ ] Page transition wipes
 101. [ ] Scroll progress as filling measuring cup
 102. [ ] Cursor becomes whisk/spoon in kitchen sections
 103. [ ] Hover sounds (optional)
 104. [ ] Loading as stirring/chopping animation
-105. [ ] Toast notifications with mascot
+105. [~] Toast notifications with mascot
 106. [x] Product cards with 3D tilt
 107. [ ] Cards that flip to show recipe
 108. [ ] Cards with ingredient hover reveal
@@ -151,4 +151,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 130. [ ] Back-to-top as rising souffle
 
 ---
-Total 130: 3 done, 1 partly, 126 not started (as of 2026-10-08).
+Total 130: 8 done, 6 partly, 116 not started (as of 2026-10-08).

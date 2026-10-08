@@ -3,6 +3,7 @@ import { api, getSite, type CategoryNode, type ProductSummary } from "@/lib/api"
 import { ProductCard } from "@/components/ProductCard";
 import { Reveal } from "@/components/Motion";
 import { RecentlyViewed } from "@/components/RecentlyViewed";
+import { Logo3D } from "@/components/Logo3D";
 import { ArrowRightIcon } from "@/components/icons";
 import { applyPack } from "@/themes";
 
@@ -102,11 +103,16 @@ export default async function Home() {
       <RecentlyViewed />
 
       <Reveal className="mt-24">
-        <section className="glass px-6 py-14 text-center sm:px-16">
+        <section className={`glass px-6 py-14 sm:px-16 ${(branding.logoUrl || "").includes("logo-horizontal") ? "grid items-center gap-10 text-center md:grid-cols-[240px_1fr] md:text-left" : "text-center"}`}>
+          {(branding.logoUrl || "").includes("logo-horizontal") && (
+            <Logo3D src={branding.logoUrl.replace("logo-horizontal", "logo-mark")} srcDark={(branding.logoUrlDark || branding.logoUrl).replace("logo-horizontal", "logo-mark")} alt={branding.name} size={200} />
+          )}
+          <div>
           <p className="eyebrow">The {branding.name} promise</p>
           <p className="mx-auto mt-4 max-w-2xl text-xl font-medium leading-relaxed sm:text-2xl">
             {branding.promiseText || "Every order is checked, packed with care and sent with tracking."}
           </p>
+        </div>
         </section>
       </Reveal>
     </>

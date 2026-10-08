@@ -14,7 +14,7 @@ _Last updated: 2026-10-08. Update after every task (see `.claude/rules/workflow.
 
 ## Feature backlogs (user lists, 2026-10-08): read only the one you are working on
 - `docs/FEATURES_VISUAL_100.md` (visual/product/cart/search/account/trust/technical), `docs/FEATURES_THEME_100.md` (section library + theme settings), `docs/FEATURES_KITCHEN_130.md` (kitchen, icons, mascot, 3D, brand magic; open question: is the store kitchen-focused?).
-- ALL must follow `docs/DESIGN_SYSTEM_RULES.md` (one coherent system aligned with the logo; palette table there). Batching (user approved this order 2026-10-08): (1) premium-feel visuals + shared icon set + motion setting [DONE], (2) make every brand value swappable from settings [DONE, see NEW_PROJECT_GUIDE for what remains], (3) product experience [DONE], (4) mascot/3D [next], (2) product experience, (3) mascot/3D, (4) account/engagement (needs backend), (5) section/theme editor.
+- ALL must follow `docs/DESIGN_SYSTEM_RULES.md` (one coherent system aligned with the logo; palette table there). Batching (user approved this order 2026-10-08): (1) premium-feel visuals + shared icon set + motion setting [DONE], (2) make every brand value swappable from settings [DONE, see NEW_PROJECT_GUIDE for what remains], (3) product experience [DONE], (4) mascot/3D [DONE as a 2D logo-style character + CSS-3D logo; richer 3D optional], (5) account/engagement (needs backend) [next], (2) product experience, (3) mascot/3D, (4) account/engagement (needs backend), (5) section/theme editor.
 
 ## Next up (in order)
 1. (done 2026-10-08) DB running, API + web tested. Still untested: register/login flow by customer, wholesale pricing, webhook, browser UI (cart drawer, checkout form, theme toggle) — verify in a browser.

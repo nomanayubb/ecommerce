@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "./CartProvider";
 import { pkr } from "@/lib/api";
 import { useSite } from "./Site";
+import { MascotFigure } from "./Mascot";
 
 export function CartDrawer() {
   const { lines, open, setOpen, setQty, count } = useCart();
@@ -46,6 +47,7 @@ export function CartDrawer() {
             <ul className="flex-1 divide-y divide-line overflow-y-auto px-6">
               {lines.length === 0 && (
                 <li className="py-20 text-center">
+                  <MascotFigure mood="sad" size={96} className="mx-auto mb-4 text-fg" />
                   <p className="eyebrow">Your bag is empty</p>
                   <Link href="/products" onClick={() => setOpen(false)} className="btn btn-primary mt-6">Start shopping</Link>
                 </li>

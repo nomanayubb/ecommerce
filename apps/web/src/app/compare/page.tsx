@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { pkr, type ProductDetail } from "@/lib/api";
 import { useShopper } from "@/components/Shopper";
+import { MascotFigure } from "@/components/Mascot";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
 
@@ -22,6 +23,7 @@ export default function Compare() {
   if (compare.length === 0)
     return (
       <div className="py-24 text-center">
+        <MascotFigure mood="confused" size={96} className="mx-auto mb-4 text-fg" />
         <p className="eyebrow">Compare</p>
         <p className="mt-3 text-muted">Pick up to 4 products with the compare button on each card.</p>
         <Link href="/products" className="btn btn-primary mt-8">Browse the collection</Link>

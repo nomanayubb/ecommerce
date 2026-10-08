@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useShopper } from "@/components/Shopper";
 import { LiteCard } from "@/components/RecentlyViewed";
+import { MascotFigure } from "@/components/Mascot";
 
 export default function Wishlist() {
   const { wish, toggleWish } = useShopper();
@@ -14,6 +15,7 @@ export default function Wishlist() {
       </div>
       {wish.length === 0 ? (
         <div className="border border-dashed border-line py-24 text-center">
+          <MascotFigure mood="sad" size={96} className="mx-auto mb-4 text-fg" />
           <p className="eyebrow">Nothing saved yet</p>
           <p className="mt-3 text-muted">Tap the heart on any product to keep it here.</p>
           <Link href="/products" className="btn btn-primary mt-6">Browse the collection</Link>

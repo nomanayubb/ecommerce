@@ -139,6 +139,33 @@ html:not([data-motion-pref="on"]) .heart-burst { display: var(--burst-display, b
 @media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) .heart-burst { display: none; } }
 [data-motion="off"] .heart-burst, [data-motion-pref="off"] .heart-burst { display: none; }
 
+/* ===== Mascot, confetti, 3D logo (batch 4) ===== */
+.mascot { overflow: visible; }
+.m-blink { transform-box: fill-box; transform-origin: center; animation: m-blink 5s infinite; }
+@keyframes m-blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
+.m-pupils { transform: translate(var(--lx, 0px), var(--ly, 0px)); transition: transform .15s ease-out; }
+.mascot-float { animation: m-float 3.2s ease-in-out infinite alternate; }
+@keyframes m-float { from { transform: translateY(0); } to { transform: translateY(-5px); } }
+.mascot-wave .m-arm { transform-box: view-box; transform-origin: 12px 34px; animation: m-wave .9s ease-in-out infinite alternate; }
+@keyframes m-wave { from { transform: rotate(-12deg); } to { transform: rotate(22deg); } }
+.mascot-celebrate .m-body { animation: m-jump .6s cubic-bezier(.2,.7,.2,1) 3; }
+@keyframes m-jump { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-9px) rotate(-3deg); } 70% { transform: translateY(0) rotate(2deg); } }
+.mascot-sad .m-body { transform-box: view-box; transform-origin: 32px 56px; transform: rotate(-4deg); }
+.mascot-confused .m-body { transform-box: view-box; transform-origin: 32px 56px; animation: m-tilt 1.6s ease-in-out infinite alternate; }
+@keyframes m-tilt { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+.confetti-piece { position: absolute; top: -24px; animation-name: confetti-fall; animation-timing-function: cubic-bezier(.3,.6,.4,1); animation-fill-mode: forwards; }
+@keyframes confetti-fall { to { transform: translate(var(--sway), 108vh) rotate(var(--spin)); } }
+.logo3d-scene { perspective: 900px; }
+.logo3d-stage { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .2s ease-out; }
+.logo3d-layer { position: absolute; inset: 0; }
+.logo3d-sway { animation: logo3d-sway 7s ease-in-out infinite alternate; }
+@keyframes logo3d-sway { from { transform: rotateY(-22deg) rotateX(6deg); } to { transform: rotateY(22deg) rotateX(-6deg); } }
+[data-motion="subtle"] :is(.mascot-float, .m-blink, .logo3d-sway, .mascot-confused .m-body, .mascot-wave .m-arm) { animation: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion-pref="on"]) :is(.mascot-float, .m-blink, .logo3d-sway, .mascot-celebrate .m-body, .mascot-confused .m-body, .mascot-wave .m-arm) { animation: none; }
+  html:not([data-motion-pref="on"]) .logo3d-stage { transition: none; }
+}
+
 /* theme-pack decoration */
 .decor-p { position: absolute; will-change: transform; }
 .decor-fall  { top: -8%;  animation: decor-fall linear infinite; }

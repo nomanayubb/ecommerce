@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { api, type CategoryNode, type ProductSummary } from "@/lib/api";
 import { ProductCard } from "@/components/ProductCard";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { MascotFigure } from "@/components/Mascot";
 
 type SP = Record<string, string | undefined>;
 
@@ -117,6 +118,7 @@ export default async function Products({ searchParams }: { searchParams: Promise
             </div>
           ) : (
             <div className="border border-dashed border-line py-24 text-center">
+              <MascotFigure mood="confused" size={96} className="mx-auto mb-4 text-fg" />
               <p className="eyebrow">No results</p>
               <p className="mt-3 text-muted">Nothing matches those filters.</p>
               <Link href="/products" className="btn btn-primary mt-6">Clear filters</Link>

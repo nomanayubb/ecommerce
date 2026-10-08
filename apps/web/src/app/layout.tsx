@@ -14,6 +14,8 @@ import { SiteProvider } from "@/components/Site";
 import { ShopperProvider } from "@/components/Shopper";
 import { QuickView } from "@/components/QuickView";
 import { CompareTray } from "@/components/CompareTray";
+import { MascotAssistant } from "@/components/Mascot";
+import { ConfettiHost } from "@/components/Confetti";
 
 const getBranding = () => getSite().then((s) => s.branding);
 
@@ -69,6 +71,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <CartDrawer />
           <QuickView />
           <CompareTray />
+          <MascotAssistant />
+          <ConfettiHost />
         </ShopperProvider>
         </CartProvider>
         </SiteProvider>

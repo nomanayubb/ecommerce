@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api, pkr } from "@/lib/api";
 import { useCart } from "@/components/CartProvider";
+import { MascotFigure } from "@/components/Mascot";
+import { fireConfetti, mascotSay } from "@/lib/motion";
 
 interface Priced { subtotal: number; shippingFee: number; grandTotal: number; freeShippingRemaining: number }
 
@@ -42,6 +44,8 @@ export default function Checkout() {
       });
       clear();
       setDone(res);
+      fireConfetti();
+      mascotSay("celebrate", "Order placed. Thank you!");
       window.scrollTo({ top: 0 });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Checkout failed");
@@ -53,7 +57,7 @@ export default function Checkout() {
   if (done)
     return (
       <div className="mx-auto max-w-lg py-16 text-center">
-        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center border border-accent text-2xl text-accent">✓</div>
+        <MascotFigure mood="celebrate" size={120} className="mx-auto mb-4 text-fg" />
         <p className="eyebrow">Order confirmed</p>
         <h1 className="mt-3 text-3xl font-semibold uppercase tracking-[0.1em]">Thank you</h1>
         <p className="mt-4 text-muted">Your order <strong className="text-fg">#{done.orderNumber}</strong> has been placed. Please keep <strong className="text-fg">{pkr(done.grandTotal)}</strong> ready to pay in cash on delivery.</p>
@@ -64,6 +68,7 @@ export default function Checkout() {
   if (lines.length === 0)
     return (
       <div className="py-24 text-center">
+        <MascotFigure mood="sad" size={96} className="mx-auto mb-4 text-fg" />
         <p className="eyebrow">Checkout</p>
         <p className="mt-3 text-muted">Your bag is empty.</p>
         <Link href="/products" className="btn btn-primary mt-8">Browse the collection</Link>

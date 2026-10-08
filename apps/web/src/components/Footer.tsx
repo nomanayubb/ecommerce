@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { pkr, type CategoryNode, type Store } from "@/lib/api";
 import { Logo } from "./Header";
+import { AssistantToggle } from "./Mascot";
 import { CashIcon, SupportIcon, TruckIcon, ShieldIcon } from "./icons";
 
 const perks = (store: Store): [ReactNode, string, string][] => [
@@ -41,9 +42,12 @@ export function Footer({ brand, categories, store }: { brand: { name: string; ta
           <p className="mt-1 text-muted/70">More payment methods coming soon.</p>
         </div>
       </div>
-      <p className="border-t border-line py-5 text-center text-[0.7rem] uppercase tracking-[0.25em] text-muted">
+      <div className="flex flex-col items-center justify-between gap-3 border-t border-line px-4 py-5 sm:flex-row">
+        <p className="text-[0.7rem] uppercase tracking-[0.25em] text-muted">
         © {new Date().getFullYear()} {brand.name}. All rights reserved.
       </p>
+        <AssistantToggle />
+      </div>
     </footer>
   );
 }
