@@ -60,6 +60,9 @@ Order flow: client sends `{productId, variantId?, quantity}` only → server re-
 ## 4c. Admin (`apps/admin/src`)
 `components/Shell.tsx` (auth gate by sessionStorage token, sidebar), `lib/api.ts` (fetch with bearer, 401 -> /login), pages: `login`, `/` dashboard, `products` (+`/new`), `orders`, `settings`. Staff-only; WAREHOUSE cannot create products or change settings.
 
+## 4d. Brand, tokens, logo pipeline
+Design tokens live in `apps/{web,admin}/src/app/globals.css` (identical core). `lib/branding.ts brandingCss()` overrides `--brand/--on-brand/--accent/--radius/--font` from DB branding (`accentColor`, `logoUrlDark` included). Logos: `components/Header.tsx <Logo>` renders light + dark `<img>`; CSS shows the right one per `data-theme`. Assets built by `scripts/build-brand.py` from `brand-source/logo.jpg`.
+
 ## 5. Known gaps / traps
 - Free-shipping threshold and flat fee are duplicated in `lib/pricing.ts` and `CartDrawer.tsx`; move to a settings table when admin exists.
 - Cart drawer shows client-side prices; fine because checkout re-prices, but cart validation on open is a TODO.

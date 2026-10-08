@@ -37,16 +37,10 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Verified live: validation rejects `javascript:` logo and bad colors; unauthenticated PUT -> 401; switching to Halloween via the admin API changed the rendered storefront (brand color, dark default, serif font, announcement, 28 decor nodes) after the 30s ISR window; admin login page 200. tsc clean in api/web/admin.
 - NOT verified: admin pages in a real browser (login flow, grid save, order status UI), mobile layout.
 
-## 2026-10-08 — Averixa brand kit + theme
-- `brand/make_variants.py`: from the logo JPG builds 10 variants (transparent lockup/mark, horizontal, mono, white reverse, app icon, badge, stacked-on-dark) + web assets (webp mark/lockups, favicon.ico, icons 192/512, og-image) + contact sheet. Alpha is derived from distance to the cream background with colour un-premultiply (no halo). Navy mono variant is muddy; not used.
-- Theme: new palette tokens (charcoal brand, gold accent, cream bg, dark/OLED), `--on-brand` auto-contrast (`lib/branding.ts onBrand`), Tailwind `onbrand`/`accent` colours; header logo mark + letterspaced wordmark + gold hairline; hero redesigned (gradient, tagline eyebrow, gold CTA, logo art); footer component; product card hover lift; admin sidebar/login logos; favicon/OG metadata.
-- `seed.ts` sets Averixa branding while the settings row is still the untouched default.
-- Verified: tsc clean (web/admin/api); services restarted; home page screenshot in the in-app browser shows the new theme. Fixed hero logo being clipped at the right edge. NOT verified: other pages visually, dark/OLED, mobile, admin pages in a browser.
-
-## 2026-10-08 - Drawn logo candidates (logo work only)
-- `brand/draw_logo.py` draws the Averixa logo as SVG (gold A whose right leg becomes a gridded cart, geometric AVERIXA wordmark, tagline): `brand/drawn/averixa-{stacked-color,horizontal-color,stacked-on-dark,app-icon,mark}.svg` + `index.html` preview. Combines v1 (clear cart, gold depth) with v2 (flat, geometric). Viewed in the in-app browser; wordmark spacing/tips and cart stroke weights were fixed after the first render.
-- Site was NOT changed by this step. Tagline is live SVG text (convert to outlines for final print use). Not yet chosen/approved by the user.
-
-## 2026-10-08 - Removed drawn logo candidates
-- Deleted `brand/draw_logo.py` and `brand/drawn/*` (SVG candidates + preview) at the user's request; they are not needed. The brand kit (`brand/make_variants.py`, `brand/out/`) is unchanged.
-- Also set aside (git stash `20:11 rollback of theme files`) an uncommitted rollback of the theme files so the working tree matches `main` again.
+## 2026-10-08 — AVERIXA logo pipeline + black/gold luxury theme
+- User clarified: the 20:11 rollback of the other session's theme was THEIR deliberate rewind (I had wrongly stashed it, then restored it via `git stash pop`; docs conflicts resolved to the rewound versions). Also removed `brand/draw_logo.py` and `brand/drawn/` at their request.
+- Logo: `scripts/build-brand.py` (source `brand-source/logo.jpg`) -> transparent, cropped, per-theme logos in `apps/*/public/brand/` (header lockup 14KB WebP vs 126KB original JPEG), favicon, apple-touch/192/512 icons, 1200x630 og-image.
+- Theme: new tokens in both `globals.css` (cream light, charcoal dark default, OLED), `--on-brand` auto-contrast, `--accent`; utility classes (`.btn`, `.eyebrow`, `.gold-rule`, `.lift`); Tailwind `onbrand`/`accent` colours.
+- Storefront: header (logo swaps per theme, uppercase nav, mega menu, mobile `<details>` menu, bag badge, 3-state theme toggle), hero with logo-inspired line art, category tiles, product cards, brand promise, footer (perks strip, shop links, payment). Metadata: title template, OG/Twitter, icons, viewport theme colour.
+- API: branding schema + `accentColor`, `logoUrlDark`; migration `003_averixa_branding.sql` sets AVERIXA defaults. Admin: dark default, logos on sign-in + sidebar, accent/dark-logo fields in Brand & theme.
+- Verified: tsc clean (api/web/admin); API restarted, `/settings` returns AVERIXA; screenshots of storefront home (hero, categories) and admin sign-in look correct in the in-app browser. NOT verified: PDP, product list, cart drawer, checkout, light/OLED modes, mobile, admin inner pages.

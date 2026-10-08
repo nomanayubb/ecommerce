@@ -33,8 +33,11 @@ export default function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <form onSubmit={submit} className="w-full max-w-sm space-y-3 rounded-xl border border-line bg-card p-6">
-        <img src="/logo-full.webp" alt="Logo" className="mx-auto h-28 w-auto" />
-        <h1 className="text-center text-xl font-bold">Admin sign in</h1>
+        <div className="mb-2 text-center">
+          <img src="/brand/logo-full.webp" alt="AVERIXA" width={720} height={560} className="logo-on-light mx-auto h-32 w-auto" />
+          <img src="/brand/logo-full-dark.webp" alt="AVERIXA" width={720} height={560} className="logo-on-dark mx-auto h-32 w-auto" />
+        </div>
+        <h1 className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-accent">Admin sign in</h1>
         <input name="email" type="email" required placeholder="Email" autoComplete="username" className={input} />
         <input name="password" type="password" required placeholder="Password" autoComplete="current-password" className={input} />
         {error && <p role="alert" className="text-sm text-red-500">{error}</p>}

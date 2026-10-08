@@ -22,10 +22,14 @@ Start dev (3 terminals, repo root): `npm run dev:db -w api` -> `npm run migrate 
 Docker is broken on this PC (WSL VM) and the winget Postgres installer returns 403, so DB = `embedded-postgres` (npm), data in `apps/api/.pgdata`, creds shop/shop (dev only).
 
 ## Design intent (user requirement)
-Everything visual must be swappable from files/settings so another project can reuse the code: brand name, logo, colors, radius, font, announcement come from DB `site_settings.branding` (admin "Brand & theme"); occasion looks (Halloween, Eid, Christmas, Black Friday, Independence) are **theme packs** = one data file each in `apps/web/src/themes/packs/`. User wants ~100 "beauty elements" grouped by occasion category; build them as parametric pieces driven by pack data. User will send their logo to match the design.
+Everything visual must be swappable from files/settings so another project can reuse the code: brand name, logo, colors, radius, font, announcement come from DB `site_settings.branding` (admin "Brand & theme"); occasion looks (Halloween, Eid, Christmas, Black Friday, Independence) are **theme packs** = one data file each in `apps/web/src/themes/packs/`. User wants ~100 "beauty elements" grouped by occasion category; build them as parametric pieces driven by pack data. 
 
-## Brand: Averixa (logo received 2026-10-08)
-Palette = charcoal (brand) + gold (accent) + warm cream surfaces; tokens live in `apps/*/src/app/globals.css` (`--brand --accent --on-brand --hero-a/b`), brand name/logo/colors in DB branding (seeded by `seed.ts`). Brand kit generator: `brand/make_variants.py` (source `brand/source/logo-original.jpg` -> `brand/out/*`, copied to `apps/{web,admin}/public`). A 2nd, flatter logo version was shown inline but is NOT on disk; user wants the best of both (flat/geometric wordmark of v2 + gold depth and clear cart of v1). Needs the file to process.
+## Brand: AVERIXA (logo received 2026-10-08)
+Flat line-art logo: ink `#1E1E20`, gold `#C89C3A`, cream `#FAF6EE`; tagline "Your world. Our store." Default look = BLACK theme (user prefers it) with gold accents, 2px corners, uppercase letter-spaced type; light (cream) and OLED are toggles.
+- Logo pipeline: `brand-source/logo.jpg` -> `python scripts/build-brand.py` -> transparent PNG/WebP (light + `-dark` twins), mark, horizontal lockup, icons, og-image into `apps/{web,admin}/public/brand/`. Replace the source + re-run to rebrand another project.
+- Tokens (`--bg --fg --muted --card --line --brand --on-brand --accent --radius --font`) in `apps/*/src/app/globals.css`; logo swap by theme via `.logo-on-light/.logo-on-dark`; `.btn .btn-primary .btn-ghost .eyebrow .gold-rule .lift` utility classes.
+- Initial branding row set by migration `003_averixa_branding.sql`; later edits via admin "Brand & theme" (adds accent color + dark logo).
+- Unused leftovers from an earlier session in `apps/*/public/logo-*.webp`, `brand/` (3D v1 logo kit) — safe to delete once confirmed.
 
 ## Hard facts
 - Payment methods allowed = env `ENABLED_PAYMENT_METHODS` (default `COD`). EasyPaisa/JazzCash adapters not built (no API access yet).

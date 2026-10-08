@@ -47,10 +47,10 @@ export async function api<T>(path: string, init?: RequestInit & { revalidate?: n
 export const pkr = (n: number | string) => `Rs. ${Number(n).toLocaleString("en-PK")}`;
 
 export interface Branding {
-  name: string; tagline: string; logoUrl: string; brandColor: string; brandColorDark: string;
+  name: string; tagline: string; logoUrl: string; logoUrlDark?: string; brandColor: string; brandColorDark: string; accentColor?: string;
   radius: number; font: "system" | "serif" | "rounded" | "mono"; defaultTheme: "light" | "dark" | "oled"; announcement: string; pack?: string;
 }
 export const DEFAULT_BRANDING: Branding = {
-  name: "Store", tagline: "", logoUrl: "", brandColor: "#4f46e5", brandColorDark: "#818cf8",
-  radius: 8, font: "system", defaultTheme: "light", announcement: "", pack: "default",
+  name: "AVERIXA", tagline: "Your world. Our store.", logoUrl: "/brand/logo-horizontal.webp", logoUrlDark: "/brand/logo-horizontal-dark.webp", brandColor: "#1c1c1e", brandColorDark: "#d4aa46", accentColor: "#b88c2c",
+  radius: 2, font: "system", defaultTheme: "dark", announcement: "", pack: "default",
 };
