@@ -17,7 +17,7 @@ Do not browse the repo, `node_modules`, lockfiles, or unrelated files. Rules are
 - `docs/` — ARCHITECTURE, REMAINING_TASKS, CHANGELOG, SPEC_NOTES
 
 ## Current status (update on every milestone)
-RUNNING and tested locally (2026-10-08): API + storefront + embedded Postgres. Redis not installed (cache fails open).
+RUNNING and tested locally (2026-10-08): API + storefront + admin + embedded Postgres; full buy flow (PDP -> bag -> checkout -> COD order) verified in the browser. Redis not installed (cache fails open).
 Start dev (3 terminals, repo root): `npm run dev:db -w api` -> `npm run migrate && npm run seed -w api` (first time) -> `npm run dev:api` -> `npm run dev -w web` -> `npm run dev -w admin`.
 Docker is broken on this PC (WSL VM) and the winget Postgres installer returns 403, so DB = `embedded-postgres` (npm), data in `apps/api/.pgdata`, creds shop/shop (dev only).
 

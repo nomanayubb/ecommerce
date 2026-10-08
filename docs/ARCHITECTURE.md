@@ -63,6 +63,9 @@ Order flow: client sends `{productId, variantId?, quantity}` only → server re-
 ## 4d. Brand, tokens, logo pipeline
 Design tokens live in `apps/{web,admin}/src/app/globals.css` (identical core). `lib/branding.ts brandingCss()` overrides `--brand/--on-brand/--accent/--radius/--font` from DB branding (`accentColor`, `logoUrlDark` included). Logos: `components/Header.tsx <Logo>` renders light + dark `<img>`; CSS shows the right one per `data-theme`. Assets built by `scripts/build-brand.py` from `brand-source/logo.jpg`.
 
+## 4e. Storefront pages (professional pass)
+`/products` (server): filters live in the URL, category tree from `/categories/tree`. `/products/[slug]`: `Gallery` (client), `BuyPanel` (client, tier price preview mirrors `lib/pricing.ts` min-rule), `Breadcrumbs` (+JSON-LD). `/checkout` (client): posts `/cart/validate` for authoritative totals, then `/checkout/process` (COD only). `app/ph/[slug]/route.ts`: SVG placeholder art for products without photos. States: `not-found.tsx`, `loading.tsx`, `error.tsx`.
+
 ## 5. Known gaps / traps
 - Free-shipping threshold and flat fee are duplicated in `lib/pricing.ts` and `CartDrawer.tsx`; move to a settings table when admin exists.
 - Cart drawer shows client-side prices; fine because checkout re-prices, but cart validation on open is a TODO.

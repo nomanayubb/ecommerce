@@ -59,7 +59,7 @@ export default async function Home() {
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             {categories.slice(0, 6).map((c, i) => (
               <Link key={c.id} href={`/products?category=${c.slug}`} className="lift group relative block aspect-[4/3] overflow-hidden border border-line">
-                <img src={`https://picsum.photos/seed/${c.slug}-cat/800/600`} alt="" loading="lazy" width={800} height={600} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                <img src={`/ph/${c.slug}?ar=4x3`} alt="" loading="lazy" width={800} height={600} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute bottom-0 p-5 text-[#f5f0e6]">
                   <p className="text-[0.65rem] uppercase tracking-[0.3em] text-[#d4aa46]">{String(i + 1).padStart(2, "0")}</p>

@@ -83,7 +83,7 @@ export function Header({ categories, brand }: { categories: CategoryNode[]; bran
           <input name="q" placeholder="Search" aria-label="Search products" className="w-36 border-b border-line bg-transparent px-1 py-1 text-sm outline-none transition-all placeholder:text-muted focus:w-52 focus:border-accent" />
         </form>
         <ThemeToggle />
-        <button onClick={() => setOpen(true)} className="relative py-3 pl-1 text-[0.7rem] font-semibold uppercase tracking-[0.22em] transition hover:text-accent" aria-label={`Open cart, ${count} items`}>
+        <button onClick={() => setOpen(true)} className="relative flex items-center whitespace-nowrap py-3 pl-1 text-[0.7rem] font-semibold uppercase tracking-[0.22em] transition hover:text-accent" aria-label={`Open cart, ${count} items`}>
           Bag
           <span className="ml-1.5 inline-flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-[0.65rem] leading-5 text-onbrand">{count}</span>
         </button>

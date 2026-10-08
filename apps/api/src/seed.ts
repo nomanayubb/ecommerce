@@ -75,10 +75,10 @@ for (const p of products) {
     `INSERT INTO products (title, slug, sku, status, marked_price, selling_price, wholesale_price, brand_id,
                            stock_quantity, moq, images, tags, description)
      VALUES ($1,$2,$3,'PUBLISHED',$4,$5,$6,$7,$8,$9,$10,$11,$12)
-     ON CONFLICT (slug) DO UPDATE SET stock_quantity = EXCLUDED.stock_quantity, selling_price = EXCLUDED.selling_price
+     ON CONFLICT (slug) DO UPDATE SET stock_quantity = EXCLUDED.stock_quantity, selling_price = EXCLUDED.selling_price, images = EXCLUDED.images
      RETURNING id`,
     [p.title, p.slug, p.slug.toUpperCase(), p.marked, p.price, p.wholesale ?? null, p.brand, p.stock, p.moq ?? 1,
-     JSON.stringify([`https://picsum.photos/seed/${p.slug}/800/800`, `https://picsum.photos/seed/${p.slug}-2/800/800`]),
+     JSON.stringify([`/ph/${p.slug}`, `/ph/${p.slug}?v=2`]),
      p.tags ?? [], `${p.title}. Sample product for development.`]
   )).rows[0].id;
   await pool.query("INSERT INTO product_categories VALUES ($1,$2) ON CONFLICT DO NOTHING", [id, p.cat]);
