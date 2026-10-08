@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { api, pkr } from "@/lib/api";
+import { pkr } from "@/lib/api";
+import { send } from "@/lib/client";
+import { useSession } from "@/components/SessionProvider";
 import { useCart } from "@/components/CartProvider";
 import { MascotFigure } from "@/components/Mascot";
 import { fireConfetti, mascotSay } from "@/lib/motion";
@@ -12,6 +14,8 @@ interface Priced { subtotal: number; shippingFee: number; grandTotal: number; fr
 export default function Checkout() {
   const { lines, clear } = useCart();
   const [priced, setPriced] = useState<Priced | null>(null);
+  const { user, ready } = useSession();
+  const [saved, setSaved] = useState<{ id: string; label: string | null; name: string; phone: string; line1: string; city: string; postal_code: string | null; is_default: boolean }[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<{ orderNumber: number; grandTotal: number } | null>(null);
@@ -22,10 +26,22 @@ export default function Checkout() {
   // Server is the source of truth for totals (prices, tiers, shipping).
   useEffect(() => {
     if (!lines.length) return setPriced(null);
-    api<Priced>("/cart/validate", { method: "POST", body: JSON.stringify({ items: JSON.parse(key) }) })
+    send<Priced>("POST", "cart/validate", { items: JSON.parse(key) })
       .then((r) => { setPriced(r); setError(""); })
       .catch((e) => setError(e.message));
   }, [key, lines.length]);
+
+  type Addr = (typeof saved)[number];
+  const fillAddr = (a: Addr) => {
+    const form = document.getElementById("checkout-form") as HTMLFormElement | null;
+    if (!form) return;
+    const set = (n: string, v: string) => { const el = form.elements.namedItem(n) as HTMLInputElement | null; if (el) el.value = v; };
+    set("name", a.name); set("phone", a.phone); set("line1", a.line1); set("city", a.city); set("postalCode", a.postal_code ?? "");
+  };
+  useEffect(() => {
+    if (!user) return;
+    send<Addr[]>("GET", "account/addresses").then((list) => { setSaved(list); const d = list.find((x) => x.is_default); if (d) setTimeout(() => fillAddr(d), 0); }).catch(() => {});
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -33,14 +49,11 @@ export default function Checkout() {
     setBusy(true);
     setError("");
     try {
-      const res = await api<{ orderNumber: number; grandTotal: number }>("/checkout/process", {
-        method: "POST",
-        body: JSON.stringify({
-          items: payload,
-          shippingAddress: { name: f.get("name"), phone: f.get("phone"), line1: f.get("line1"), city: f.get("city"), postalCode: f.get("postalCode") || undefined, country: "PK" },
-          notes: f.get("notes") || undefined,
-          paymentMethod: "COD",
-        }),
+      const res = await send<{ orderNumber: number; grandTotal: number }>("POST", "checkout/process", {
+        items: payload,
+        shippingAddress: { name: f.get("name"), phone: f.get("phone"), line1: f.get("line1"), city: f.get("city"), postalCode: f.get("postalCode") || undefined, country: "PK" },
+        notes: f.get("notes") || undefined,
+        paymentMethod: "COD",
       });
       clear();
       setDone(res);
@@ -85,6 +98,14 @@ export default function Checkout() {
         <form onSubmit={submit} className="space-y-10" id="checkout-form">
           <section>
             <h2 className="eyebrow mb-5">1 · Delivery details</h2>
+            {ready && !user && <p className="mb-5 border border-line bg-card px-4 py-3 text-sm text-muted"><a href="/login?next=/checkout" className="text-accent hover:underline">Sign in</a> for faster checkout and order history, or continue as a guest.</p>}
+            {saved.length > 0 && (
+              <label className="mb-5 block"><span className="mb-1.5 block text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted">Use a saved address</span>
+                <select onChange={(e) => { const a = saved.find((x) => x.id === e.target.value); if (a) fillAddr(a); }} defaultValue={saved.find((x) => x.is_default)?.id} className="w-full border border-line bg-card px-4 py-3 text-sm">
+                  {saved.map((x) => <option key={x.id} value={x.id}>{x.label || x.line1} · {x.city}</option>)}
+                </select>
+              </label>
+            )}
             <div className="grid gap-4 sm:grid-cols-2">
               <label><span className={label}>Full name</span><input name="name" required autoComplete="name" className={field} /></label>
               <label><span className={label}>Phone</span><input name="phone" required type="tel" autoComplete="tel" placeholder="03XX XXXXXXX" minLength={7} className={field} /></label>

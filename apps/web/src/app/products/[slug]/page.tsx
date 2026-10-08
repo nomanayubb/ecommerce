@@ -6,6 +6,8 @@ import { BuyPanel } from "@/components/BuyPanel";
 import { Gallery } from "@/components/Gallery";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ProductCard } from "@/components/ProductCard";
+import { Reviews } from "@/components/Reviews";
+import { Stars } from "@/components/Stars";
 import { RecentlyViewed, RecordView } from "@/components/RecentlyViewed";
 
 const load = (slug: string) => api<ProductDetail>(`/products/${slug}`).catch(() => null);
@@ -32,6 +34,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
     image: p.images,
     description: p.description ?? undefined,
     brand: p.brand_name ? { "@type": "Brand", name: p.brand_name } : undefined,
+    aggregateRating: p.rating_count ? { "@type": "AggregateRating", ratingValue: p.rating_avg, reviewCount: p.rating_count } : undefined,
     offers: { "@type": "Offer", priceCurrency: "PKR", price: p.selling_price, availability: p.stock_quantity > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" },
   };
 
@@ -50,7 +53,8 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
         <Gallery images={p.images} title={p.title} />
         <div className="md:sticky md:top-24 md:self-start">
           {p.brand_name && <p className="eyebrow">{p.brand_name}</p>}
-          <h1 className="mb-6 mt-2 text-3xl font-semibold leading-tight tracking-wide">{p.title}</h1>
+          <h1 className="mt-2 text-3xl font-semibold leading-tight tracking-wide">{p.title}</h1>
+          <div className="mb-6 mt-3 h-5">{!!p.rating_count && <a href="#reviews" className="inline-block" aria-label="Read reviews"><Stars value={Number(p.rating_avg)} size={16} count={p.rating_count} /></a>}</div>
           <BuyPanel p={p} />
           <div className="mt-8 divide-y divide-line border-y border-line">
             {details.map(([t, body], i) => (
@@ -64,6 +68,8 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
           </div>
         </div>
       </div>
+
+      <Reviews slug={slug} />
 
       {related.length > 0 && (
         <section className="mt-24 pb-16 md:pb-0">

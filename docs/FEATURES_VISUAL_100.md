@@ -67,7 +67,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 52. [ ] Cart abandonment save (email capture)
 53. [ ] Multi-currency switcher
 54. [ ] Tax calculator by region
-55. [ ] One-click reorder from history
+55. [x] One-click reorder from history
 
 ## Search & navigation (56-70)
 
@@ -91,13 +91,13 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 71. [ ] Social login (Google, Apple, Facebook)
 72. [ ] Passwordless login (magic link)
-73. [ ] Order tracking with live map
-74. [ ] Loyalty points dashboard
+73. [~] Order tracking with live map
+74. [x] Loyalty points dashboard
 75. [ ] Referral program with unique links
 76. [ ] Wishlist sharing
-77. [ ] Address book with multiple addresses
+77. [x] Address book with multiple addresses
 78. [ ] Subscription management
-79. [ ] Reward tiers with progress
+79. [x] Reward tiers with progress
 80. [ ] Personalized recommendations
 
 ## Engagement & trust (81-90)
@@ -108,7 +108,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 84. [ ] Exit-intent popup with offer
 85. [ ] Spin-to-win wheel
 86. [~] Trust badges (SSL, secure payment)
-87. [ ] Verified reviews with photos
+87. [~] Verified reviews with photos
 88. [ ] Instagram feed integration
 89. [ ] TikTok shop integration
 90. [ ] Live shopping events
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [ ] Analytics dashboard with heatmaps
 
 ---
-Total 100: 22 done, 13 partly, 65 not started (as of 2026-10-08).
+Total 100: 26 done, 15 partly, 59 not started (as of 2026-10-09).

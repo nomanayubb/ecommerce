@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { pkr, type CategoryNode, type Store } from "@/lib/api";
 import { Logo } from "./Header";
 import { AssistantToggle } from "./Mascot";
+import { NewsletterForm } from "./NewsletterForm";
 import { CashIcon, SupportIcon, TruckIcon, ShieldIcon } from "./icons";
 
 const perks = (store: Store): [ReactNode, string, string][] => [
@@ -28,11 +29,14 @@ export function Footer({ brand, categories, store }: { brand: { name: string; ta
         <div className="md:col-span-2">
           <Logo logo={brand.logoUrl} logoDark={brand.logoUrlDark} name={brand.name} className="h-11" />
           {brand.tagline && <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">{brand.tagline} {brand.footerText}</p>}
+          <NewsletterForm />
         </div>
         <nav className="text-sm">
           <p className="eyebrow mb-4">Shop</p>
           <ul className="space-y-2 text-muted">
             <li><Link href="/products" className="hover:text-accent">All products</Link></li>
+            <li><Link href="/track" className="hover:text-accent">Track your order</Link></li>
+            <li><Link href="/account" className="hover:text-accent">My account</Link></li>
             {categories.map((c) => <li key={c.id}><Link href={`/products?category=${c.slug}`} className="hover:text-accent">{c.name}</Link></li>)}
           </ul>
         </nav>

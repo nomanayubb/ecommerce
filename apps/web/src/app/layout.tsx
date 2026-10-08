@@ -11,6 +11,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ScrollProgress } from "@/components/Motion";
 import { SiteProvider } from "@/components/Site";
+import { SessionProvider } from "@/components/SessionProvider";
 import { ShopperProvider } from "@/components/Shopper";
 import { QuickView } from "@/components/QuickView";
 import { CompareTray } from "@/components/CompareTray";
@@ -58,6 +59,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <ScrollProgress />
         <Decor decor={pack.decor} />
         <SiteProvider value={{ branding, store }}>
+        <SessionProvider>
         <CartProvider>
         <ShopperProvider>
           {branding.announcement && (
@@ -75,6 +77,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <ConfettiHost />
         </ShopperProvider>
         </CartProvider>
+        </SessionProvider>
         </SiteProvider>
       </body>
     </html>

@@ -7,6 +7,8 @@ import { catalogRoutes } from "./routes/catalog.js";
 import { checkoutRoutes } from "./routes/checkout.js";
 import { adminRoutes } from "./routes/admin.js";
 import { settingsRoutes } from "./routes/settings.js";
+import { accountRoutes } from "./routes/account.js";
+import { engagementRoutes } from "./routes/engagement.js";
 import { CartError } from "./lib/pricing.js";
 
 export type Role = "SUPER_ADMIN" | "ADMIN" | "WAREHOUSE" | "CUSTOMER" | "WHOLESALE";
@@ -25,6 +27,12 @@ await app.register(jwt, {
   secret: process.env.JWT_SECRET ?? (() => { throw new Error("JWT_SECRET not set"); })(),
 });
 
+// Accept an empty body with a JSON content-type (DELETE/POST-without-payload from browsers and proxies).
+app.addContentTypeParser("application/json", { parseAs: "string" }, (_req, body, done) => {
+  if (!body) return done(null, {});
+  try { done(null, JSON.parse(body as string)); } catch { const e: any = new Error("Invalid JSON body"); e.statusCode = 400; done(e); }
+});
+
 app.setErrorHandler((err: any, _req, reply) => {
   if (err instanceof CartError) return reply.status(err.status).send({ success: false, error: err.message });
   if (err.name === "ZodError") return reply.status(400).send({ success: false, error: "Invalid input", issues: err.issues });
@@ -38,6 +46,8 @@ await app.register(authRoutes, { prefix: "/api/v1/auth" });
 await app.register(catalogRoutes, { prefix: "/api/v1" });
 await app.register(checkoutRoutes, { prefix: "/api/v1" });
 await app.register(settingsRoutes, { prefix: "/api/v1" });
+await app.register(accountRoutes, { prefix: "/api/v1" });
+await app.register(engagementRoutes, { prefix: "/api/v1" });
 await app.register(adminRoutes, { prefix: "/api/v1/admin" });
 
 await app.listen({ port: Number(process.env.PORT ?? 4000), host: "0.0.0.0" });

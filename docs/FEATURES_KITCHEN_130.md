@@ -151,4 +151,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 130. [ ] Back-to-top as rising souffle
 
 ---
-Total 130: 8 done, 6 partly, 116 not started (as of 2026-10-08).
+Total 130: 8 done, 6 partly, 116 not started (as of 2026-10-09).

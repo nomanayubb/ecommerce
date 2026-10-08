@@ -5,6 +5,7 @@ import { pkr, type ProductDetail } from "@/lib/api";
 import { useCart } from "./CartProvider";
 import { useSite } from "./Site";
 import { DeliveryEstimate } from "./DeliveryEstimate";
+import { StockAlert } from "./NewsletterForm";
 import { CashIcon, PackageIcon, SupportIcon, TruckIcon } from "./icons";
 
 export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; compact?: boolean; onAdded?: () => void }) {
@@ -92,6 +93,7 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
         </div>
         <div className="flex-1">{cta}</div>
       </div>
+      {soldOut && <StockAlert slug={p.slug} />}
       {p.moq > 1 && <p className="text-xs text-muted">Minimum order quantity: {p.moq}</p>}
 
       {!compact && <DeliveryEstimate />}

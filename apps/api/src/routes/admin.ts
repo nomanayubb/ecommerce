@@ -168,6 +168,24 @@ export const adminRoutes: FastifyPluginAsync = async (app) => {
     return { id: r.rows[0].id, status };
   });
 
+  // ---- review moderation
+  app.get("/reviews", async (req) => {
+    const q = z.object({ status: z.enum(["PENDING", "APPROVED", "REJECTED"]).optional() }).parse(req.query);
+    return (await pool.query(
+      `SELECT r.id, r.rating, r.title, r.body, r.verified, r.status, r.helpful_count, r.created_at, p.title AS product_title, p.slug AS product_slug,
+              coalesce(u.first_name || ' ' || u.last_name, u.email) AS author, u.email
+       FROM reviews r JOIN products p ON p.id = r.product_id JOIN users u ON u.id = r.user_id
+       WHERE ($1::text IS NULL OR r.status = $1) ORDER BY (r.status = 'PENDING') DESC, r.created_at DESC LIMIT 200`, [q.status ?? null])).rows;
+  });
+
+  app.patch<{ Params: { id: string } }>("/reviews/:id", { preHandler: adminOnly }, async (req, reply) => {
+    const { status } = z.object({ status: z.enum(["APPROVED", "REJECTED", "PENDING"]) }).parse(req.body);
+    const r = await pool.query("UPDATE reviews SET status = $2 WHERE id = $1 RETURNING id", [z.string().uuid().parse(req.params.id), status]);
+    if (!r.rowCount) return reply.status(404).send({ success: false, error: "Review not found" });
+    await delPattern("catalog:*"); // ratings are part of cached catalog lists
+    return { id: r.rows[0].id, status };
+  });
+
   app.get("/analytics/summary", async () =>
     cached("admin:analytics:summary", 30, async () => {
       const { rows } = await pool.query(

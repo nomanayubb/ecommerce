@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { CategoryNode } from "@/lib/api";
 import { useCart } from "./CartProvider";
-import { BagIcon, ContrastIcon, HeartIcon, MenuIcon, MotionIcon, SearchIcon } from "./icons";
+import { BagIcon, ContrastIcon, HeartIcon, MenuIcon, MotionIcon, SearchIcon, UserIcon } from "./icons";
+import { useSession } from "./SessionProvider";
 import { useShopper } from "./Shopper";
 
 const THEMES = ["dark", "oled", "light"] as const;
@@ -92,6 +93,7 @@ function MegaItem({ node }: { node: CategoryNode }) {
 export function Header({ categories, brand }: { categories: CategoryNode[]; brand: { name: string; logoUrl: string; logoUrlDark?: string } }) {
   const { count, setOpen } = useCart();
   const { wish } = useShopper();
+  const { user } = useSession();
   const [hidden, setHidden] = useState(false);
   const last = useRef(0);
 
@@ -120,6 +122,8 @@ export function Header({ categories, brand }: { categories: CategoryNode[]; bran
               <Link key={c.id} href={`/products?category=${c.slug}`} className="block py-2 uppercase tracking-widest">{c.name}</Link>
             ))}
             <Link href="/products" className="block py-2 uppercase tracking-widest text-accent">All products</Link>
+            <Link href={user ? "/account" : "/login"} className="block py-2 uppercase tracking-widest">{user ? "My account" : "Sign in"}</Link>
+            <Link href="/track" className="block py-2 uppercase tracking-widest">Track order</Link>
             <div className="mt-2 border-t border-line pt-2"><ThemeToggle labelled className="!px-0" /><MotionToggle labelled className="!px-0" /></div>
           </nav>
         </details>
@@ -136,6 +140,7 @@ export function Header({ categories, brand }: { categories: CategoryNode[]; bran
         <Link href="/products" className="ml-auto hidden p-2 text-muted transition hover:text-accent sm:block lg:hidden" aria-label="Search"><SearchIcon size={20} /></Link>
         <MotionToggle className="hidden lg:flex" />
         <ThemeToggle className="hidden lg:flex" />
+        <Link href={user ? "/account" : "/login"} className="hidden p-2 transition hover:text-accent sm:block" aria-label={user ? "My account" : "Sign in"} title={user ? "My account" : "Sign in"}><UserIcon size={22} /></Link>
         <Link href="/wishlist" className="relative p-2 transition hover:text-accent" aria-label={`Wishlist, ${wish.length} saved`}>
           <HeartIcon size={22} filled={wish.length > 0} />
           {wish.length > 0 && <span className="absolute -right-0.5 -top-0.5 min-w-4 rounded-full bg-accent px-1 text-center text-[0.6rem] font-semibold leading-4 text-onbrand">{wish.length}</span>}

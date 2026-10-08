@@ -14,7 +14,13 @@ _Last updated: 2026-10-08. Update after every task (see `.claude/rules/workflow.
 
 ## Feature backlogs (user lists, 2026-10-08): read only the one you are working on
 - `docs/FEATURES_VISUAL_100.md` (visual/product/cart/search/account/trust/technical), `docs/FEATURES_THEME_100.md` (section library + theme settings), `docs/FEATURES_KITCHEN_130.md` (kitchen, icons, mascot, 3D, brand magic; open question: is the store kitchen-focused?).
-- ALL must follow `docs/DESIGN_SYSTEM_RULES.md` (one coherent system aligned with the logo; palette table there). Batching (user approved this order 2026-10-08): (1) premium-feel visuals + shared icon set + motion setting [DONE], (2) make every brand value swappable from settings [DONE, see NEW_PROJECT_GUIDE for what remains], (3) product experience [DONE], (4) mascot/3D [DONE as a 2D logo-style character + CSS-3D logo; richer 3D optional], (5) account/engagement (needs backend) [next], (2) product experience, (3) mascot/3D, (4) account/engagement (needs backend), (5) section/theme editor.
+- ALL must follow `docs/DESIGN_SYSTEM_RULES.md` (one coherent system aligned with the logo; palette table there). Batching (user approved this order 2026-10-08): (1) premium-feel visuals + shared icon set + motion setting [DONE], (2) make every brand value swappable from settings [DONE, see NEW_PROJECT_GUIDE for what remains], (3) product experience [DONE], (4) mascot/3D [DONE as a 2D logo-style character + CSS-3D logo; richer 3D optional], (5) account/engagement [DONE: login, account, orders, addresses, loyalty, reviews, tracking, newsletter; email-dependent parts need a provider], (6) section/theme editor + remaining theme-list items [next], (7) kitchen vertical (needs the user to confirm the store is kitchen-focused), (2) product experience, (3) mascot/3D, (4) account/engagement (needs backend), (5) section/theme editor.
+
+## Needs a decision/keys from the user
+- **Email provider** (Resend / Brevo / SMTP): unlocks password reset, magic-link login, order confirmation emails, back-in-stock emails (requests are already stored), newsletter welcome, abandoned-cart reminders, low-stock alerts.
+- **Social login**: Google/Apple/Facebook OAuth client credentials.
+- **File storage** (S3/R2/local): photo/video reviews, product image upload, logo upload.
+- Is AVERIXA a kitchen store? (kitchen list assumes so).
 
 ## Next up (in order)
 1. (done 2026-10-08) DB running, API + web tested. Still untested: register/login flow by customer, wholesale pricing, webhook, browser UI (cart drawer, checkout form, theme toggle) — verify in a browser.

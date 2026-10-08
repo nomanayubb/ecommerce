@@ -34,7 +34,7 @@ export const ShieldIcon = (p: Props) => <Icon {...p}><path d="M12 3l8 3v6c0 5-3.
 export const CashIcon = (p: Props) => <Icon {...p}><path d="M3 6h18v12H3z" /><circle cx="12" cy="12" r="3" stroke={A} /></Icon>;
 export const PackageIcon = (p: Props) => <Icon {...p}><path d="M3 8l9-5 9 5v8l-9 5-9-5V8z" /><path d="M3 8l9 5 9-5M12 13v8" stroke={A} /></Icon>;
 export const SupportIcon = (p: Props) => <Icon {...p}><path d="M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v5H4zM17 14h3v5h-3z" /><path d="M20 19c0 2-2 3-5 3h-2" stroke={A} /></Icon>;
-export const StarIcon = (p: Props) => <Icon {...p}><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7L12 3z" stroke={A} /></Icon>;
+export const StarIcon = ({ filled, ...p }: Props & { filled?: boolean }) => <Icon {...p}><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7L12 3z" fill={filled ? A : "none"} stroke={A} /></Icon>;
 export const ContrastIcon = (p: Props) => <Icon {...p}><circle cx="12" cy="12" r="8" /><path d="M12 4a8 8 0 0 1 0 16z" fill={A} stroke={A} /></Icon>;
 export const MotionIcon = (p: Props) => <Icon {...p}><path d="M3 12h4l2-6 4 12 2-6h6" stroke={A} /><path d="M3 5v14" /></Icon>;
 export const CompareIcon = (p: Props) => <Icon {...p}><path d="M4 5h6v14H4zM14 9h6v10h-6z" /><path d="M7 9v6M17 13v3" stroke={A} /></Icon>;

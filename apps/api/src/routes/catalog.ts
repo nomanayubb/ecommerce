@@ -54,6 +54,8 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
       const { rows } = await pool.query(
         `SELECT p.id, p.title, p.slug, p.marked_price, p.selling_price, p.stock_quantity, p.images, p.tags,
                 b.name AS brand_name, b.slug AS brand_slug,
+                (SELECT round(avg(rv.rating)::numeric, 1) FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_avg,
+                (SELECT count(*)::int FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_count,
                 CASE WHEN p.marked_price > p.selling_price
                      THEN round((p.marked_price - p.selling_price) / p.marked_price * 100) END AS discount_pct
          ${from} ORDER BY ${ORDER[f.sort]} LIMIT ${f.pageSize} OFFSET ${(f.page - 1) * f.pageSize}`,
@@ -65,7 +67,9 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
 
   app.get<{ Params: { slug: string } }>("/products/:slug", async (req, reply) => {
     const { rows } = await pool.query(
-      `SELECT p.*, b.name AS brand_name, b.slug AS brand_slug FROM products p
+      `SELECT p.*, b.name AS brand_name, b.slug AS brand_slug,
+       (SELECT round(avg(rv.rating)::numeric, 1) FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_avg,
+       (SELECT count(*)::int FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_count FROM products p
        LEFT JOIN brands b ON b.id = p.brand_id WHERE p.slug = $1 AND p.status = 'PUBLISHED'`,
       [req.params.slug]
     );
@@ -83,6 +87,8 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
   // Same-category products first (up to 4), topped up with newest if the category is small.
   app.get<{ Params: { slug: string } }>("/products/:slug/related", async (req, reply) => {
     const cols = `p.id, p.title, p.slug, p.marked_price, p.selling_price, p.stock_quantity, p.images, p.tags, b.name AS brand_name,
+      (SELECT round(avg(rv.rating)::numeric, 1) FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_avg,
+      (SELECT count(*)::int FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_count,
       CASE WHEN p.marked_price > p.selling_price THEN round((p.marked_price - p.selling_price) / p.marked_price * 100) END AS discount_pct`;
     const base = (await pool.query("SELECT id FROM products WHERE slug = $1 AND status = 'PUBLISHED'", [req.params.slug])).rows[0];
     if (!base) return reply.status(404).send({ success: false, error: "Not found" });

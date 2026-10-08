@@ -17,7 +17,7 @@ Do not browse the repo, `node_modules`, lockfiles, or unrelated files. Rules are
 - `docs/` — ARCHITECTURE, REMAINING_TASKS, CHANGELOG, SPEC_NOTES
 
 ## Current status (update on every milestone)
-RUNNING and tested locally (2026-10-08): API + storefront + admin + embedded Postgres; full buy flow (PDP -> bag -> checkout -> COD order) verified in the browser. Redis not installed (cache fails open).
+RUNNING and tested locally (2026-10-09): API + storefront + admin + embedded Postgres; full buy flow (PDP -> bag -> checkout -> COD order) verified in the browser. Redis not installed (cache fails open).
 Start dev (3 terminals, repo root): `npm run dev:db -w api` -> `npm run migrate && npm run seed -w api` (first time) -> `npm run dev:api` -> `npm run dev -w web` -> `npm run dev -w admin`.
 Docker is broken on this PC (WSL VM) and the winget Postgres installer returns 403, so DB = `embedded-postgres` (npm), data in `apps/api/.pgdata`, creds shop/shop (dev only).
 
@@ -33,6 +33,9 @@ Flat line-art logo: ink `#1E1E20`, gold `#C89C3A`, cream `#FAF6EE`; tagline "You
 
 ## Feature backlogs + design rules
 Reusing the theme for another project: `docs/NEW_PROJECT_GUIDE.md`. Three user-supplied lists live in `docs/FEATURES_*.md` (status per item). Every new element must obey `docs/DESIGN_SYSTEM_RULES.md` (everything aligned with each other, the logo and its palette). Read only the list you are working on.
+
+## Customer accounts (batch 5)
+Customers sign up/in at `/register` `/login`; session = httpOnly cookies via Next route handlers + proxy (see `docs/ARCHITECTURE.md` 4g). Reviews need admin approval (admin > Reviews). No emails are sent yet (no provider). QA cleanup: `npx tsx scripts/cleanup-qa.ts` in `apps/api` (removes `qa.*@example.test` data).
 
 ## Hard facts
 - Payment methods allowed = env `ENABLED_PAYMENT_METHODS` (default `COD`). EasyPaisa/JazzCash adapters not built (no API access yet).

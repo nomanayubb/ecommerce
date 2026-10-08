@@ -11,6 +11,8 @@ export interface ProductSummary {
   brand_name: string | null;
   discount_pct: string | null;
   tags?: string[];
+  rating_avg?: string | null;
+  rating_count?: number;
 }
 export interface Variant {
   id: string;

@@ -38,7 +38,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 26. [ ] Multi-column content
 27. [ ] Testimonials slider
 28. [ ] Logo list / brand bar
-29. [ ] Newsletter signup (inline + popup)
+29. [~] Newsletter signup (inline + popup)
 30. [ ] FAQ accordion
 31. [ ] Countdown timer section
 32. [ ] Banner with countdown (sale)
@@ -59,7 +59,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 44. [ ] Predictive search dropdown
 45. [x] Cart icon with live item count
 46. [x] Wishlist icon in header
-47. [ ] Account icon with dropdown
+47. [~] Account icon with dropdown
 48. [ ] Currency selector in header
 49. [ ] Language selector in header
 50. [ ] Header CTA button
@@ -80,7 +80,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 62. [ ] Dynamic checkout buy buttons
 63. [~] Trust badges row
 64. [~] Shipping estimator
-65. [ ] Product tabs (description, specs, reviews)
+65. [~] Product tabs (description, specs, reviews)
 66. [x] Accordion product info
 67. [~] Complementary products section
 68. [~] Related products carousel
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [~] Footer builder (columns, newsletter, payment icons)
 
 ---
-Total 100: 20 done, 17 partly, 63 not started (as of 2026-10-08).
+Total 100: 20 done, 20 partly, 60 not started (as of 2026-10-09).
