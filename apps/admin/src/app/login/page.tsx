@@ -3,11 +3,13 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api, setToken } from "@/lib/api";
+import { BrandLogo, useBrand } from "@/lib/brand";
 
 export default function Login() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const brand = useBrand();
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -33,10 +35,7 @@ export default function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <form onSubmit={submit} className="w-full max-w-sm space-y-3 rounded-xl border border-line bg-card p-6">
-        <div className="mb-2 text-center">
-          <img src="/brand/logo-full.webp" alt="AVERIXA" width={720} height={560} className="logo-on-light mx-auto h-32 w-auto" />
-          <img src="/brand/logo-full-dark.webp" alt="AVERIXA" width={720} height={560} className="logo-on-dark mx-auto h-32 w-auto" />
-        </div>
+        <div className="mb-2 flex justify-center"><BrandLogo brand={brand} className="h-14" /></div>
         <h1 className="text-center text-xs font-semibold uppercase tracking-[0.3em] text-accent">Admin sign in</h1>
         <input name="email" type="email" required placeholder="Email" autoComplete="username" className={input} />
         <input name="password" type="password" required placeholder="Password" autoComplete="current-password" className={input} />

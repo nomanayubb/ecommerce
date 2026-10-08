@@ -15,12 +15,17 @@ Goal (user requirement 2026-10-08): the theme must be very customizable so the n
 4. Replace placeholder art (`app/ph/[slug]/route.ts` gold line-art) with the brand motif or real photos.
 5. Update `CLAUDE.md` brand section + `DESIGN_SYSTEM_RULES.md` palette table.
 
-## Known hard-coded brand values to remove (blocks easy swapping)
-- `app/layout.tsx`: announcement bar uses fixed `#0f0f11` / `#d4aa46`; `viewport.themeColor` fixed `#0f0f11`.
-- `app/page.tsx`: hero default gradient `#0b0b0d/#17171a/#2a2318`, hero text/button colors (`#f5f0e6`, `#d4aa46`), `HeroArt` line art drawn like the AVERIXA logo.
-- `app/ph/[slug]/route.ts`: gold `#d4aa46` + AVERIXA text + logo-like art.
-- `components/Footer.tsx`: perk copy ("Rs. 5,000", Pakistan, cash on delivery) and `Header.tsx` placeholder copy are store-specific; move to settings/content.
-- `lib/pricing.ts` + `CartDrawer.tsx`: free-delivery threshold/fee duplicated; move to settings.
-- `apps/admin`: sidebar brand text "Admin" and the logo files are AVERIXA's; read from branding.
-- Fonts: only 4 system stacks; add a font-pairing preset system (theme list item 92) for real typography swaps.
-Rule: new code must read these from tokens/settings so this list shrinks, never grows.
+## What is now settings-driven (batch 2, 2026-10-08)
+- **Palette**: `inkColor`, `creamColor`, `darkColor` + `brandColor`, `brandColorDark`, `accentColor` generate EVERY colour token (`lib/branding.ts`: bg/fg/muted/card/line for light, dark, OLED, plus `--dark`, `--on-dark`, `--accent-bright`). No hex literals remain in components.
+- **Copy**: `heroText`, `promiseText`, `footerText`, `announcement`, `tagline`, `name` (admin > Brand & theme).
+- **Commerce rules**: `store` settings row (`freeShippingThreshold`, `shippingFee`) used by the API pricing, cart drawer, buy panel, footer, product page (admin > Delivery rules).
+- **Placeholder art** (`/ph/<slug>`), **admin logo/name**, **theme-color meta**, **motion level**, **radius**, **font**, **default theme**, **theme pack**: all from settings.
+- Verified by an automated rebrand test: switching to a different brand (name, palette, radius, font, copy, default theme) through the API changed the rendered storefront with zero code edits (9/9 checks), then restored.
+
+## Still brand/store-specific (remaining work)
+- Placeholder + hero line art is drawn in the AVERIXA logo's cart/angle style (`app/ph/[slug]/route.ts`, `HeroArt` in `app/page.tsx`): make the motif selectable/uploadable.
+- Footer perk lines, header/checkout wording ("Cash on delivery", "We reply within a day") and currency formatting `pkr()` (PKR/en-PK) are fixed strings: move to settings with multi-currency (theme list item 11, visual item 53).
+- Only 4 system font stacks: add font-pairing presets (theme list item 92).
+- Occasion packs hard-code their own colours (by design, they override tokens) but are not yet editable in admin.
+- `brand-source/logo.jpg` + `scripts/build-brand.py` produce the logo files; admin has URL fields only (no upload yet).
+Rule: new code must read from tokens/settings so this list shrinks, never grows.

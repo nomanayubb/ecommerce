@@ -12,6 +12,9 @@
   --brand: 28 28 30;      /* primary action = ink */
   --on-brand: 255 255 255;
   --accent: 184 140 44;   /* gold, darkened for contrast on cream */
+  --dark: 15 15 17;       /* fixed dark surface (hero, announcement) */
+  --on-dark: 250 246 238; /* text on the dark surface */
+  --accent-bright: 212 170 70; /* gold for use on dark surfaces */
   --radius: 2px;
   --font: ui-sans-serif, system-ui, "Segoe UI", sans-serif;
   color-scheme: light;

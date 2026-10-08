@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { api, type ProductDetail, type ProductSummary } from "@/lib/api";
+import { api, getSite, pkr, type ProductDetail, type ProductSummary } from "@/lib/api";
 import { BuyPanel } from "@/components/BuyPanel";
 import { Gallery } from "@/components/Gallery";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -20,6 +20,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
   const { slug } = await params;
   const p = await load(slug);
   if (!p) notFound();
+  const { store } = await getSite();
   const related = await api<{ items: ProductSummary[] }>("/products?pageSize=5").then((r) => r.items.filter((x) => x.id !== p.id).slice(0, 4)).catch(() => []);
 
   const jsonLd = {
@@ -35,7 +36,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
 
   const details: [string, string][] = [
     ["Description", p.description ?? "Details coming soon."],
-    ["Delivery & returns", "Orders are packed within 1–2 working days and delivered across Pakistan. Free delivery over Rs. 5,000, otherwise a flat Rs. 250. Cash on delivery is available. If something is not right, contact us within 7 days."],
+    ["Delivery & returns", `Orders are packed within 1–2 working days. Free delivery over ${pkr(store.freeShippingThreshold)}, otherwise a flat ${pkr(store.shippingFee)}. Cash on delivery is available. If something is not right, contact us within 7 days.`],
     ["Payment", "Pay in cash when your order arrives. More payment methods are coming soon."],
   ];
 

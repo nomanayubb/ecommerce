@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { getToken, setToken } from "@/lib/api";
+import { BrandLogo, useBrand } from "@/lib/brand";
 
 const NAV = [
   { href: "/", label: "Dashboard" },
@@ -16,6 +17,7 @@ export function Shell({ children }: { children: ReactNode }) {
   const path = usePathname();
   const router = useRouter();
   const [ready, setReady] = useState(false);
+  const brand = useBrand();
 
   useEffect(() => {
     if (path === "/login") return setReady(true);
@@ -29,11 +31,7 @@ export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen">
       <aside className="w-52 shrink-0 border-r border-line bg-card p-4">
-        <div className="mb-6 flex items-center gap-3">
-          <img src="/brand/logo-mark.webp" alt="" width={50} height={32} className="logo-on-light h-8 w-auto" />
-          <img src="/brand/logo-mark-dark.webp" alt="" width={50} height={32} className="logo-on-dark h-8 w-auto" />
-          <span className="text-xs font-semibold uppercase tracking-[0.3em]">Admin</span>
-        </div>
+        <div className="mb-6"><BrandLogo brand={brand} className="h-7" /><p className="mt-2 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-accent">Admin</p></div>
         <nav className="space-y-1 text-sm">
           {NAV.map((n) => (
             <Link

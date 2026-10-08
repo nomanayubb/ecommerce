@@ -2,7 +2,7 @@ import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
 import { pool } from "../lib/db.js";
 import { cached, delPattern } from "../lib/redis.js";
-import { brandingSchema, saveBranding } from "./settings.js";
+import { brandingSchema, saveBranding, saveStore, storeSchema } from "./settings.js";
 
 const STAFF = new Set(["SUPER_ADMIN", "ADMIN", "WAREHOUSE"]);
 
@@ -133,6 +133,12 @@ export const adminRoutes: FastifyPluginAsync = async (app) => {
     const b = brandingSchema.parse(req.body);
     await saveBranding(b);
     return { branding: b };
+  });
+
+  app.put("/store-settings", { preHandler: adminOnly }, async (req) => {
+    const s = storeSchema.parse(req.body);
+    await saveStore(s);
+    return { store: s };
   });
 
   app.get("/orders", async (req) => {

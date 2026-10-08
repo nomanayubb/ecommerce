@@ -3,10 +3,12 @@
 import { useMemo, useState } from "react";
 import { pkr, type ProductDetail } from "@/lib/api";
 import { useCart } from "./CartProvider";
+import { useSite } from "./Site";
 import { CashIcon, PackageIcon, SupportIcon, TruckIcon } from "./icons";
 
 export function BuyPanel({ p }: { p: ProductDetail }) {
   const { add } = useCart();
+  const { store } = useSite();
   const [variantId, setVariantId] = useState<string | null>(p.variants.find((v) => v.stock_quantity > 0)?.id ?? p.variants[0]?.id ?? null);
   const [qty, setQty] = useState(Math.max(1, p.moq));
   const [added, setAdded] = useState(false);
@@ -91,7 +93,7 @@ export function BuyPanel({ p }: { p: ProductDetail }) {
       {p.moq > 1 && <p className="text-xs text-muted">Minimum order quantity: {p.moq}</p>}
 
       <ul className="grid gap-3 border-t border-line pt-6 text-sm text-muted sm:grid-cols-2">
-        {([[CashIcon, "Cash on delivery available"], [TruckIcon, "Free delivery over Rs. 5,000"], [PackageIcon, "Checked and packed with care"], [SupportIcon, "Easy support if anything is off"]] as const).map(([Ic, t]) => (
+        {([[CashIcon, "Cash on delivery available"], [TruckIcon, store.freeShippingThreshold > 0 ? `Free delivery over ${pkr(store.freeShippingThreshold)}` : "Free delivery"], [PackageIcon, "Checked and packed with care"], [SupportIcon, "Easy support if anything is off"]] as const).map(([Ic, t]) => (
           <li key={t} className="flex items-center gap-3"><Ic size={20} className="shrink-0 text-fg" />{t}</li>
         ))}
       </ul>

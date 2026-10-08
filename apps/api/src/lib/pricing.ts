@@ -1,4 +1,5 @@
 import type { PoolClient } from "pg";
+import { loadStore } from "../routes/settings.js";
 
 export interface CartInput {
   productId: string;
@@ -21,9 +22,6 @@ export class CartError extends Error {
     super(message);
   }
 }
-
-const FREE_SHIPPING_THRESHOLD = 5000;
-const FLAT_SHIPPING = 250;
 
 /** Prices every line server-side. Pass lock=true inside a transaction to SELECT ... FOR UPDATE stock rows. */
 export async function priceCart(
@@ -91,12 +89,13 @@ export async function priceCart(
   }
 
   const subtotal = Math.round(lines.reduce((s, l) => s + l.totalPrice, 0) * 100) / 100;
-  const shippingFee = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : FLAT_SHIPPING;
+  const { freeShippingThreshold, shippingFee: flatFee } = await loadStore();
+  const shippingFee = subtotal >= freeShippingThreshold ? 0 : flatFee;
   return {
     lines,
     subtotal,
     shippingFee,
     grandTotal: subtotal + shippingFee,
-    freeShippingRemaining: Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal),
+    freeShippingRemaining: Math.max(0, freeShippingThreshold - subtotal),
   };
 }

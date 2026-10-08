@@ -65,3 +65,11 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Branding setting `motion` (API zod enum default full, admin select, `<html data-motion>`). Home: bento category grid, reveals, glass promise block. Product cards: tilt + tag badges (Bestseller/Limited/New/Low stock). Placeholder art omits title text on wide tiles.
 - Verified (browser + API): invalid motion rejected; header hides at scrollY 700; progress bar 28%; 4/14 reveals on first scroll; reveals all visible when motion=off; duotone icons render. tsc clean (api/web/admin).
 - NOT verified: looping hero animation and tilt visually (this browser reports prefers-reduced-motion, which correctly disables them); light/OLED modes; 1280px+ layouts.
+
+## 2026-10-08 - Batch 2: every brand value swappable from settings
+- API: `brandingSchema` + `inkColor/creamColor/darkColor/heroText/promiseText/footerText`; new `store` settings row (`freeShippingThreshold`, `shippingFee`) with `PUT /admin/store-settings`; `GET /settings` returns `{branding, store}`; `lib/pricing.ts` reads the store row instead of constants. Migration `004_brand_kit_store.sql`.
+- Web: `lib/branding.ts` generates all colour tokens from the palette (light/dark/OLED mixes, auto on-colour contrast); new Tailwind colours `gold`, `darksurface`, `ondark`; `SiteProvider` context; `getSite()` merges over defaults; layout/hero/footer/cart drawer/buy panel/PDP use tokens + store rules; placeholder art takes name+colours from settings; theme-color meta is dynamic.
+- Admin: Brand & theme form gained palette, copy and delivery-rule fields; sidebar + sign-in read name/logo from settings (`lib/brand.tsx`).
+- Bug found by the rebrand test and fixed: a stale cached `/settings` (without `store`) crashed footer + cart (undefined). `getSite()` now merges defaults. Also restarted admin dev server after renaming `brand.ts` -> `brand.tsx` (stale cache 500).
+- Verified live: store rules (threshold 100 -> shipping 0; 99999 -> 99; negative rejected); full rebrand to a different brand via settings only, 9/9 PASS, then AVERIXA + store rules restored; admin sign-in shows logo from settings; tsc clean (api/web/admin).
+- NOT verified: admin settings page visually; light/OLED visuals of the new generated tokens beyond dark default; hero animation (reduced-motion browser).

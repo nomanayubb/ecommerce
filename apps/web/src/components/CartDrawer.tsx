@@ -5,11 +5,11 @@ import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "./CartProvider";
 import { pkr } from "@/lib/api";
-
-const FREE_SHIPPING = 5000;
+import { useSite } from "./Site";
 
 export function CartDrawer() {
   const { lines, open, setOpen, setQty, count } = useCart();
+  const FREE_SHIPPING = useSite().store.freeShippingThreshold;
   const subtotal = lines.reduce((s, l) => s + l.price * l.quantity, 0);
   const remaining = Math.max(0, FREE_SHIPPING - subtotal);
 
@@ -40,7 +40,7 @@ export function CartDrawer() {
               <p className={remaining > 0 ? "text-muted" : "text-accent"}>
                 {remaining > 0 ? <>Add <strong className="text-fg">{pkr(remaining)}</strong> more for free delivery</> : "You have unlocked free delivery"}
               </p>
-              <div className="mt-3 h-1 bg-line"><div className="h-1 bg-accent transition-all duration-500" style={{ width: `${Math.min(100, (subtotal / FREE_SHIPPING) * 100)}%` }} /></div>
+              <div className="mt-3 h-1 bg-line"><div className="h-1 bg-accent transition-all duration-500" style={{ width: `${Math.min(100, (FREE_SHIPPING > 0 ? subtotal / FREE_SHIPPING : 1) * 100)}%` }} /></div>
             </div>
 
             <ul className="flex-1 divide-y divide-line overflow-y-auto px-6">

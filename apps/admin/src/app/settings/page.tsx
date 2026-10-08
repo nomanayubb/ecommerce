@@ -6,16 +6,20 @@ import { api } from "@/lib/api";
 interface Branding {
   name: string; tagline: string; logoUrl: string; logoUrlDark: string; brandColor: string; brandColorDark: string; accentColor: string;
   radius: number; font: "system" | "serif" | "rounded" | "mono"; defaultTheme: "light" | "dark" | "oled"; announcement: string; pack: string; motion: "off" | "subtle" | "full";
+  inkColor: string; creamColor: string; darkColor: string; heroText: string; promiseText: string; footerText: string;
 }
 
 // Keep in sync with apps/web/src/themes/index.ts
+interface Store { freeShippingThreshold: number; shippingFee: number }
+
 const PACKS = [["default", "Default (no decoration)"], ["halloween", "Halloween"], ["eid", "Eid / Ramadan"], ["christmas", "Christmas / Winter"], ["blackfriday", "Black Friday / Mega Sale"], ["independence", "Independence Day"]];
 
 export default function Settings() {
   const [b, setB] = useState<Branding | null>(null);
+  const [store, setStore] = useState<Store | null>(null);
   const [msg, setMsg] = useState("");
-  useEffect(() => { api<{ branding: Branding }>("/settings").then((r) => setB(r.branding)).catch((e) => setMsg(e.message)); }, []);
-  if (!b) return <p className="text-muted">{msg || "Loading…"}</p>;
+  useEffect(() => { api<{ branding: Branding; store: Store }>("/settings").then((r) => { setB(r.branding); setStore(r.store); }).catch((e) => setMsg(e.message)); }, []);
+  if (!b || !store) return <p className="text-muted">{msg || "Loading…"}</p>;
 
   const set = <K extends keyof Branding>(k: K, v: Branding[K]) => setB({ ...b, [k]: v });
 
@@ -23,6 +27,7 @@ export default function Settings() {
     e.preventDefault();
     try {
       await api("/admin/settings", { method: "PUT", body: JSON.stringify(b) });
+      await api("/admin/store-settings", { method: "PUT", body: JSON.stringify(store) });
       setMsg("Saved. The storefront updates within about 30 seconds.");
     } catch (err) {
       setMsg(err instanceof Error ? err.message : "Save failed");
@@ -76,6 +81,37 @@ export default function Settings() {
           </select>
         </label>
       </div>
+      <fieldset className="space-y-4 border border-line p-4">
+        <legend className="px-2 text-xs uppercase tracking-widest text-muted">Palette (every colour is generated from these)</legend>
+        <div className="grid grid-cols-3 gap-4">
+          <label className={label}>Ink (text, light mode)
+            <input type="color" className="h-10 w-full rounded border border-line bg-card" value={b.inkColor ?? "#1e1e20"} onChange={(e) => set("inkColor", e.target.value)} />
+          </label>
+          <label className={label}>Cream (light page)
+            <input type="color" className="h-10 w-full rounded border border-line bg-card" value={b.creamColor ?? "#faf6ee"} onChange={(e) => set("creamColor", e.target.value)} />
+          </label>
+          <label className={label}>Charcoal (dark page, hero)
+            <input type="color" className="h-10 w-full rounded border border-line bg-card" value={b.darkColor ?? "#0f0f11"} onChange={(e) => set("darkColor", e.target.value)} />
+          </label>
+        </div>
+      </fieldset>
+      <fieldset className="space-y-4 border border-line p-4">
+        <legend className="px-2 text-xs uppercase tracking-widest text-muted">Copy</legend>
+        <label className={label}>Hero text<textarea rows={2} className={input} value={b.heroText ?? ""} onChange={(e) => set("heroText", e.target.value)} /></label>
+        <label className={label}>Brand promise<textarea rows={2} className={input} value={b.promiseText ?? ""} onChange={(e) => set("promiseText", e.target.value)} /></label>
+        <label className={label}>Footer text<textarea rows={2} className={input} value={b.footerText ?? ""} onChange={(e) => set("footerText", e.target.value)} /></label>
+      </fieldset>
+      <fieldset className="space-y-4 border border-line p-4">
+        <legend className="px-2 text-xs uppercase tracking-widest text-muted">Delivery rules (used at checkout)</legend>
+        <div className="grid grid-cols-2 gap-4">
+          <label className={label}>Free delivery over (0 = always free)
+            <input type="number" min={0} className={input} value={store.freeShippingThreshold} onChange={(e) => setStore({ ...store, freeShippingThreshold: Number(e.target.value) })} />
+          </label>
+          <label className={label}>Flat delivery fee
+            <input type="number" min={0} className={input} value={store.shippingFee} onChange={(e) => setStore({ ...store, shippingFee: Number(e.target.value) })} />
+          </label>
+        </div>
+      </fieldset>
       <label className={label}>Animation intensity
         <select className={input} value={b.motion ?? "full"} onChange={(e) => set("motion", e.target.value as Branding["motion"])}>
           <option value="full">Full (reveals, tilt, animated hero)</option>

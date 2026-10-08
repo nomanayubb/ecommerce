@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { api, DEFAULT_BRANDING, type Branding, type CategoryNode, type ProductSummary } from "@/lib/api";
+import { api, getSite, type CategoryNode, type ProductSummary } from "@/lib/api";
 import { ProductCard } from "@/components/ProductCard";
 import { Reveal } from "@/components/Motion";
 import { ArrowRightIcon } from "@/components/icons";
@@ -9,16 +9,16 @@ import { applyPack } from "@/themes";
 function HeroArt() {
   return (
     <svg aria-hidden viewBox="0 0 600 600" className="pointer-events-none absolute right-0 top-1/2 hidden h-[112%] -translate-y-1/2 opacity-90 md:block" fill="none" strokeLinecap="square">
-      <g stroke="rgb(var(--accent))" strokeWidth="2">
+      <g stroke="rgb(var(--accent-bright))" strokeWidth="2">
         <path d="M120 540 L300 60 L360 60" opacity=".9" />
         <path d="M200 540 L360 130" opacity=".55" />
         <path d="M300 340 L520 340 L560 200 L600 200" />
         <path d="M330 340 L350 420 L520 420 L548 340" opacity=".8" />
       </g>
-      <g stroke="rgb(var(--accent))" strokeWidth="2" opacity=".85">
+      <g stroke="rgb(var(--accent-bright))" strokeWidth="2" opacity=".85">
         <circle cx="380" cy="470" r="16" /><circle cx="490" cy="470" r="16" />
       </g>
-      <g stroke="#fff" strokeOpacity=".12" strokeWidth="1">
+      <g stroke="rgb(var(--on-dark))" strokeOpacity=".12" strokeWidth="1">
         {Array.from({ length: 10 }, (_, i) => <path key={i} d={`M${60 + i * 56} 600 L${300 + i * 30} 0`} />)}
       </g>
     </svg>
@@ -35,30 +35,30 @@ function SectionHead({ eyebrow, title, href }: { eyebrow: string; title: string;
 }
 
 export default async function Home() {
-  const [{ items }, categories, saved] = await Promise.all([
+  const [{ items }, categories, site] = await Promise.all([
     api<{ items: ProductSummary[] }>("/products?pageSize=8").catch(() => ({ items: [] as ProductSummary[] })),
     api<CategoryNode[]>("/categories/tree", { revalidate: 300 }).catch(() => [] as CategoryNode[]),
-    api<{ branding: Branding }>("/settings", { revalidate: 30 }).then((r) => r.branding).catch(() => DEFAULT_BRANDING),
+    getSite(),
   ]);
-  const { branding, pack } = applyPack(saved);
+  const { branding, pack } = applyPack(site.branding);
   const packGrad = pack.decor?.heroGradient;
-  const grad = packGrad ?? "linear-gradient(120deg,#0b0b0d 0%,#17171a 40%,#2a2318 70%,#0b0b0d 100%)";
+  const grad = packGrad ?? "linear-gradient(120deg, rgb(var(--dark)) 0%, color-mix(in srgb, rgb(var(--dark)) 86%, rgb(var(--accent-bright))) 55%, rgb(var(--dark)) 100%)";
 
   return (
     <>
-      <section className={`${packGrad ? "" : "hero-anim"} fade-up relative -mx-4 overflow-hidden px-6 py-20 text-[#f5f0e6] sm:mx-0 sm:px-14 sm:py-28`} style={{ background: grad }}>
+      <section className={`${packGrad ? "" : "hero-anim"} fade-up relative -mx-4 overflow-hidden px-6 py-20 text-ondark sm:mx-0 sm:px-14 sm:py-28`} style={{ background: grad }}>
         <HeroArt />
         <div className="relative max-w-xl">
           <p className="eyebrow">{branding.name}</p>
           <h1 className="mt-5 text-4xl font-semibold uppercase leading-[1.08] tracking-[0.04em] sm:text-6xl">
             {branding.tagline || "Your world. Our store."}
           </h1>
-          <p className="mt-6 max-w-md text-base leading-relaxed text-[#f5f0e6]/70">
-            Considered products, honest prices, delivered to your door across Pakistan. Pay when it arrives.
+          <p className="mt-6 max-w-md text-base leading-relaxed text-ondark/70">
+            {branding.heroText || "Considered products, honest prices, delivered to your door. Pay when it arrives."}
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
-            <Link href="/products" className="btn bg-[#d4aa46] text-[#121214] hover:bg-[#f5f0e6]">Shop the collection</Link>
-            <Link href="/products?sort=price_asc" className="btn border border-[#f5f0e6]/40 text-[#f5f0e6] hover:border-[#d4aa46] hover:text-[#d4aa46]">Best prices</Link>
+            <Link href="/products" className="btn bg-gold text-darksurface hover:bg-ondark">Shop the collection</Link>
+            <Link href="/products?sort=price_asc" className="btn border border-ondark/40 text-ondark hover:border-gold hover:text-gold">Best prices</Link>
           </div>
         </div>
       </section>
@@ -73,8 +73,8 @@ export default async function Home() {
                 <Link href={`/products?category=${c.slug}`} className="lift group relative block h-full overflow-hidden border border-line">
                   <img src={`/ph/${c.slug}?ar=4x3`} alt="" loading="lazy" width={800} height={600} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute bottom-0 p-5 text-[#f5f0e6]">
-                    <p className="text-[0.65rem] uppercase tracking-[0.3em] text-[#d4aa46]">{String(i + 1).padStart(2, "0")}</p>
+                  <div className="absolute bottom-0 p-5 text-ondark">
+                    <p className="text-[0.65rem] uppercase tracking-[0.3em] text-gold">{String(i + 1).padStart(2, "0")}</p>
                     <p className={`mt-1 font-semibold uppercase tracking-[0.15em] ${i === 0 ? "text-2xl" : "text-lg"}`}>{c.name}</p>
                   </div>
                 </Link>
@@ -96,7 +96,7 @@ export default async function Home() {
         <section className="glass px-6 py-14 text-center sm:px-16">
           <p className="eyebrow">The {branding.name} promise</p>
           <p className="mx-auto mt-4 max-w-2xl text-xl font-medium leading-relaxed sm:text-2xl">
-            Every order is checked, packed with care and sent with tracking. If it is not right, we make it right.
+            {branding.promiseText || "Every order is checked, packed with care and sent with tracking."}
           </p>
         </section>
       </Reveal>

@@ -8,16 +8,16 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 ## Core theme architecture (1-15)
 
 1. [ ] Modular section blocks (drag-and-drop editor)
-2. [~] Global style settings in one place
+2. [x] Global style settings in one place
 3. [x] CSS variables for theme-wide changes
-4. [~] Design tokens system (spacing, type, radius scales)
+4. [x] Design tokens system (spacing, type, radius scales)
 5. [ ] Section presets (save & reuse)
 6. [~] Template hierarchy (product, collection, blog, page, 404)
 7. [ ] Alternate templates (e.g. product.sale.json)
 8. [ ] JSON template system
 9. [ ] Metafield-driven sections
 10. [ ] Multi-language ready (RTL support)
-11. [ ] Multi-currency aware layouts
+11. [~] Multi-currency aware layouts
 12. [~] Responsive breakpoint system
 13. [ ] Theme versioning with changelog
 14. [ ] Child theme support
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [~] Footer builder (columns, newsletter, payment icons)
 
 ---
-Total 100: 15 done, 16 partly, 69 not started (as of 2026-10-08).
+Total 100: 17 done, 15 partly, 68 not started (as of 2026-10-08).
