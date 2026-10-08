@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react";
 import { ArrowRightIcon, CloseIcon } from "./icons";
 import { Model3D, Spin360, VideoPlayer } from "./PdpExtras";
+import { useSite } from "./Site";
 
 type Tab = "photos" | "video" | "spin" | "3d";
 
 export function Gallery({ images, title, videoUrl, spinImages, modelUrl }: { images: string[]; title: string; videoUrl?: string; spinImages?: string[]; modelUrl?: string }) {
+  const { branding } = useSite();
+  const mark = branding.visuals?.watermark ? branding.logoUrlDark || branding.logoUrl : "";
   const [i, setI] = useState(0);
   const [tab, setTab] = useState<Tab>("photos");
   const tabs: [Tab, string][] = [["photos", "Photos"]];
@@ -77,6 +80,7 @@ export function Gallery({ images, title, videoUrl, spinImages, modelUrl }: { ima
         <img src={list[i]} alt={title} width={800} height={1000} fetchPriority="high"
           className="h-full w-full object-cover transition-transform duration-200"
           style={zoom ? { transform: "scale(1.8)", transformOrigin: `${zoom.x}% ${zoom.y}%` } : undefined} />
+        {mark && <img src={mark} alt="" aria-hidden width={120} height={24} className="pointer-events-none absolute bottom-3 right-3 h-5 w-auto opacity-40 drop-shadow" />}
       </button>
 
       {box && (

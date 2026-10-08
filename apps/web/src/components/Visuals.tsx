@@ -6,6 +6,7 @@ import { DEFAULT_VISUALS, type Visuals } from "@/lib/api";
 import { motionAllowed } from "@/lib/motion";
 import { playSound, soundEnabled } from "@/lib/sound";
 import { Loader } from "./Loader";
+import { useSite } from "./Site";
 
 const touch = () => typeof matchMedia !== "undefined" && !matchMedia("(pointer: fine)").matches;
 
@@ -16,7 +17,8 @@ export function VisualsHost({ visuals }: { visuals?: Partial<Visuals> }) {
     <>
       {v.cursor !== "none" && <Cursor variant={v.cursor} />}
       {v.transition !== "none" && <PageTransition mode={v.transition} loader={v.loader} />}
-      <Reactions splash={v.addSplash} sound={v.sound} />
+      {v.splash && <LogoSplash />}
+      <Reactions splash={v.addSplash} sound={v.sound} sparkles={v.logoSparkles} />
     </>
   );
 }
@@ -120,10 +122,35 @@ function PageTransition({ mode, loader }: { mode: "fade" | "wipe"; loader: Visua
 }
 
 /* ---------------------------------------------------------------- bag splash + sounds */
-function Reactions({ splash, sound }: { splash: boolean; sound: boolean }) {
+function Reactions({ splash, sound, sparkles }: { splash: boolean; sound: boolean; sparkles: boolean }) {
   useEffect(() => {
     document.documentElement.dataset.sound = sound ? "1" : "0";
   }, [sound]);
+
+  // Gold sparkles pop out of the logo on hover.
+  useEffect(() => {
+    if (!sparkles) return;
+    let busy = false;
+    const over = (e: PointerEvent) => {
+      const logo = (e.target as HTMLElement | null)?.closest?.("[data-logo]") as HTMLElement | null;
+      if (!logo || busy || e.pointerType !== "mouse" || !motionAllowed()) return;
+      busy = true;
+      setTimeout(() => { busy = false; }, 900);
+      const r = logo.getBoundingClientRect();
+      for (let i = 0; i < 9; i++) {
+        const d = document.createElement("span");
+        d.textContent = "✦";
+        d.setAttribute("aria-hidden", "true");
+        d.style.cssText = `position:fixed;z-index:96;left:${r.left + Math.random() * r.width}px;top:${r.top + r.height * (0.2 + Math.random() * 0.6)}px;font-size:${8 + Math.random() * 10}px;color:rgb(var(--accent-bright));pointer-events:none`;
+        document.body.appendChild(d);
+        const a = d.animate([{ transform: "translateY(0) scale(.4) rotate(0)", opacity: 0 }, { opacity: 1, offset: 0.25 }, { transform: `translate(${(Math.random() - 0.5) * 30}px, ${-18 - Math.random() * 26}px) scale(1.1) rotate(90deg)`, opacity: 0 }], { duration: 700 + Math.random() * 500, delay: i * 40, easing: "ease-out", fill: "both" });
+        a.onfinish = () => d.remove();
+        setTimeout(() => d.remove(), 2200);
+      }
+    };
+    document.addEventListener("pointerover", over, { passive: true });
+    return () => document.removeEventListener("pointerover", over);
+  }, [sparkles]);
 
   useEffect(() => {
     if (!sound && !splash) return;
@@ -185,5 +212,28 @@ export function SoundToggle({ className = "" }: { className?: string }) {
         {on ? <path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" stroke="rgb(var(--accent))" /> : <path d="M16 9l5 6M21 9l-5 6" stroke="rgb(var(--accent))" />}
       </svg>
     </button>
+  );
+}
+
+/** Brand reveal on the first page of a visit: logo turns in with a gold sweep, then the screen lifts away. */
+function LogoSplash() {
+  const { branding } = useSite();
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    try { if (sessionStorage.getItem("splash")) return; sessionStorage.setItem("splash", "1"); } catch { return; }
+    if (!motionAllowed()) return;
+    setShow(true);
+    const t = setTimeout(() => setShow(false), 1900);
+    return () => clearTimeout(t);
+  }, []);
+  if (!show) return null;
+  const logo = branding.logoUrlDark || branding.logoUrl;
+  return (
+    <div aria-hidden className="splash fixed inset-0 z-[120] grid place-items-center bg-[rgb(var(--dark))]">
+      <div className="splash-logo relative overflow-hidden">
+        {logo ? <img src={logo} alt="" width={260} height={52} className="h-14 w-auto" /> : <span className="text-3xl font-semibold uppercase tracking-[0.4em] text-ondark">{branding.name}</span>}
+        <span className="splash-sweep" />
+      </div>
+    </div>
   );
 }

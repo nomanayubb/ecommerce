@@ -58,10 +58,11 @@ export const DEFAULT_EFFECTS: Effects = { ripple: true, flyToCart: true, backToT
 export type Visuals = {
   cursor: "none" | "ring" | "whisk"; background: "none" | "aurora" | "mesh" | "wood" | "marble" | "paper"; transition: "none" | "fade" | "wipe";
   imageHover: "zoom" | "liquid" | "none"; particles: "none" | "herbs" | "spices" | "flour" | "steam" | "sparkles" | "petals" | "snow";
-  scrollIndicator: "bar" | "cup"; headerStyle: "flat" | "layered" | "gradient"; loader: "ring" | "stir" | "chop" | "pulse";
+  scrollIndicator: "bar" | "cup"; headerStyle: "flat" | "layered" | "gradient" | "peek"; loader: "ring" | "stir" | "chop" | "pulse" | "mascot";
   addSplash: boolean; sound: boolean; mascotOutfit: "none" | "chef" | "auto";
+  mascotVoice: boolean; splash: boolean; logoMorph: boolean; logoSparkles: boolean; watermark: boolean; cardGlow: boolean; priceCountUp: boolean;
 };
-export const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", transition: "none", imageHover: "zoom", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none" };
+export const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", transition: "none", imageHover: "zoom", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none", mascotVoice: false, splash: false, logoMorph: false, logoSparkles: false, watermark: false, cardGlow: false, priceCountUp: false };
 export interface Branding {
   name: string; tagline: string; logoUrl: string; logoUrlDark?: string; brandColor: string; brandColorDark: string; accentColor?: string;
   radius: number; font: "system" | "serif" | "rounded" | "mono"; defaultTheme: "light" | "dark" | "oled"; announcement: string; pack?: string; motion?: "off" | "subtle" | "full";

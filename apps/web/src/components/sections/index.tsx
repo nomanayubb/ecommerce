@@ -1,3 +1,5 @@
+import { HeroParticles, Magnetic, KineticHeading, ParallaxLayers, FloatingDoodles, CompareSlider, MascotStory } from "./HeroFx";
+import { Scene3D } from "./Scene3D";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { api, type ProductDetail, type ProductSummary } from "@/lib/api";
@@ -62,37 +64,76 @@ function Hero({ s, ctx }: P) {
   const packGrad = ctx.pack.decor?.heroGradient;
   const gradient = packGrad ?? "linear-gradient(120deg, rgb(var(--dark)) 0%, color-mix(in srgb, rgb(var(--dark)) 86%, rgb(var(--accent-bright))) 55%, rgb(var(--dark)) 100%)";
   const words = heading.split(" ").map((w: string, n: number) => <span key={n} className="kword" style={{ "--i": n } as CSSProperties}>{w}&nbsp;</span>);
+  const variant = String(v.variant ?? "gradient");
+  const rotating = String(v.rotatingWords ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+  const story = String(v.storyLines ?? "").split("\n").map((x) => x.trim()).filter(Boolean);
+  const primary = v.primaryLabel && v.primaryHref ? (
+    <A href={v.primaryHref} className="btn btn-shimmer bg-gold text-darksurface hover:bg-ondark">{v.primaryLabel}</A>
+  ) : null;
   const copy = (
     <div className="relative max-w-xl">
       <p className="eyebrow">{eyebrow}</p>
-      <h1 className="mt-5 text-4xl font-semibold uppercase leading-[1.08] tracking-[0.04em] sm:text-6xl">{words}</h1>
+      {variant === "kinetic" ? <KineticHeading heading={heading} words={rotating} /> : <h1 className="mt-5 text-4xl font-semibold uppercase leading-[1.08] tracking-[0.04em] sm:text-6xl">{words}</h1>}
       {text && <p className="mt-6 max-w-md text-base leading-relaxed text-ondark/70">{text}</p>}
-      <div className="mt-10 flex flex-wrap gap-4">
-        {v.primaryLabel && v.primaryHref && <A href={v.primaryHref} className="btn btn-shimmer bg-gold text-darksurface hover:bg-ondark">{v.primaryLabel}</A>}
+      {variant === "mascot" && story.length > 0 && <div className="mt-8"><MascotStory lines={story} /></div>}
+      <div className="mt-10 flex flex-wrap items-center gap-4">
+        {primary && (v.magnetic ? <Magnetic>{primary}</Magnetic> : primary)}
         {v.secondaryLabel && v.secondaryHref && <A href={v.secondaryHref} className="btn border border-ondark/40 text-ondark hover:border-gold hover:text-gold">{v.secondaryLabel}</A>}
       </div>
     </div>
   );
+  const parts = v.particles && v.particles !== "none" ? <HeroParticles kind={v.particles as "flour"} /> : null;
+  const frame = "relative -mx-4 overflow-hidden px-6 text-ondark sm:mx-0 sm:px-14";
 
-  if (v.variant === "image" && v.imageUrl)
+  if (variant === "image" && v.imageUrl)
     return (
-      <section className={`relative -mx-4 overflow-hidden px-6 text-ondark sm:mx-0 sm:px-14 ${pad}`} style={{ background: "rgb(var(--dark))" }}>
+      <section className={`${frame} ${pad}`} style={{ background: "rgb(var(--dark))" }}>
         <img src={v.imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent" />
-        {copy}
+        {parts}{copy}
       </section>
     );
-  if (v.variant === "split")
+  if (variant === "video" && v.videoUrl)
+    return (
+      <section className={`${frame} ${pad}`} style={{ background: "rgb(var(--dark))" }}>
+        <video src={String(v.videoUrl)} poster={v.imageUrl ? String(v.imageUrl) : undefined} autoPlay muted loop playsInline preload="metadata" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent" />
+        {parts}{copy}
+      </section>
+    );
+  if (variant === "parallax")
+    return (
+      <section className={`${frame} ${pad}`} style={{ background: "rgb(var(--dark))" }}>
+        <ParallaxLayers imageUrl={v.imageUrl ? String(v.imageUrl) : undefined} />
+        {parts}{copy}
+      </section>
+    );
+  if (variant === "split" || variant === "compare")
     return (
       <section className="-mx-4 grid overflow-hidden text-ondark sm:mx-0 md:grid-cols-2" style={{ background: "rgb(var(--dark))" }}>
-        <div className={`px-6 sm:px-14 ${pad}`}>{copy}</div>
-        <div className="relative min-h-64 md:min-h-full">{v.imageUrl ? <img src={v.imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <div className="absolute inset-0" style={{ background: gradient }}><HeroArt /></div>}</div>
+        <div className={`relative px-6 sm:px-14 ${pad}`}>{parts}{copy}</div>
+        <div className="relative min-h-72 md:min-h-full">
+          {variant === "compare" && v.imageUrl && v.imageUrl2 ? <CompareSlider before={String(v.imageUrl)} after={String(v.imageUrl2)} />
+            : v.imageUrl ? <img src={String(v.imageUrl)} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <div className="absolute inset-0" style={{ background: gradient }} />}
+        </div>
+      </section>
+    );
+  if (variant === "scene3d")
+    return (
+      <section className={`${packGrad ? "" : "hero-anim"} relative -mx-4 overflow-hidden text-ondark sm:mx-0`} style={{ background: gradient }}>
+        <div className="hero-glow" aria-hidden />
+        {parts}
+        <div className="relative grid items-center md:grid-cols-2">
+          <div className={`px-6 sm:px-14 ${pad}`}>{copy}</div>
+          <Scene3D className="h-72 w-full md:h-[28rem]" />
+        </div>
       </section>
     );
   return (
-    <section className={`${packGrad ? "" : "hero-anim"} fade-up relative -mx-4 overflow-hidden px-6 text-ondark sm:mx-0 sm:px-14 ${pad}`} style={{ background: gradient }}>
+    <section className={`${packGrad ? "" : "hero-anim"} fade-up ${frame} ${pad}`} style={{ background: gradient }}>
       <div className="hero-glow" aria-hidden />
-      <HeroArt />
+      {variant === "floating" ? <FloatingDoodles /> : <HeroArt />}
+      {parts}
       {copy}
     </section>
   );

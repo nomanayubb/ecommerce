@@ -5,6 +5,7 @@ import { CardActions } from "./CardActions";
 import { Stars } from "./Stars";
 import { TagIcons } from "./TagIcons";
 import { HoverVideo } from "./HoverVideo";
+import { CardGlow, PriceTag } from "./CardFx";
 import { isFileVideo } from "@/lib/media";
 
 const TAG_BADGES: [string, string][] = [["bestseller", "Bestseller"], ["limited", "Limited"], ["new", "New"]];
@@ -21,6 +22,8 @@ export function ProductCard({ p }: { p: ProductSummary }) {
             <img src={p.images[0]} alt={p.title} loading="lazy" width={600} height={750}
               className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${soldOut ? "opacity-50 grayscale" : ""}`} />
           )}
+          <CardGlow image={p.images[0]} />
+          {p.tags?.includes("recommended") && !soldOut && <span className="absolute left-0 top-14 bg-gold px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-darksurface">Recommended</span>}
           {isFileVideo(p.video_url) && !soldOut && <HoverVideo src={p.video_url!} />}
           {p.discount_pct && !soldOut && (
             <span className="badge-discount absolute left-0 top-4 bg-accent px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-onbrand">-{p.discount_pct}%</span>
@@ -36,7 +39,7 @@ export function ProductCard({ p }: { p: ProductSummary }) {
           {!!p.rating_count && <div className="mt-1.5"><Stars value={Number(p.rating_avg)} size={13} count={p.rating_count} /></div>}
           <div className="mt-2">
             <p className="flex items-baseline gap-2">
-              <span className="font-semibold">{pkr(p.selling_price)}</span>
+              <PriceTag value={Number(p.selling_price)} className="font-semibold" />
               {p.discount_pct && <span className="text-xs text-muted line-through">{pkr(p.marked_price)}</span>}
             </p>
             <TagIcons tags={p.tags} size={16} max={4} className="mt-2.5 text-muted" />

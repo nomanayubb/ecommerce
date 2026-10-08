@@ -35,8 +35,8 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 26. [x] Wood texture backgrounds
 27. [x] Marble/granite patterns
 28. [x] Copper/gold accents for luxury cookware
-29. [ ] Hand-drawn ingredient illustrations
-30. [ ] Food photography parallax scroll
+29. [x] Hand-drawn ingredient illustrations
+30. [~] Food photography parallax scroll
 
 ## Custom icon system (31-55)
 
@@ -71,20 +71,20 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 56. [~] 3D mascot (chef character / kitchen spirit)
 57. [~] Mascot on homepage hero (waving, idle)
 58. [~] Mascot reacts to scroll (follows cursor, blinks)
-59. [ ] Mascot loading animation
+59. [x] Mascot loading animation
 60. [x] Mascot empty states (sad empty cart, happy full)
 61. [x] Mascot 404 page
 62. [~] Mascot guides (points to CTAs, tips)
 63. [x] Mascot celebrates (confetti on purchase)
 64. [x] Mascot seasonal outfits
-65. [ ] Mascot voice lines (optional audio)
-66. [ ] 3D animated logo on page load
-67. [ ] Logo morphs into mascot on scroll
-68. [ ] 3D logo watermark on product images
-69. [ ] Logo particles on hover
+65. [x] Mascot voice lines (optional audio)
+66. [x] 3D animated logo on page load
+67. [x] Logo morphs into mascot on scroll
+68. [x] 3D logo watermark on product images
+69. [x] Logo particles on hover
 70. [ ] Logo as 3D badge on packaging
 71. [x] Interactive 3D logo (rotate with mouse)
-72. [ ] Logo splash screen (3D reveal)
+72. [x] Logo splash screen (3D reveal)
 73. [x] Logo sound effect (optional jingle)
 74. [ ] Logo color-shift by theme
 75. [x] Logo breathing mini-animation in footer
@@ -93,7 +93,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 76. [x] 3D layered header (depth on scroll)
 77. [x] Header with animated gradient border
-78. [ ] Header with mascot peeking
+78. [x] Header with mascot peeking
 79. [x] Header search with rotating placeholder
 80. [x] Header cart icon bounce on add
 81. [ ] Header live activity ticker
@@ -101,16 +101,16 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 83. [ ] Header countdown (sale timer)
 84. [ ] Header free-shipping progress bar
 85. [ ] Header language flags
-86. [ ] 3D kitchen scene hero (interactive)
-87. [ ] Hero with floating ingredients
-88. [ ] Video hero with recipe playing
-89. [ ] Split-screen hero (before/after cooking)
+86. [x] 3D kitchen scene hero (interactive)
+87. [x] Hero with floating ingredients
+88. [x] Video hero with recipe playing
+89. [x] Split-screen hero (before/after cooking)
 90. [ ] Hero with auto-rotating 3D product carousel
-91. [ ] Hero with mascot storytelling
-92. [ ] Hero with kinetic typography
-93. [ ] Hero with particles (flour, spices, steam)
-94. [ ] Hero with parallax layers
-95. [ ] Hero CTA that follows cursor
+91. [x] Hero with mascot storytelling
+92. [x] Hero with kinetic typography
+93. [x] Hero with particles (flour, spices, steam)
+94. [x] Hero with parallax layers
+95. [x] Hero CTA that follows cursor
 
 ## Extra magic touches (96-130)
 
@@ -128,12 +128,12 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 107. [ ] Cards that flip to show recipe
 108. [ ] Cards with ingredient hover reveal
 109. [ ] Cards with cooked-with tag
-110. [ ] Cards with animated price count-up
+110. [x] Cards with animated price count-up
 111. [x] Cards with video autoplay on hover
-112. [ ] Cards with color extraction
+112. [x] Cards with color extraction
 113. [~] Cards with rating star animation
 114. [x] Cards with stock meter bar
-115. [ ] Cards with chef-recommends ribbon
+115. [x] Cards with chef-recommends ribbon
 116. [ ] Animated company-history timeline
 117. [ ] Founder story with 3D character
 118. [ ] Behind-the-scenes video section
@@ -151,4 +151,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 130. [~] Back-to-top as rising souffle
 
 ---
-Total 130: 45 done, 14 partly, 71 not started (as of 2026-10-09).
+Total 130: 66 done, 15 partly, 49 not started (as of 2026-10-09).

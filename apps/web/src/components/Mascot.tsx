@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useCart } from "./CartProvider";
 import { motionAllowed } from "@/lib/motion";
 import { useSite } from "./Site";
+import { speak } from "@/lib/sound";
 
 export type Mood = "idle" | "happy" | "sad" | "wave" | "confused" | "celebrate" | "carry";
 const A = "rgb(var(--accent))";
@@ -82,6 +83,7 @@ export function MascotAssistant() {
   const say = (m: Mood, t: string, ms = 4200) => {
     timers.current.forEach(clearTimeout); timers.current = [];
     setMood(m); setText(t);
+    if (t) speak(t);
     timers.current.push(setTimeout(() => setText(""), ms), setTimeout(() => setMood("idle"), ms - 600));
   };
 

@@ -47,3 +47,14 @@ export function playSound(kind: SoundKind) {
     case "meow": tone(c, 420, 0, 0.25, 0.05, "sawtooth", 620); break;
   }
 }
+
+/** Mascot voice line (browser speech synthesis). Same opt-in rules as the sounds: store enables it, visitor switched sound on. */
+export function speak(text: string) {
+  if (!soundEnabled() || document.documentElement.dataset.voice !== "1" || typeof speechSynthesis === "undefined") return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 1.05; u.pitch = 1.25; u.volume = 0.7; u.lang = document.documentElement.lang || "en-US";
+    speechSynthesis.speak(u);
+  } catch {}
+}

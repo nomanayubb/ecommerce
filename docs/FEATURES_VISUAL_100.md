@@ -19,12 +19,12 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 10. [x] Bento grid layouts for featured collections
 11. [x] Sticky mini-header that appears on scroll up
 12. [x] Progress bar at top showing page scroll
-13. [~] Animated logo on page load
+13. [x] Animated logo on page load
 14. [ ] Morphing SVG illustrations
 15. [x] Noise/grain texture overlays
 16. [x] Aurora/gradient mesh backgrounds
 17. [x] Liquid hover effects on product images
-18. [ ] Kinetic typography on hero headlines
+18. [x] Kinetic typography on hero headlines
 19. [x] Smooth page transitions (View Transitions API)
 20. [~] Custom 404 page with interactive game/easter egg
 

@@ -27,7 +27,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 16. [~] Hero banner (image, video, slideshow)
 17. [x] Split hero (text + image)
-18. [ ] Fullscreen video hero with overlay
+18. [x] Fullscreen video hero with overlay
 19. [x] Featured collection grid (2/3/4 col)
 20. [x] Featured product spotlight
 21. [x] Product carousel/slider
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [x] Footer builder (columns, newsletter, payment icons)
 
 ---
-Total 100: 56 done, 19 partly, 25 not started (as of 2026-10-09).
+Total 100: 57 done, 19 partly, 24 not started (as of 2026-10-09).

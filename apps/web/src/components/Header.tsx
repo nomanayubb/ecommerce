@@ -9,6 +9,7 @@ import { useSession } from "./SessionProvider";
 import { useShopper } from "./Shopper";
 import { SearchBox } from "./SearchBox";
 import { SoundToggle } from "./Visuals";
+import { MascotFigure } from "./Mascot";
 import { useSite } from "./Site";
 
 const THEMES = ["dark", "oled", "light"] as const;
@@ -113,6 +114,7 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
 
   return (
     <header className={`header-bar sticky top-0 z-30 border-b border-line bg-bg/85 backdrop-blur-md ${hidden ? "header-hidden" : ""}`}>
+      {useSite().branding.visuals?.headerStyle === "peek" && <span aria-hidden className="header-peek hidden text-fg sm:block"><MascotFigure mood="happy" size={34} /></span>}
       <div className="mx-auto flex max-w-[var(--maxw)] items-center gap-1 px-4 sm:gap-5">
         <details className="relative lg:hidden">
           <summary className="cursor-pointer list-none p-2" aria-label="Menu"><MenuIcon size={22} /></summary>
@@ -128,7 +130,10 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
           </nav>
         </details>
         <Link href="/" className="logo-reveal mr-auto flex shrink-0 items-center py-3 sm:mr-0" aria-label={brand.name}>
-          <Logo logo={brand.logoUrl} logoDark={brand.logoUrlDark} name={brand.name} className="h-7 sm:h-9" />
+          <span className="logo-morph relative inline-flex items-center">
+            <span className="logo-full inline-flex items-center"><Logo logo={brand.logoUrl} logoDark={brand.logoUrlDark} name={brand.name} className="h-7 sm:h-9" /></span>
+            {useSite().branding.visuals?.logoMorph && <span aria-hidden className="logo-mini absolute left-0 top-1/2 -translate-y-1/2 text-fg"><MascotFigure mood="happy" size={36} /></span>}
+          </span>
         </Link>
         <nav className="hidden flex-1 justify-center gap-8 lg:flex">
           {categories.map((c) => <MegaItem key={c.id} node={c} />)}

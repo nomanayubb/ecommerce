@@ -1,4 +1,5 @@
 import type { Visuals } from "@/lib/api";
+import { MascotFigure } from "./Mascot";
 
 /**
  * Loading indicators. `ring` is neutral; `stir` (a spoon circling a pot), `chop` (a knife on a board) and `pulse`
@@ -13,6 +14,7 @@ export function Loader({ variant = "ring", size = 48, label = "Loading" }: { var
           <circle cx="24" cy="24" r="18" strokeOpacity=".2" /><path d="M24 6a18 18 0 0 1 18 18" strokeLinecap="round" />
         </svg>
       )}
+      {variant === "mascot" && <MascotFigure mood="carry" size={size} className="loader-hop" />}
       {variant === "pulse" && (
         <svg viewBox="0 0 48 48" fill="currentColor" style={s}>
           {[0, 1, 2].map((i) => <circle key={i} cx={12 + i * 12} cy="24" r="4" className="loader-dot" style={{ animationDelay: `${i * 160}ms` }} />)}

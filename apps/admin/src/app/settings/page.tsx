@@ -17,10 +17,11 @@ interface Branding {
 type Visuals = {
   cursor: "none" | "ring" | "whisk"; background: "none" | "aurora" | "mesh" | "wood" | "marble" | "paper"; transition: "none" | "fade" | "wipe";
   imageHover: "zoom" | "liquid" | "none"; particles: "none" | "herbs" | "spices" | "flour" | "steam" | "sparkles" | "petals" | "snow";
-  scrollIndicator: "bar" | "cup"; headerStyle: "flat" | "layered" | "gradient"; loader: "ring" | "stir" | "chop" | "pulse";
+  scrollIndicator: "bar" | "cup"; headerStyle: "flat" | "layered" | "gradient" | "peek"; loader: "ring" | "stir" | "chop" | "pulse" | "mascot";
   addSplash: boolean; sound: boolean; mascotOutfit: "none" | "chef" | "auto";
+  mascotVoice: boolean; splash: boolean; logoMorph: boolean; logoSparkles: boolean; watermark: boolean; cardGlow: boolean; priceCountUp: boolean;
 };
-const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", transition: "none", imageHover: "zoom", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none" };
+const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", transition: "none", imageHover: "zoom", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none", mascotVoice: false, splash: false, logoMorph: false, logoSparkles: false, watermark: false, cardGlow: false, priceCountUp: false };
 interface Store { freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number }
 interface Footer { columns: { title: string; links: { label: string; href: string }[] }[]; showNewsletter: boolean; showPerks: boolean; showPayments: boolean; note: string }
 
@@ -185,8 +186,8 @@ export default function Settings() {
             ["imageHover", "Product photo on hover", [["zoom", "Slow zoom"], ["liquid", "Liquid ripple"], ["none", "No effect"]]],
             ["particles", "Floating particles", [["none", "None"], ["herbs", "Herbs and leaves"], ["spices", "Spices"], ["flour", "Flour dust"], ["steam", "Steam"], ["sparkles", "Gold sparkles"], ["petals", "Petals"], ["snow", "Snow"]]],
             ["scrollIndicator", "Scroll progress", [["bar", "Thin top bar"], ["cup", "Measuring cup that fills"]]],
-            ["headerStyle", "Header style", [["flat", "Flat"], ["layered", "Layered (deepens on scroll)"], ["gradient", "Animated gradient edge"]]],
-            ["loader", "Loading animation", [["ring", "Ring"], ["pulse", "Dots"], ["stir", "Stirring pot"], ["chop", "Chopping"]]],
+            ["headerStyle", "Header style", [["flat", "Flat"], ["layered", "Layered (deepens on scroll)"], ["gradient", "Animated gradient edge"], ["peek", "Mascot peeks from under the header"]]],
+            ["loader", "Loading animation", [["ring", "Ring"], ["pulse", "Dots"], ["stir", "Stirring pot"], ["chop", "Chopping"], ["mascot", "Mascot hopping"]]],
             ["mascotOutfit", "Mascot outfit", [["none", "None"], ["chef", "Chef hat"], ["auto", "Automatic (follows the occasion theme)"]]],
           ] as const).map(([k, l, opts]) => (
             <label key={k} className={label}>{l}
@@ -197,6 +198,10 @@ export default function Settings() {
           ))}
         </div>
         <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={b.visuals.addSplash} onChange={(e) => set("visuals", { ...b.visuals, addSplash: e.target.checked })} />Splash of drops from the bag icon when something is added</label>
+        {([["splash", "Logo splash screen on the first page of a visit"], ["logoMorph", "Header logo shrinks into the mascot after scrolling"], ["logoSparkles", "Gold sparkles when the logo is hovered"], ["watermark", "Small logo watermark on product photos"], ["cardGlow", "Product cards glow in the colour of their photo on hover"], ["priceCountUp", "Prices on cards count up when they appear"]] as const).map(([k, t]) => (
+          <label key={k} className="flex items-center gap-2 text-sm"><input type="checkbox" checked={b.visuals[k]} onChange={(e) => set("visuals", { ...b.visuals, [k]: e.target.checked })} />{t}</label>
+        ))}
+        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={b.visuals.mascotVoice} onChange={(e) => set("visuals", { ...b.visuals, mascotVoice: e.target.checked })} />Mascot speaks its tips aloud (only for visitors who switched sound on)</label>
         <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={b.visuals.sound} onChange={(e) => set("visuals", { ...b.visuals, sound: e.target.checked })} />Offer UI sounds (hover tick, add-to-bag pop, order chime, logo jingle). Visitors get a speaker switch in the header and it starts off</label>
       </Group>
 
