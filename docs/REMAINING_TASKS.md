@@ -7,7 +7,7 @@ _Last updated: 2026-10-08. Update after every task (see `.claude/rules/workflow.
 - **EasyPaisa / JazzCash**: API access not available yet -> adapters deferred. Plug into `paymentInstructions()` in `apps/api/src/routes/checkout.ts`, add method to `ENABLED_PAYMENT_METHODS`.
 
 ## Design backlog (user request 2026-10-08)
-- User said the earlier theme integration was premature: logo work comes first. Drawn candidates are in `brand/drawn/`; wait for the user to approve one before touching the site again (offer to revert commit b818d8f if they want).
+- User said the earlier theme integration was premature: logo work comes first. The drawn SVG candidates (`brand/draw_logo.py`, `brand/drawn/`) were removed at the user's request 2026-10-08: not needed.
 
 - **Logo v2 (flat black/gold, geometric wordmark)**: ask user to save the file (e.g. `brand/source/logo-v2.jpg`), run it through `brand/make_variants.py`, swap web/admin assets. User wants a combination: v2's clean wordmark/flat structure + v1's gold gradient depth and recognisable cart basket; drop v1's busy bevels/muddy mono and v2's weak cart + heavy black blocks. A true combined logo needs a designer or an image-generation model (ComfyUI pod costs money: stop it after use).
 - Browser-verify admin pages, dark/OLED modes, mobile layout of the new theme.

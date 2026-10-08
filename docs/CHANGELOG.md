@@ -46,3 +46,7 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 ## 2026-10-08 - Drawn logo candidates (logo work only)
 - `brand/draw_logo.py` draws the Averixa logo as SVG (gold A whose right leg becomes a gridded cart, geometric AVERIXA wordmark, tagline): `brand/drawn/averixa-{stacked-color,horizontal-color,stacked-on-dark,app-icon,mark}.svg` + `index.html` preview. Combines v1 (clear cart, gold depth) with v2 (flat, geometric). Viewed in the in-app browser; wordmark spacing/tips and cart stroke weights were fixed after the first render.
 - Site was NOT changed by this step. Tagline is live SVG text (convert to outlines for final print use). Not yet chosen/approved by the user.
+
+## 2026-10-08 - Removed drawn logo candidates
+- Deleted `brand/draw_logo.py` and `brand/drawn/*` (SVG candidates + preview) at the user's request; they are not needed. The brand kit (`brand/make_variants.py`, `brand/out/`) is unchanged.
+- Also set aside (git stash `20:11 rollback of theme files`) an uncommitted rollback of the theme files so the working tree matches `main` again.
