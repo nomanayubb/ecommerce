@@ -13,7 +13,7 @@ interface Branding {
   searchHints: string[]; effects: Record<"ripple" | "flyToCart" | "backToTop" | "cookieNotice" | "newsletterPopup" | "iconBadges", boolean>;
   social: Record<"instagram" | "facebook" | "tiktok" | "youtube" | "whatsapp" | "x", string>;
 }
-interface Store { freeShippingThreshold: number; shippingFee: number }
+interface Store { freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number }
 interface Footer { columns: { title: string; links: { label: string; href: string }[] }[]; showNewsletter: boolean; showPerks: boolean; showPayments: boolean; note: string }
 
 // Keep in sync with apps/web/src/themes/index.ts
@@ -210,6 +210,8 @@ export default function Settings() {
         <div className="grid grid-cols-2 gap-4">
           <label className={label}>Free delivery over (0 = always free)<input type="number" min={0} className={input} value={store.freeShippingThreshold} onChange={(e) => setStore({ ...store, freeShippingThreshold: Number(e.target.value) })} /></label>
           <label className={label}>Flat delivery fee<input type="number" min={0} className={input} value={store.shippingFee} onChange={(e) => setStore({ ...store, shippingFee: Number(e.target.value) })} /></label>
+          <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={!!store.giftWrapEnabled} onChange={(e) => setStore({ ...store, giftWrapEnabled: e.target.checked })} />Offer gift wrap with a message</label>
+          <label className={label}>Gift wrap fee (0 = free)<input type="number" min={0} className={input} value={store.giftWrapFee ?? 0} onChange={(e) => setStore({ ...store, giftWrapFee: Number(e.target.value) })} /></label>
         </div>
       </Group>
 

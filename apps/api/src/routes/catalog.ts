@@ -143,6 +143,31 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
     return { items: [...same, ...more] };
   });
 
+  // Cart upsells / "you may also like": products sharing a category with the given ids, topped up with newest.
+  app.get("/products/recommend", async (req) => {
+    const ids = String((req.query as any).ids ?? "").split(",").filter((x) => /^[0-9a-f-]{36}$/.test(x)).slice(0, 20);
+    const limit = Math.min(Number((req.query as any).limit) || 4, 12);
+    const cols = `p.id, p.title, p.slug, p.marked_price, p.selling_price, p.stock_quantity, p.images, p.tags, b.name AS brand_name,
+      (SELECT round(avg(rv.rating)::numeric, 1) FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_avg,
+      ${RATING_COUNT} AS rating_count,
+      CASE WHEN p.marked_price > p.selling_price THEN round((p.marked_price - p.selling_price) / p.marked_price * 100) END AS discount_pct,
+      p.moq, EXISTS (SELECT 1 FROM product_variants v WHERE v.product_id = p.id) AS has_variants`;
+    const same = ids.length
+      ? (await pool.query(
+          `SELECT DISTINCT ${cols} FROM products p LEFT JOIN brands b ON b.id = p.brand_id
+           JOIN product_categories pc ON pc.product_id = p.id
+           WHERE p.status = 'PUBLISHED' AND p.stock_quantity > 0 AND p.id <> ALL($1::uuid[])
+             AND pc.category_id IN (SELECT category_id FROM product_categories WHERE product_id = ANY($1::uuid[]))
+           LIMIT $2`, [ids, limit])).rows
+      : [];
+    if (same.length >= limit) return { items: same };
+    const more = (await pool.query(
+      `SELECT ${cols} FROM products p LEFT JOIN brands b ON b.id = p.brand_id
+       WHERE p.status = 'PUBLISHED' AND p.stock_quantity > 0 AND p.id <> ALL($1::uuid[]) AND p.id <> ALL($2::uuid[])
+       ORDER BY ${RATING_COUNT} DESC, p.created_at DESC LIMIT $3`, [ids, same.map((r: any) => r.id), limit - same.length])).rows;
+    return { items: [...same, ...more] };
+  });
+
   app.get("/categories/tree", async () =>
     cached("catalog:categories:tree", 300, async () => {
       const { rows } = await pool.query(

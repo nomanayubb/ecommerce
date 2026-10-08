@@ -4,6 +4,7 @@ import { pool } from "../lib/db.js";
 import { cached, delPattern } from "../lib/redis.js";
 import { brandingSchema, footerSchema, saveBranding, saveFooter, saveStore, storeSchema } from "./settings.js";
 import { templateAdminRoutes } from "./templates.js";
+import { couponAdminRoutes } from "./coupons.js";
 
 const STAFF = new Set(["SUPER_ADMIN", "ADMIN", "WAREHOUSE"]);
 
@@ -47,6 +48,7 @@ export const adminRoutes: FastifyPluginAsync = async (app) => {
   };
 
   await app.register(templateAdminRoutes);
+  await app.register(couponAdminRoutes);
 
   app.post("/products", { preHandler: adminOnly }, async (req, reply) => {
     const b = productSchema.parse(req.body);
@@ -162,6 +164,18 @@ export const adminRoutes: FastifyPluginAsync = async (app) => {
       [q.status ?? null, (q.page - 1) * 50]
     );
     return rows;
+  });
+
+  // Everything needed to pack and ship one order.
+  app.get<{ Params: { id: string } }>("/orders/:id", async (req, reply) => {
+    if (!/^[0-9a-f-]{36}$/.test(req.params.id)) return reply.status(404).send({ success: false, error: "Not found" });
+    const o = (await pool.query(
+      `SELECT o.id, o.order_number, o.grand_total, o.subtotal, o.discount_total, o.shipping_fee, o.gift_wrap_fee, o.coupon_code, o.gift_wrap, o.gift_message,
+              o.notes, o.shipping_address, o.order_status, o.payment_status, o.payment_method, o.created_at, u.email AS customer_email
+       FROM orders o LEFT JOIN users u ON u.id = o.user_id WHERE o.id = $1`, [req.params.id])).rows[0];
+    if (!o) return reply.status(404).send({ success: false, error: "Not found" });
+    const items = (await pool.query("SELECT title, sku, unit_price, quantity, total_price FROM order_items WHERE order_id = $1 ORDER BY title", [req.params.id])).rows;
+    return { ...o, items };
   });
 
   app.patch<{ Params: { id: string } }>("/orders/:id/status", async (req, reply) => {

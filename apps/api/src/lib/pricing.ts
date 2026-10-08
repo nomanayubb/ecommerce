@@ -1,5 +1,6 @@
 import type { PoolClient } from "pg";
 import { loadStore } from "../routes/settings.js";
+import { discountFor, loadCoupon, type Coupon } from "./coupons.js";
 
 export interface CartInput {
   productId: string;
@@ -27,7 +28,7 @@ export class CartError extends Error {
 export async function priceCart(
   db: Pick<PoolClient, "query">,
   items: CartInput[],
-  opts: { wholesale: boolean; lock?: boolean }
+  opts: { wholesale: boolean; lock?: boolean; couponCode?: string | null; giftWrap?: boolean }
 ) {
   const lines: PricedLine[] = [];
   const lock = opts.lock ? " FOR UPDATE" : "";
@@ -89,13 +90,29 @@ export async function priceCart(
   }
 
   const subtotal = Math.round(lines.reduce((s, l) => s + l.totalPrice, 0) * 100) / 100;
-  const { freeShippingThreshold, shippingFee: flatFee } = await loadStore();
-  const shippingFee = subtotal >= freeShippingThreshold ? 0 : flatFee;
+  const store = await loadStore();
+
+  // Coupon: while browsing a bad code is reported (couponError); at checkout (lock) it blocks the order.
+  let coupon: Coupon | null = null;
+  let couponError: string | null = null;
+  if (opts.couponCode?.trim()) {
+    try { coupon = await loadCoupon(db, opts.couponCode, subtotal, !!opts.lock); }
+    catch (e) { if (opts.lock || !(e instanceof CartError)) throw e; couponError = e.message; }
+  }
+  const discount = coupon ? discountFor(coupon, subtotal) : 0;
+  const afterDiscount = Math.round((subtotal - discount) * 100) / 100;
+  const shippingFee = coupon?.kind === "FREE_SHIPPING" || afterDiscount >= store.freeShippingThreshold ? 0 : store.shippingFee;
+  const giftWrapFee = opts.giftWrap && store.giftWrapEnabled ? store.giftWrapFee : 0;
   return {
     lines,
     subtotal,
+    discount,
+    coupon,
+    couponError,
     shippingFee,
-    grandTotal: subtotal + shippingFee,
-    freeShippingRemaining: Math.max(0, freeShippingThreshold - subtotal),
+    giftWrap: !!opts.giftWrap && store.giftWrapEnabled,
+    giftWrapFee,
+    grandTotal: Math.round((afterDiscount + shippingFee + giftWrapFee) * 100) / 100,
+    freeShippingRemaining: Math.max(0, store.freeShippingThreshold - afterDiscount),
   };
 }

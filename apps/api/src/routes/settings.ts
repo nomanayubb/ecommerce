@@ -57,9 +57,11 @@ export type Branding = z.infer<typeof brandingSchema>;
 export const storeSchema = z.object({
   freeShippingThreshold: z.number().int().min(0).max(10_000_000),
   shippingFee: z.number().int().min(0).max(1_000_000),
+  giftWrapEnabled: z.boolean().default(false),
+  giftWrapFee: z.number().int().min(0).max(100_000).default(0),
 });
 export type Store = z.infer<typeof storeSchema>;
-const STORE_DEFAULT: Store = { freeShippingThreshold: 5000, shippingFee: 250 };
+const STORE_DEFAULT: Store = { freeShippingThreshold: 5000, shippingFee: 250, giftWrapEnabled: false, giftWrapFee: 0 };
 
 const load = async <T>(key: string, fallback?: T) => {
   const { rows } = await pool.query("SELECT value FROM site_settings WHERE key = $1", [key]);
@@ -85,7 +87,7 @@ export const DEFAULT_FOOTER: FooterSettings = {
 
 export const loadBranding = () => cached("settings:branding", 60, () => load<Branding>("branding"));
 export const loadFooter = () => cached("settings:footer", 60, () => load<FooterSettings>("footer", DEFAULT_FOOTER));
-export const loadStore = () => cached("settings:store", 60, () => load<Store>("store", STORE_DEFAULT));
+export const loadStore = () => cached("settings:store", 60, async () => ({ ...STORE_DEFAULT, ...(await load<Partial<Store>>("store", {})) }));
 
 const save = async (key: string, value: unknown) => {
   await pool.query(

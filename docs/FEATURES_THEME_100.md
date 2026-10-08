@@ -90,15 +90,15 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 ## Cart & checkout sections (71-80)
 
 71. [x] Slide-out cart drawer
-72. [ ] Cart page with upsells
+72. [~] Cart page with upsells
 73. [x] Free shipping progress bar
-74. [ ] Cart notes field
-75. [ ] Gift wrap option
+74. [x] Cart notes field
+75. [x] Gift wrap option
 76. [ ] Estimated shipping calculator
-77. [ ] Discount code field
-78. [ ] Cart recommendations carousel
+77. [x] Discount code field
+78. [x] Cart recommendations carousel
 79. [x] Empty cart with CTA
-80. [ ] Mini cart in header dropdown
+80. [~] Mini cart in header dropdown
 
 ## Content sections (81-90)
 
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [x] Footer builder (columns, newsletter, payment icons)
 
 ---
-Total 100: 47 done, 17 partly, 36 not started (as of 2026-10-09).
+Total 100: 51 done, 19 partly, 30 not started (as of 2026-10-09).

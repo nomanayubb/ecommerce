@@ -6,6 +6,7 @@ const ALLOW: [string, RegExp][] = [
   ["GET", /^search\/(suggest|trending)$/],
   ["POST", /^search\/log$/],
   ["GET", /^products$/],
+  ["GET", /^products\/recommend$/],
   ["POST", /^cart\/validate$/],
   ["POST", /^checkout\/process$/],
   ["POST", /^newsletter$/],

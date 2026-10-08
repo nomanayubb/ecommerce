@@ -1,11 +1,48 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { api, pkr, type AdminOrder } from "@/lib/api";
 
 const STATUSES = ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELED", "REFUNDED"] as const;
 
+interface Detail {
+  customer_email: string | null; shipping_address: { name: string; phone: string; line1: string; city: string; postalCode?: string };
+  items: { title: string; sku: string; unit_price: string; quantity: number; total_price: string }[];
+  subtotal: string; discount_total: string; shipping_fee: string; gift_wrap_fee: string; grand_total: string;
+  coupon_code: string | null; gift_wrap: boolean; gift_message: string | null; notes: string | null;
+}
+
+function OrderDetail({ id }: { id: string }) {
+  const [d, setD] = useState<Detail | null>(null);
+  const [err, setErr] = useState("");
+  useEffect(() => { api<Detail>(`/admin/orders/${id}`).then(setD).catch((e) => setErr(e.message)); }, [id]);
+  if (err) return <p className="text-red-500">{err}</p>;
+  if (!d) return <p className="text-muted">Loading...</p>;
+  const a = d.shipping_address;
+  return (
+    <div className="grid gap-6 text-sm md:grid-cols-2">
+      <div>
+        <p className="mb-1 text-xs font-semibold uppercase text-muted">Ship to</p>
+        <p>{a.name} · {a.phone}</p><p>{a.line1}, {a.city} {a.postalCode ?? ""}</p>
+        {d.customer_email && <p className="text-muted">{d.customer_email}</p>}
+        {d.notes && <p className="mt-3"><span className="text-xs font-semibold uppercase text-muted">Customer note</span><br />{d.notes}</p>}
+        {d.gift_wrap && <p className="mt-3 rounded border border-line p-2"><span className="text-xs font-semibold uppercase text-muted">Gift wrap</span><br />{d.gift_message || "No message"}</p>}
+      </div>
+      <div>
+        <p className="mb-1 text-xs font-semibold uppercase text-muted">Items</p>
+        <ul>{d.items.map((i) => <li key={i.sku + i.title} className="flex justify-between gap-3 border-b border-line py-1"><span>{i.quantity} × {i.title} <span className="text-muted">({i.sku})</span></span><span>{pkr(i.total_price)}</span></li>)}</ul>
+        <p className="mt-2 flex justify-between text-muted"><span>Subtotal</span><span>{pkr(d.subtotal)}</span></p>
+        {Number(d.discount_total) > 0 && <p className="flex justify-between text-muted"><span>Discount ({d.coupon_code})</span><span>-{pkr(d.discount_total)}</span></p>}
+        {Number(d.gift_wrap_fee) > 0 && <p className="flex justify-between text-muted"><span>Gift wrap</span><span>{pkr(d.gift_wrap_fee)}</span></p>}
+        <p className="flex justify-between text-muted"><span>Delivery</span><span>{Number(d.shipping_fee) ? pkr(d.shipping_fee) : "Free"}</span></p>
+        <p className="flex justify-between font-semibold"><span>Total</span><span>{pkr(d.grand_total)}</span></p>
+      </div>
+    </div>
+  );
+}
+
 export default function Orders() {
+  const [openId, setOpenId] = useState<string | null>(null);
   const [rows, setRows] = useState<AdminOrder[]>([]);
   const [filter, setFilter] = useState("");
   const [msg, setMsg] = useState("");
@@ -44,8 +81,9 @@ export default function Orders() {
         </thead>
         <tbody>
           {rows.map((o) => (
-            <tr key={o.id}>
-              <td className={cell}>{o.order_number}</td>
+            <Fragment key={o.id}>
+            <tr>
+              <td className={cell}><button className="underline" onClick={() => setOpenId(openId === o.id ? null : o.id)} aria-expanded={openId === o.id}>{o.order_number}</button></td>
               <td className={`${cell} text-muted`}>{new Date(o.created_at).toLocaleString()}</td>
               <td className={cell}>{pkr(o.grand_total)}</td>
               <td className={cell}>{o.payment_method} · {o.payment_status}</td>
@@ -56,6 +94,8 @@ export default function Orders() {
                 </select>
               </td>
             </tr>
+            {openId === o.id && <tr><td colSpan={5} className="border-b border-line bg-card/50 px-4 py-4"><OrderDetail id={o.id} /></td></tr>}
+            </Fragment>
           ))}
         </tbody>
       </table>

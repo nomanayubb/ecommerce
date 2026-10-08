@@ -7,12 +7,15 @@ import { useCart } from "./CartProvider";
 import { pkr } from "@/lib/api";
 import { useSite } from "./Site";
 import { MascotFigure } from "./Mascot";
+import { GiftOptions, PromoField, Upsells, useCartPricing } from "./CartExtras";
 
 export function CartDrawer() {
-  const { lines, open, setOpen, setQty, count } = useCart();
+  const { lines, saved, open, setOpen, setQty, count, saveForLater, moveToBag, removeSaved } = useCart();
+  const { priced } = useCartPricing();
   const FREE_SHIPPING = useSite().store.freeShippingThreshold;
   const subtotal = lines.reduce((s, l) => s + l.price * l.quantity, 0);
-  const remaining = Math.max(0, FREE_SHIPPING - subtotal);
+  const net = priced ? priced.subtotal - priced.discount : subtotal;
+  const remaining = Math.max(0, FREE_SHIPPING - net);
 
   useEffect(() => {
     if (!open) return;
@@ -37,14 +40,15 @@ export function CartDrawer() {
               <button onClick={() => setOpen(false)} aria-label="Close bag" className="text-xl leading-none transition hover:text-accent">✕</button>
             </div>
 
+            <div className="flex-1 overflow-y-auto">
             <div className="border-b border-line px-6 py-4 text-sm">
               <p className={remaining > 0 ? "text-muted" : "text-accent"}>
                 {remaining > 0 ? <>Add <strong className="text-fg">{pkr(remaining)}</strong> more for free delivery</> : "You have unlocked free delivery"}
               </p>
-              <div className="mt-3 h-1 bg-line"><div className="h-1 bg-accent transition-all duration-500" style={{ width: `${Math.min(100, (FREE_SHIPPING > 0 ? subtotal / FREE_SHIPPING : 1) * 100)}%` }} /></div>
+              <div className="mt-3 h-1 bg-line"><div className="h-1 bg-accent transition-all duration-500" style={{ width: `${Math.min(100, (FREE_SHIPPING > 0 ? net / FREE_SHIPPING : 1) * 100)}%` }} /></div>
             </div>
 
-            <ul className="flex-1 divide-y divide-line overflow-y-auto px-6">
+            <ul className="divide-y divide-line px-6">
               {lines.length === 0 && (
                 <li className="py-20 text-center">
                   <MascotFigure mood="sad" size={96} className="mx-auto mb-4 text-fg" />
@@ -64,17 +68,51 @@ export function CartDrawer() {
                         <span className="w-8 text-center text-xs">{l.quantity}</span>
                         <button className="px-3 py-1 transition hover:text-accent" onClick={() => setQty(l.productId, l.variantId, l.quantity + 1)} aria-label="Increase quantity">+</button>
                       </div>
-                      <button className="text-xs uppercase tracking-widest text-muted underline-offset-4 transition hover:text-accent hover:underline" onClick={() => setQty(l.productId, l.variantId, 0)}>Remove</button>
+                      <span className="flex gap-3">
+                        <button className="text-xs uppercase tracking-widest text-muted underline-offset-4 transition hover:text-accent hover:underline" onClick={() => saveForLater(l.productId, l.variantId)}>Save</button>
+                        <button className="text-xs uppercase tracking-widest text-muted underline-offset-4 transition hover:text-accent hover:underline" onClick={() => setQty(l.productId, l.variantId, 0)}>Remove</button>
+                      </span>
                     </div>
                   </div>
                   <p className="text-sm font-semibold">{pkr(l.price * l.quantity)}</p>
                 </li>
               ))}
             </ul>
+            {(lines.length > 0 || saved.length > 0) && (
+              <div className="border-t border-line px-6">
+                {saved.length > 0 && (
+                  <section aria-label="Saved for later" className="py-4">
+                    <p className="eyebrow mb-3 !text-[0.65rem]">Saved for later ({saved.length})</p>
+                    <ul className="space-y-3">
+                      {saved.map((l) => (
+                        <li key={`${l.productId}:${l.variantId}`} className="flex items-center gap-3 text-sm">
+                          {l.image && <img src={l.image} alt="" width={40} height={50} className="h-12 w-10 border border-line object-cover" />}
+                          <span className="min-w-0 flex-1"><span className="line-clamp-1">{l.title}</span><span className="text-xs text-muted">{pkr(l.price)}</span></span>
+                          <button className="text-xs uppercase tracking-widest text-accent hover:underline" onClick={() => moveToBag(l.productId, l.variantId)}>Move to bag</button>
+                          <button aria-label="Remove saved item" className="text-muted hover:text-accent" onClick={() => removeSaved(l.productId, l.variantId)}>✕</button>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+                {lines.length > 0 && <Upsells />}
+              </div>
+            )}
+
+            {lines.length > 0 && (
+              <div className="space-y-3 border-t border-line px-6 py-4">
+                <PromoField priced={priced} />
+                <GiftOptions />
+              </div>
+            )}
+            </div>
 
             <div className="border-t border-line bg-card px-6 py-5">
-              <div className="mb-1 flex justify-between text-sm"><span className="text-muted">Subtotal</span><span className="text-lg font-semibold">{pkr(subtotal)}</span></div>
-              <p className="mb-4 text-xs text-muted">Delivery and final total are confirmed at checkout.</p>
+              {priced && priced.discount > 0 && (
+                <div className="mb-1 flex justify-between text-sm text-accent"><span>Discount ({priced.coupon?.code})</span><span>−{pkr(priced.discount)}</span></div>
+              )}
+              <div className="mb-1 flex justify-between text-sm"><span className="text-muted">Subtotal</span><span className="text-lg font-semibold">{pkr(priced ? priced.subtotal - priced.discount : subtotal)}</span></div>
+              <p className="mb-4 text-xs text-muted">{priced?.giftWrapFee ? `Includes gift wrap ${pkr(priced.giftWrapFee)} at checkout. ` : ""}Delivery and final total are confirmed at checkout.</p>
               <Link href="/checkout" onClick={() => setOpen(false)} aria-disabled={!lines.length} className={`btn btn-primary w-full ${lines.length ? "" : "pointer-events-none opacity-40"}`}>Checkout</Link>
             </div>
           </motion.aside>

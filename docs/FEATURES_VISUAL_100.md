@@ -48,22 +48,22 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 36. [ ] Q&A section on product pages
 37. [~] Estimated delivery date by zip code
 38. [x] Wishlist/favorites with heart animation
-39. [ ] Save for later cart functionality
+39. [x] Save for later cart functionality
 40. [x] Product badges (New, Bestseller, Limited)
 
 ## Cart & checkout (41-55)
 
 41. [x] Slide-out cart drawer
 42. [x] Free shipping progress bar in cart
-43. [ ] Cart upsells
+43. [x] Cart upsells
 44. [x] Sticky Add to Cart bar on mobile
 45. [ ] Express checkout buttons (Apple/Google Pay)
 46. [x] Guest checkout option
 47. [ ] Address autocomplete
 48. [ ] Saved payment methods
-49. [ ] Order summary accordion
-50. [ ] Promo code field with instant validation
-51. [ ] Gift message option
+49. [x] Order summary accordion
+50. [x] Promo code field with instant validation
+51. [x] Gift message option
 52. [ ] Cart abandonment save (email capture)
 53. [ ] Multi-currency switcher
 54. [ ] Tax calculator by region
