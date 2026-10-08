@@ -128,3 +128,9 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Verified: tsc clean in api/web/admin; API e2e for templates; real browser run of every theme option (styles, widths, fonts, announcements, CTA, footer column, social icons) and of the Royal navy scheme saving to the API. QA data removed and original settings restored. Not verified: phone-width look of every section (do with the tracker when asked).
 - Not seeded on purpose: sample reviews/testimonials.
 
+## 2026-10-09 — Batch 7a: icon set + interaction effects (brand-neutral part of the kitchen list)
+- Icons: 22 new duotone icons, tag-driven badges on cards and product page with tooltips and hover animation, difficulty icon.
+- Effects: ripple, fly-to-bag + bag bounce, back-to-top ring, playful cookie notice, newsletter popup (mascot), card stock meter, footer logo breathing, rotating search hints. Switches in Settings > Shopper experience (`branding.effects`, `branding.searchHints`).
+- Verified in a real browser: cookie notice, back-to-top, stock bars, tag icons (temporary tags, then removed), fly clone + ripple created (OS reports reduced motion, so tested with the visitor Animations switch on), popup via exit intent, hints rotating, settings saved through the admin UI. tsc clean in api/web/admin.
+- NOT done on purpose: recipe/ingredient/meal-planner features, 3D kitchen scenes, sounds. They need kitchen content and the user's confirmation that the store is kitchen-focused.
+

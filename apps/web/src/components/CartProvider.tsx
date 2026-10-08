@@ -1,5 +1,6 @@
 "use client";
 
+import { flyToCart } from "@/lib/motion";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 export interface CartLine {
@@ -54,6 +55,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         ? cur.map((x) => (same(x, l.productId, l.variantId) ? { ...x, quantity: x.quantity + l.quantity } : x))
         : [...cur, l]
     );
+    flyToCart(l.image);
     setOpen(true);
   };
   const setQty = (p: string, v: string | null, qty: number) =>

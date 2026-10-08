@@ -6,6 +6,7 @@ import { useCart } from "./CartProvider";
 import { useSite } from "./Site";
 import { DeliveryEstimate } from "./DeliveryEstimate";
 import { StockAlert } from "./NewsletterForm";
+import { TagIcons } from "./TagIcons";
 import { CashIcon, PackageIcon, SupportIcon, TruckIcon } from "./icons";
 
 export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; compact?: boolean; onAdded?: () => void }) {
@@ -96,6 +97,7 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
       {soldOut && <StockAlert slug={p.slug} />}
       {p.moq > 1 && <p className="text-xs text-muted">Minimum order quantity: {p.moq}</p>}
 
+      {!compact && <TagIcons tags={p.tags} size={22} max={8} labels className="border-t border-line pt-6" />}
       {!compact && <DeliveryEstimate />}
       {!compact && (<ul className="grid gap-3 border-t border-line pt-6 text-sm text-muted sm:grid-cols-2">
         {([[CashIcon, "Cash on delivery available"], [TruckIcon, store.freeShippingThreshold > 0 ? `Free delivery over ${pkr(store.freeShippingThreshold)}` : "Free delivery"], [PackageIcon, "Checked and packed with care"], [SupportIcon, "Easy support if anything is off"]] as const).map(([Ic, t]) => (

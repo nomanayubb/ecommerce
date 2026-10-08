@@ -40,22 +40,22 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 ## Custom icon system (31-55)
 
-31. [ ] Kitchen icon set (whisk, pan, knife, pot, spatula)
-32. [ ] Cooking method icons
+31. [x] Kitchen icon set (whisk, pan, knife, pot, spatula)
+32. [~] Cooking method icons
 33. [ ] Ingredient icons
-34. [ ] Dietary icons (vegan, gluten-free, keto, halal)
-35. [ ] Measurement icons
-36. [ ] Temperature icons
-37. [ ] Time icons
-38. [ ] Difficulty icons
-39. [ ] Eco icons
-40. [ ] Safety icons (dishwasher/oven safe, BPA-free)
-41. [ ] Animated SVG icons on hover
+34. [x] Dietary icons (vegan, gluten-free, keto, halal)
+35. [~] Measurement icons
+36. [~] Temperature icons
+37. [~] Time icons
+38. [x] Difficulty icons
+39. [x] Eco icons
+40. [x] Safety icons (dishwasher/oven safe, BPA-free)
+41. [x] Animated SVG icons on hover
 42. [x] Duotone icon style
 43. [ ] Line + fill toggle by theme mode
 44. [ ] Custom icon font for performance
-45. [ ] Icon tooltips
-46. [ ] Icon badges on product cards
+45. [x] Icon tooltips
+46. [x] Icon badges on product cards
 47. [ ] Icon morphing between states
 48. [ ] Hand-drawn sketch icons
 49. [ ] Emoji-style 3D icons
@@ -87,15 +87,15 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 72. [ ] Logo splash screen (3D reveal)
 73. [ ] Logo sound effect (optional jingle)
 74. [ ] Logo color-shift by theme
-75. [ ] Logo breathing mini-animation in footer
+75. [x] Logo breathing mini-animation in footer
 
 ## Headers, banners & heroes (76-95)
 
 76. [ ] 3D layered header (depth on scroll)
 77. [ ] Header with animated gradient border
 78. [ ] Header with mascot peeking
-79. [ ] Header search with rotating placeholder
-80. [ ] Header cart icon bounce on add
+79. [x] Header search with rotating placeholder
+80. [x] Header cart icon bounce on add
 81. [ ] Header live activity ticker
 82. [ ] Header mini weather widget
 83. [ ] Header countdown (sale timer)
@@ -114,12 +114,12 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 ## Extra magic touches (96-130)
 
-96. [ ] Button ripple/splash on click
-97. [ ] Add-to-cart fly animation
+96. [x] Button ripple/splash on click
+97. [x] Add-to-cart fly animation
 98. [x] Heart burst when wishlisting
 99. [x] Confetti on checkout (brand colors)
 100. [ ] Page transition wipes
-101. [ ] Scroll progress as filling measuring cup
+101. [~] Scroll progress as filling measuring cup
 102. [ ] Cursor becomes whisk/spoon in kitchen sections
 103. [ ] Hover sounds (optional)
 104. [ ] Loading as stirring/chopping animation
@@ -131,8 +131,8 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 110. [ ] Cards with animated price count-up
 111. [ ] Cards with video autoplay on hover
 112. [ ] Cards with color extraction
-113. [ ] Cards with rating star animation
-114. [ ] Cards with stock meter bar
+113. [~] Cards with rating star animation
+114. [x] Cards with stock meter bar
 115. [ ] Cards with chef-recommends ribbon
 116. [ ] Animated company-history timeline
 117. [ ] Founder story with 3D character
@@ -146,9 +146,9 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 125. [ ] Newsletter with mascot waving
 126. [ ] Animated footer (waves, particles)
 127. [ ] Footer with mini sleeping mascot
-128. [ ] Newsletter popup with mascot
-129. [ ] Cookie consent with playful copy + icon
-130. [ ] Back-to-top as rising souffle
+128. [x] Newsletter popup with mascot
+129. [x] Cookie consent with playful copy + icon
+130. [~] Back-to-top as rising souffle
 
 ---
-Total 130: 8 done, 6 partly, 116 not started (as of 2026-10-09).
+Total 130: 24 done, 13 partly, 93 not started (as of 2026-10-09).

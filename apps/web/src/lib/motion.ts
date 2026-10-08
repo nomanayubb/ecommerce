@@ -13,3 +13,7 @@ export const fireConfetti = () => typeof window !== "undefined" && window.dispat
 /** Make the mascot react (mood + optional speech bubble). */
 export const mascotSay = (mood: string, text?: string) =>
   typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("mascot", { detail: { mood, text } }));
+
+/** Fly a product thumbnail from the last click to the bag and bounce the bag icon (ignored when motion is off). */
+export const flyToCart = (image?: string) =>
+  typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("cart-fly", { detail: { image } }));

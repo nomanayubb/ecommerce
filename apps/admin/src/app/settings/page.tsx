@@ -10,6 +10,7 @@ interface Branding {
   pack: string; motion: "off" | "subtle" | "full"; inkColor: string; creamColor: string; darkColor: string; heroText: string; promiseText: string; footerText: string;
   buttonStyle: "solid" | "outline" | "pill"; cardStyle: "classic" | "minimal" | "compact"; badgeStyle: "solid" | "outline" | "pill"; layoutWidth: "boxed" | "wide" | "full";
   headerCta: { label: string; href: string };
+  searchHints: string[]; effects: Record<"ripple" | "flyToCart" | "backToTop" | "cookieNotice" | "newsletterPopup" | "iconBadges", boolean>;
   social: Record<"instagram" | "facebook" | "tiktok" | "youtube" | "whatsapp" | "x", string>;
 }
 interface Store { freeShippingThreshold: number; shippingFee: number }
@@ -60,7 +61,7 @@ export default function Settings() {
   useEffect(() => {
     api<{ branding: Branding; store: Store; footer: Footer }>("/settings")
       .then((r) => {
-        setB({ ...r.branding, announcements: r.branding.announcements ?? [], headerCta: r.branding.headerCta ?? { label: "", href: "" }, social: { ...({ instagram: "", facebook: "", tiktok: "", youtube: "", whatsapp: "", x: "" } as Branding["social"]), ...(r.branding.social ?? {}) }, headingFont: r.branding.headingFont ?? "inherit", buttonStyle: r.branding.buttonStyle ?? "solid", cardStyle: r.branding.cardStyle ?? "classic", badgeStyle: r.branding.badgeStyle ?? "solid", layoutWidth: r.branding.layoutWidth ?? "boxed" });
+        setB({ ...r.branding, announcements: r.branding.announcements ?? [], headerCta: r.branding.headerCta ?? { label: "", href: "" }, social: { ...({ instagram: "", facebook: "", tiktok: "", youtube: "", whatsapp: "", x: "" } as Branding["social"]), ...(r.branding.social ?? {}) }, headingFont: r.branding.headingFont ?? "inherit", buttonStyle: r.branding.buttonStyle ?? "solid", cardStyle: r.branding.cardStyle ?? "classic", badgeStyle: r.branding.badgeStyle ?? "solid", layoutWidth: r.branding.layoutWidth ?? "boxed", searchHints: r.branding.searchHints ?? [], effects: { ...({ ripple: true, flyToCart: true, backToTop: true, cookieNotice: true, newsletterPopup: false, iconBadges: true } as Branding["effects"]), ...(r.branding.effects ?? {}) } });
         setStore(r.store); setFooter(r.footer);
         setLinksText(r.footer.columns.map((c) => c.links.map((l) => `${l.label} | ${l.href}`).join("\n")));
       })
@@ -79,7 +80,7 @@ export default function Settings() {
         title: c.title.trim(),
         links: (linksText[footer!.columns.indexOf(c)] ?? "").split("\n").map((l) => l.trim()).filter(Boolean).map((l) => { const [lab, ...rest] = l.split("|"); return { label: lab.trim(), href: (rest.join("|").trim() || "/") }; }),
       }));
-      await api("/admin/settings", { method: "PUT", body: JSON.stringify({ ...b, announcements: b!.announcements.map((a) => a.trim()).filter(Boolean).slice(0, 5) }) });
+      await api("/admin/settings", { method: "PUT", body: JSON.stringify({ ...b, announcements: b!.announcements.map((a) => a.trim()).filter(Boolean).slice(0, 5), searchHints: b!.searchHints.map((a) => a.trim()).filter(Boolean).slice(0, 6) }) });
       await api("/admin/store-settings", { method: "PUT", body: JSON.stringify(store) });
       await api("/admin/footer-settings", { method: "PUT", body: JSON.stringify({ ...footer, columns }) });
       setMsg({ ok: true, text: "Saved. The storefront updates within about 30 seconds." });
@@ -161,6 +162,18 @@ export default function Settings() {
           <label className={label}>Header button label (empty = none)<input className={input} maxLength={30} value={b.headerCta.label} onChange={(e) => set("headerCta", { ...b.headerCta, label: e.target.value })} /></label>
           <label className={label}>Header button link<input className={input} placeholder="/products" value={b.headerCta.href} onChange={(e) => set("headerCta", { ...b.headerCta, href: e.target.value })} /></label>
         </div>
+      </Group>
+
+      <Group title="Shopper experience">
+        <label className={label}>Search box hints: one per line, up to 6 (they rotate in the placeholder, e.g. Try "gift sets")
+          <textarea rows={3} className={input} value={b.searchHints.join("\n")} onChange={(e) => set("searchHints", e.target.value.split("\n").slice(0, 6))} />
+        </label>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {([["ripple", "Button ripple on click"], ["flyToCart", "Product flies into the bag on add"], ["backToTop", "Back-to-top ring button"], ["cookieNotice", "Cookie notice"], ["newsletterPopup", "Newsletter popup (30 s or on leaving, once per 14 days)"], ["iconBadges", "Product icons from tags (dishwasher-safe, vegan, ...)"]] as const).map(([k, t]) => (
+            <label key={k} className="flex items-center gap-2 text-sm"><input type="checkbox" checked={b.effects[k]} onChange={(e) => set("effects", { ...b.effects, [k]: e.target.checked })} />{t}</label>
+          ))}
+        </div>
+        <p className="text-xs text-muted">Animations also respect the visitor's own animation switch and the Motion setting above.</p>
       </Group>
 
       <Group title="Footer builder">

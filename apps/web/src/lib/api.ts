@@ -49,13 +49,15 @@ export async function api<T>(path: string, init?: RequestInit & { revalidate?: n
 
 export const pkr = (n: number | string) => `Rs. ${Number(n).toLocaleString("en-PK")}`;
 
+export type Effects = { ripple: boolean; flyToCart: boolean; backToTop: boolean; cookieNotice: boolean; newsletterPopup: boolean; iconBadges: boolean };
+export const DEFAULT_EFFECTS: Effects = { ripple: true, flyToCart: true, backToTop: true, cookieNotice: true, newsletterPopup: false, iconBadges: true };
 export interface Branding {
   name: string; tagline: string; logoUrl: string; logoUrlDark?: string; brandColor: string; brandColorDark: string; accentColor?: string;
   radius: number; font: "system" | "serif" | "rounded" | "mono"; defaultTheme: "light" | "dark" | "oled"; announcement: string; pack?: string; motion?: "off" | "subtle" | "full";
   inkColor?: string; creamColor?: string; darkColor?: string; heroText?: string; promiseText?: string; footerText?: string;
   headingFont?: "inherit" | "system" | "serif" | "rounded" | "mono"; buttonStyle?: "solid" | "outline" | "pill";
   cardStyle?: "classic" | "minimal" | "compact"; badgeStyle?: "solid" | "outline" | "pill"; layoutWidth?: "boxed" | "wide" | "full";
-  announcements?: string[]; headerCta?: { label: string; href: string };
+  searchHints?: string[]; effects?: Partial<Effects>; announcements?: string[]; headerCta?: { label: string; href: string };
   social?: { instagram?: string; facebook?: string; tiktok?: string; youtube?: string; whatsapp?: string; x?: string };
 }
 export const DEFAULT_BRANDING: Branding = {

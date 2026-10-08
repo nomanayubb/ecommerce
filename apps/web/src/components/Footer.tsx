@@ -50,7 +50,7 @@ export function Footer({ brand, categories, store, footer, social }: {
       )}
       <div className="mx-auto grid max-w-[var(--maxw)] gap-10 px-4 py-14 md:[grid-template-columns:1.6fr_repeat(var(--n),1fr)]" style={{ ["--n" as string]: extra }}>
         <div>
-          <Logo logo={brand.logoUrl} logoDark={brand.logoUrlDark} name={brand.name} className="h-11" />
+          <Logo logo={brand.logoUrl} logoDark={brand.logoUrlDark} name={brand.name} className="h-11 footer-logo-breathe" />
           {brand.tagline && <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">{brand.tagline} {brand.footerText}</p>}
           {footer.showNewsletter && <NewsletterForm />}
           {links.length > 0 && (

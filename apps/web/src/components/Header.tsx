@@ -7,6 +7,7 @@ import { useCart } from "./CartProvider";
 import { BagIcon, ContrastIcon, HeartIcon, MenuIcon, MotionIcon, SearchIcon, UserIcon } from "./icons";
 import { useSession } from "./SessionProvider";
 import { useShopper } from "./Shopper";
+import { motionAllowed } from "@/lib/motion";
 
 const THEMES = ["dark", "oled", "light"] as const;
 
@@ -90,7 +91,7 @@ function MegaItem({ node }: { node: CategoryNode }) {
   );
 }
 
-export function Header({ categories, brand, cta }: { categories: CategoryNode[]; brand: { name: string; logoUrl: string; logoUrlDark?: string }; cta?: { label: string; href: string } }) {
+export function Header({ categories, brand, cta, hints }: { categories: CategoryNode[]; brand: { name: string; logoUrl: string; logoUrlDark?: string }; cta?: { label: string; href: string }; hints?: string[] }) {
   const { count, setOpen } = useCart();
   const { wish } = useShopper();
   const { user } = useSession();
@@ -135,7 +136,7 @@ export function Header({ categories, brand, cta }: { categories: CategoryNode[];
         </nav>
         <form action="/products" className="relative ml-auto hidden lg:block" role="search">
           <SearchIcon size={16} className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-muted" />
-          <input name="q" placeholder="Search" aria-label="Search products" className="w-36 border-b border-line bg-transparent py-1 pl-6 pr-1 text-sm outline-none transition-all placeholder:text-muted focus:w-52 focus:border-accent" />
+          <SearchInput hints={hints} className="w-36 border-b border-line bg-transparent py-1 pl-6 pr-1 text-sm outline-none transition-all placeholder:text-muted focus:w-52 focus:border-accent" />
         </form>
         <Link href="/products" className="ml-auto hidden p-2 text-muted transition hover:text-accent sm:block lg:hidden" aria-label="Search"><SearchIcon size={20} /></Link>
         {cta?.label && cta.href && <Link href={cta.href} className="btn btn-primary hidden !px-4 !py-2 xl:inline-flex">{cta.label}</Link>}
@@ -146,11 +147,24 @@ export function Header({ categories, brand, cta }: { categories: CategoryNode[];
           <HeartIcon size={22} filled={wish.length > 0} />
           {wish.length > 0 && <span className="absolute -right-0.5 -top-0.5 min-w-4 rounded-full bg-accent px-1 text-center text-[0.6rem] font-semibold leading-4 text-onbrand">{wish.length}</span>}
         </Link>
-        <button onClick={() => setOpen(true)} className="relative flex items-center gap-2 p-2 transition hover:text-accent" aria-label={`Open bag, ${count} items`}>
+        <button data-bag onClick={() => setOpen(true)} className="relative flex items-center gap-2 p-2 transition hover:text-accent" aria-label={`Open bag, ${count} items`}>
           <BagIcon size={22} />
           <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-[0.65rem] font-semibold leading-5 text-onbrand">{count}</span>
         </button>
       </div>
     </header>
   );
+}
+
+/** Search box whose placeholder cycles through the store's hints (admin Settings > search hints). */
+function SearchInput({ hints, className }: { hints?: string[]; className: string }) {
+  const list = hints?.length ? hints : ["Search"];
+  const [i, setI] = useState(0);
+  const [focus, setFocus] = useState(false);
+  useEffect(() => {
+    if (list.length < 2 || focus) return;
+    const t = setInterval(() => { if (motionAllowed()) setI((n) => (n + 1) % list.length); }, 3200);
+    return () => clearInterval(t);
+  }, [list.length, focus]);
+  return <input name="q" placeholder={list[i % list.length]} aria-label="Search products" onFocus={() => setFocus(true)} onBlur={() => setFocus(false)} className={className} />;
 }

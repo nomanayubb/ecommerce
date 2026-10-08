@@ -5,11 +5,11 @@ import type { ReactNode, SVGProps } from "react";
  * `currentColor` for the structure, `--accent` (gold) for the detail. Mirrors the logo's angular line art.
  * Decorative by default (aria-hidden); pass `title` to expose it to assistive tech.
  */
-type Props = Omit<SVGProps<SVGSVGElement>, "title"> & { size?: number; title?: string };
+export type Props = Omit<SVGProps<SVGSVGElement>, "title"> & { size?: number; title?: string };
 
-const A = "rgb(var(--accent))"; // accent tone
+export const A = "rgb(var(--accent))"; // accent tone
 
-function Icon({ size = 20, title, children, ...rest }: Props & { children: ReactNode }) {
+export function Icon({ size = 20, title, children, ...rest }: Props & { children: ReactNode }) {
   return (
     <svg
       viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth={1.75}

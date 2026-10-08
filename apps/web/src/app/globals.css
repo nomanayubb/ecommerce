@@ -192,3 +192,25 @@ html:not([data-motion-pref="on"]) .heart-burst { display: var(--burst-display, b
 @keyframes decor-rise  { to { transform: translateY(-115vh) rotate(-180deg); } }
 @keyframes decor-float { from { transform: translate(0,0) rotate(-8deg); } to { transform: translate(24px,60vh) rotate(8deg); } }
 @media (prefers-reduced-motion: reduce) { .decor { display: none; } }
+
+/* --- Batch 7: interaction effects + extended icon set --- */
+.btn { position: relative; overflow: hidden; }
+.ripple { position: absolute; border-radius: 9999px; background: currentColor; opacity: .28; transform: scale(0); pointer-events: none; animation: ripple .65s ease-out forwards; }
+@keyframes ripple { to { transform: scale(1); opacity: 0; } }
+body[data-cookie] .btt { bottom: 13rem; }
+@media (min-width: 768px) { body[data-cookie] .btt { bottom: 8.5rem; } }
+.icon-tip { position: relative; display: inline-flex; cursor: default; outline: none; }
+.icon-tip::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translate(-50%, 4px); white-space: nowrap; padding: .3rem .55rem; font-size: .65rem; letter-spacing: .08em; text-transform: uppercase; background: rgb(var(--dark)); color: rgb(var(--on-dark)); opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; z-index: 20; }
+.icon-tip:hover::after, .icon-tip:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+.icon-tip:focus-visible { outline: 1px solid rgb(var(--accent)); outline-offset: 3px; }
+.icon-anim svg { transition: transform .25s cubic-bezier(.3,1.6,.5,1); }
+.icon-anim:hover svg, .icon-anim:focus-visible svg { transform: translateY(-2px) rotate(-6deg) scale(1.12); }
+.stock-bar { transform-origin: left; animation: stock-fill .9s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes stock-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.pcard:hover [role="img"] svg:not(.no-pop) path[fill="currentColor"] { animation: star-pop .4s ease both; }
+@keyframes star-pop { 50% { transform: scale(1.25); } }
+.footer-logo-breathe { animation: breathe 5s ease-in-out infinite; }
+@keyframes breathe { 50% { opacity: .72; transform: scale(.98); } }
+[data-motion="subtle"] :is(.footer-logo-breathe, .stock-bar), [data-motion="off"] :is(.ripple, .footer-logo-breathe, .stock-bar), [data-motion-pref="off"] :is(.ripple, .footer-logo-breathe, .stock-bar) { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) :is(.ripple, .footer-logo-breathe, .stock-bar, .icon-anim svg) { animation: none; transition: none; } }
+

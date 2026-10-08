@@ -38,7 +38,7 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 26. [x] Multi-column content
 27. [x] Testimonials slider
 28. [x] Logo list / brand bar
-29. [~] Newsletter signup (inline + popup)
+29. [x] Newsletter signup (inline + popup)
 30. [x] FAQ accordion
 31. [x] Countdown timer section
 32. [x] Banner with countdown (sale)
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [x] Footer builder (columns, newsletter, payment icons)
 
 ---
-Total 100: 46 done, 18 partly, 36 not started (as of 2026-10-09).
+Total 100: 47 done, 17 partly, 36 not started (as of 2026-10-09).

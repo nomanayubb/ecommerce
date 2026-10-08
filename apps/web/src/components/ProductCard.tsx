@@ -3,6 +3,7 @@ import { pkr, type ProductSummary } from "@/lib/api";
 import { Tilt } from "./Motion";
 import { CardActions } from "./CardActions";
 import { Stars } from "./Stars";
+import { TagIcons } from "./TagIcons";
 
 const TAG_BADGES: [string, string][] = [["bestseller", "Bestseller"], ["limited", "Limited"], ["new", "New"]];
 
@@ -30,10 +31,19 @@ export function ProductCard({ p }: { p: ProductSummary }) {
           {p.brand_name && <p className="eyebrow !text-[0.6rem] !text-muted">{p.brand_name}</p>}
           <h3 className="mt-1 line-clamp-2 min-h-10 text-sm font-medium leading-5">{p.title}</h3>
           {!!p.rating_count && <div className="mt-1.5"><Stars value={Number(p.rating_avg)} size={13} count={p.rating_count} /></div>}
-          <p className="mt-2 flex items-baseline gap-2">
-            <span className="font-semibold">{pkr(p.selling_price)}</span>
-            {p.discount_pct && <span className="text-xs text-muted line-through">{pkr(p.marked_price)}</span>}
-          </p>
+          <div className="mt-2">
+            <p className="flex items-baseline gap-2">
+              <span className="font-semibold">{pkr(p.selling_price)}</span>
+              {p.discount_pct && <span className="text-xs text-muted line-through">{pkr(p.marked_price)}</span>}
+            </p>
+            <TagIcons tags={p.tags} size={16} max={4} className="mt-2.5 text-muted" />
+          </div>
+          {!soldOut && p.stock_quantity > 0 && p.stock_quantity <= 10 && (
+            <div className="mt-3" role="img" aria-label={`Only ${p.stock_quantity} left`}>
+              <div className="h-0.5 w-full bg-line"><div className="stock-bar h-full bg-accent" style={{ width: `${Math.max(8, p.stock_quantity * 10)}%` }} /></div>
+              <p className="mt-1 text-[0.65rem] uppercase tracking-widest text-muted">Only {p.stock_quantity} left</p>
+            </div>
+          )}
         </div>
       </Link>
       <CardActions p={p} />

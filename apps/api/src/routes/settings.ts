@@ -39,6 +39,15 @@ export const brandingSchema = z.object({
     instagram: url.default(""), facebook: url.default(""), tiktok: url.default(""),
     youtube: url.default(""), whatsapp: url.default(""), x: url.default(""),
   }).default({}),
+  searchHints: z.array(z.string().trim().max(40)).max(6).default([]),
+  effects: z.object({
+    ripple: z.boolean().default(true),
+    flyToCart: z.boolean().default(true),
+    backToTop: z.boolean().default(true),
+    cookieNotice: z.boolean().default(true),
+    newsletterPopup: z.boolean().default(false),
+    iconBadges: z.boolean().default(true),
+  }).default({}),
   motion: z.enum(["off", "subtle", "full"]).default("full"),
   pack: z.string().regex(/^[a-z0-9-]{1,40}$/).default("default"),
 });

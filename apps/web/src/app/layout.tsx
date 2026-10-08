@@ -18,6 +18,7 @@ import { QuickView } from "@/components/QuickView";
 import { CompareTray } from "@/components/CompareTray";
 import { MascotAssistant } from "@/components/Mascot";
 import { ConfettiHost } from "@/components/Confetti";
+import { EffectsHost } from "@/components/Effects";
 
 const getBranding = () => getSite().then((s) => s.branding);
 
@@ -65,7 +66,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <CartProvider>
         <ShopperProvider>
           <AnnouncementBar messages={messages} />
-          <Header categories={categories} brand={{ name: branding.name, ...logos }} cta={branding.headerCta} />
+          <Header categories={categories} brand={{ name: branding.name, ...logos }} cta={branding.headerCta} hints={branding.searchHints} />
           <main className="mx-auto max-w-[var(--maxw)] px-4 py-8">{children}</main>
           <Footer brand={{ name: branding.name, tagline: branding.tagline, footerText: branding.footerText, ...logos }} categories={categories} store={store} footer={footer} social={branding.social ?? {}} />
           <CartDrawer />
@@ -73,6 +74,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <CompareTray />
           <MascotAssistant />
           <ConfettiHost />
+          <EffectsHost effects={branding.effects} brandName={branding.name} />
         </ShopperProvider>
         </CartProvider>
         </SessionProvider>
