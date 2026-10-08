@@ -42,3 +42,7 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Theme: new palette tokens (charcoal brand, gold accent, cream bg, dark/OLED), `--on-brand` auto-contrast (`lib/branding.ts onBrand`), Tailwind `onbrand`/`accent` colours; header logo mark + letterspaced wordmark + gold hairline; hero redesigned (gradient, tagline eyebrow, gold CTA, logo art); footer component; product card hover lift; admin sidebar/login logos; favicon/OG metadata.
 - `seed.ts` sets Averixa branding while the settings row is still the untouched default.
 - Verified: tsc clean (web/admin/api); services restarted; home page screenshot in the in-app browser shows the new theme. Fixed hero logo being clipped at the right edge. NOT verified: other pages visually, dark/OLED, mobile, admin pages in a browser.
+
+## 2026-10-08 - Drawn logo candidates (logo work only)
+- `brand/draw_logo.py` draws the Averixa logo as SVG (gold A whose right leg becomes a gridded cart, geometric AVERIXA wordmark, tagline): `brand/drawn/averixa-{stacked-color,horizontal-color,stacked-on-dark,app-icon,mark}.svg` + `index.html` preview. Combines v1 (clear cart, gold depth) with v2 (flat, geometric). Viewed in the in-app browser; wordmark spacing/tips and cart stroke weights were fixed after the first render.
+- Site was NOT changed by this step. Tagline is live SVG text (convert to outlines for final print use). Not yet chosen/approved by the user.
