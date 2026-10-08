@@ -134,3 +134,8 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Verified in a real browser: cookie notice, back-to-top, stock bars, tag icons (temporary tags, then removed), fly clone + ripple created (OS reports reduced motion, so tested with the visitor Animations switch on), popup via exit intent, hints rotating, settings saved through the admin UI. tsc clean in api/web/admin.
 - NOT done on purpose: recipe/ingredient/meal-planner features, 3D kitchen scenes, sounds. They need kitchen content and the user's confirmation that the store is kitchen-focused.
 
+## 2026-10-09 — Batch 8A: search and browse
+- Migration 007 (`search_queries`, `pg_trgm`). API: `GET /search/suggest`, `/search/trending`, `POST /search/log`; `/products` now takes comma-separated `brand`, `category`, `tag`, plus `onSale` and sorts popular/rating/discount/name; `GET /products/facets` gives live counts (brands, tags, price range, on sale, in stock) honouring the other active filters.
+- Storefront: `SearchBox` (instant suggestions with thumbnails, categories and brands, recent searches in localStorage, trending, keyboard navigation, voice search where the browser supports it); products page has multi-select filters with live counts, removable filter chips, instant apply, and load-more / auto-load (numeric pagination kept inside noscript). Proxy allow-list extended (`search/*`, `products`).
+- Verified in a real browser: suggestions, trending, filter toggle + sort change rewrite the URL and results, proxy pagination. Not verified: microphone (needs a real mic and HTTPS-or-localhost permission), load-more with more than one page of data (only 12 sample products).
+

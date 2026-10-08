@@ -71,21 +71,21 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 
 ## Search & navigation (56-70)
 
-56. [ ] Instant search with thumbnails
-57. [ ] Search suggestions as you type
-58. [ ] Voice search
+56. [x] Instant search with thumbnails
+57. [x] Search suggestions as you type
+58. [x] Voice search
 59. [ ] Visual search (upload image)
 60. [ ] AI-powered semantic search
 61. [~] Mega menu with images
 62. [~] Mega footer with columns
 63. [x] Breadcrumb navigation
-64. [~] Filter sidebar with live counts
-65. [ ] Multi-select filters
-66. [ ] Sort with animations
-67. [ ] Infinite scroll with load more
+64. [x] Filter sidebar with live counts
+65. [x] Multi-select filters
+66. [x] Sort with animations
+67. [x] Infinite scroll with load more
 68. [x] Category image tiles
-69. [ ] Trending searches section
-70. [ ] Search history for logged-in users
+69. [x] Trending searches section
+70. [x] Search history for logged-in users
 
 ## User account (71-80)
 
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [ ] Analytics dashboard with heatmaps
 
 ---
-Total 100: 26 done, 15 partly, 59 not started (as of 2026-10-09).
+Total : 35 done, 14 partly, 51 not started (as of 2026-10-09).

@@ -3,6 +3,9 @@ import { apiAuthed } from "@/lib/session";
 
 // Browser -> Next -> API, attaching the httpOnly token. Only these calls are allowed through.
 const ALLOW: [string, RegExp][] = [
+  ["GET", /^search\/(suggest|trending)$/],
+  ["POST", /^search\/log$/],
+  ["GET", /^products$/],
   ["POST", /^cart\/validate$/],
   ["POST", /^checkout\/process$/],
   ["POST", /^newsletter$/],

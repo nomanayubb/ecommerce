@@ -4,6 +4,8 @@ import { api, type CategoryNode, type ProductSummary } from "@/lib/api";
 import { ProductCard } from "@/components/ProductCard";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { MascotFigure } from "@/components/Mascot";
+import { ProductFilters, ActiveFilters, type Facets } from "@/components/ProductFilters";
+import { ProductGrid } from "@/components/ProductGrid";
 
 type SP = Record<string, string | undefined>;
 
@@ -41,48 +43,22 @@ function CategoryList({ nodes, active, depth = 0 }: { nodes: CategoryNode[]; act
 export default async function Products({ searchParams }: { searchParams: Promise<SP> }) {
   const sp = await searchParams;
   const qs = new URLSearchParams();
-  for (const k of ["q", "category", "minPrice", "maxPrice", "inStock", "sort", "page"]) if (sp[k]) qs.set(k, sp[k]!);
+  for (const k of ["q", "category", "brand", "tag", "minPrice", "maxPrice", "inStock", "onSale", "sort"]) if (sp[k]) qs.set(k, sp[k]!);
 
-  const [data, tree] = await Promise.all([
-    api<{ items: ProductSummary[]; page: number; pageSize: number; total: number }>(`/products?${qs}`),
+  const pageQs = new URLSearchParams(qs);
+  if (sp.page) pageQs.set("page", sp.page);
+  const [data, tree, facets] = await Promise.all([
+    api<{ items: ProductSummary[]; page: number; pageSize: number; total: number }>(`/products?${pageQs}`),
     api<CategoryNode[]>("/categories/tree", { revalidate: 300 }).catch(() => [] as CategoryNode[]),
+    api<Facets>(`/products/facets?${qs}`).catch(() => ({ brands: [], tags: [], price: { min: 0, max: 0 }, onSale: 0, inStock: 0 } as Facets)),
   ]);
   const trail = sp.category ? find(tree, sp.category) ?? [] : [];
   const title = sp.q ? `Results for “${sp.q}”` : trail.at(-1)?.name ?? "All products";
   const pages = Math.max(1, Math.ceil(data.total / data.pageSize));
   const link = (page: number) => `/products?${new URLSearchParams({ ...(Object.fromEntries(Object.entries(sp).filter(([, v]) => v)) as Record<string, string>), page: String(page) })}`;
-  const filterActive = !!(sp.minPrice || sp.maxPrice || sp.inStock);
-
-  const filters = (
-    <form className="space-y-6" action="/products">
-      {sp.q && <input type="hidden" name="q" value={sp.q} />}
-      {sp.category && <input type="hidden" name="category" value={sp.category} />}
-      <div>
-        <p className="eyebrow mb-3">Sort</p>
-        <select name="sort" defaultValue={sp.sort ?? "newest"} className="w-full border border-line bg-card px-3 py-2 text-sm">
-          <option value="newest">Newest</option>
-          <option value="price_asc">Price: low to high</option>
-          <option value="price_desc">Price: high to low</option>
-        </select>
-      </div>
-      <div>
-        <p className="eyebrow mb-3">Price (Rs.)</p>
-        <div className="flex items-center gap-2">
-          <input name="minPrice" type="number" min={0} placeholder="Min" defaultValue={sp.minPrice} className="w-full border border-line bg-card px-3 py-2 text-sm" />
-          <span className="text-muted">–</span>
-          <input name="maxPrice" type="number" min={0} placeholder="Max" defaultValue={sp.maxPrice} className="w-full border border-line bg-card px-3 py-2 text-sm" />
-        </div>
-      </div>
-      <label className="flex cursor-pointer items-center gap-3 text-sm">
-        <input type="checkbox" name="inStock" value="true" defaultChecked={sp.inStock === "true"} className="h-4 w-4 accent-[rgb(var(--accent))]" />
-        In stock only
-      </label>
-      <div className="flex gap-3">
-        <button className="btn btn-primary flex-1 !px-4 !py-2.5">Apply</button>
-        {(filterActive || sp.sort) && <Link href={sp.category ? `/products?category=${sp.category}` : "/products"} className="btn btn-ghost !px-4 !py-2.5">Reset</Link>}
-      </div>
-    </form>
-  );
+  const filterActive = !!(sp.minPrice || sp.maxPrice || sp.inStock || sp.onSale || sp.brand || sp.tag);
+  const filters = <ProductFilters params={sp} facets={facets} />;
+  const brandNames = Object.fromEntries(facets.brands.map((b) => [b.slug, b.name]));
 
   return (
     <>
@@ -112,10 +88,9 @@ export default async function Products({ searchParams }: { searchParams: Promise
         </aside>
 
         <section>
+          <ActiveFilters params={sp} brandNames={brandNames} />
           {data.items.length > 0 ? (
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-              {data.items.map((p) => <ProductCard key={p.id} p={p} />)}
-            </div>
+            <ProductGrid key={qs.toString()} initial={data.items} total={data.total} pageSize={data.pageSize} startPage={data.page} qs={qs.toString()} />
           ) : (
             <div className="border border-dashed border-line py-24 text-center">
               <MascotFigure mood="confused" size={96} className="mx-auto mb-4 text-fg" />
@@ -125,11 +100,13 @@ export default async function Products({ searchParams }: { searchParams: Promise
             </div>
           )}
           {pages > 1 && (
-            <nav aria-label="Pagination" className="mt-10 flex items-center justify-center gap-6 text-xs font-semibold uppercase tracking-[0.2em]">
-              {data.page > 1 ? <Link href={link(data.page - 1)} className="hover:text-accent">← Previous</Link> : <span className="text-muted/40">← Previous</span>}
-              <span className="text-muted">Page {data.page} of {pages}</span>
-              {data.page < pages ? <Link href={link(data.page + 1)} className="hover:text-accent">Next →</Link> : <span className="text-muted/40">Next →</span>}
-            </nav>
+            <noscript>
+              <nav aria-label="Pagination" className="mt-10 flex items-center justify-center gap-6 text-xs font-semibold uppercase tracking-[0.2em]">
+                {data.page > 1 && <Link href={link(data.page - 1)}>← Previous</Link>}
+                <span className="text-muted">Page {data.page} of {pages}</span>
+                {data.page < pages && <Link href={link(data.page + 1)}>Next →</Link>}
+              </nav>
+            </noscript>
           )}
         </section>
       </div>

@@ -3,24 +3,59 @@ import { z } from "zod";
 import { pool } from "../lib/db.js";
 import { cached } from "../lib/redis.js";
 
+const csv = z.string().optional().transform((v) => (v ? v.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 20) : []));
 const listQuery = z.object({
   q: z.string().optional(),
-  category: z.string().optional(),
-  brand: z.string().optional(),
+  category: csv,
+  brand: csv,
   minPrice: z.coerce.number().optional(),
   maxPrice: z.coerce.number().optional(),
-  inStock: z.coerce.boolean().optional(),
-  tag: z.string().optional(),
-  sort: z.enum(["newest", "price_asc", "price_desc"]).default("newest"),
+  inStock: z.enum(["true", "false"]).optional().transform((v) => v === "true"),
+  onSale: z.enum(["true", "false"]).optional().transform((v) => v === "true"),
+  tag: csv,
+  sort: z.enum(["newest", "price_asc", "price_desc", "popular", "rating", "discount", "name"]).default("newest"),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(24),
 });
+type Filters = z.infer<typeof listQuery>;
 
+const RATING_COUNT = "(SELECT count(*)::int FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED')";
+const RATING_AVG = "(SELECT coalesce(avg(rv.rating), 0) FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED')";
+const DISCOUNT = "CASE WHEN p.marked_price > p.selling_price THEN (p.marked_price - p.selling_price) / p.marked_price ELSE 0 END";
 const ORDER = {
   newest: "p.created_at DESC",
   price_asc: "p.selling_price ASC",
   price_desc: "p.selling_price DESC",
+  popular: `${RATING_COUNT} DESC, p.created_at DESC`,
+  rating: `${RATING_AVG} DESC, ${RATING_COUNT} DESC`,
+  discount: `${DISCOUNT} DESC, p.created_at DESC`,
+  name: "p.title ASC",
 } as const;
+
+/** WHERE clause for the filters. `skip` leaves one facet out so its own counts stay useful (standard faceting). */
+function buildWhere(f: Filters, skip?: "brand" | "tag" | "category") {
+  const where = ["p.status = 'PUBLISHED'"];
+  const args: unknown[] = [];
+  const add = (sql: string, v: unknown) => { args.push(v); where.push(sql.replace(/\?/g, `$${args.length}`)); };
+  if (f.q) add("(p.title ILIKE ? OR p.sku ILIKE ? OR EXISTS (SELECT 1 FROM unnest(p.tags) t WHERE t ILIKE ?))", `%${f.q}%`);
+  if (skip !== "brand" && f.brand.length) add("b.slug = ANY(?::text[])", f.brand);
+  if (f.minPrice != null) add("p.selling_price >= ?", f.minPrice);
+  if (f.maxPrice != null) add("p.selling_price <= ?", f.maxPrice);
+  if (f.inStock) where.push("p.stock_quantity > 0");
+  if (f.onSale) where.push("p.marked_price > p.selling_price");
+  if (skip !== "tag" && f.tag.length) add("p.tags && ?::text[]", f.tag);
+  if (skip !== "category" && f.category.length) {
+    add(
+      `EXISTS (SELECT 1 FROM product_categories pc WHERE pc.product_id = p.id AND pc.category_id IN (
+         WITH RECURSIVE t AS (
+           SELECT id FROM categories WHERE slug = ANY(?::text[])
+           UNION ALL SELECT c.id FROM categories c JOIN t ON c.parent_id = t.id)
+         SELECT id FROM t))`,
+      f.category
+    );
+  }
+  return { sql: `FROM products p LEFT JOIN brands b ON b.id = p.brand_id WHERE ${where.join(" AND ")}`, args };
+}
 
 export const catalogRoutes: FastifyPluginAsync = async (app) => {
   // Postgres-backed for now; swap the body for a Typesense query once the index sync worker exists.
@@ -28,40 +63,43 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
     const f = listQuery.parse(req.query);
     const key = `catalog:list:${JSON.stringify(f)}`;
     return cached(key, 60, async () => {
-      const where = ["p.status = 'PUBLISHED'"];
-      const args: unknown[] = [];
-      const add = (sql: string, v: unknown) => { args.push(v); where.push(sql.replace(/\?/g, `$${args.length}`)); };
-
-      if (f.q) add("(p.title ILIKE ? OR p.sku ILIKE ?)", `%${f.q}%`);
-      if (f.brand) add("b.slug = ?", f.brand);
-      if (f.minPrice != null) add("p.selling_price >= ?", f.minPrice);
-      if (f.maxPrice != null) add("p.selling_price <= ?", f.maxPrice);
-      if (f.inStock) where.push("p.stock_quantity > 0");
-      if (f.tag) add("? = ANY(p.tags)", f.tag);
-      if (f.category) {
-        add(
-          `EXISTS (SELECT 1 FROM product_categories pc WHERE pc.product_id = p.id AND pc.category_id IN (
-             WITH RECURSIVE t AS (
-               SELECT id FROM categories WHERE slug = ?
-               UNION ALL SELECT c.id FROM categories c JOIN t ON c.parent_id = t.id)
-             SELECT id FROM t))`,
-          f.category
-        );
-      }
-
-      const from = `FROM products p LEFT JOIN brands b ON b.id = p.brand_id WHERE ${where.join(" AND ")}`;
+      const { sql: from, args } = buildWhere(f);
       const total = Number((await pool.query(`SELECT count(*) ${from}`, args)).rows[0].count);
       const { rows } = await pool.query(
         `SELECT p.id, p.title, p.slug, p.marked_price, p.selling_price, p.stock_quantity, p.images, p.tags,
                 b.name AS brand_name, b.slug AS brand_slug,
                 (SELECT round(avg(rv.rating)::numeric, 1) FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_avg,
-                (SELECT count(*)::int FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_count,
+                ${RATING_COUNT} AS rating_count,
                 CASE WHEN p.marked_price > p.selling_price
                      THEN round((p.marked_price - p.selling_price) / p.marked_price * 100) END AS discount_pct
          ${from} ORDER BY ${ORDER[f.sort]} LIMIT ${f.pageSize} OFFSET ${(f.page - 1) * f.pageSize}`,
         args
       );
       return { items: rows, page: f.page, pageSize: f.pageSize, total };
+    });
+  });
+
+  // Live filter counts for the sidebar: brands, tags and the price range, given the other active filters.
+  app.get("/products/facets", async (req) => {
+    const f = listQuery.parse(req.query);
+    return cached(`catalog:facets:${JSON.stringify({ ...f, page: 1, sort: "newest" })}`, 60, async () => {
+      const b = buildWhere(f, "brand");
+      const t = buildWhere(f, "tag");
+      const all = buildWhere(f);
+      const [brands, tags, range, onSale, inStock] = await Promise.all([
+        pool.query(`SELECT b.slug, b.name, count(*)::int AS count ${b.sql} AND b.id IS NOT NULL GROUP BY b.slug, b.name ORDER BY count DESC, b.name LIMIT 30`, b.args),
+        pool.query(`SELECT tag, count(*)::int AS count FROM (SELECT unnest(p.tags) AS tag ${t.sql}) x GROUP BY tag ORDER BY count DESC, tag LIMIT 30`, t.args),
+        pool.query(`SELECT min(p.selling_price) AS min, max(p.selling_price) AS max ${all.sql}`, all.args),
+        pool.query(`SELECT count(*)::int AS n ${all.sql} AND p.marked_price > p.selling_price`, all.args),
+        pool.query(`SELECT count(*)::int AS n ${all.sql} AND p.stock_quantity > 0`, all.args),
+      ]);
+      return {
+        brands: brands.rows,
+        tags: tags.rows,
+        price: { min: Number(range.rows[0].min ?? 0), max: Number(range.rows[0].max ?? 0) },
+        onSale: onSale.rows[0].n,
+        inStock: inStock.rows[0].n,
+      };
     });
   });
 

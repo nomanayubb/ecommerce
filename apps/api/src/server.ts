@@ -4,6 +4,7 @@ import cors from "@fastify/cors";
 import jwt from "@fastify/jwt";
 import { authRoutes } from "./routes/auth.js";
 import { catalogRoutes } from "./routes/catalog.js";
+import { searchRoutes } from "./routes/search.js";
 import { checkoutRoutes } from "./routes/checkout.js";
 import { adminRoutes } from "./routes/admin.js";
 import { settingsRoutes } from "./routes/settings.js";
@@ -45,6 +46,7 @@ app.setErrorHandler((err: any, _req, reply) => {
 app.get("/health", async () => ({ ok: true }));
 await app.register(authRoutes, { prefix: "/api/v1/auth" });
 await app.register(catalogRoutes, { prefix: "/api/v1" });
+await app.register(searchRoutes, { prefix: "/api/v1" });
 await app.register(checkoutRoutes, { prefix: "/api/v1" });
 await app.register(settingsRoutes, { prefix: "/api/v1" });
 await app.register(accountRoutes, { prefix: "/api/v1" });
