@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { RecipeCard } from "@/components/RecipeBits";
 import { RecipeView } from "@/components/RecipeView";
+import { ShareButton } from "@/components/ShareButton";
+import { PrintButton } from "@/components/PrintButton";
 import { getRecipe } from "@/lib/content";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -31,6 +33,7 @@ export default async function RecipePage({ params }: { params: Promise<{ slug: s
           <p className="eyebrow">{r.seasons[0] ?? "Recipe"}</p>
           <h1 className="mt-3 text-4xl font-semibold leading-tight tracking-wide">{r.title}</h1>
           {r.summary && <p className="mt-4 max-w-xl text-muted">{r.summary}</p>}
+          <div className="mt-4 flex gap-5"><ShareButton title={r.title} text={r.summary} /><PrintButton /></div>
           {r.tags.length > 0 && <ul className="mt-5 flex flex-wrap gap-2">{r.tags.map((t) => <li key={t} className="border border-line px-2.5 py-1 text-[0.65rem] uppercase tracking-widest text-muted">{t}</li>)}</ul>}
         </div>
         <img src={r.image_url || `/ph/${r.slug}`} alt={r.title} width={900} height={600} fetchPriority="high" className="aspect-[3/2] w-full border border-line object-cover" />

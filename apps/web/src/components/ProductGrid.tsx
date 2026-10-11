@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ProductSummary } from "@/lib/api";
 import { send } from "@/lib/client";
 import { ProductCard } from "./ProductCard";
+import { rememberList } from "./BackLink";
 
 /** Product grid with "load more" (also loads by itself when you scroll to the end). Parent re-keys it when filters change. */
 export function ProductGrid({ initial, total, pageSize, qs, startPage = 1 }: { initial: ProductSummary[]; total: number; pageSize: number; qs: string; startPage?: number }) {
@@ -12,6 +13,7 @@ export function ProductGrid({ initial, total, pageSize, qs, startPage = 1 }: { i
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
   const end = useRef<HTMLDivElement>(null);
+  useEffect(() => { rememberList(); }, [qs]);
   const more = (startPage - 1) * pageSize + items.length < total;
 
   const load = async () => {

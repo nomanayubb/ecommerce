@@ -299,3 +299,29 @@ html[data-logomorph][data-scrolled] .logo-mini { opacity: 1; transform: none; }
 [data-motion="off"] .rflip:hover .rflip-inner, [data-motion-pref="off"] .rflip:hover .rflip-inner { transform: none !important; }
 @media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) .rflip:hover .rflip-inner, html:not([data-motion-pref="on"]) .rflip:focus-visible .rflip-inner { transform: none; } }
 
+/* ===== Speed, accessibility and print ===== */
+.skip-link { position: fixed; left: 1rem; top: -4rem; z-index: 200; padding: .7rem 1.1rem; background: rgb(var(--accent)); color: rgb(var(--on-brand)); font-size: .75rem; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; transition: top .15s; }
+.skip-link:focus { top: 1rem; }
+:focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 3px; }
+[id] { scroll-margin-top: 6rem; }
+/* Sections below the first screen are painted only when they come near the viewport. */
+main [data-section]:not(:first-child) { content-visibility: auto; contain-intrinsic-size: auto 560px; }
+/* Data-saver / slow connection: no decorative layers or motion. */
+[data-lite] .decor, [data-lite] .hero-glow, [data-lite] .header-peek, [data-lite] body::before, [data-lite] body::after { display: none !important; }
+[data-lite] *, [data-lite] *::before, [data-lite] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+[data-lite] .js .reveal { opacity: 1 !important; transform: none !important; }
+@media print {
+  header, footer, .skip-link, [data-bag], [aria-label="Cookies"], .btt, .decor, nav[aria-label="Pagination"], button, .btn { display: none !important; }
+  body, html { background: #fff !important; color: #000 !important; }
+  body::before, body::after { display: none !important; }
+  main { max-width: none !important; padding: 0 !important; }
+  a { color: #000 !important; text-decoration: none !important; }
+  * { box-shadow: none !important; }
+}
+/* Visitor accessibility choices */
+html[data-underline] main a:not(.btn) { text-decoration: underline; text-underline-offset: 3px; }
+html[data-dyslexia] body { font-family: "Atkinson Hyperlegible", Verdana, Tahoma, "Trebuchet MS", sans-serif; letter-spacing: .02em; word-spacing: .08em; line-height: 1.7; }
+html[data-contrast] { --muted: var(--fg); --line: var(--fg); }
+html[data-contrast] .text-muted { color: rgb(var(--fg)) !important; }
+html[data-contrast] :focus-visible { outline-width: 3px; }
+

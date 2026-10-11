@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { pkr, type ProductDetail } from "@/lib/api";
 import { useCart } from "./CartProvider";
 import { useSite } from "./Site";
@@ -11,7 +11,9 @@ import { SizeGuideButton, type Meta } from "./PdpExtras";
 import { CashIcon, PackageIcon, SupportIcon, TruckIcon } from "./icons";
 
 export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; compact?: boolean; onAdded?: () => void }) {
-  const { add } = useCart();
+  const { add, lines } = useCart();
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const [pastCta, setPastCta] = useState(false);
   const { store } = useSite();
   const [variantId, setVariantId] = useState<string | null>(p.variants.find((v) => v.stock_quantity > 0)?.id ?? p.variants[0]?.id ?? null);
   const [qty, setQty] = useState(Math.max(1, p.moq));
@@ -50,6 +52,17 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
   const saving = marked > unit ? Math.round(((marked - unit) / marked) * 100) : 0;
   const soldOut = stock === 0;
   const clamp = (n: number) => Math.min(Math.max(n, p.moq), stock || n);
+
+  // Desktop: once the main button scrolls above the screen, a slim bar keeps it within reach.
+  useEffect(() => {
+    const el = ctaRef.current;
+    if (!el || compact) return;
+    const io = new IntersectionObserver(([e]) => setPastCta(!e.isIntersecting && e.boundingClientRect.top < 0), { threshold: 0 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [compact]);
+  const bagTotal = lines.reduce((s, l) => s + l.price * l.quantity, 0);
+  const toFree = store.freeShippingThreshold > 0 ? Math.max(0, store.freeShippingThreshold - bagTotal - unit * qty) : 0;
 
   const addToBag = () => {
     add({ productId: p.id, variantId, title: variant ? `${p.title} - ${variant.title}` : p.title, price: unit, image: p.images[0], quantity: qty });
@@ -155,8 +168,11 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
           <input value={qty} onChange={(e) => setQty(clamp(Number(e.target.value) || p.moq))} inputMode="numeric" aria-label="Quantity" className="w-12 bg-transparent text-center text-sm outline-none" />
           <button className="h-full px-4 text-lg transition hover:text-accent" onClick={() => setQty((q) => clamp(q + 1))} aria-label="Increase quantity">+</button>
         </div>
-        <div className="flex-1">{cta}</div>
+        <div ref={ctaRef} className="flex-1">{cta}</div>
       </div>
+      {!soldOut && store.freeShippingThreshold > 0 && (
+        <p className="text-xs text-muted">{toFree > 0 ? <>Add <strong className="text-fg">{pkr(toFree)}</strong> more to your order for free delivery.</> : <span className="text-accent">This order qualifies for free delivery.</span>}</p>
+      )}
       {soldOut && <StockAlert slug={p.slug} />}
       {p.moq > 1 && <p className="text-xs text-muted">Minimum order quantity: {p.moq}</p>}
 
@@ -168,6 +184,15 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
         ))}
       </ul>)}
 
+      {!compact && pastCta && (
+        <div className="fixed inset-x-0 bottom-0 z-30 hidden border-t border-line bg-bg/95 backdrop-blur md:block">
+          <div className="mx-auto flex max-w-[var(--maxw)] items-center gap-6 px-4 py-3">
+            <p className="flex-1 truncate text-sm font-medium">{p.title}</p>
+            <p className="text-sm font-semibold">{pkr(unit)}</p>
+            <div className="w-64">{cta}</div>
+          </div>
+        </div>
+      )}
       {/* Mobile sticky bar */}
       {!compact && <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/95 p-3 backdrop-blur md:hidden">{cta}</div>}
     </div>

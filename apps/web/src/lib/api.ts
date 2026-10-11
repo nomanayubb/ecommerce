@@ -54,8 +54,8 @@ export async function api<T>(path: string, init?: RequestInit & { revalidate?: n
 
 export const pkr = (n: number | string) => `Rs. ${Number(n).toLocaleString("en-PK")}`;
 
-export type Effects = { ripple: boolean; flyToCart: boolean; backToTop: boolean; cookieNotice: boolean; newsletterPopup: boolean; iconBadges: boolean };
-export const DEFAULT_EFFECTS: Effects = { ripple: true, flyToCart: true, backToTop: true, cookieNotice: true, newsletterPopup: false, iconBadges: true };
+export type Effects = { ripple: boolean; flyToCart: boolean; backToTop: boolean; cookieNotice: boolean; newsletterPopup: boolean; iconBadges: boolean; whatsappButton: boolean };
+export const DEFAULT_EFFECTS: Effects = { ripple: true, flyToCart: true, backToTop: true, cookieNotice: true, newsletterPopup: false, iconBadges: true, whatsappButton: false };
 export type Visuals = {
   cursor: "none" | "ring" | "whisk"; background: "none" | "aurora" | "mesh" | "wood" | "marble" | "paper"; transition: "none" | "fade" | "wipe";
   imageHover: "zoom" | "liquid" | "none"; particles: "none" | "herbs" | "spices" | "flour" | "steam" | "sparkles" | "petals" | "snow";
@@ -70,7 +70,7 @@ export interface Branding {
   inkColor?: string; creamColor?: string; darkColor?: string; heroText?: string; promiseText?: string; footerText?: string;
   headingFont?: "inherit" | "system" | "serif" | "rounded" | "mono"; buttonStyle?: "solid" | "outline" | "pill";
   cardStyle?: "classic" | "minimal" | "compact" | "soft"; visuals?: Partial<Visuals>; badgeStyle?: "solid" | "outline" | "pill"; layoutWidth?: "boxed" | "wide" | "full";
-  searchHints?: string[]; navLinks?: { label: string; href: string }[]; effects?: Partial<Effects>; announcements?: string[]; headerCta?: { label: string; href: string };
+  motionPolicy?: "respect" | "always"; searchHints?: string[]; navLinks?: { label: string; href: string }[]; effects?: Partial<Effects>; announcements?: string[]; headerCta?: { label: string; href: string };
   social?: { instagram?: string; facebook?: string; tiktok?: string; youtube?: string; whatsapp?: string; x?: string };
 }
 export const DEFAULT_BRANDING: Branding = {

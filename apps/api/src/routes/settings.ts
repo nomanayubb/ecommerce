@@ -48,6 +48,7 @@ export const brandingSchema = z.object({
     cookieNotice: z.boolean().default(true),
     newsletterPopup: z.boolean().default(false),
     iconBadges: z.boolean().default(true),
+    whatsappButton: z.boolean().default(false),
   }).default({}),
   visuals: z.object({
     cursor: z.enum(["none", "ring", "whisk"]).default("none"),
@@ -70,6 +71,7 @@ export const brandingSchema = z.object({
     mascotOutfit: z.enum(["none", "chef", "auto"]).default("none"),
   }).default({}),
   motion: z.enum(["off", "subtle", "full"]).default("full"),
+  motionPolicy: z.enum(["respect", "always"]).default("respect"),
   pack: z.string().regex(/^[a-z0-9-]{1,40}$/).default("default"),
 });
 export type Branding = z.infer<typeof brandingSchema>;

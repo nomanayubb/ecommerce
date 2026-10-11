@@ -8,7 +8,7 @@ import { BagIcon, ContrastIcon, HeartIcon, MenuIcon, MotionIcon, SearchIcon, Use
 import { useSession } from "./SessionProvider";
 import { useShopper } from "./Shopper";
 import { SearchBox } from "./SearchBox";
-import { SoundToggle } from "./Visuals";
+import { SoundToggle } from "./SoundToggle";
 import { MascotFigure } from "./Mascot";
 import { useSite } from "./Site";
 

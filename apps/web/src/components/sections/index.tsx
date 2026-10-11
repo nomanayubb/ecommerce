@@ -1,5 +1,5 @@
 import { HeroParticles, Magnetic, KineticHeading, ParallaxLayers, FloatingDoodles, CompareSlider, MascotStory } from "./HeroFx";
-import { Scene3D } from "./Scene3D";
+import { Scene3D } from "./Scene3DLazy";
 import { Timeline, Team, Contact, PlaceMap, Gallery as PhotoGallery, Events, Podcast, VideoStory, Stats, BlogGrid, RecipeGrid, CustomCode } from "./Extra";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";

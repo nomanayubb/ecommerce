@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { pkr, type CategoryNode, type FooterConfig, type Store } from "@/lib/api";
 import { Logo } from "./Header";
 import { AssistantToggle } from "./Mascot";
+import { InstallApp } from "./Pwa";
+import { A11yPanel } from "./A11yPanel";
 import { NewsletterForm } from "./NewsletterForm";
 import { CashIcon, FacebookIcon, InstagramIcon, ShieldIcon, SupportIcon, TikTokIcon, TruckIcon, WhatsAppIcon, XIcon, YouTubeIcon } from "./icons";
 
@@ -78,6 +80,8 @@ export function Footer({ brand, categories, store, footer, social }: {
       <div className="flex flex-col items-center justify-between gap-3 border-t border-line px-4 py-5 sm:flex-row md:pr-28">
         <p className="text-[0.7rem] uppercase tracking-[0.25em] text-muted">© {new Date().getFullYear()} {brand.name}. All rights reserved.{footer.note ? ` ${footer.note}` : ""}</p>
         <AssistantToggle />
+        <A11yPanel />
+        <InstallApp className="text-xs uppercase tracking-widest text-muted transition hover:text-accent" />
       </div>
     </footer>
   );

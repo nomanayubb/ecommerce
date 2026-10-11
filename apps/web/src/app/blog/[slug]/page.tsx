@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { getPost, parseBody } from "@/lib/content";
+import { ShareButton } from "@/components/ShareButton";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const p = await getPost((await params).slug);
@@ -24,6 +25,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
           <p className="eyebrow">{when ? when.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "Journal"}{p.author_name ? ` · ${p.author_name}` : ""}</p>
           <h1 className="mt-3 text-4xl font-semibold leading-tight tracking-wide">{p.title}</h1>
           {p.excerpt && <p className="mt-4 text-lg text-muted">{p.excerpt}</p>}
+          <div className="mt-4"><ShareButton title={p.title} text={p.excerpt} /></div>
         </header>
         {p.cover_url && <img src={p.cover_url} alt="" width={1200} height={700} fetchPriority="high" className="my-10 aspect-[16/9] w-full border border-line object-cover" />}
         <div className="space-y-5 leading-[1.8]">

@@ -6,6 +6,7 @@ import { DEFAULT_EFFECTS, type Effects } from "@/lib/api";
 import { motionAllowed } from "@/lib/motion";
 import { ArrowRightIcon, CloseIcon } from "./icons";
 import { MascotFigure } from "./Mascot";
+import { useSite } from "./Site";
 import { NewsletterForm } from "./NewsletterForm";
 
 const KEY_COOKIE = "cookie-ok";
@@ -76,6 +77,7 @@ export function EffectsHost({ effects, brandName }: { effects?: Partial<Effects>
   return (
     <>
       {fx.backToTop && <BackToTop />}
+      {fx.whatsappButton && <WhatsAppButton />}
       {fx.cookieNotice && <CookieNotice brandName={brandName} />}
       {fx.newsletterPopup && <NewsletterPopup brandName={brandName} />}
     </>
@@ -175,5 +177,17 @@ function NewsletterPopup({ brandName }: { brandName: string }) {
         <div className="mx-auto text-left"><NewsletterForm /></div>
       </div>
     </div>
+  );
+}
+
+/** Floating chat button. The number comes from the WhatsApp link in Settings > Social media links. */
+function WhatsAppButton() {
+  const { branding } = useSite();
+  const link = branding.social?.whatsapp;
+  if (!link) return null;
+  return (
+    <a href={link} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" className="glass fixed bottom-[10.5rem] left-4 z-40 grid h-12 w-12 place-items-center rounded-full transition hover:text-accent md:bottom-20 md:left-5">
+      <svg viewBox="0 0 24 24" width={22} height={22} fill="none" stroke="currentColor" strokeWidth={1.75} aria-hidden><path d="M4 20l1.3-4.2A8 8 0 1 1 8.5 19z" /><path d="M9 9c0 3 3 6 6 6" stroke="rgb(var(--accent))" /></svg>
+    </a>
   );
 }

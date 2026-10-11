@@ -11,6 +11,8 @@ import { Stars } from "@/components/Stars";
 import { RecentlyViewed, RecordView } from "@/components/RecentlyViewed";
 import { CareSteps, LiveViewers, ProductQA, SpecsTable, type Meta } from "@/components/PdpExtras";
 import { CookingTimer } from "@/components/CookingTimer";
+import { BackLink } from "@/components/BackLink";
+import { ShareButton } from "@/components/ShareButton";
 import { RecipeCard } from "@/components/RecipeBits";
 import type { RecipeCardData } from "@/lib/content";
 
@@ -61,12 +63,14 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <RecordView p={{ id: p.id, slug, title: p.title, price: Number(p.selling_price), marked: Number(p.marked_price), image: p.images[0], brand: p.brand_name }} />
+      <BackLink />
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Shop", href: "/products" }, { name: p.title }]} />
       <div className="grid gap-10 md:grid-cols-2 lg:gap-16">
         <Gallery images={p.images} title={p.title} videoUrl={meta.videoUrl || undefined} spinImages={meta.spinImages} modelUrl={p.model_3d_url || undefined} />
         <div className="md:sticky md:top-24 md:self-start">
           {p.brand_name && <p className="eyebrow">{p.brand_name}</p>}
           <h1 className="mt-2 text-3xl font-semibold leading-tight tracking-wide">{p.title}</h1>
+          <div className="mt-2"><ShareButton title={p.title} text={`${p.title} at ${p.brand_name ?? "our shop"}`} /></div>
           <div className="mb-6 mt-3 h-5">{!!p.rating_count && <a href="#reviews" className="inline-block" aria-label="Read reviews"><Stars value={Number(p.rating_avg)} size={16} count={p.rating_count} /></a>}</div>
           <BuyPanel p={p} />
           <div className="mt-4"><LiveViewers slug={slug} /></div>

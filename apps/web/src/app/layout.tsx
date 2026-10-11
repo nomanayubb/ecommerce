@@ -3,12 +3,11 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { api, getSite, DEFAULT_VISUALS, type CategoryNode } from "@/lib/api";
 import { PARTICLE_PRESETS } from "@/themes/presets";
-import { VisualsHost } from "@/components/Visuals";
 import { brandingCss } from "@/lib/branding";
 import { applyPack } from "@/themes";
 import { Decor } from "@/components/Decor";
+import { LazyCompareTray, LazyDrawer, LazyIdleHosts, LazyQuickView } from "@/components/LazyHosts";
 import { CartProvider } from "@/components/CartProvider";
-import { CartDrawer } from "@/components/CartDrawer";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AnnouncementBar } from "@/components/AnnouncementBar";
@@ -16,13 +15,14 @@ import { ScrollProgress } from "@/components/Motion";
 import { SiteProvider } from "@/components/Site";
 import { SessionProvider } from "@/components/SessionProvider";
 import { ShopperProvider } from "@/components/Shopper";
-import { QuickView } from "@/components/QuickView";
-import { CompareTray } from "@/components/CompareTray";
-import { MascotAssistant } from "@/components/Mascot";
-import { ConfettiHost } from "@/components/Confetti";
-import { EffectsHost } from "@/components/Effects";
 
 const getBranding = () => getSite().then((s) => s.branding);
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+/** Organisation + site-search data for search engines. */
+const siteLd = (name: string, tagline: string) => [
+  { "@context": "https://schema.org", "@type": "Organization", name, url: SITE_URL, logo: `${SITE_URL}/brand/icon-512.png`, description: tagline },
+  { "@context": "https://schema.org", "@type": "WebSite", name, url: SITE_URL, potentialAction: { "@type": "SearchAction", target: `${SITE_URL}/products?q={search_term_string}`, "query-input": "required name=search_term_string" } },
+];
 
 export async function generateMetadata(): Promise<Metadata> {
   const b = await getBranding();
@@ -43,7 +43,7 @@ export async function generateViewport(): Promise<Viewport> {
 }
 
 // Runs before first paint so the saved theme never flashes.
-const themeScript = `document.documentElement.classList.add("js");try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t;var m=localStorage.getItem("motion-pref");if(m)document.documentElement.dataset.motionPref=m}catch(e){}`;
+const themeScript = `var d=document.documentElement;d.classList.add("js");try{var c=navigator.connection;if(c&&(c.saveData||/(^|-)2g$/.test(c.effectiveType||"")))d.dataset.lite="1";var t=localStorage.getItem("theme");if(t)d.dataset.theme=t;var a=JSON.parse(localStorage.getItem("a11y")||"null");if(a){if(a.size&&a.size!==100)d.style.fontSize=a.size+"%";if(a.contrast)d.setAttribute("data-contrast","");if(a.underline)d.setAttribute("data-underline","");if(a.dyslexia)d.setAttribute("data-dyslexia","")}var m=localStorage.getItem("motion-pref");if(m)d.dataset.motionPref=m;else if(d.dataset.motionPolicy==="always")d.dataset.motionPref="on"}catch(e){if(d.dataset.motionPolicy==="always")d.dataset.motionPref="on"}`;
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const [categories, site] = await Promise.all([
@@ -58,12 +58,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const decor = pack.decor?.particles || visuals.particles === "none" ? pack.decor : { ...pack.decor, particles: PARTICLE_PRESETS[visuals.particles] };
   const logos = { logoUrl: branding.logoUrl, logoUrlDark: branding.logoUrlDark };
   return (
-    <html lang="en" data-theme={branding.defaultTheme} data-motion={branding.motion ?? "full"} data-button={branding.buttonStyle ?? "solid"} data-card={branding.cardStyle ?? "classic"} data-badge={branding.badgeStyle ?? "solid"} data-bg={visuals.background === "none" ? undefined : visuals.background} data-header={visuals.headerStyle} data-imghover={visuals.imageHover} data-sound={visuals.sound ? "1" : "0"} data-voice={visuals.mascotVoice ? "1" : "0"} data-logomorph={visuals.logoMorph ? "1" : undefined} suppressHydrationWarning>
+    <html lang="en" data-theme={branding.defaultTheme} data-motion={branding.motion ?? "full"} data-motion-policy={branding.motionPolicy ?? "respect"} data-button={branding.buttonStyle ?? "solid"} data-card={branding.cardStyle ?? "classic"} data-badge={branding.badgeStyle ?? "solid"} data-bg={visuals.background === "none" ? undefined : visuals.background} data-header={visuals.headerStyle} data-imghover={visuals.imageHover} data-sound={visuals.sound ? "1" : "0"} data-voice={visuals.mascotVoice ? "1" : "0"} data-logomorph={visuals.logoMorph ? "1" : undefined} suppressHydrationWarning>
       <head>
         <style dangerouslySetInnerHTML={{ __html: brandingCss(branding) }} />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
+        <a href="#main" className="skip-link">Skip to content</a>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(siteLd(branding.name, branding.tagline)).replace(/</g, "\\u003c") }} />
         {visuals.imageHover === "liquid" && (
           <svg width="0" height="0" aria-hidden="true" focusable="false" style={{ position: "absolute" }}>
             <filter id="liquid" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="2" result="n"><animate attributeName="baseFrequency" dur="6s" values="0.012 0.018;0.02 0.026;0.012 0.018" repeatCount="indefinite" /></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="16" /></filter>
@@ -77,15 +79,12 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <ShopperProvider>
           <AnnouncementBar messages={messages} />
           <Header categories={categories} brand={{ name: branding.name, ...logos }} cta={branding.headerCta} hints={branding.searchHints} />
-          <main className="mx-auto max-w-[var(--maxw)] px-4 py-8">{children}</main>
+          <main id="main" tabIndex={-1} className="mx-auto max-w-[var(--maxw)] px-4 py-8 outline-none">{children}</main>
           <Footer brand={{ name: branding.name, tagline: branding.tagline, footerText: branding.footerText, ...logos }} categories={categories} store={store} footer={footer} social={branding.social ?? {}} />
-          <CartDrawer />
-          <QuickView />
-          <CompareTray />
-          <MascotAssistant />
-          <ConfettiHost />
-          <EffectsHost effects={branding.effects} brandName={branding.name} />
-          <VisualsHost visuals={visuals} />
+          <LazyDrawer />
+          <LazyQuickView />
+          <LazyCompareTray />
+          <LazyIdleHosts effects={branding.effects} brandName={branding.name} visuals={visuals} />
         </ShopperProvider>
         </CartProvider>
         </SessionProvider>

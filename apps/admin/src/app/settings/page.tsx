@@ -7,11 +7,11 @@ type Font = "system" | "serif" | "rounded" | "mono";
 interface Branding {
   name: string; tagline: string; logoUrl: string; logoUrlDark: string; brandColor: string; brandColorDark: string; accentColor: string;
   radius: number; font: Font; headingFont: "inherit" | Font; defaultTheme: "light" | "dark" | "oled"; announcement: string; announcements: string[];
-  pack: string; motion: "off" | "subtle" | "full"; inkColor: string; creamColor: string; darkColor: string; heroText: string; promiseText: string; footerText: string;
+  pack: string; motion: "off" | "subtle" | "full"; motionPolicy: "respect" | "always"; inkColor: string; creamColor: string; darkColor: string; heroText: string; promiseText: string; footerText: string;
   buttonStyle: "solid" | "outline" | "pill"; cardStyle: "classic" | "minimal" | "compact" | "soft"; badgeStyle: "solid" | "outline" | "pill"; layoutWidth: "boxed" | "wide" | "full";
   headerCta: { label: string; href: string };
   visuals: Visuals;
-  searchHints: string[]; navLinks: { label: string; href: string }[]; effects: Record<"ripple" | "flyToCart" | "backToTop" | "cookieNotice" | "newsletterPopup" | "iconBadges", boolean>;
+  searchHints: string[]; navLinks: { label: string; href: string }[]; effects: Record<"ripple" | "flyToCart" | "backToTop" | "cookieNotice" | "newsletterPopup" | "iconBadges" | "whatsappButton", boolean>;
   social: Record<"instagram" | "facebook" | "tiktok" | "youtube" | "whatsapp" | "x", string>;
 }
 type Visuals = {
@@ -73,7 +73,7 @@ export default function Settings() {
   useEffect(() => {
     api<{ branding: Branding; store: Store; footer: Footer }>("/settings")
       .then((r) => {
-        setB({ ...r.branding, announcements: r.branding.announcements ?? [], headerCta: r.branding.headerCta ?? { label: "", href: "" }, social: { ...({ instagram: "", facebook: "", tiktok: "", youtube: "", whatsapp: "", x: "" } as Branding["social"]), ...(r.branding.social ?? {}) }, headingFont: r.branding.headingFont ?? "inherit", buttonStyle: r.branding.buttonStyle ?? "solid", cardStyle: r.branding.cardStyle ?? "classic", badgeStyle: r.branding.badgeStyle ?? "solid", layoutWidth: r.branding.layoutWidth ?? "boxed", searchHints: r.branding.searchHints ?? [], navLinks: r.branding.navLinks ?? [], visuals: { ...DEFAULT_VISUALS, ...(r.branding.visuals ?? {}) }, effects: { ...({ ripple: true, flyToCart: true, backToTop: true, cookieNotice: true, newsletterPopup: false, iconBadges: true } as Branding["effects"]), ...(r.branding.effects ?? {}) } });
+        setB({ ...r.branding, announcements: r.branding.announcements ?? [], headerCta: r.branding.headerCta ?? { label: "", href: "" }, social: { ...({ instagram: "", facebook: "", tiktok: "", youtube: "", whatsapp: "", x: "" } as Branding["social"]), ...(r.branding.social ?? {}) }, headingFont: r.branding.headingFont ?? "inherit", buttonStyle: r.branding.buttonStyle ?? "solid", cardStyle: r.branding.cardStyle ?? "classic", badgeStyle: r.branding.badgeStyle ?? "solid", layoutWidth: r.branding.layoutWidth ?? "boxed", motionPolicy: r.branding.motionPolicy ?? "respect", searchHints: r.branding.searchHints ?? [], navLinks: r.branding.navLinks ?? [], visuals: { ...DEFAULT_VISUALS, ...(r.branding.visuals ?? {}) }, effects: { ...({ ripple: true, flyToCart: true, backToTop: true, cookieNotice: true, newsletterPopup: false, iconBadges: true, whatsappButton: false } as Branding["effects"]), ...(r.branding.effects ?? {}) } });
         setStore(r.store); setFooter(r.footer);
         setLinksText(r.footer.columns.map((c) => c.links.map((l) => `${l.label} | ${l.href}`).join("\n")));
       })
@@ -163,6 +163,7 @@ export default function Settings() {
           <label className={label}>Discount badge style<select className={input} value={b.badgeStyle} onChange={(e) => set("badgeStyle", e.target.value as Branding["badgeStyle"])}><option value="solid">Solid</option><option value="outline">Outline</option><option value="pill">Pill</option></select></label>
           <label className={label}>Page width<select className={input} value={b.layoutWidth} onChange={(e) => set("layoutWidth", e.target.value as Branding["layoutWidth"])}><option value="boxed">Boxed (1280px)</option><option value="wide">Wide (1600px)</option><option value="full">Full width</option></select></label>
         </div>
+        <label className={label}>Visitors whose computer says "reduce animations"<select className={input} value={b.motionPolicy} onChange={(e) => set("motionPolicy", e.target.value as Branding["motionPolicy"])}><option value="respect">Respect it (calmer, recommended for accessibility)</option><option value="always">Play animations anyway (visitors can still switch them off with the header button)</option></select></label>
         <label className={label}>Animation intensity<select className={input} value={b.motion ?? "full"} onChange={(e) => set("motion", e.target.value as Branding["motion"])}><option value="full">Full (reveals, tilt, animated hero)</option><option value="subtle">Subtle (reveals only)</option><option value="off">Off (no motion)</option></select></label>
       </Group>
 
@@ -216,7 +217,7 @@ export default function Settings() {
           <textarea rows={3} className={input} value={b.searchHints.join("\n")} onChange={(e) => set("searchHints", e.target.value.split("\n").slice(0, 6))} />
         </label>
         <div className="grid gap-2 sm:grid-cols-2">
-          {([["ripple", "Button ripple on click"], ["flyToCart", "Product flies into the bag on add"], ["backToTop", "Back-to-top ring button"], ["cookieNotice", "Cookie notice"], ["newsletterPopup", "Newsletter popup (30 s or on leaving, once per 14 days)"], ["iconBadges", "Product icons from tags (dishwasher-safe, vegan, ...)"]] as const).map(([k, t]) => (
+          {([["ripple", "Button ripple on click"], ["flyToCart", "Product flies into the bag on add"], ["backToTop", "Back-to-top ring button"], ["cookieNotice", "Cookie notice"], ["newsletterPopup", "Newsletter popup (30 s or on leaving, once per 14 days)"], ["iconBadges", "Product icons from tags (dishwasher-safe, vegan, ...)"], ["whatsappButton", "Floating WhatsApp chat button (uses the WhatsApp link in Social media links)"]] as const).map(([k, t]) => (
             <label key={k} className="flex items-center gap-2 text-sm"><input type="checkbox" checked={b.effects[k]} onChange={(e) => set("effects", { ...b.effects, [k]: e.target.checked })} />{t}</label>
           ))}
         </div>
