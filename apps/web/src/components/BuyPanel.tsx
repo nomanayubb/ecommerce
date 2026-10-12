@@ -8,6 +8,7 @@ import { DeliveryEstimate } from "./DeliveryEstimate";
 import { StockAlert } from "./NewsletterForm";
 import { TagIcons } from "./TagIcons";
 import { SizeGuideButton, type Meta } from "./PdpExtras";
+import { lastSize, rememberSize } from "@/lib/sizes";
 import { CashIcon, PackageIcon, SupportIcon, TruckIcon } from "./icons";
 
 export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; compact?: boolean; onAdded?: () => void }) {
@@ -37,7 +38,16 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
       ?? p.variants.find((v) => v.variant_attributes[key] === value && v.stock_quantity > 0)
       ?? p.variants.find((v) => v.variant_attributes[key] === value);
     if (exact) setVariantId(exact.id);
+    if (/size/i.test(key)) rememberSize(value);
   };
+  // Open on the size this shopper picked last time, when it is in stock.
+  useEffect(() => {
+    const sk = attrKeys.find((k) => /size/i.test(k)); const ls = lastSize();
+    if (!sk || !ls) return;
+    const cur = p.variants.find((v) => v.id === variantId);
+    const m = p.variants.find((v) => v.variant_attributes[sk] === ls && v.stock_quantity > 0 && attrKeys.every((o) => o === sk || v.variant_attributes[o] === cur?.variant_attributes[o]));
+    if (m && m.id !== variantId) setVariantId(m.id);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   // Show the photo that belongs to the chosen variant (colour swatch).
   useEffect(() => {
     if (variant?.image_index != null) window.dispatchEvent(new CustomEvent("pdp-image", { detail: variant.image_index }));

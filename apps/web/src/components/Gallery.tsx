@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRightIcon, CloseIcon } from "./icons";
 import { Model3D, Spin360, VideoPlayer } from "./PdpExtras";
 import { useSite } from "./Site";
@@ -18,6 +18,8 @@ export function Gallery({ images, title, videoUrl, spinImages, modelUrl }: { ima
   if (modelUrl) tabs.push(["3d", "3D / AR"]);
   const [zoom, setZoom] = useState<{ x: number; y: number } | null>(null);
   const [box, setBox] = useState(false);
+  const touchX = useRef(0);
+  const [lz, setLz] = useState<{ x: number; y: number } | null>(null);
   const list = images.length ? images : [`/ph/${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`];
   const go = (d: number) => setI((n) => (n + d + list.length) % list.length);
 
@@ -70,16 +72,19 @@ export function Gallery({ images, title, videoUrl, spinImages, modelUrl }: { ima
       {media}
       <button
         type="button" aria-label="Open image full screen" onClick={() => setBox(true)}
-        className={`order-1 relative aspect-[4/5] cursor-zoom-in overflow-hidden border border-line bg-card sm:order-2 ${tab !== "photos" ? "hidden" : ""}`}
+        className={`gallery-main order-1 relative aspect-[4/5] cursor-zoom-in overflow-hidden border border-line bg-card sm:order-2 ${tab !== "photos" ? "hidden" : ""}`}
         onMouseMove={(e) => {
           const r = e.currentTarget.getBoundingClientRect();
           setZoom({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
         }}
         onMouseLeave={() => setZoom(null)}
+        onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+        onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - touchX.current; if (Math.abs(dx) > 45 && list.length > 1) { e.preventDefault(); go(dx < 0 ? 1 : -1); } }}
       >
         <img src={list[i]} alt={title} width={800} height={1000} fetchPriority="high"
           className="h-full w-full object-cover transition-transform duration-200"
           style={zoom ? { transform: "scale(1.8)", transformOrigin: `${zoom.x}% ${zoom.y}%` } : undefined} />
+        {list.length > 1 && <span aria-hidden className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5 sm:hidden">{list.map((_, n) => <span key={n} className={`h-1.5 rounded-full transition-all ${n === i ? "w-5 bg-accent" : "w-1.5 bg-fg/40"}`} />)}</span>}
         {mark && <img src={mark} alt="" aria-hidden width={120} height={24} className="pointer-events-none absolute bottom-3 right-3 h-5 w-auto opacity-40 drop-shadow" />}
       </button>
 
@@ -87,7 +92,7 @@ export function Gallery({ images, title, videoUrl, spinImages, modelUrl }: { ima
         <div role="dialog" aria-modal="true" aria-label={`${title} images`} className="fixed inset-0 z-[80] flex items-center justify-center bg-black/90 p-4" onClick={() => setBox(false)}>
           <button aria-label="Close" onClick={() => setBox(false)} className="absolute right-4 top-4 p-3 text-white transition hover:text-gold"><CloseIcon size={26} /></button>
           {list.length > 1 && <button aria-label="Previous image" onClick={(e) => { e.stopPropagation(); go(-1); }} className="absolute left-3 top-1/2 -translate-y-1/2 rotate-180 p-3 text-white transition hover:text-gold"><ArrowRightIcon size={28} /></button>}
-          <img src={list[i]} alt={title} onClick={(e) => e.stopPropagation()} className="max-h-[92vh] max-w-[92vw] object-contain" />
+          <img src={list[i]} alt={title} title="Double-click to zoom" onClick={(e) => e.stopPropagation()} onDoubleClick={(e) => { e.stopPropagation(); const r = e.currentTarget.getBoundingClientRect(); setLz((z) => (z ? null : { x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 })); }} onMouseMove={(e) => { if (lz) { const r = e.currentTarget.getBoundingClientRect(); setLz({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 }); } }} className="max-h-[92vh] max-w-[92vw] object-contain transition-transform duration-200" style={lz ? { transform: "scale(2.2)", transformOrigin: `${lz.x}% ${lz.y}%`, cursor: "zoom-out" } : { cursor: "zoom-in" }} />
           {list.length > 1 && <button aria-label="Next image" onClick={(e) => { e.stopPropagation(); go(1); }} className="absolute right-3 top-1/2 -translate-y-1/2 p-3 text-white transition hover:text-gold"><ArrowRightIcon size={28} /></button>}
           <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs uppercase tracking-[0.25em] text-white/70">{i + 1} / {list.length}</p>
         </div>

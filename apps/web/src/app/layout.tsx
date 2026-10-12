@@ -43,7 +43,7 @@ export async function generateViewport(): Promise<Viewport> {
 }
 
 // Runs before first paint so the saved theme never flashes.
-const themeScript = `var d=document.documentElement;d.classList.add("js");try{var c=navigator.connection;if(c&&(c.saveData||/(^|-)2g$/.test(c.effectiveType||"")))d.dataset.lite="1";var t=localStorage.getItem("theme");if(t)d.dataset.theme=t;var a=JSON.parse(localStorage.getItem("a11y")||"null");if(a){if(a.size&&a.size!==100)d.style.fontSize=a.size+"%";if(a.contrast)d.setAttribute("data-contrast","");if(a.underline)d.setAttribute("data-underline","");if(a.dyslexia)d.setAttribute("data-dyslexia","")}var m=localStorage.getItem("motion-pref");if(m)d.dataset.motionPref=m;else if(d.dataset.motionPolicy==="always")d.dataset.motionPref="on"}catch(e){if(d.dataset.motionPolicy==="always")d.dataset.motionPref="on"}`;
+const themeScript = `var d=document.documentElement;d.classList.add("js");try{var c=navigator.connection;if(c&&(c.saveData||/(^|-)2g$/.test(c.effectiveType||"")))d.dataset.lite="1";var t=localStorage.getItem("theme");if(t==="auto")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";if(t)d.dataset.theme=t;var a=JSON.parse(localStorage.getItem("a11y")||"null");if(a){if(a.size&&a.size!==100)d.style.fontSize=a.size+"%";if(a.contrast)d.setAttribute("data-contrast","");if(a.underline)d.setAttribute("data-underline","");if(a.dyslexia)d.setAttribute("data-dyslexia","");if(a.lite)d.dataset.lite="1"}var m=localStorage.getItem("motion-pref");if(m)d.dataset.motionPref=m;else if(d.dataset.motionPolicy==="always")d.dataset.motionPref="on"}catch(e){if(d.dataset.motionPolicy==="always")d.dataset.motionPref="on"}`;
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const [categories, site] = await Promise.all([
@@ -58,7 +58,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const decor = pack.decor?.particles || visuals.particles === "none" ? pack.decor : { ...pack.decor, particles: PARTICLE_PRESETS[visuals.particles] };
   const logos = { logoUrl: branding.logoUrl, logoUrlDark: branding.logoUrlDark };
   return (
-    <html lang="en" data-theme={branding.defaultTheme} data-motion={branding.motion ?? "full"} data-motion-policy={branding.motionPolicy ?? "respect"} data-button={branding.buttonStyle ?? "solid"} data-card={branding.cardStyle ?? "classic"} data-badge={branding.badgeStyle ?? "solid"} data-bg={visuals.background === "none" ? undefined : visuals.background} data-header={visuals.headerStyle} data-imghover={visuals.imageHover} data-sound={visuals.sound ? "1" : "0"} data-voice={visuals.mascotVoice ? "1" : "0"} data-logomorph={visuals.logoMorph ? "1" : undefined} suppressHydrationWarning>
+    <html lang="en" data-theme={branding.defaultTheme} data-motion={branding.motion ?? "full"} data-motion-policy={branding.motionPolicy ?? "respect"} data-button={branding.buttonStyle ?? "solid"} data-card={branding.cardStyle ?? "classic"} data-badge={branding.badgeStyle ?? "solid"} data-bg={visuals.background === "none" ? undefined : visuals.background} data-header={visuals.headerStyle} data-depth={visuals.depth === "soft" ? "soft" : undefined} data-imghover={visuals.imageHover} data-sound={visuals.sound ? "1" : "0"} data-voice={visuals.mascotVoice ? "1" : "0"} data-logomorph={visuals.logoMorph ? "1" : undefined} suppressHydrationWarning>
       <head>
         <style dangerouslySetInnerHTML={{ __html: brandingCss(branding) }} />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

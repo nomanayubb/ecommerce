@@ -17,6 +17,7 @@ const Tray = dynamic(() => import("./CompareTray").then((m) => m.CompareTray), {
 const Mascot = dynamic(() => import("./Mascot").then((m) => m.MascotAssistant), { ssr: false });
 const Confetti = dynamic(() => import("./Confetti").then((m) => m.ConfettiHost), { ssr: false });
 const Effects = dynamic(() => import("./Effects").then((m) => m.EffectsHost), { ssr: false });
+const Nav = dynamic(() => import("./NavProgress").then((m) => m.NavProgress), { ssr: false });
 const Keys = dynamic(() => import("./Shortcuts").then((m) => m.Shortcuts), { ssr: false });
 const Pwa = dynamic(() => import("./Pwa").then((m) => m.PwaRegister), { ssr: false });
 const Visual = dynamic(() => import("./Visuals").then((m) => m.VisualsHost), { ssr: false });
@@ -57,6 +58,7 @@ export function LazyIdleHosts({ effects, brandName, visuals }: { effects?: Parti
   return (
     <>
       <Pwa />
+      {!visuals.transition || visuals.transition === "none" ? <Nav /> : null}
       <Keys />
       <Mascot />
       <Confetti />

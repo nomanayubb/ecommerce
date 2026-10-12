@@ -29,7 +29,9 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
   const { slug } = await params;
   const p = await load(slug);
   if (!p) notFound();
-  const { store } = await getSite();
+  const { store, branding } = await getSite();
+  const waNum = String(branding.social?.whatsapp ?? "").match(/(?:wa\.me\/|phone=)\+?(\d{6,15})/)?.[1];
+  const askHref = waNum ? `https://wa.me/${waNum}?text=${encodeURIComponent(`Hello, I have a question about ${p.title}: ${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/products/${slug}`)}` : "";
   const related = await api<{ items: ProductSummary[] }>(`/products/${slug}/related`).then((r) => r.items).catch(() => []);
   const recipes = await api<{ items: RecipeCardData[] }>(`/products/${slug}/recipes`).then((r) => r.items).catch(() => [] as RecipeCardData[]);
 
@@ -70,7 +72,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
         <div className="md:sticky md:top-24 md:self-start">
           {p.brand_name && <p className="eyebrow">{p.brand_name}</p>}
           <h1 className="mt-2 text-3xl font-semibold leading-tight tracking-wide">{p.title}</h1>
-          <div className="mt-2"><ShareButton title={p.title} text={`${p.title} at ${p.brand_name ?? "our shop"}`} /></div>
+          <div className="mt-2 flex flex-wrap items-center gap-5"><ShareButton title={p.title} text={`${p.title} at ${p.brand_name ?? "our shop"}`} />{askHref && <a href={askHref} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold uppercase tracking-[0.2em] text-accent hover:underline">Ask on WhatsApp</a>}</div>
           <div className="mb-6 mt-3 h-5">{!!p.rating_count && <a href="#reviews" className="inline-block" aria-label="Read reviews"><Stars value={Number(p.rating_avg)} size={16} count={p.rating_count} /></a>}</div>
           <BuyPanel p={p} />
           <div className="mt-4"><LiveViewers slug={slug} /></div>

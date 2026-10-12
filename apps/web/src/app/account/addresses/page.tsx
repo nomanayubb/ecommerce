@@ -1,5 +1,6 @@
 "use client";
 
+import { PK_CITIES } from "@/lib/cities";
 import { useCallback, useEffect, useState } from "react";
 import { send } from "@/lib/client";
 
@@ -41,7 +42,7 @@ export default function Addresses() {
           <label><span className={label}>Label (Home, Office…)</span><input name="label" defaultValue={a?.label ?? ""} maxLength={40} className={field} /></label>
           <label><span className={label}>Full name</span><input name="name" required defaultValue={a?.name ?? ""} className={field} /></label>
           <label><span className={label}>Phone</span><input name="phone" required type="tel" minLength={7} defaultValue={a?.phone ?? ""} className={field} /></label>
-          <label><span className={label}>City</span><input name="city" required defaultValue={a?.city ?? ""} className={field} /></label>
+          <label><span className={label}>City</span><input name="city" required list="pk-cities" defaultValue={a?.city ?? ""} className={field} /><datalist id="pk-cities">{PK_CITIES.map((c) => <option key={c} value={c} />)}</datalist></label>
           <label className="sm:col-span-2"><span className={label}>Address</span><input name="line1" required defaultValue={a?.line1 ?? ""} className={field} /></label>
           <label><span className={label}>Postal code (optional)</span><input name="postalCode" defaultValue={a?.postal_code ?? ""} className={field} /></label>
           <label className="flex items-center gap-3 self-end pb-3 text-sm"><input type="checkbox" name="isDefault" defaultChecked={a?.is_default ?? false} className="h-4 w-4 accent-[rgb(var(--accent))]" /> Make this my default address</label>

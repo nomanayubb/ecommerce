@@ -13,6 +13,9 @@ export function ProductGrid({ initial, total, pageSize, qs, startPage = 1 }: { i
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
   const end = useRef<HTMLDivElement>(null);
+  const [cols, setCols] = useState<2 | 3 | 4>(3);
+  useEffect(() => { try { const c = Number(localStorage.getItem("grid-cols")); if (c === 2 || c === 4) setCols(c); } catch {} }, []);
+  const pickCols = (c: 2 | 3 | 4) => { setCols(c); try { localStorage.setItem("grid-cols", String(c)); } catch {} };
   useEffect(() => { rememberList(); }, [qs]);
   const more = (startPage - 1) * pageSize + items.length < total;
 
@@ -40,9 +43,13 @@ export function ProductGrid({ initial, total, pageSize, qs, startPage = 1 }: { i
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+      <div className="mb-4 hidden items-center justify-end gap-2 text-xs text-muted lg:flex" role="group" aria-label="Products per row">
+        <span className="uppercase tracking-widest">View</span>
+        {([2, 3, 4] as const).map((c) => <button key={c} type="button" aria-pressed={cols === c} onClick={() => pickCols(c)} className={`h-8 w-8 border transition ${cols === c ? "border-accent text-accent" : "border-line hover:text-fg"}`}>{c}</button>)}
+      </div>
+      <div className={`grid grid-cols-2 gap-4 ${cols === 2 ? "md:grid-cols-2" : cols === 4 ? "md:grid-cols-3 xl:grid-cols-4" : "md:grid-cols-3"}`}>
         {items.map((p, i) => (
-          <div key={p.id} className="fade-up" style={{ animationDelay: `${Math.min(i % pageSize, 8) * 40}ms` }}><ProductCard p={p} /></div>
+          <div key={p.id} className="fade-up" style={{ animationDelay: `${Math.min(i % pageSize, 8) * 40}ms` }}><ProductCard p={p} priority={i < 2} /></div>
         ))}
       </div>
       <div ref={end} className="mt-10 flex flex-col items-center gap-3 text-xs uppercase tracking-[0.2em] text-muted" aria-live="polite">

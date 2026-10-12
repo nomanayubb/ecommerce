@@ -14,7 +14,7 @@ type Settings = Record<string, string | number | boolean>;
 function Head({ eyebrow, heading, center }: { eyebrow?: unknown; heading?: unknown; center?: boolean }) {
   if (!eyebrow && !heading) return null;
   return (
-    <div className={`mb-8 ${center ? "text-center" : ""}`}>
+    <div className={`sec-head mb-8 ${center ? "text-center" : ""}`}>
       {eyebrow ? <p className="eyebrow">{String(eyebrow)}</p> : null}
       {heading ? <h2 className="mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">{String(heading)}</h2> : null}
     </div>

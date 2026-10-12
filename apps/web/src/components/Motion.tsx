@@ -69,6 +69,8 @@ export function Tilt({ children, className = "" }: { children: ReactNode; classN
         const r = ref.current.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width - 0.5;
         const y = (e.clientY - r.top) / r.height - 0.5;
+        ref.current.style.setProperty("--gx", `${((e.clientX - r.left) / r.width) * 100}%`);
+        ref.current.style.setProperty("--gy", `${((e.clientY - r.top) / r.height) * 100}%`);
         ref.current.style.transform = `perspective(900px) rotateX(${(-y * 6).toFixed(2)}deg) rotateY(${(x * 6).toFixed(2)}deg) translateZ(0)`;
       }}
       onPointerLeave={() => { if (ref.current) ref.current.style.transform = ""; }}

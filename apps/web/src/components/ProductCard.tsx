@@ -6,20 +6,21 @@ import { Stars } from "./Stars";
 import { TagIcons } from "./TagIcons";
 import { HoverVideo } from "./HoverVideo";
 import { CardGlow, PriceTag } from "./CardFx";
+import { QuickAdd } from "./QuickAdd";
 import { isFileVideo } from "@/lib/media";
 
 const TAG_BADGES: [string, string][] = [["bestseller", "Bestseller"], ["limited", "Limited"], ["new", "New"]];
 
-export function ProductCard({ p }: { p: ProductSummary }) {
+export function ProductCard({ p, priority = false }: { p: ProductSummary; priority?: boolean }) {
   const soldOut = p.stock_quantity === 0;
   const badge = TAG_BADGES.find(([t]) => p.tags?.includes(t))?.[1] ?? (p.stock_quantity > 0 && p.stock_quantity <= 5 ? "Low stock" : null);
   return (
     <Tilt>
-      <div className="group/card relative">
+      <div className="group/card relative [container-type:inline-size]">
       <Link href={`/products/${p.slug}`} className="lift pcard group block border border-line bg-card">
         <div className="pcard-img relative aspect-[4/5] overflow-hidden bg-line/40">
           {p.images[0] && (
-            <img src={p.images[0]} alt={p.title} loading="lazy" width={600} height={750}
+            <img src={p.images[0]} alt={p.title} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : undefined} decoding="async" width={600} height={750}
               className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${soldOut ? "opacity-50 grayscale" : ""}`} />
           )}
           <CardGlow image={p.images[0]} />
@@ -54,6 +55,7 @@ export function ProductCard({ p }: { p: ProductSummary }) {
         </div>
       </Link>
       <CardActions p={p} />
+      <QuickAdd p={p} />
       </div>
     </Tilt>
   );

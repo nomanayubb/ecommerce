@@ -27,6 +27,21 @@ export const searchRoutes: FastifyPluginAsync = async (app) => {
     });
   });
 
+  // "Did you mean": the closest word from product titles, categories and brands (typo tolerant, uses pg_trgm).
+  app.get("/search/didyoumean", async (req) => {
+    const q = clean(z.object({ q: z.string().default("") }).parse(req.query).q);
+    if (q.length < 3) return { suggestion: null };
+    return cached(`search:dym:${q}`, 120, async () => {
+      const { rows } = await pool.query(
+        `SELECT t FROM (SELECT title AS t FROM products WHERE status = 'PUBLISHED' UNION ALL SELECT name FROM categories WHERE is_active UNION ALL SELECT name FROM brands) x
+         WHERE word_similarity($1, lower(t)) > 0.3 ORDER BY word_similarity($1, lower(t)) DESC LIMIT 6`, [q]);
+      const words = [...new Set(rows.flatMap((r) => String(r.t).toLowerCase().split(/[^a-z0-9]+/)).filter((w) => w.length >= 3))];
+      const lev = (a: string, b: string) => { const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]); for (let j = 1; j <= b.length; j++) d[0][j] = j; for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[a.length][b.length]; };
+      const best = words.filter((w) => w !== q).map((w) => ({ w, d: lev(q, w) })).filter((x) => x.d <= Math.max(2, Math.floor(q.length / 3))).sort((a, b) => a.d - b.d)[0];
+      return { suggestion: best?.w ?? null };
+    });
+  });
+
   // Most-searched terms in the last 30 days; falls back to top categories on a fresh store.
   app.get("/search/trending", async () =>
     cached("search:trending", 120, async () => {

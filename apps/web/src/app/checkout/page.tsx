@@ -9,6 +9,8 @@ import { useCart } from "@/components/CartProvider";
 import { MascotFigure } from "@/components/Mascot";
 import { GiftOptions, PromoField, useCartPricing } from "@/components/CartExtras";
 import { fireConfetti, mascotSay } from "@/lib/motion";
+import { PK_CITIES } from "@/lib/cities";
+import { PrintButton } from "@/components/PrintButton";
 
 export default function Checkout() {
   const { lines, clear, extras } = useCart();
@@ -17,6 +19,7 @@ export default function Checkout() {
   const [saved, setSaved] = useState<{ id: string; label: string | null; name: string; phone: string; line1: string; city: string; postal_code: string | null; is_default: boolean }[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [phoneHint, setPhoneHint] = useState(false);
   const [done, setDone] = useState<{ orderNumber: number; grandTotal: number } | null>(null);
 
   const payload = lines.map((l) => ({ productId: l.productId, variantId: l.variantId, quantity: l.quantity }));
@@ -28,6 +31,19 @@ export default function Checkout() {
     const set = (n: string, v: string) => { const el = form.elements.namedItem(n) as HTMLInputElement | null; if (el) el.value = v; };
     set("name", a.name); set("phone", a.phone); set("line1", a.line1); set("city", a.city); set("postalCode", a.postal_code ?? "");
   };
+  // Guests: bring back the details used last time on this device.
+  useEffect(() => {
+    if (user || !ready) return;
+    try {
+      const d = JSON.parse(localStorage.getItem("checkout-details") ?? "null");
+      if (!d) return;
+      setTimeout(() => {
+        const form = document.getElementById("checkout-form") as HTMLFormElement | null;
+        if (!form) return;
+        for (const k of ["name", "phone", "line1", "city", "postalCode"]) { const el = form.elements.namedItem(k) as HTMLInputElement | null; if (el && !el.value && d[k]) el.value = d[k]; }
+      }, 0);
+    } catch {}
+  }, [user, ready]);
   useEffect(() => {
     if (!user) return;
     send<Addr[]>("GET", "account/addresses").then((list) => { setSaved(list); const d = list.find((x) => x.is_default); if (d) setTimeout(() => fillAddr(d), 0); }).catch(() => {});
@@ -48,6 +64,7 @@ export default function Checkout() {
         giftMessage: extras.giftWrap ? extras.giftMessage || undefined : undefined,
         paymentMethod: "COD",
       });
+      try { localStorage.setItem("checkout-details", JSON.stringify({ name: f.get("name"), phone: f.get("phone"), line1: f.get("line1"), city: f.get("city"), postalCode: f.get("postalCode") })); } catch {}
       clear();
       setDone(res);
       fireConfetti();
@@ -67,7 +84,7 @@ export default function Checkout() {
         <p className="eyebrow">Order confirmed</p>
         <h1 className="mt-3 text-3xl font-semibold uppercase tracking-[0.1em]">Thank you</h1>
         <p className="mt-4 text-muted">Your order <strong className="text-fg">#{done.orderNumber}</strong> has been placed. Please keep <strong className="text-fg">{pkr(done.grandTotal)}</strong> ready to pay in cash on delivery.</p>
-        <Link href="/products" className="btn btn-primary mt-10">Continue shopping</Link>
+        <div className="mt-10 flex flex-wrap justify-center gap-4"><Link href="/products" className="btn btn-primary">Continue shopping</Link><PrintButton className="btn btn-ghost" /></div>
       </div>
     );
 
@@ -101,9 +118,9 @@ export default function Checkout() {
             )}
             <div className="grid gap-4 sm:grid-cols-2">
               <label><span className={label}>Full name</span><input name="name" required autoComplete="name" className={field} /></label>
-              <label><span className={label}>Phone</span><input name="phone" required type="tel" autoComplete="tel" placeholder="03XX XXXXXXX" minLength={7} className={field} /></label>
+              <label><span className={label}>Phone</span><input name="phone" required type="tel" autoComplete="tel" placeholder="03XX XXXXXXX" minLength={7} className={field} onChange={(e) => { const d = e.target.value.replace(/\D/g, ""); setPhoneHint(d.length > 0 && !/^(92|0)?3\d{9}$/.test(d) && !/^0\d{9,10}$/.test(d)); }} />{phoneHint && <span className="mt-1 block text-xs text-accent">Mobile numbers look like 03XX XXXXXXX. Please double-check so the courier can reach you.</span>}</label>
               <label className="sm:col-span-2"><span className={label}>Address</span><input name="line1" required autoComplete="street-address" className={field} /></label>
-              <label><span className={label}>City</span><input name="city" required autoComplete="address-level2" className={field} /></label>
+              <label><span className={label}>City</span><input name="city" required list="pk-cities" autoComplete="address-level2" className={field} /><datalist id="pk-cities">{PK_CITIES.map((c) => <option key={c} value={c} />)}</datalist></label>
               <label><span className={label}>Postal code (optional)</span><input name="postalCode" autoComplete="postal-code" className={field} /></label>
             </div>
             <div className="mt-4"><GiftOptions /></div>

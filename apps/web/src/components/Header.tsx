@@ -12,7 +12,8 @@ import { SoundToggle } from "./SoundToggle";
 import { MascotFigure } from "./Mascot";
 import { useSite } from "./Site";
 
-const THEMES = ["dark", "oled", "light"] as const;
+const THEMES = ["dark", "oled", "light", "auto"] as const;
+const resolveTheme = (t: string) => (t === "auto" ? (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark") : t);
 
 export function Logo({ logo, logoDark, name, className = "h-9" }: { logo: string; logoDark?: string; name: string; className?: string }) {
   if (!logo) return <span data-logo className="text-lg font-semibold uppercase tracking-[0.3em]">{name}</span>;
@@ -26,12 +27,20 @@ export function Logo({ logo, logoDark, name, className = "h-9" }: { logo: string
 
 function ThemeToggle({ labelled = false, className = "" }: { labelled?: boolean; className?: string }) {
   const [theme, setTheme] = useState<string>("dark");
-  useEffect(() => setTheme(document.documentElement.dataset.theme ?? "dark"), []);
+  useEffect(() => { try { setTheme(localStorage.getItem("theme") ?? document.documentElement.dataset.theme ?? "dark"); } catch { setTheme(document.documentElement.dataset.theme ?? "dark"); } }, []);
+  // "Auto" follows the device and updates when the device switches between light and dark.
+  useEffect(() => {
+    if (theme !== "auto") return;
+    const mq = matchMedia("(prefers-color-scheme: light)");
+    const on = () => { document.documentElement.dataset.theme = resolveTheme("auto"); };
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, [theme]);
   const next = () => {
     const t = THEMES[(THEMES.indexOf(theme as (typeof THEMES)[number]) + 1) % THEMES.length];
     const root = document.documentElement;
     root.classList.add("theme-anim"); // smooth cross-fade between themes
-    root.dataset.theme = t;
+    root.dataset.theme = resolveTheme(t);
     setTimeout(() => root.classList.remove("theme-anim"), 450);
     try { localStorage.setItem("theme", t); } catch {}
     setTheme(t);
@@ -95,7 +104,9 @@ function MegaItem({ node }: { node: CategoryNode }) {
 }
 
 export function Header({ categories, brand, cta, hints }: { categories: CategoryNode[]; brand: { name: string; logoUrl: string; logoUrlDark?: string }; cta?: { label: string; href: string }; hints?: string[] }) {
-  const { count, setOpen } = useCart();
+  const { count, setOpen, lines } = useCart();
+  const freeAt = useSite().store.freeShippingThreshold;
+  const ring = freeAt > 0 && lines.length ? lines.reduce((t, l) => t + l.price * l.quantity, 0) / freeAt : 0;
   const { wish } = useShopper();
   const { user } = useSession();
   const [hidden, setHidden] = useState(false);
@@ -151,9 +162,10 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
           <HeartIcon size={22} filled={wish.length > 0} />
           {wish.length > 0 && <span className="absolute -right-0.5 -top-0.5 min-w-4 rounded-full bg-accent px-1 text-center text-[0.6rem] font-semibold leading-4 text-onbrand">{wish.length}</span>}
         </Link>
-        <button data-bag onClick={() => setOpen(true)} className="relative flex items-center gap-2 p-2 transition hover:text-accent" aria-label={`Open bag, ${count} items`}>
+        <button data-bag onClick={() => setOpen(true)} className="relative flex items-center gap-2 p-2 transition hover:text-accent" aria-label={`Open bag, ${count} items`} title={ring > 0 ? (ring >= 1 ? "Free delivery unlocked" : `${Math.round(ring * 100)}% of the way to free delivery`) : undefined}>
+          {ring > 0 && <svg aria-hidden viewBox="0 0 36 36" width={36} height={36} className="pointer-events-none absolute left-[1px] top-1/2 -translate-y-1/2 -rotate-90"><circle cx="18" cy="18" r="16" fill="none" stroke="currentColor" strokeOpacity=".12" strokeWidth="1.5" /><circle cx="18" cy="18" r="16" fill="none" stroke="rgb(var(--accent))" strokeWidth="1.8" strokeLinecap="round" strokeDasharray={100.5} strokeDashoffset={100.5 * (1 - Math.min(1, ring))} style={{ transition: "stroke-dashoffset .6s ease" }} /></svg>}
           <BagIcon size={22} />
-          <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-[0.65rem] font-semibold leading-5 text-onbrand">{count}</span>
+          <span key={count} className="count-pop inline-flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-[0.65rem] font-semibold leading-5 text-onbrand">{count}</span>
         </button>
       </div>
     </header>

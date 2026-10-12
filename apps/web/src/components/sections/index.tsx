@@ -25,7 +25,7 @@ function A({ href, className, children }: { href: string; className?: string; ch
 function Head({ eyebrow, heading, href, linkLabel = "View all", center }: { eyebrow?: string; heading?: string; href?: string; linkLabel?: string; center?: boolean }) {
   if (!eyebrow && !heading) return null;
   return (
-    <div className={`mb-6 flex items-end justify-between ${center ? "justify-center text-center" : ""}`}>
+    <div className={`sec-head mb-6 flex items-end justify-between ${center ? "justify-center text-center" : ""}`}>
       <div>{eyebrow && <p className="eyebrow">{eyebrow}</p>}{heading && <h2 className="mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">{heading}</h2>}</div>
       {href && <A href={href} className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] transition hover:text-accent">{linkLabel} <ArrowRightIcon size={16} /></A>}
     </div>
@@ -74,7 +74,7 @@ function Hero({ s, ctx }: P) {
   const copy = (
     <div className="relative max-w-xl">
       <p className="eyebrow">{eyebrow}</p>
-      {variant === "kinetic" ? <KineticHeading heading={heading} words={rotating} /> : <h1 className="mt-5 text-4xl font-semibold uppercase leading-[1.08] tracking-[0.04em] sm:text-6xl">{words}</h1>}
+      {variant === "kinetic" ? <KineticHeading heading={heading} words={rotating} /> : <h1 className="hero-title mt-5 text-4xl font-semibold uppercase leading-[1.08] tracking-[0.04em] sm:text-6xl">{words}</h1>}
       {text && <p className="mt-6 max-w-md text-base leading-relaxed text-ondark/70">{text}</p>}
       {variant === "mascot" && story.length > 0 && <div className="mt-8"><MascotStory lines={story} /></div>}
       <div className="mt-10 flex flex-wrap items-center gap-4">

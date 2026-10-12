@@ -7,11 +7,13 @@ import { useCart } from "./CartProvider";
 import { pkr } from "@/lib/api";
 import { useSite } from "./Site";
 import { MascotFigure } from "./Mascot";
+import { useShopper } from "./Shopper";
 import { GiftOptions, PromoField, Upsells, useCartPricing } from "./CartExtras";
 
 export function CartDrawer() {
   const { lines, saved, open, setOpen, setQty, count, saveForLater, moveToBag, removeSaved } = useCart();
   const { priced } = useCartPricing();
+  const { recent } = useShopper();
   const FREE_SHIPPING = useSite().store.freeShippingThreshold;
   const subtotal = lines.reduce((s, l) => s + l.price * l.quantity, 0);
   const net = priced ? priced.subtotal - priced.discount : subtotal;
@@ -54,6 +56,10 @@ export function CartDrawer() {
                   <MascotFigure mood="sad" size={96} className="mx-auto mb-4 text-fg" />
                   <p className="eyebrow">Your bag is empty</p>
                   <Link href="/products" onClick={() => setOpen(false)} className="btn btn-primary mt-6">Start shopping</Link>
+                  {recent.length > 0 && (
+                    <div className="mt-10 text-left"><p className="eyebrow mb-3 !text-[0.65rem]">Recently viewed</p>
+                      <ul className="space-y-3">{recent.slice(0, 3).map((r) => <li key={r.slug}><Link href={`/products/${r.slug}`} onClick={() => setOpen(false)} className="flex items-center gap-3 text-sm hover:text-accent">{r.image && <img src={r.image} alt="" width={44} height={55} className="h-14 w-11 border border-line object-cover" />}<span className="flex-1 leading-snug">{r.title}<span className="block text-xs text-muted">{pkr(r.price)}</span></span></Link></li>)}</ul></div>
+                  )}
                 </li>
               )}
               {lines.map((l) => (

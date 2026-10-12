@@ -48,7 +48,7 @@ export function ProductFilters({ params, facets }: { params: Params; facets: Fac
   const [max, setMax] = useState(params.maxPrice ?? "");
   const brands = split(params.brand);
   const tags = split(params.tag);
-  const any = !!(params.minPrice || params.maxPrice || params.inStock || params.onSale || brands.length || tags.length || params.sort);
+  const any = !!(params.minRating || params.minPrice || params.maxPrice || params.inStock || params.onSale || brands.length || tags.length || params.sort);
 
   return (
     <div className="space-y-6" aria-busy={pending}>
@@ -76,6 +76,7 @@ export function ProductFilters({ params, facets }: { params: Params; facets: Fac
 
       <div>
         <Check on={params.inStock === "true"} onChange={() => push({ inStock: params.inStock === "true" ? undefined : "true" })} count={facets.inStock}>In stock only</Check>
+        <Check on={params.minRating === "4"} onChange={() => push({ minRating: params.minRating === "4" ? undefined : "4" })}>4 stars and up</Check>
         <Check on={params.onSale === "true"} onChange={() => push({ onSale: params.onSale === "true" ? undefined : "true" })} count={facets.onSale}>On sale</Check>
       </div>
 
@@ -108,6 +109,7 @@ export function ActiveFilters({ params, brandNames }: { params: Params; brandNam
   split(params.tag).forEach((t) => chips.push({ key: `t-${t}`, text: label(t), off: () => toggle("tag", t) }));
   if (params.inStock === "true") chips.push({ key: "stock", text: "In stock", off: () => push({ inStock: undefined }) });
   if (params.onSale === "true") chips.push({ key: "sale", text: "On sale", off: () => push({ onSale: undefined }) });
+  if (params.minRating) chips.push({ key: "rating", text: `${params.minRating}★ & up`, off: () => push({ minRating: undefined }) });
   if (params.minPrice || params.maxPrice) chips.push({ key: "price", text: `Rs. ${params.minPrice || 0} – ${params.maxPrice || "any"}`, off: () => push({ minPrice: undefined, maxPrice: undefined }) });
   if (!chips.length) return null;
   return (

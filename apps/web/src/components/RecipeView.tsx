@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { pkr } from "@/lib/api";
 import { fmtMinutes, fmtQty, type Ingredient, type Recipe, type RecipeProduct } from "@/lib/content";
 import { addToList } from "@/lib/shoppingList";
@@ -21,6 +21,19 @@ export function RecipeView({ r }: { r: Recipe }) {
   const [have, setHave] = useState<Set<number>>(new Set());
   const [doneSteps, setDoneSteps] = useState<Set<number>>(new Set());
   const [listed, setListed] = useState(false);
+  const [cook, setCook] = useState(false);
+  // Cook mode: bigger text and the screen stays awake (where the browser supports it).
+  useEffect(() => {
+    if (!cook) return;
+    type Lock = { release: () => Promise<void> };
+    let lock: Lock | null = null;
+    const nav = navigator as Navigator & { wakeLock?: { request: (t: "screen") => Promise<Lock> } };
+    const get = () => nav.wakeLock?.request("screen").then((l) => { lock = l; }).catch(() => {});
+    get();
+    const vis = () => { if (document.visibilityState === "visible") get(); };
+    document.addEventListener("visibilitychange", vis);
+    return () => { document.removeEventListener("visibilitychange", vis); lock?.release().catch(() => {}); };
+  }, [cook]);
   const factor = servings / r.servings;
 
   // Bigger batches take a little longer to prep (not to cook): +15% prep time per extra "base recipe" worth of servings.
@@ -47,7 +60,7 @@ export function RecipeView({ r }: { r: Recipe }) {
   const lineText = (i: Ingredient) => `${i.qty != null ? fmtQty(i.qty * factor) : ""}${i.unit ? ` ${i.unit}` : ""} ${i.name}`.trim();
 
   return (
-    <div className="grid gap-12 lg:grid-cols-[380px_1fr]">
+    <div className={`grid gap-12 lg:grid-cols-[380px_1fr] ${cook ? "cook-mode" : ""}`}>
       <aside className="space-y-8">
         <div className="border border-line bg-card p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -62,6 +75,7 @@ export function RecipeView({ r }: { r: Recipe }) {
               <button className="px-3 py-1.5 transition hover:text-accent" onClick={() => setServings((s) => Math.min(48, s + 1))} aria-label="More servings">+</button>
             </div>
           </div>
+          <button type="button" aria-pressed={cook} onClick={() => setCook((c) => !c)} className={`mt-4 w-full border px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.2em] transition ${cook ? "border-accent bg-accent/10 text-accent" : "border-line text-muted hover:text-fg"}`}>{cook ? "Cook mode on: screen stays awake" : "Cook mode (big text, screen stays on)"}</button>
           {servings !== r.servings && <button className="mt-2 text-xs text-accent underline-offset-4 hover:underline" onClick={() => setServings(r.servings)}>Back to {r.servings} servings</button>}
         </div>
 

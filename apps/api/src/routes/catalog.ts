@@ -11,6 +11,7 @@ const listQuery = z.object({
   minPrice: z.coerce.number().optional(),
   maxPrice: z.coerce.number().optional(),
   inStock: z.enum(["true", "false"]).optional().transform((v) => v === "true"),
+  minRating: z.coerce.number().min(0).max(5).optional(),
   onSale: z.enum(["true", "false"]).optional().transform((v) => v === "true"),
   tag: csv,
   sort: z.enum(["newest", "price_asc", "price_desc", "popular", "rating", "discount", "name"]).default("newest"),
@@ -42,6 +43,7 @@ function buildWhere(f: Filters, skip?: "brand" | "tag" | "category") {
   if (f.minPrice != null) add("p.selling_price >= ?", f.minPrice);
   if (f.maxPrice != null) add("p.selling_price <= ?", f.maxPrice);
   if (f.inStock) where.push("p.stock_quantity > 0");
+  if (f.minRating) add("COALESCE((SELECT avg(rv.rating) FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED'), 0) >= ?", f.minRating);
   if (f.onSale) where.push("p.marked_price > p.selling_price");
   if (skip !== "tag" && f.tag.length) add("p.tags && ?::text[]", f.tag);
   if (skip !== "category" && f.category.length) {
@@ -67,7 +69,7 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
       const total = Number((await pool.query(`SELECT count(*) ${from}`, args)).rows[0].count);
       const { rows } = await pool.query(
         `SELECT p.id, p.title, p.slug, p.marked_price, p.selling_price, p.stock_quantity, p.images, p.tags,
-                p.metafields->>'videoUrl' AS video_url,
+                p.metafields->>'videoUrl' AS video_url, p.moq, EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = p.id) AS has_variants,
                 (SELECT count(*)::int FROM recipe_products rp JOIN recipes rc ON rc.id = rp.recipe_id WHERE rp.product_id = p.id AND rc.status = 'PUBLISHED') AS recipe_count,
                 b.name AS brand_name, b.slug AS brand_slug,
                 (SELECT round(avg(rv.rating)::numeric, 1) FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_avg,

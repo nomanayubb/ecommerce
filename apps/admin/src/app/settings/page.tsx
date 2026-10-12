@@ -15,13 +15,13 @@ interface Branding {
   social: Record<"instagram" | "facebook" | "tiktok" | "youtube" | "whatsapp" | "x", string>;
 }
 type Visuals = {
-  cursor: "none" | "ring" | "whisk"; background: "none" | "aurora" | "mesh" | "wood" | "marble" | "paper"; transition: "none" | "fade" | "wipe";
+  cursor: "none" | "ring" | "whisk"; background: "none" | "atmosphere" | "aurora" | "mesh" | "wood" | "marble" | "paper"; depth: "flat" | "soft"; transition: "none" | "fade" | "wipe";
   imageHover: "zoom" | "liquid" | "none"; particles: "none" | "herbs" | "spices" | "flour" | "steam" | "sparkles" | "petals" | "snow";
   scrollIndicator: "bar" | "cup"; headerStyle: "flat" | "layered" | "gradient" | "peek"; loader: "ring" | "stir" | "chop" | "pulse" | "mascot";
   addSplash: boolean; sound: boolean; mascotOutfit: "none" | "chef" | "auto";
   mascotVoice: boolean; splash: boolean; logoMorph: boolean; logoSparkles: boolean; watermark: boolean; cardGlow: boolean; priceCountUp: boolean;
 };
-const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", transition: "none", imageHover: "zoom", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none", mascotVoice: false, splash: false, logoMorph: false, logoSparkles: false, watermark: false, cardGlow: false, priceCountUp: false };
+const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", depth: "flat", transition: "none", imageHover: "zoom", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none", mascotVoice: false, splash: false, logoMorph: false, logoSparkles: false, watermark: false, cardGlow: false, priceCountUp: false };
 interface Store { freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number }
 interface Footer { columns: { title: string; links: { label: string; href: string }[] }[]; showNewsletter: boolean; showPerks: boolean; showPayments: boolean; note: string }
 
@@ -182,7 +182,8 @@ export default function Settings() {
         <div className="grid gap-4 sm:grid-cols-2">
           {([
             ["cursor", "Cursor", [["none", "Normal"], ["ring", "Ring that follows the mouse"], ["whisk", "Whisk"]]],
-            ["background", "Page background", [["none", "Plain"], ["aurora", "Aurora glow (animated)"], ["mesh", "Gradient mesh"], ["wood", "Wood grain"], ["marble", "Marble"], ["paper", "Paper"]]],
+            ["background", "Page background", [["none", "Plain"], ["atmosphere", "Atmosphere (soft light, recommended)"], ["aurora", "Aurora glow (animated)"], ["mesh", "Gradient mesh"], ["wood", "Wood grain"], ["marble", "Marble"], ["paper", "Paper"]]],
+            ["depth", "Surface depth", [["flat", "Flat"], ["soft", "Soft 3D: layered shadows and a gentle glow"]]],
             ["transition", "Page transition", [["none", "None"], ["fade", "Quick fade"], ["wipe", "Wipe with loader"]]],
             ["imageHover", "Product photo on hover", [["zoom", "Slow zoom"], ["liquid", "Liquid ripple"], ["none", "No effect"]]],
             ["particles", "Floating particles", [["none", "None"], ["herbs", "Herbs and leaves"], ["spices", "Spices"], ["flour", "Flour dust"], ["steam", "Steam"], ["sparkles", "Gold sparkles"], ["petals", "Petals"], ["snow", "Snow"]]],

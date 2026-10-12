@@ -52,7 +52,8 @@ export const brandingSchema = z.object({
   }).default({}),
   visuals: z.object({
     cursor: z.enum(["none", "ring", "whisk"]).default("none"),
-    background: z.enum(["none", "aurora", "mesh", "wood", "marble", "paper"]).default("none"),
+    background: z.enum(["none", "atmosphere", "aurora", "mesh", "wood", "marble", "paper"]).default("none"),
+    depth: z.enum(["flat", "soft"]).default("flat"),
     transition: z.enum(["none", "fade", "wipe"]).default("none"),
     imageHover: z.enum(["zoom", "liquid", "none"]).default("zoom"),
     particles: z.enum(["none", "herbs", "spices", "flour", "steam", "sparkles", "petals", "snow"]).default("none"),
