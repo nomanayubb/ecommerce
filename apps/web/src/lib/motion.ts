@@ -17,3 +17,6 @@ export const mascotSay = (mood: string, text?: string) =>
 /** Fly a product thumbnail from the last click to the bag and bounce the bag icon (ignored when motion is off). */
 export const flyToCart = (image?: string) =>
   typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("cart-fly", { detail: { image } }));
+
+/** Tell screen readers something happened (shown nowhere on screen). */
+export const announce = (text: string) => typeof window !== "undefined" && window.dispatchEvent(new CustomEvent("announce", { detail: text }));

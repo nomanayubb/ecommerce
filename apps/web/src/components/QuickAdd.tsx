@@ -13,7 +13,7 @@ export function QuickAdd({ p }: { p: ProductSummary }) {
   return (
     <button
       type="button" aria-label={`Add ${p.title} to bag`}
-      onClick={() => { add({ productId: p.id, variantId: null, title: p.title, price: Number(p.selling_price), image: p.images[0], quantity: 1 }); setDone(true); setTimeout(() => setDone(false), 1600); }}
+      onClick={() => { add({ productId: p.id, variantId: null, title: p.title, price: Number(p.selling_price), marked: Number(p.marked_price), image: p.images[0], quantity: 1 }); setDone(true); setTimeout(() => setDone(false), 1600); }}
       className="quick-add glass absolute right-3 z-10 flex h-10 w-10 items-center justify-center transition hover:text-accent"
       style={{ top: "calc(var(--img-ratio, 125) * 1cqw - 3.3rem)" }}
     >

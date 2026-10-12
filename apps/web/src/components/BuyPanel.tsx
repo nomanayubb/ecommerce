@@ -76,7 +76,7 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
   const toFree = store.freeShippingThreshold > 0 ? Math.max(0, store.freeShippingThreshold - bagTotal - unit * qty) : 0;
 
   const addToBag = () => {
-    add({ productId: p.id, variantId, title: variant ? `${p.title} - ${variant.title}` : p.title, price: unit, image: p.images[0], quantity: qty });
+    add({ productId: p.id, variantId, title: variant ? `${p.title} - ${variant.title}` : p.title, price: unit, marked: Number(p.marked_price), image: p.images[0], quantity: qty });
     setAdded(true);
     onAdded?.();
     setTimeout(() => setAdded(false), 1800);
@@ -176,7 +176,7 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
       <div className="flex items-stretch gap-3">
         <div className="flex items-center border border-line" role="group" aria-label="Quantity">
           <button className="h-full px-4 text-lg transition hover:text-accent" onClick={() => setQty((q) => clamp(q - 1))} aria-label="Decrease quantity">−</button>
-          <input value={qty} onChange={(e) => setQty(clamp(Number(e.target.value) || p.moq))} inputMode="numeric" aria-label="Quantity" className="w-12 bg-transparent text-center text-sm outline-none" />
+          <input value={qty} onChange={(e) => setQty(clamp(Number(e.target.value) || p.moq))} inputMode="numeric" onFocus={(e) => e.currentTarget.select()} aria-label="Quantity" className="w-12 bg-transparent text-center text-sm outline-none" />
           <button className="h-full px-4 text-lg transition hover:text-accent" onClick={() => setQty((q) => clamp(q + 1))} aria-label="Increase quantity">+</button>
         </div>
         <div ref={ctaRef} className="flex-1">{cta}</div>
@@ -206,7 +206,7 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
         </div>
       )}
       {/* Mobile sticky bar */}
-      {!compact && <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/95 p-3 backdrop-blur md:hidden">{cta}</div>}
+      {!compact && <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-line bg-bg/95 p-3 backdrop-blur md:hidden"><p className="min-w-0 flex-1 truncate text-xs font-medium">{p.title}</p><div className="w-48 shrink-0">{cta}</div></div>}
     </div>
   );
 }

@@ -65,7 +65,7 @@ export function PriceTag({ value, className = "" }: { value: number; className?:
     io.observe(node);
     return () => io.disconnect();
   }, [on, value]);
-  return <span ref={el} className={className}>{pkr(shown)}</span>;
+  return <span ref={el} className={`tabular-nums ${className}`}>{pkr(shown)}</span>;
 }
 
 /** Second photo that fades in when a mouse hovers the card. The image is not requested until the first hover. */

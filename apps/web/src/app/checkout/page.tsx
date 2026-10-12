@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { pkr } from "@/lib/api";
 import { send } from "@/lib/client";
 import { useSession } from "@/components/SessionProvider";
@@ -13,8 +13,25 @@ import { PK_CITIES } from "@/lib/cities";
 import { PrintButton } from "@/components/PrintButton";
 import { DispatchNote } from "@/components/Dispatch";
 
+function Steps({ at }: { at: 1 | 2 | 3 }) {
+  const items = ["Delivery", "Payment", "Done"];
+  return (
+    <ol className="mb-10 flex items-center gap-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em]" aria-label="Checkout progress">
+      {items.map((t, i) => (
+        <li key={t} className="flex items-center gap-3" aria-current={at === i + 1 ? "step" : undefined}>
+          <span className={`grid h-6 w-6 place-items-center border text-[0.6rem] ${at > i + 1 ? "border-accent bg-accent text-onbrand" : at === i + 1 ? "border-accent text-accent" : "border-line text-muted"}`}>{at > i + 1 ? "✓" : i + 1}</span>
+          <span className={at >= i + 1 ? "text-fg" : "text-muted"}>{t}</span>
+          {i < items.length - 1 && <span aria-hidden className="h-px w-8 bg-line sm:w-14" />}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 export default function Checkout() {
-  const { lines, clear, extras } = useCart();
+  const { lines, clear, extras, setExtras } = useCart();
+  const errRef = useRef<HTMLParagraphElement>(null);
+  const [saveAddr, setSaveAddr] = useState(false);
   const { priced, error: priceError } = useCartPricing();
   const { user, ready } = useSession();
   const [saved, setSaved] = useState<{ id: string; label: string | null; name: string; phone: string; line1: string; city: string; postal_code: string | null; is_default: boolean }[]>([]);
@@ -66,6 +83,8 @@ export default function Checkout() {
         paymentMethod: "COD",
       });
       try { localStorage.setItem("checkout-details", JSON.stringify({ name: f.get("name"), phone: f.get("phone"), line1: f.get("line1"), city: f.get("city"), postalCode: f.get("postalCode") })); } catch {}
+      try { sessionStorage.setItem("last-order", JSON.stringify({ number: res.orderNumber, phone: String(f.get("phone") ?? "") })); } catch {}
+      if (user && saveAddr) send("POST", "account/addresses", { name: f.get("name"), phone: f.get("phone"), line1: f.get("line1"), city: f.get("city"), postalCode: f.get("postalCode") || undefined, isDefault: false }).catch(() => {});
       clear();
       setDone(res);
       fireConfetti();
@@ -73,6 +92,7 @@ export default function Checkout() {
       window.scrollTo({ top: 0 });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Checkout failed");
+      setTimeout(() => { errRef.current?.scrollIntoView({ block: "center", behavior: "smooth" }); errRef.current?.focus(); }, 50);
     } finally {
       setBusy(false);
     }
@@ -82,10 +102,12 @@ export default function Checkout() {
     return (
       <div className="mx-auto max-w-lg py-16 text-center">
         <MascotFigure mood="celebrate" size={120} className="mx-auto mb-4 text-fg" />
+        <Steps at={3} />
         <p className="eyebrow">Order confirmed</p>
         <h1 className="mt-3 text-3xl font-semibold uppercase tracking-[0.1em]">Thank you</h1>
         <p className="mt-4 text-muted">Your order <strong className="text-fg">#{done.orderNumber}</strong> has been placed. Please keep <strong className="text-fg">{pkr(done.grandTotal)}</strong> ready to pay in cash on delivery.</p>
-        <div className="mt-10 flex flex-wrap justify-center gap-4"><Link href="/products" className="btn btn-primary">Continue shopping</Link><PrintButton className="btn btn-ghost" /></div>
+        <div className="mt-10 flex flex-wrap justify-center gap-4"><Link href="/track" className="btn btn-primary">Track this order</Link><Link href="/products" className="btn btn-ghost">Continue shopping</Link><PrintButton className="btn btn-ghost" /></div>
+        {ready && !user && <p className="mx-auto mt-8 max-w-sm border border-line bg-card p-4 text-sm text-muted">Want to see this order and your next ones in one place? <Link href="/register" className="text-accent hover:underline">Create a free account</Link>.</p>}
       </div>
     );
 
@@ -104,7 +126,8 @@ export default function Checkout() {
 
   return (
     <>
-      <h1 className="mb-10 text-3xl font-semibold uppercase tracking-[0.1em]">Checkout</h1>
+      <h1 className="mb-6 text-3xl font-semibold uppercase tracking-[0.1em]">Checkout</h1>
+      <Steps at={1} />
       <div className="grid gap-12 lg:grid-cols-[1fr_380px]">
         <form onSubmit={submit} className="space-y-10" id="checkout-form">
           <section>
@@ -124,7 +147,11 @@ export default function Checkout() {
               <label><span className={label}>City</span><input name="city" required list="pk-cities" autoComplete="address-level2" className={field} /><datalist id="pk-cities">{PK_CITIES.map((c) => <option key={c} value={c} />)}</datalist></label>
               <label><span className={label}>Postal code (optional)</span><input name="postalCode" autoComplete="postal-code" className={field} /></label>
             </div>
+            {ready && user && <label className="mt-4 flex cursor-pointer items-center gap-3 text-sm"><input type="checkbox" checked={saveAddr} onChange={(e) => setSaveAddr(e.target.checked)} className="h-4 w-4 accent-[rgb(var(--accent))]" />Save this address to my account</label>}
             <div className="mt-4"><GiftOptions /></div>
+            <div className="mt-3 flex flex-wrap gap-2" aria-label="Delivery note shortcuts">
+              {["Call before delivery", "Leave with a neighbour", "Deliver after 5 pm"].map((c) => <button key={c} type="button" onClick={() => setExtras({ note: extras.note.includes(c) ? extras.note : `${extras.note ? extras.note + ". " : ""}${c}` })} className="border border-line px-3 py-1.5 text-xs text-muted transition hover:border-accent hover:text-accent">+ {c}</button>)}
+            </div>
           </section>
 
           <section>
@@ -142,7 +169,7 @@ export default function Checkout() {
             </div>
           </section>
 
-          {(error || priceError) && <p role="alert" className="border border-red-500/50 bg-red-500/10 px-4 py-3 text-sm text-red-400">{error || priceError}</p>}
+          {(error || priceError) && <p ref={errRef} tabIndex={-1} role="alert" className="border border-red-500/50 bg-red-500/10 px-4 py-3 text-sm text-red-400">{error || priceError}</p>}
           <button disabled={busy || !priced} className="btn btn-primary w-full disabled:opacity-50 lg:hidden">{busy ? "Placing order…" : `Place order · ${priced ? pkr(priced.grandTotal) : ""}`}</button>
         </form>
 

@@ -6,6 +6,7 @@ import { PARTICLE_PRESETS } from "@/themes/presets";
 import { brandingCss } from "@/lib/branding";
 import { applyPack } from "@/themes";
 import { Decor } from "@/components/Decor";
+import { LiveRegion } from "@/components/LiveRegion";
 import { LazyCompareTray, LazyDrawer, LazyIdleHosts, LazyQuickView } from "@/components/LazyHosts";
 import { CartProvider } from "@/components/CartProvider";
 import { Header } from "@/components/Header";
@@ -71,6 +72,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <filter id="liquid" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="2" result="n"><animate attributeName="baseFrequency" dur="6s" values="0.012 0.018;0.02 0.026;0.012 0.018" repeatCount="indefinite" /></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="16" /></filter>
           </svg>
         )}
+        <LiveRegion />
         <ScrollProgress mode={visuals.scrollIndicator} />
         <Decor decor={decor} />
         <SiteProvider value={{ branding, store }}>

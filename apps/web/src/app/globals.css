@@ -467,3 +467,24 @@ html[data-depth="soft"] .hero-title { animation: title-glow 2.4s ease-out 1.2s 1
 [data-motion="off"] .marquee-row[aria-hidden], [data-motion-pref="off"] .marquee-row[aria-hidden], [data-lite] .marquee-row[aria-hidden] { display: none; }
 @media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) .marquee-track { animation: none; flex-wrap: wrap; width: auto; } html:not([data-motion-pref="on"]) .marquee-row[aria-hidden] { display: none; } }
 
+/* ---------- Batch 12 ---------- */
+/* Reading progress on articles: pure CSS (scroll-driven animation); browsers without it simply show no bar */
+.read-progress { display: none; }
+@supports (animation-timeline: scroll()) {
+  .read-progress { display: block; position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 74; background: rgb(var(--accent)); box-shadow: 0 0 10px rgb(var(--accent-bright) / .6); transform: scaleX(0); transform-origin: left; animation: read-grow linear both; animation-timeline: scroll(root); }
+  @keyframes read-grow { to { transform: scaleX(1); } }
+}
+.pull-quote { margin: 2rem 0; padding: .4rem 0 .4rem 1.6rem; border-left: 2px solid rgb(var(--accent)); font-family: Georgia, "Times New Roman", serif; font-size: 1.35rem; line-height: 1.5; font-style: italic; color: rgb(var(--fg)); }
+dd, td, .tabular-nums { font-variant-numeric: tabular-nums; }
+/* Hidden tabs stop animating */
+html[data-hidden] *, html[data-hidden] *::before, html[data-hidden] *::after { animation-play-state: paused !important; }
+/* Gentle dimming of photos in the dark themes so bright pictures do not glare */
+html[data-theme="dark"] .pcard-img img, html[data-theme="oled"] .pcard-img img, html[data-theme="dark"] .gallery-main img, html[data-theme="oled"] .gallery-main img { filter: brightness(.94); }
+/* Smooth scrolling unless animations are off */
+html:not([data-motion="off"]):not([data-motion-pref="off"]) { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) { scroll-behavior: auto; } }
+main tbody tr { transition: background-color .2s; }
+main tbody tr:hover { background: rgb(var(--fg) / .03); }
+/* High contrast also removes frosted transparency */
+html[data-contrast] .glass, html[data-contrast] .header-bar, html[data-contrast] [class*="backdrop-blur"] { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; background-color: rgb(var(--bg)) !important; }
+

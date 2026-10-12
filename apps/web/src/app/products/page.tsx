@@ -24,7 +24,7 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
   const sp = await searchParams;
   const tree = await api<CategoryNode[]>("/categories/tree", { revalidate: 300 }).catch(() => []);
   const cat = sp.category ? find(tree, sp.category)?.at(-1) : null;
-  return { title: sp.q ? `Search: ${sp.q}` : cat ? cat.name : "All products" };
+  return { title: sp.q ? `Search: ${sp.q}` : cat ? cat.name : "All products", alternates: { canonical: sp.category && !sp.q ? `/products?category=${sp.category}` : "/products" } };
 }
 
 function CategoryList({ nodes, active, depth = 0 }: { nodes: CategoryNode[]; active?: string; depth?: number }) {
@@ -64,11 +64,16 @@ export default async function Products({ searchParams }: { searchParams: Promise
   const sortHref = (v: string) => `/products?${new URLSearchParams({ ...(Object.fromEntries(Object.entries(sp).filter(([k, x]) => x && k !== "sort" && k !== "page")) as Record<string, string>), ...(v === "newest" ? {} : { sort: v }) })}`;
   const filterActive = !!(sp.minRating || sp.minPrice || sp.maxPrice || sp.inStock || sp.onSale || sp.brand || sp.tag);
   const filters = <ProductFilters params={sp} facets={facets} />;
+  const activeCount = (sp.brand ? sp.brand.split(",").length : 0) + (sp.tag ? sp.tag.split(",").length : 0) + (sp.minPrice || sp.maxPrice ? 1 : 0) + (sp.inStock ? 1 : 0) + (sp.onSale ? 1 : 0) + (sp.minRating ? 1 : 0);
+  const oneBrand = sp.brand && !sp.brand.includes(",") ? facets.brands.find((b) => b.slug === sp.brand)?.name ?? sp.brand : null;
   const brandNames = Object.fromEntries(facets.brands.map((b) => [b.slug, b.name]));
 
   return (
     <>
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Shop", href: trail.length ? "/products" : undefined }, ...trail.map((c, i) => ({ name: c.name, href: i < trail.length - 1 ? `/products?category=${c.slug}` : undefined }))].map((c, i, a) => (i === a.length - 1 ? { name: c.name } : c))} />
+      {oneBrand && !cat && !sp.q && (
+        <div className="cat-banner mb-8 flex items-center justify-between gap-4 bg-card/60 px-6 py-5"><div><p className="eyebrow">Brand</p><p className="mt-1 text-2xl font-semibold uppercase tracking-[0.15em]">{oneBrand}</p></div><p className="text-sm text-muted">{data.total} {data.total === 1 ? "product" : "products"}</p></div>
+      )}
       {cat && !sp.q && (
         <div className="cat-banner relative -mx-4 mb-8 overflow-hidden sm:mx-0">
           <img src={cat.image_url || `/ph/${cat.slug}?ar=cover`} alt="" width={1600} height={640} fetchPriority="high" className="h-36 w-full object-cover sm:h-48" />
@@ -84,11 +89,11 @@ export default async function Products({ searchParams }: { searchParams: Promise
         <p className="text-sm text-muted">{data.total} {data.total === 1 ? "product" : "products"}</p>
       </div>
 
-      <FiltersFab />
+      <FiltersFab count={activeCount} />
       <div className="grid gap-10 lg:grid-cols-[230px_1fr]">
         <aside>
           <details id="filters" className="lg:hidden border border-line bg-card p-4" open={filterActive}>
-            <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[0.2em]">Filters & sort</summary>
+            <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[0.2em]">Filters & sort{activeCount > 0 ? ` (${activeCount})` : ""}</summary>
             <div className="mt-4">{filters}</div>
           </details>
           <div className="sticky top-24 hidden space-y-8 lg:block">

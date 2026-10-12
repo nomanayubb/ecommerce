@@ -10,7 +10,7 @@ import { getRecipe } from "@/lib/content";
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const r = await getRecipe((await params).slug);
   if (!r) return { title: "Recipe not found" };
-  return { title: r.title, description: r.summary || r.title, openGraph: { title: r.title, description: r.summary, images: r.image_url ? [r.image_url] : undefined } };
+  return { title: r.title, description: r.summary || r.title, alternates: { canonical: `/recipes/${r.slug}` }, openGraph: { title: r.title, description: r.summary, images: r.image_url ? [r.image_url] : undefined } };
 }
 
 export default async function RecipePage({ params }: { params: Promise<{ slug: string }> }) {

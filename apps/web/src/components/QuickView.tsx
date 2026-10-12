@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useFocusTrap } from "@/lib/focus";
 import { AnimatePresence, motion } from "framer-motion";
 import type { ProductDetail } from "@/lib/api";
 import { BuyPanel } from "./BuyPanel";
@@ -15,6 +16,8 @@ export function QuickView() {
   const { quick, closeQuick } = useShopper();
   const [p, setP] = useState<ProductDetail | null>(null);
   const [err, setErr] = useState("");
+  const panel = useRef<HTMLDivElement>(null);
+  useFocusTrap(!!quick, panel);
 
   useEffect(() => {
     if (!quick) return;
@@ -34,7 +37,7 @@ export function QuickView() {
         <motion.div className="fixed inset-0 z-[60] flex items-center justify-center p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={closeQuick} />
           <motion.div
-            role="dialog" aria-modal="true" aria-label={`Quick view: ${quick.title}`}
+            ref={panel} role="dialog" aria-modal="true" aria-label={`Quick view: ${quick.title}`}
             className="relative grid max-h-[90vh] w-full max-w-4xl overflow-y-auto border border-line bg-bg shadow-2xl md:grid-cols-2"
             initial={{ y: 24, scale: 0.98 }} animate={{ y: 0, scale: 1 }} exit={{ y: 24, scale: 0.98 }} transition={{ duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
           >

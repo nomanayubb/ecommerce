@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { pkr } from "@/lib/api";
 import { Timeline, type TimelineData } from "@/components/Timeline";
 import { MascotFigure } from "@/components/Mascot";
@@ -17,6 +17,8 @@ export default function Track() {
   const [res, setRes] = useState<Result | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [pre, setPre] = useState<{ number: string; phone: string }>({ number: "", phone: "" });
+  useEffect(() => { try { const o = JSON.parse(sessionStorage.getItem("last-order") ?? "null"); if (o) setPre({ number: String(o.number), phone: String(o.phone) }); } catch {} }, []);
   const field = "w-full border border-line bg-card px-4 py-3 text-sm outline-none transition focus:border-accent";
   const label = "mb-1.5 block text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted";
 
@@ -43,8 +45,8 @@ export default function Track() {
         <p className="mt-3 text-sm text-muted">Enter your order number and the phone number you used at checkout.</p>
       </div>
       <form onSubmit={submit} className="grid gap-4 border border-line bg-card p-6 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
-        <label><span className={label}>Order number</span><input name="number" required inputMode="numeric" placeholder="e.g. 12" className={field} /></label>
-        <label><span className={label}>Phone</span><input name="phone" required type="tel" placeholder="03XX XXXXXXX" className={field} /></label>
+        <label><span className={label}>Order number</span><input key={pre.number} name="number" required inputMode="numeric" placeholder="e.g. 12" defaultValue={pre.number} className={field} /></label>
+        <label><span className={label}>Phone</span><input key={pre.phone} name="phone" required type="tel" placeholder="03XX XXXXXXX" defaultValue={pre.phone} className={field} /></label>
         <button disabled={busy} className="btn btn-primary disabled:opacity-50">{busy ? "Checking…" : "Track"}</button>
       </form>
       {error && <p role="alert" className="mt-4 border border-red-500/50 bg-red-500/10 px-4 py-3 text-sm text-red-400">{error}</p>}

@@ -10,7 +10,7 @@ import { api, type ProductSummary } from "@/lib/api";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const p = await getPost((await params).slug);
-  return p ? { title: p.title, description: p.excerpt || p.title, openGraph: { title: p.title, description: p.excerpt, images: p.cover_url ? [p.cover_url] : undefined, type: "article" } } : { title: "Article not found" };
+  return p ? { title: p.title, description: p.excerpt || p.title, alternates: { canonical: `/blog/${p.slug}` }, openGraph: { title: p.title, description: p.excerpt, images: p.cover_url ? [p.cover_url] : undefined, type: "article" } } : { title: "Article not found" };
 }
 
 export default async function Post({ params }: { params: Promise<{ slug: string }> }) {
@@ -20,7 +20,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
   const shop = p.tags.length ? await api<{ items: ProductSummary[] }>(`/products?tag=${p.tags.slice(0, 5).join(",")}&pageSize=4`).then((r) => r.items).catch(() => [] as ProductSummary[]) : [];
   const slug = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const heads = blocks.flatMap((b) => (b.t === "h2" || b.t === "h3" ? [{ id: slug(b.text), text: b.text, sub: b.t === "h3" }] : []));
-  const words = blocks.reduce((n, b) => n + (b.t === "p" || b.t === "h2" || b.t === "h3" ? b.text.split(/\s+/).length : b.t === "ul" ? b.items.join(" ").split(/\s+/).length : 0), 0);
+  const words = blocks.reduce((n, b) => n + (b.t === "p" || b.t === "h2" || b.t === "h3" || b.t === "quote" ? b.text.split(/\s+/).length : b.t === "ul" ? b.items.join(" ").split(/\s+/).length : 0), 0);
   const minutes = Math.max(1, Math.round(words / 200));
   const when = p.published_at ? new Date(p.published_at) : null;
   const jsonLd = { "@context": "https://schema.org", "@type": "BlogPosting", headline: p.title, description: p.excerpt || undefined, image: p.cover_url ? [p.cover_url] : undefined, datePublished: p.published_at ?? undefined, author: p.author_name ? { "@type": "Person", name: p.author_name } : undefined };
@@ -28,6 +28,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Journal", href: "/blog" }, { name: p.title }]} />
+      <div aria-hidden className="read-progress" />
       <article className="mx-auto max-w-3xl">
         <header>
           <p className="eyebrow">{when ? when.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "Journal"}{p.author_name ? ` · ${p.author_name}` : ""} · {minutes} min read</p>
@@ -44,7 +45,8 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
         )}
         <div id="post-body" className="space-y-5 leading-[1.8]">
           {blocks.map((b, i) =>
-            b.t === "h2" ? <h2 key={i} id={slug(b.text)} className="pt-6 text-2xl font-semibold">{b.text}</h2>
+            b.t === "quote" ? <blockquote key={i} className="pull-quote">{b.text}</blockquote>
+            : b.t === "h2" ? <h2 key={i} id={slug(b.text)} className="pt-6 text-2xl font-semibold">{b.text}</h2>
             : b.t === "h3" ? <h3 key={i} id={slug(b.text)} className="pt-4 text-xl font-semibold">{b.text}</h3>
             : b.t === "ul" ? <ul key={i} className="list-disc space-y-1 pl-6 marker:text-accent">{b.items.map((x, n) => <li key={n}>{x}</li>)}</ul>
             : b.t === "img" ? <figure key={i}><img src={b.src} alt={b.alt} loading="lazy" className="w-full border border-line" />{b.alt && <figcaption className="mt-2 text-xs text-muted">{b.alt}</figcaption>}</figure>

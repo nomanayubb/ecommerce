@@ -16,6 +16,13 @@ type Suggest = {
 };
 type Row = { key: string; href: string; label: string; kind: "product" | "category" | "brand" | "recent" | "trend" | "all" };
 
+const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+/** Wraps the typed words inside a result in a gold highlight. */
+function hl(text: string, q: string): React.ReactNode {
+  const words = q.split(/\s+/).filter((w) => w.length > 1).map(esc);
+  if (!words.length) return text;
+  return text.split(new RegExp(`(${words.join("|")})`, "ig")).map((part, i) => (i % 2 ? <mark key={i} className="bg-transparent font-semibold text-accent">{part}</mark> : part));
+}
 const RECENT = "recent-searches";
 const readRecent = (): string[] => { try { return JSON.parse(localStorage.getItem(RECENT) ?? "[]"); } catch { return []; } };
 const writeRecent = (q: string) => {
@@ -142,6 +149,7 @@ export function SearchBox({ hints, className, panelClass = "" }: { hints?: strin
         onChange={(e) => { setValue(e.target.value); setActive(-1); setOpen(true); }} onFocus={() => setOpen(true)} onKeyDown={onKey}
         className={`${className} ${canVoice ? "pr-8" : ""}`}
       />
+      {!open && !value && <kbd aria-hidden className={`pointer-events-none absolute top-1/2 hidden -translate-y-1/2 border border-line px-1.5 text-[0.6rem] text-muted lg:block ${canVoice ? "right-8" : "right-1"}`}>/</kbd>}
       {canVoice && (
         <button type="button" onClick={listen} aria-label={listening ? "Listening" : "Search by voice"} title="Search by voice"
           className={`absolute right-0 top-1/2 -translate-y-1/2 p-1.5 transition hover:text-accent ${listening ? "animate-pulse text-accent" : "text-muted"}`}>
@@ -171,12 +179,12 @@ export function SearchBox({ hints, className, panelClass = "" }: { hints?: strin
                   {p ? (
                     <>
                       {p.image ? <img src={p.image} alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-cover" /> : <span className="h-10 w-10 shrink-0 bg-line" />}
-                      <span className="min-w-0 flex-1"><span className="line-clamp-1">{p.title}</span><span className="text-xs text-muted">{pkr(p.selling_price)}{p.discount_pct ? ` · -${p.discount_pct}%` : ""}{p.stock_quantity === 0 ? " · Sold out" : ""}</span></span>
+                      <span className="min-w-0 flex-1"><span className="line-clamp-1">{hl(p.title, q)}</span><span className="text-xs text-muted">{pkr(p.selling_price)}{p.discount_pct ? ` · -${p.discount_pct}%` : ""}{p.stock_quantity === 0 ? " · Sold out" : ""}</span></span>
                     </>
                   ) : (
                     <>
                       {(r.kind === "recent" || r.kind === "trend") && <SearchIcon size={14} className="shrink-0 text-muted" />}
-                      <span className="min-w-0 flex-1 truncate">{r.label}</span>
+                      <span className="min-w-0 flex-1 truncate">{r.kind === "category" || r.kind === "brand" ? hl(r.label, q) : r.label}</span>
                       {r.kind === "category" && <span className="text-[0.6rem] uppercase tracking-widest text-muted">Category</span>}
                       {r.kind === "brand" && <span className="text-[0.6rem] uppercase tracking-widest text-muted">Brand</span>}
                     </>

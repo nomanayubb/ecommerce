@@ -19,6 +19,7 @@ const Confetti = dynamic(() => import("./Confetti").then((m) => m.ConfettiHost),
 const Effects = dynamic(() => import("./Effects").then((m) => m.EffectsHost), { ssr: false });
 const Offline = dynamic(() => import("./Nudges").then((m) => m.OfflineBanner), { ssr: false });
 const Nudge = dynamic(() => import("./Nudges").then((m) => m.Nudges), { ssr: false });
+const Speed = dynamic(() => import("./Perf").then((m) => m.Perf), { ssr: false });
 const Nav = dynamic(() => import("./NavProgress").then((m) => m.NavProgress), { ssr: false });
 const Keys = dynamic(() => import("./Shortcuts").then((m) => m.Shortcuts), { ssr: false });
 const Pwa = dynamic(() => import("./Pwa").then((m) => m.PwaRegister), { ssr: false });
@@ -60,6 +61,7 @@ export function LazyIdleHosts({ effects, brandName, visuals }: { effects?: Parti
   return (
     <>
       <Pwa />
+      <Speed />
       {!visuals.transition || visuals.transition === "none" ? <Nav /> : null}
       <Keys />
       <Offline />

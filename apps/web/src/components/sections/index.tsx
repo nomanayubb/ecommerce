@@ -199,7 +199,7 @@ async function ProductCarousel({ s }: P) {
   return (
     <section>
       <Head eyebrow={v.eyebrow} heading={v.heading} href={v.categorySlug ? `/products?category=${v.categorySlug}` : "/products"} />
-      <div className="-mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-3 [scrollbar-width:thin]" tabIndex={0} aria-label={v.heading || "Products"}>
+      <div className="-mx-4 flex snap-x snap-proximity gap-4 overflow-x-auto px-4 pb-3 [scrollbar-width:thin]" tabIndex={0} aria-label={v.heading || "Products"}>
         {items.map((p) => <div key={p.id} className="w-56 shrink-0 snap-start sm:w-64"><ProductCard p={p} /></div>)}
       </div>
     </section>

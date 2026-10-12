@@ -9,9 +9,13 @@ import { useSite } from "./Site";
 import { MascotFigure } from "./Mascot";
 import { useShopper } from "./Shopper";
 import { GiftOptions, PromoField, Upsells, useCartPricing } from "./CartExtras";
+import { DispatchNote } from "./Dispatch";
+import { useFocusTrap } from "@/lib/focus";
 
 export function CartDrawer() {
   const { lines, saved, open, setOpen, setQty, count, saveForLater, moveToBag, removeSaved, add, clear } = useCart();
+  const panel = useRef<HTMLElement>(null);
+  useFocusTrap(open, panel);
   const [undo, setUndo] = useState<CartLine | null>(null);
   const [sure, setSure] = useState(false);
   const undoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -20,6 +24,7 @@ export function CartDrawer() {
   const { recent } = useShopper();
   const FREE_SHIPPING = useSite().store.freeShippingThreshold;
   const subtotal = lines.reduce((s, l) => s + l.price * l.quantity, 0);
+  const saving = lines.reduce((t, l) => t + (l.marked && l.marked > l.price ? (l.marked - l.price) * l.quantity : 0), 0);
   const net = priced ? priced.subtotal - priced.discount : subtotal;
   const remaining = Math.max(0, FREE_SHIPPING - net);
 
@@ -37,7 +42,7 @@ export function CartDrawer() {
         <>
           <motion.div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setOpen(false)} />
           <motion.aside
-            role="dialog" aria-modal="true" aria-label="Shopping bag"
+            ref={panel} role="dialog" aria-modal="true" aria-label="Shopping bag"
             className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-line bg-bg shadow-2xl"
             initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "tween", duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
           >
@@ -127,11 +132,13 @@ export function CartDrawer() {
             </div>
 
             <div className="border-t border-line bg-card px-6 py-5">
+              {saving > 0 && <div className="mb-1 flex justify-between text-sm text-accent"><span>You save</span><span>{pkr(saving)}</span></div>}
               {priced && priced.discount > 0 && (
                 <div className="mb-1 flex justify-between text-sm text-accent"><span>Discount ({priced.coupon?.code})</span><span>−{pkr(priced.discount)}</span></div>
               )}
               <div className="mb-1 flex justify-between text-sm"><span className="text-muted">Subtotal</span><span className="text-lg font-semibold">{pkr(priced ? priced.subtotal - priced.discount : subtotal)}</span></div>
               <p className="mb-4 text-xs text-muted">{priced?.giftWrapFee ? `Includes gift wrap ${pkr(priced.giftWrapFee)} at checkout. ` : ""}Delivery and final total are confirmed at checkout.</p>
+              {lines.length > 0 && <div className="mb-4"><DispatchNote compact /></div>}
               <Link href="/checkout" onClick={() => setOpen(false)} aria-disabled={!lines.length} className={`btn btn-primary w-full ${lines.length ? "" : "pointer-events-none opacity-40"}`}>Checkout</Link>
             </div>
           </motion.aside>

@@ -13,6 +13,7 @@ import { CareSteps, LiveViewers, ProductQA, SpecsTable, type Meta } from "@/comp
 import { CookingTimer } from "@/components/CookingTimer";
 import { BackLink } from "@/components/BackLink";
 import { SectionTabs } from "@/components/SectionTabs";
+import { PdpActions, SkuCopy } from "@/components/PdpActions";
 import { ShareButton } from "@/components/ShareButton";
 import { RecipeCard } from "@/components/RecipeBits";
 import type { RecipeCardData } from "@/lib/content";
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const p = await load((await params).slug);
   if (!p) return { title: "Product not found" };
   const desc = (p.description ?? p.title).slice(0, 160);
-  return { title: p.title, description: desc, openGraph: { title: p.title, description: desc, images: p.images.slice(0, 1) } };
+  return { title: p.title, description: desc, alternates: { canonical: `/products/${(await params).slug}` }, openGraph: { title: p.title, description: desc, images: p.images.slice(0, 1) } };
 }
 
 export default async function PDP({ params }: { params: Promise<{ slug: string }> }) {
@@ -74,6 +75,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
           {p.brand_name && <p className="eyebrow">{p.brand_name}</p>}
           <h1 className="mt-2 text-3xl font-semibold leading-tight tracking-wide">{p.title}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-5"><ShareButton title={p.title} text={`${p.title} at ${p.brand_name ?? "our shop"}`} />{askHref && <a href={askHref} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold uppercase tracking-[0.2em] text-accent hover:underline">Ask on WhatsApp</a>}</div>
+          <div className="mt-4"><PdpActions p={p} /></div>
           <div className="mb-6 mt-3 h-5">{!!p.rating_count && <a href="#reviews" className="inline-block" aria-label="Read reviews"><Stars value={Number(p.rating_avg)} size={16} count={p.rating_count} /></a>}</div>
           <BuyPanel p={p} />
           <div className="mt-4"><LiveViewers slug={slug} /></div>
@@ -90,6 +92,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
               <div className="py-4"><p className="text-xs font-semibold uppercase tracking-[0.2em]">Tags</p>
                 <ul className="mt-3 flex flex-wrap gap-2">{(p.tags ?? []).filter((t) => !["new", "limited", "bestseller", "sale", "recommended"].includes(t)).map((t) => <li key={t}><Link href={`/products?tag=${t}`} className="border border-line px-2.5 py-1 text-[0.65rem] uppercase tracking-widest text-muted transition hover:border-accent hover:text-accent">{t.replace(/-/g, " ")}</Link></li>)}</ul></div>
             )}
+            {(p as unknown as { sku?: string }).sku && <SkuCopy sku={(p as unknown as { sku: string }).sku} />}
             {rich.map(([t, node]) => (
               <details key={t} className="group py-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase tracking-[0.2em]">

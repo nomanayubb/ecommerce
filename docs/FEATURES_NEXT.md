@@ -209,43 +209,43 @@ Site-wide
 Rules unchanged: light (server or on demand), theme-aligned, soft and professional, load in about one second (budget in CLAUDE.md). Tick `[x]` only when built; unchecked items go in the CHANGELOG.
 
 Checkout and bag
-1. [ ] Checkout progress header (Delivery, Payment, Done)
-2. [ ] Quick delivery-note chips ("Call before delivery", "Leave with the guard", ...)
-3. [ ] Error summary at checkout that takes you to the first problem
-4. [ ] "Save this address" at checkout for signed-in shoppers
-5. [ ] "You save Rs. X" line in the bag
-6. [ ] Delivery promise line inside the bag
-7. [ ] Order confirmation: "Track this order" button (details prefilled)
-8. [ ] Order confirmation: create-an-account prompt for guests
+1. [x] Checkout progress header (Delivery, Payment, Done)
+2. [x] Quick delivery-note chips ("Call before delivery", "Leave with the guard", ...)
+3. [x] Error summary at checkout that takes you to the first problem
+4. [x] "Save this address" at checkout for signed-in shoppers
+5. [x] "You save Rs. X" line in the bag
+6. [x] Delivery promise line inside the bag
+7. [x] Order confirmation: "Track this order" button (details prefilled)
+8. [x] Order confirmation: create-an-account prompt for guests
 
 Product page
-9. [ ] Wishlist heart and compare button on the product page
-10. [ ] SKU shown with a copy button
-11. [ ] Photo counter (2 / 4) and a "hover to zoom" hint on desktop
-12. [ ] Mobile sticky bar shows the title and price
-13. [ ] Product tabs and gallery tap targets and numeric keyboard on quantity fields
+9. [x] Wishlist heart and compare button on the product page
+10. [x] SKU shown with a copy button
+11. [x] Photo counter (2 / 4) and a "hover to zoom" hint on desktop
+12. [x] Mobile sticky bar shows the title and price
+13. [x] Product tabs and gallery tap targets and numeric keyboard on quantity fields
 
 Browsing and search
-14. [ ] "Filters (3)" count on the phone filters button
-15. [ ] Brand banner when a single brand is chosen
-16. [ ] Matching words highlighted in search suggestions
-17. [ ] "/" key hint in the search box
-18. [ ] Carousels snap into place on phones
+14. [x] "Filters (3)" count on the phone filters button
+15. [x] Brand banner when a single brand is chosen
+16. [x] Matching words highlighted in search suggestions
+17. [x] "/" key hint in the search box
+18. [x] Carousels snap into place on phones
 
 Reading
-19. [ ] Reading progress bar on articles (pure CSS)
-20. [ ] Pull quotes in articles (write `> quote`)
+19. [x] Reading progress bar on articles (pure CSS)
+20. [x] Pull quotes in articles (write `> quote`)
 
 Speed and polish
-21. [ ] Intent prefetch: the next page starts loading when you hover a link
-22. [ ] Animations pause while the tab is hidden (saves battery and CPU)
-23. [ ] Canonical addresses for search engines on list and content pages
-24. [ ] Tabular numbers for prices and totals
-25. [ ] Gentle image dimming in the dark theme
-26. [ ] Smooth scrolling (respects the motion setting) and table row hover
+21. [x] Intent prefetch: the next page starts loading when you hover a link
+22. [x] Animations pause while the tab is hidden (saves battery and CPU)
+23. [x] Canonical addresses for search engines on list and content pages
+24. [x] Tabular numbers for prices and totals
+25. [x] Gentle image dimming in the dark theme
+26. [x] Smooth scrolling (respects the motion setting) and table row hover
 
 Accessibility and install
-27. [ ] Spoken announcement ("Added to bag") for screen readers
-28. [ ] Focus stays inside the bag drawer / quick view and returns afterwards
-29. [ ] High-contrast mode also removes frosted transparency
-30. [ ] iPhone hint for adding the shop to the home screen
+27. [x] Spoken announcement ("Added to bag") for screen readers
+28. [x] Focus stays inside the bag drawer / quick view and returns afterwards
+29. [x] High-contrast mode also removes frosted transparency
+30. [x] iPhone hint for adding the shop to the home screen

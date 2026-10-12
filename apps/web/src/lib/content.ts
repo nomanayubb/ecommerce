@@ -46,14 +46,15 @@ export function currentSeason(d = new Date()): string {
 }
 
 /** Blog text -> blocks. Blank line = paragraph, "# " heading, "## " subheading, "- " list, "![alt](url)" photo. */
-export type Block = { t: "h2" | "h3" | "p"; text: string } | { t: "ul"; items: string[] } | { t: "img"; alt: string; src: string };
+export type Block = { t: "h2" | "h3" | "p" | "quote"; text: string } | { t: "ul"; items: string[] } | { t: "img"; alt: string; src: string };
 export function parseBody(body: string): Block[] {
   const blocks: Block[] = [];
   for (const chunk of body.replace(/\r/g, "").split(/\n{2,}/)) {
     const lines = chunk.split("\n").map((l) => l.trimEnd()).filter(Boolean);
     if (!lines.length) continue;
     const img = lines.length === 1 && lines[0].match(/^!\[(.*?)\]\((\/[^\s)]*|https?:\/\/[^\s)]+)\)$/);
-    if (img) blocks.push({ t: "img", alt: img[1], src: img[2] });
+    if (lines.every((l) => l.startsWith("> "))) blocks.push({ t: "quote", text: lines.map((l) => l.slice(2)).join(" ") });
+    else if (img) blocks.push({ t: "img", alt: img[1], src: img[2] });
     else if (lines.every((l) => l.startsWith("- "))) blocks.push({ t: "ul", items: lines.map((l) => l.slice(2)) });
     else if (lines[0].startsWith("## ")) { blocks.push({ t: "h3", text: lines[0].slice(3) }); if (lines.length > 1) blocks.push({ t: "p", text: lines.slice(1).join(" ") }); }
     else if (lines[0].startsWith("# ")) { blocks.push({ t: "h2", text: lines[0].slice(2) }); if (lines.length > 1) blocks.push({ t: "p", text: lines.slice(1).join(" ") }); }

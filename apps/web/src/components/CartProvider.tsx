@@ -1,6 +1,6 @@
 "use client";
 
-import { flyToCart } from "@/lib/motion";
+import { announce, flyToCart } from "@/lib/motion";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 export interface CartLine {
@@ -8,6 +8,8 @@ export interface CartLine {
   variantId: string | null;
   title: string;
   price: number;
+  /** Price before discount, when there was one (shown as "you save"). */
+  marked?: number;
   image?: string;
   quantity: number;
 }
@@ -74,6 +76,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Adding something you saved for later counts as moving it.
     setSaved((cur) => cur.filter((x) => !same(x, l.productId, l.variantId)));
     flyToCart(l.image);
+    announce(`${l.title} added to your bag`);
     setOpen(true);
   };
   const setQty = (p: string, v: string | null, qty: number) =>
