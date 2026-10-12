@@ -211,3 +211,8 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Speed (production build): shared 104 kB (unchanged), home 138, product page 132 (was 131), product list 123, checkout 121, recipes 113. Everything new is server-rendered, CSS, or loads on demand.
 - Verified in the browser: pull quote, reading bar element, canonical address, live region text ("... added to your bag"), focus moves into the bag and returns on Escape, savings and delivery lines in the bag, checkout steps and 3 note chips, order placed -> Track button, guest prompt, track page prefilled (14 / phone), brand banner, filter count, SKU, save/compare buttons, zoom hint. A test order was created and removed (stock restored). Not verified by eye: search highlight, "/" hint, intent prefetch, hidden-tab pause, iPhone hint, high-contrast transparency, save-address option, error-summary focus, reading bar movement.
 
+## 2026-10-12 — Lag fix
+- Cause: the shop was being viewed through the slow development server, plus some of my newer effects were costly: a mirror reflection under the home headline (redrawn while the text animates), an animated glow on that headline, an extra masked full-screen layer for the atmosphere background, and a larger blur on the header after scrolling. Also a local AI program (`llama-server`, about 10 GB of memory) was running on the PC.
+- Removed only those newer effects (headline reflection and glow, atmosphere line layer, extra header blur). The product photo reflection became a cheap static ground shadow. All older effects were kept exactly as they were, including the film grain.
+- The shop on port 3000 now runs the production build: measured page ready 87 ms, fully loaded 302 ms. Details in CLAUDE.md ("Judging speed").
+

@@ -43,6 +43,9 @@ Home and custom pages (`/p/<slug>`) are JSON section templates edited in admin >
 ## Performance budget (owner rule 2026-10-12: the site must load in about one second)
 Every new feature must not make the shop heavier: prefer server components and CSS; client code only when unavoidable, tiny, and loaded on demand (`next/dynamic`, `components/LazyHosts.tsx` idle hosts). Never add a library to the first load. Before and after a batch, run `npm run build:prod -w web` (separate `.next-prod` folder) and compare First Load JS: shared <= 110 kB, any page <= 145 kB (gzip, as printed by Next). Baseline 2026-10-12: shared 104 kB, home 136 kB, product page 128 kB. If a feature breaks the budget, lazy-load it or drop it.
 
+## Judging speed (important)
+`next dev` (what `npm run dev -w web` runs) compiles pages on demand and is many times slower than the real site; never judge speed from it. For the real thing: `npm run build:prod -w web`, then `NEXT_DIST_DIR=.next-prod npx next start -p 3000` in apps/web (after stopping the dev server). Measured 2026-10-12 on the production build: page ready 87 ms, fully loaded 302 ms. Heavy visual effects are a second cause of lag: avoid `-webkit-box-reflect` on animated text, `mix-blend-mode` on new layers, extra full-screen fixed layers, and big `backdrop-filter` blurs. The old effects (film grain, kinetic hero text, tilt, reveals) stay as they were.
+
 ## Hard facts
 - Payment methods allowed = env `ENABLED_PAYMENT_METHODS` (default `COD`). EasyPaisa/JazzCash adapters not built (no API access yet).
 - Prices are always computed server-side (`apps/api/src/lib/pricing.ts`). Never trust client prices.
