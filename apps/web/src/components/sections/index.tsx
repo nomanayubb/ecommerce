@@ -96,12 +96,15 @@ function Hero({ s, ctx }: P) {
 
   if (variant === "image" && v.imageUrl)
     return (
-      <section className={`${frame} ${pad}`} style={{ background: "rgb(var(--dark))" }}>
-        <picture>
-          {v.imageUrlMobile && <source media="(max-width: 639px)" srcSet={String(v.imageUrlMobile)} />}
-          <img src={v.imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
-        </picture>
-        <div className="absolute inset-0 bg-black/55 sm:bg-gradient-to-r sm:from-black/75 sm:via-black/40 sm:to-transparent" />
+      <section className={`${frame} pb-14 sm:py-28`} style={{ background: "rgb(var(--dark))" }}>
+        {/* Phones: the whole photo as a band on top, text below. Desktop: photo behind the text. */}
+        <div className="relative -mx-6 mb-8 aspect-[16/9] overflow-hidden sm:absolute sm:inset-0 sm:mx-0 sm:mb-0 sm:aspect-auto">
+          <picture>
+            {v.imageUrlMobile && <source media="(max-width: 639px)" srcSet={String(v.imageUrlMobile)} />}
+            <img src={v.imageUrl} alt="" className="h-full w-full object-cover" />
+          </picture>
+          <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--dark))] via-transparent to-transparent sm:bg-gradient-to-r sm:from-black/75 sm:via-black/40 sm:to-transparent" />
+        </div>
         {parts}{copy}
       </section>
     );
