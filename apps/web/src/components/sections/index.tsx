@@ -97,8 +97,11 @@ function Hero({ s, ctx }: P) {
   if (variant === "image" && v.imageUrl)
     return (
       <section className={`${frame} ${pad}`} style={{ background: "rgb(var(--dark))" }}>
-        <img src={v.imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent" />
+        <picture>
+          {v.imageUrlMobile && <source media="(max-width: 639px)" srcSet={String(v.imageUrlMobile)} />}
+          <img src={v.imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        </picture>
+        <div className="absolute inset-0 bg-black/55 sm:bg-gradient-to-r sm:from-black/75 sm:via-black/40 sm:to-transparent" />
         {parts}{copy}
       </section>
     );

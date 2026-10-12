@@ -52,6 +52,7 @@ export const SECTIONS: SectionDef[] = [
       t("primaryLabel", "Main button label", "Shop the collection"), url("primaryHref", "Main button link", "/products"),
       t("secondaryLabel", "Second button label", "Best prices"), url("secondaryHref", "Second button link", "/products?sort=price_asc"),
       url("imageUrl", "Image", "", { help: "Used by Image, Split, Parallax and as the Before photo of Before / after" }),
+      url("imageUrlMobile", "Phone image (Image hero)", "", { help: "Tall version of the photo shown on phones. Leave empty to use the main image." }),
       url("imageUrl2", "Second image", "", { help: "After photo for Before / after" }),
       url("videoUrl", "Video file (.mp4 / .webm)", "", { help: "Used by the Video style; the Image above is shown while it loads" }),
       t("rotatingWords", "Rotating words", "", { help: "Kinetic style: comma separated, e.g. Kitchen, Style, Tech", maxLength: 120 }),
