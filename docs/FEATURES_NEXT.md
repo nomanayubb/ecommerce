@@ -155,3 +155,51 @@ Rule from the owner: professional, sophisticated and soft; never garish or "AI l
 68. [x] Empty states with glow behind the mascot
 69. [x] Review cards with quote ornament
 70. [x] Account dashboard cards with depth
+
+---
+# Batch 11 (planned 2026-10-12): 30 more frontend features
+Same rules: light, theme-aligned, professional, soft. Mark `[x]` when built AND checked; note anything unchecked in the CHANGELOG.
+
+Personal touches
+1. [ ] Cart reminder when you come back with items in the bag (once per visit)
+2. [ ] "Welcome back, <name>" greeting for signed-in shoppers (once per visit)
+3. [ ] Recently viewed products row inside the search panel
+4. [ ] Undo after removing an item from the bag
+5. [ ] "Clear bag" with a confirm step
+
+Product cards and lists
+6. [ ] Second photo appears on hover (loads only when hovered)
+7. [ ] Automatic "New" badge for products added in the last 14 days
+8. [ ] Automatic "Popular" badge from real recent orders
+9. [ ] Quick price chips in the filters (Under 2,000, 2,000 to 5,000, ...)
+10. [ ] Sub-category chips on category pages
+11. [ ] Bag total shown next to the bag icon on desktop
+
+Product page
+12. [ ] Same-day dispatch countdown ("order within 2 h 14 m"), set in Settings
+13. [ ] Delivery date range promise (settings: min and max days) on product page and checkout
+14. [ ] Sticky section tabs (Details, Reviews, Questions) while scrolling
+15. [ ] Product tags are links that filter the shop
+16. [ ] Breadcrumb structured data for search engines
+
+Page-builder sections
+17. [ ] Quick-link chips section (price bands, categories, anything)
+18. [ ] Marquee strip section (scrolling promises, respects motion setting)
+19. [ ] Promo banner section (image background with call to action)
+20. [ ] "How it works" numbered steps section
+21. [ ] Brand grid section (from your brands) + public brands API
+22. [ ] "Picked for you" section based on what you viewed
+
+Reading and recipes
+23. [ ] Listen to an article read aloud (browser voice)
+24. [ ] Related products at the end of an article (by tag)
+25. [ ] Recipe unit switch: metric or imperial
+
+Wishlist, compare, account
+26. [ ] Wishlist sort (newest, price) and "Add all available to bag"
+27. [ ] Add to bag buttons on the compare page
+28. [ ] Print / save invoice from an order page
+
+Site-wide
+29. [ ] Offline banner when the connection drops
+30. [ ] Back-to-top link in the footer
