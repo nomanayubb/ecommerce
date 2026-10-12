@@ -22,6 +22,7 @@ export function RecipeView({ r }: { r: Recipe }) {
   const [doneSteps, setDoneSteps] = useState<Set<number>>(new Set());
   const [listed, setListed] = useState(false);
   const [cook, setCook] = useState(false);
+  const [imperial, setImperial] = useState(false);
   // Cook mode: bigger text and the screen stays awake (where the browser supports it).
   useEffect(() => {
     if (!cook) return;
@@ -57,6 +58,16 @@ export function RecipeView({ r }: { r: Recipe }) {
     for (const i of addable) { const p = i.product!; if (seen.has(p.id)) continue; seen.add(p.id); addProduct(p); }
     mascotSay("celebrate", `${seen.size} item${seen.size === 1 ? "" : "s"} added to your bag`);
   };
+  // Metric <-> imperial for weights and volumes only (cups, spoons and pieces stay as written).
+  const conv = (qty: number | null, unit: string): { qty: number | null; unit: string } => {
+    if (qty == null) return { qty, unit };
+    const u = unit.toLowerCase();
+    const table: Record<string, [number, string, boolean]> = { g: [1 / 28.35, "oz", true], kg: [2.2046, "lb", true], ml: [1 / 29.57, "fl oz", true], l: [33.814, "fl oz", true], oz: [28.35, "g", false], lb: [453.6, "g", false], "fl oz": [29.57, "ml", false] };
+    const t = table[u];
+    if (!t || t[2] !== imperial) return { qty, unit };
+    const v = qty * t[0];
+    return { qty: v >= 100 ? Math.round(v) : Math.round(v * 10) / 10, unit: t[1] };
+  };
   const lineText = (i: Ingredient) => `${i.qty != null ? fmtQty(i.qty * factor) : ""}${i.unit ? ` ${i.unit}` : ""} ${i.name}`.trim();
 
   return (
@@ -75,6 +86,7 @@ export function RecipeView({ r }: { r: Recipe }) {
               <button className="px-3 py-1.5 transition hover:text-accent" onClick={() => setServings((s) => Math.min(48, s + 1))} aria-label="More servings">+</button>
             </div>
           </div>
+          <button type="button" aria-pressed={imperial} onClick={() => setImperial((v) => !v)} className="mt-3 w-full border border-line px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted transition hover:text-fg">Units: {imperial ? "imperial (oz, lb)" : "metric (g, kg, ml)"}</button>
           <button type="button" aria-pressed={cook} onClick={() => setCook((c) => !c)} className={`mt-4 w-full border px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.2em] transition ${cook ? "border-accent bg-accent/10 text-accent" : "border-line text-muted hover:text-fg"}`}>{cook ? "Cook mode on: screen stays awake" : "Cook mode (big text, screen stays on)"}</button>
           {servings !== r.servings && <button className="mt-2 text-xs text-accent underline-offset-4 hover:underline" onClick={() => setServings(r.servings)}>Back to {r.servings} servings</button>}
         </div>
@@ -86,7 +98,7 @@ export function RecipeView({ r }: { r: Recipe }) {
               <li key={n} className="flex items-start gap-3 py-2.5 text-sm">
                 <input type="checkbox" checked={have.has(n)} onChange={() => setHave((s) => { const c = new Set(s); c.has(n) ? c.delete(n) : c.add(n); return c; })} aria-label={`I have ${i.name}`} className="mt-1 h-4 w-4 accent-[rgb(var(--accent))]" />
                 <span className={`flex-1 ${have.has(n) ? "text-muted line-through" : ""}`}>
-                  <span className="font-medium">{i.qty != null ? fmtQty(i.qty * factor) : ""}{i.unit ? ` ${i.unit}` : ""}</span> {i.name}
+                  <span className="font-medium">{(() => { const c = conv(i.qty != null ? i.qty * factor : null, i.unit); return `${c.qty != null ? fmtQty(c.qty) : ""}${c.unit ? ` ${c.unit}` : ""}`; })()}</span> {i.name}
                   {i.note && <span className="text-muted">, {i.note}</span>}
                   {i.product && (
                     <span className="mt-1 flex items-center gap-2 text-xs">

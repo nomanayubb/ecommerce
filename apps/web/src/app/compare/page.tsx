@@ -6,12 +6,14 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { pkr, type ProductDetail } from "@/lib/api";
 import { useShopper, type Lite } from "@/components/Shopper";
 import { MascotFigure } from "@/components/Mascot";
+import { useCart } from "@/components/CartProvider";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
 const toLite = (p: ProductDetail): Lite => ({ id: p.id, slug: p.slug, title: p.title, price: Number(p.selling_price), marked: Number(p.marked_price), image: p.images?.[0], brand: p.brand_name });
 
 function Page() {
   const { compare, toggleCompare, clearCompare } = useShopper();
+  const { add } = useCart();
   const shared = useSearchParams().get("items");
   const sharedSlugs = useMemo(() => (shared ? shared.split(",").filter((s) => /^[a-z0-9-]{1,100}$/.test(s)).slice(0, 4) : []), [shared]);
   const [details, setDetails] = useState<Record<string, ProductDetail>>({});
@@ -93,6 +95,14 @@ function Page() {
                 </tr>
               );
             })}
+            <tr>
+              <th scope="row" className={`${cell} eyebrow !text-[0.65rem]`} />
+              {list.map((c) => {
+                const d = details[c.slug];
+                const simple = d && !d.variants.length && d.stock_quantity > 0 && d.moq <= 1;
+                return <td key={c.slug} className={cell}>{!d ? null : simple ? <button className="btn btn-primary !px-4 !py-2.5" onClick={() => add({ productId: d.id, variantId: null, title: d.title, price: Number(d.selling_price), image: d.images[0], quantity: 1 })}>Add to bag</button> : <Link href={`/products/${c.slug}`} className="btn btn-ghost !px-4 !py-2.5">{d.stock_quantity === 0 ? "Sold out" : "Choose options"}</Link>}</td>;
+              })}
+            </tr>
           </tbody>
         </table>
       </div>

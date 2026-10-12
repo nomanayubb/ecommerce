@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { getPost, parseBody } from "@/lib/content";
 import { ShareButton } from "@/components/ShareButton";
+import { ListenButton } from "@/components/ListenButton";
+import { ProductCard } from "@/components/ProductCard";
+import { api, type ProductSummary } from "@/lib/api";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const p = await getPost((await params).slug);
@@ -14,6 +17,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
   const p = await getPost((await params).slug);
   if (!p) notFound();
   const blocks = parseBody(p.body);
+  const shop = p.tags.length ? await api<{ items: ProductSummary[] }>(`/products?tag=${p.tags.slice(0, 5).join(",")}&pageSize=4`).then((r) => r.items).catch(() => [] as ProductSummary[]) : [];
   const slug = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const heads = blocks.flatMap((b) => (b.t === "h2" || b.t === "h3" ? [{ id: slug(b.text), text: b.text, sub: b.t === "h3" }] : []));
   const words = blocks.reduce((n, b) => n + (b.t === "p" || b.t === "h2" || b.t === "h3" ? b.text.split(/\s+/).length : b.t === "ul" ? b.items.join(" ").split(/\s+/).length : 0), 0);
@@ -29,7 +33,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
           <p className="eyebrow">{when ? when.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "Journal"}{p.author_name ? ` · ${p.author_name}` : ""} · {minutes} min read</p>
           <h1 className="mt-3 text-4xl font-semibold leading-tight tracking-wide">{p.title}</h1>
           {p.excerpt && <p className="mt-4 text-lg text-muted">{p.excerpt}</p>}
-          <div className="mt-4"><ShareButton title={p.title} text={p.excerpt} /></div>
+          <div className="mt-4 flex gap-5"><ShareButton title={p.title} text={p.excerpt} /><ListenButton targetId="post-body" /></div>
         </header>
         {p.cover_url && <img src={p.cover_url} alt="" width={1200} height={700} fetchPriority="high" className="my-10 aspect-[16/9] w-full border border-line object-cover" />}
         {heads.length >= 3 && (
@@ -38,7 +42,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
             <ol className="mt-3 space-y-1.5 text-sm">{heads.map((h) => <li key={h.id} className={h.sub ? "ml-4" : ""}><a href={`#${h.id}`} className="text-muted transition hover:text-accent">{h.text}</a></li>)}</ol>
           </nav>
         )}
-        <div className="space-y-5 leading-[1.8]">
+        <div id="post-body" className="space-y-5 leading-[1.8]">
           {blocks.map((b, i) =>
             b.t === "h2" ? <h2 key={i} id={slug(b.text)} className="pt-6 text-2xl font-semibold">{b.text}</h2>
             : b.t === "h3" ? <h3 key={i} id={slug(b.text)} className="pt-4 text-xl font-semibold">{b.text}</h3>
@@ -55,6 +59,9 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
           </aside>
         )}
       </article>
+      {shop.length > 0 && (
+        <section className="mx-auto mt-20 max-w-5xl border-t border-line pt-10"><p className="eyebrow">Shop the story</p><div className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-4">{shop.map((x) => <ProductCard key={x.id} p={x} />)}</div></section>
+      )}
       {p.related.length > 0 && (
         <section className="mx-auto mt-20 max-w-3xl border-t border-line pt-10">
           <p className="eyebrow">Keep reading</p>

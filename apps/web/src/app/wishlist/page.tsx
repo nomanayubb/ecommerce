@@ -8,6 +8,7 @@ import { send } from "@/lib/client";
 import { useShopper, type Lite } from "@/components/Shopper";
 import { LiteCard } from "@/components/RecentlyViewed";
 import { MascotFigure } from "@/components/Mascot";
+import { useCart } from "@/components/CartProvider";
 
 const toLite = (p: ProductDetail): Lite => ({ id: p.id, slug: p.slug, title: p.title, price: Number(p.selling_price), marked: Number(p.marked_price), image: p.images?.[0], brand: p.brand_name });
 
@@ -18,6 +19,8 @@ function Page() {
   const [now, setNow] = useState<Record<string, ProductDetail | null>>({});
   const [sharedItems, setSharedItems] = useState<Lite[]>([]);
   const [copied, setCopied] = useState(false);
+  const [sort, setSort] = useState<"new" | "asc" | "desc">("new");
+  const { add } = useCart();
 
   // Today's prices for saved items (to spot price drops); only a handful of light requests.
   useEffect(() => {
@@ -28,6 +31,8 @@ function Page() {
     Promise.all(sharedSlugs.map((s) => send<ProductDetail>("GET", `products/${s}`).then(toLite).catch(() => null))).then((l) => setSharedItems(l.filter(Boolean) as Lite[]));
   }, [sharedSlugs]);
 
+  const sorted = useMemo(() => (sort === "new" ? [...wish].reverse() : [...wish].sort((a, b) => (sort === "asc" ? a.price - b.price : b.price - a.price))), [wish, sort]);
+  const eligible = wish.map((w) => now[w.slug]).filter((d): d is ProductDetail => !!d && !d.variants.length && d.stock_quantity > 0 && d.moq <= 1);
   const link = () => `${location.origin}/wishlist?items=${wish.map((w) => w.slug).join(",")}`;
   const share = async () => {
     const url = link();
@@ -47,7 +52,13 @@ function Page() {
     <>
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-line pb-6">
         <div><p className="eyebrow">Saved for later</p><h1 className="mt-2 text-3xl font-semibold uppercase tracking-[0.1em]">Wishlist <span className="text-accent">({wish.length})</span></h1></div>
-        {wish.length > 0 && <button onClick={share} className="btn btn-ghost">{copied ? "Link copied" : "Share my wishlist"}</button>}
+        {wish.length > 0 && (
+          <div className="flex flex-wrap items-center gap-3">
+            <select value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} aria-label="Sort wishlist" className="border border-line bg-card px-3 py-2.5 text-xs uppercase tracking-widest"><option value="new">Newest first</option><option value="asc">Price: low to high</option><option value="desc">Price: high to low</option></select>
+            {eligible.length > 0 && <button onClick={() => eligible.forEach((d) => add({ productId: d.id, variantId: null, title: d.title, price: Number(d.selling_price), image: d.images[0], quantity: 1 }))} className="btn btn-primary">Add {eligible.length} to bag</button>}
+            <button onClick={share} className="btn btn-ghost">{copied ? "Link copied" : "Share my wishlist"}</button>
+          </div>
+        )}
       </div>
       {wish.length === 0 ? (
         <div className="border border-dashed border-line py-24 text-center">
@@ -58,7 +69,7 @@ function Page() {
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {wish.map((p) => {
+          {sorted.map((p) => {
             const cur = now[p.slug];
             const drop = cur && Number(cur.selling_price) < p.price ? p.price - Number(cur.selling_price) : 0;
             const gone = cur === null;

@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCart } from "./CartProvider";
+import { useCart, type CartLine } from "./CartProvider";
 import { pkr } from "@/lib/api";
 import { useSite } from "./Site";
 import { MascotFigure } from "./Mascot";
@@ -11,7 +11,11 @@ import { useShopper } from "./Shopper";
 import { GiftOptions, PromoField, Upsells, useCartPricing } from "./CartExtras";
 
 export function CartDrawer() {
-  const { lines, saved, open, setOpen, setQty, count, saveForLater, moveToBag, removeSaved } = useCart();
+  const { lines, saved, open, setOpen, setQty, count, saveForLater, moveToBag, removeSaved, add, clear } = useCart();
+  const [undo, setUndo] = useState<CartLine | null>(null);
+  const [sure, setSure] = useState(false);
+  const undoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => { if (!open) { setSure(false); setUndo(null); } }, [open]);
   const { priced } = useCartPricing();
   const { recent } = useShopper();
   const FREE_SHIPPING = useSite().store.freeShippingThreshold;
@@ -39,10 +43,19 @@ export function CartDrawer() {
           >
             <div className="flex items-center justify-between border-b border-line px-6 py-5">
               <h2 className="text-xs font-semibold uppercase tracking-[0.25em]">Your bag <span className="text-accent">({count})</span></h2>
+              {lines.length > 1 && (sure
+                ? <span className="ml-auto mr-4 flex items-center gap-3 text-xs"><span className="text-muted">Remove everything?</span><button className="font-semibold uppercase tracking-widest text-accent" onClick={() => { clear(); setSure(false); }}>Yes</button><button className="uppercase tracking-widest text-muted" onClick={() => setSure(false)}>No</button></span>
+                : <button className="ml-auto mr-4 text-xs uppercase tracking-widest text-muted transition hover:text-accent" onClick={() => setSure(true)}>Clear bag</button>)}
               <button onClick={() => setOpen(false)} aria-label="Close bag" className="text-xl leading-none transition hover:text-accent">✕</button>
             </div>
 
             <div className="flex-1 overflow-y-auto">
+              {undo && (
+                <div role="status" className="flex items-center justify-between gap-3 border-b border-line bg-accent/10 px-6 py-3 text-sm">
+                  <span className="line-clamp-1">Removed {undo.title}</span>
+                  <button className="shrink-0 text-xs font-semibold uppercase tracking-widest text-accent" onClick={() => { add(undo); setUndo(null); }}>Undo</button>
+                </div>
+              )}
             <div className="border-b border-line px-6 py-4 text-sm">
               <p className={remaining > 0 ? "text-muted" : "text-accent"}>
                 {remaining > 0 ? <>Add <strong className="text-fg">{pkr(remaining)}</strong> more for free delivery</> : "You have unlocked free delivery"}
@@ -76,7 +89,7 @@ export function CartDrawer() {
                       </div>
                       <span className="flex gap-3">
                         <button className="text-xs uppercase tracking-widest text-muted underline-offset-4 transition hover:text-accent hover:underline" onClick={() => saveForLater(l.productId, l.variantId)}>Save</button>
-                        <button className="text-xs uppercase tracking-widest text-muted underline-offset-4 transition hover:text-accent hover:underline" onClick={() => setQty(l.productId, l.variantId, 0)}>Remove</button>
+                        <button className="text-xs uppercase tracking-widest text-muted underline-offset-4 transition hover:text-accent hover:underline" onClick={() => { setQty(l.productId, l.variantId, 0); setUndo(l); if (undoTimer.current) clearTimeout(undoTimer.current); undoTimer.current = setTimeout(() => setUndo(null), 6000); }}>Remove</button>
                       </span>
                     </div>
                   </div>

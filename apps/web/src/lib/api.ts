@@ -15,6 +15,8 @@ export interface ProductSummary {
   recipe_count?: number;
   moq?: number;
   has_variants?: boolean;
+  is_new?: boolean;
+  sold_30d?: number;
   rating_avg?: string | null;
   rating_count?: number;
 }
@@ -86,8 +88,8 @@ export const DEFAULT_FOOTER: FooterConfig = {
   columns: [{ title: "Shop", links: [{ label: "All products", href: "/products" }, { label: "Track your order", href: "/track" }, { label: "My account", href: "/account" }] }],
   showNewsletter: true, showPerks: true, showPayments: true, note: "",
 };
-export interface Store { freeShippingThreshold: number; shippingFee: number; giftWrapEnabled: boolean; giftWrapFee: number }
-export const DEFAULT_STORE: Store = { freeShippingThreshold: 5000, shippingFee: 250, giftWrapEnabled: false, giftWrapFee: 0 };
+export interface Store { freeShippingThreshold: number; shippingFee: number; dispatchCutoff: number; deliveryMinDays: number; deliveryMaxDays: number; giftWrapEnabled: boolean; giftWrapFee: number }
+export const DEFAULT_STORE: Store = { freeShippingThreshold: 5000, shippingFee: 250, dispatchCutoff: 0, deliveryMinDays: 2, deliveryMaxDays: 4, giftWrapEnabled: false, giftWrapFee: 0 };
 
 /** Branding + store rules from the API (cached ~30s), with safe fallbacks if the API is down. */
 export const getSite = () =>

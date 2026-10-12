@@ -70,6 +70,8 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
       const { rows } = await pool.query(
         `SELECT p.id, p.title, p.slug, p.marked_price, p.selling_price, p.stock_quantity, p.images, p.tags,
                 p.metafields->>'videoUrl' AS video_url, p.moq, EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = p.id) AS has_variants,
+                (p.id IN (SELECT n.id FROM products n WHERE n.status = 'PUBLISHED' AND n.created_at > now() - interval '14 days' ORDER BY n.created_at DESC LIMIT 6)) AS is_new,
+                (SELECT coalesce(sum(oi.quantity), 0)::int FROM order_items oi JOIN orders od ON od.id = oi.order_id WHERE oi.product_id = p.id AND od.created_at > now() - interval '30 days' AND od.order_status <> 'CANCELED') AS sold_30d,
                 (SELECT count(*)::int FROM recipe_products rp JOIN recipes rc ON rc.id = rp.recipe_id WHERE rp.product_id = p.id AND rc.status = 'PUBLISHED') AS recipe_count,
                 b.name AS brand_name, b.slug AS brand_slug,
                 (SELECT round(avg(rv.rating)::numeric, 1) FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_avg,
@@ -171,6 +173,9 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
        ORDER BY ${RATING_COUNT} DESC, p.created_at DESC LIMIT $3`, [ids, same.map((r: any) => r.id), limit - same.length])).rows;
     return { items: [...same, ...more] };
   });
+
+  // Brand names for the storefront's brand grid.
+  app.get("/brands", async () => cached("catalog:brands", 300, async () => (await pool.query("SELECT name, slug FROM brands ORDER BY name")).rows));
 
   app.get("/categories/tree", async () =>
     cached("catalog:categories:tree", 300, async () => {

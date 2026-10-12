@@ -74,6 +74,13 @@ export function ProductFilters({ params, facets }: { params: Params; facets: Fac
         </form>
       </div>
 
+      <div className="-mt-3 flex flex-wrap gap-1.5" aria-label="Quick price ranges">
+        {([["Under 2,000", undefined, "2000"], ["2,000-5,000", "2000", "5000"], ["5,000-10,000", "5000", "10000"], ["10,000+", "10000", undefined]] as const).map(([l, lo, hi]) => {
+          const on = (params.minPrice ?? "") === (lo ?? "") && (params.maxPrice ?? "") === (hi ?? "");
+          return <button key={l} type="button" aria-pressed={on} onClick={() => { setMin(lo ?? ""); setMax(hi ?? ""); push(on ? { minPrice: undefined, maxPrice: undefined } : { minPrice: lo, maxPrice: hi }); }} className={`border px-2.5 py-1 text-[0.65rem] uppercase tracking-wider transition ${on ? "border-accent text-accent" : "border-line text-muted hover:text-fg"}`}>{l}</button>;
+        })}
+      </div>
+
       <div>
         <Check on={params.inStock === "true"} onChange={() => push({ inStock: params.inStock === "true" ? undefined : "true" })} count={facets.inStock}>In stock only</Check>
         <Check on={params.minRating === "4"} onChange={() => push({ minRating: params.minRating === "4" ? undefined : "4" })}>4 stars and up</Check>

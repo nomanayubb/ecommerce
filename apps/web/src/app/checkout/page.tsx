@@ -11,6 +11,7 @@ import { GiftOptions, PromoField, useCartPricing } from "@/components/CartExtras
 import { fireConfetti, mascotSay } from "@/lib/motion";
 import { PK_CITIES } from "@/lib/cities";
 import { PrintButton } from "@/components/PrintButton";
+import { DispatchNote } from "@/components/Dispatch";
 
 export default function Checkout() {
   const { lines, clear, extras } = useCart();
@@ -162,6 +163,7 @@ export default function Checkout() {
             </ul>
           </details>
           <div className="mt-4 border-t border-line pt-4"><PromoField priced={priced} /></div>
+          <div className="mt-4"><DispatchNote compact /></div>
           <dl className="mt-4 space-y-2 border-t border-line pt-4 text-sm">
             <div className="flex justify-between"><dt className="text-muted">Subtotal</dt><dd>{priced ? pkr(priced.subtotal) : "…"}</dd></div>
             {priced && priced.discount > 0 && <div className="flex justify-between text-accent"><dt>Discount ({priced.coupon?.code})</dt><dd>−{pkr(priced.discount)}</dd></div>}

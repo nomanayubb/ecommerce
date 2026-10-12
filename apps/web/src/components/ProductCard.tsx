@@ -5,7 +5,7 @@ import { CardActions } from "./CardActions";
 import { Stars } from "./Stars";
 import { TagIcons } from "./TagIcons";
 import { HoverVideo } from "./HoverVideo";
-import { CardGlow, PriceTag } from "./CardFx";
+import { CardGlow, HoverPhoto, PriceTag } from "./CardFx";
 import { QuickAdd } from "./QuickAdd";
 import { isFileVideo } from "@/lib/media";
 
@@ -13,7 +13,8 @@ const TAG_BADGES: [string, string][] = [["bestseller", "Bestseller"], ["limited"
 
 export function ProductCard({ p, priority = false }: { p: ProductSummary; priority?: boolean }) {
   const soldOut = p.stock_quantity === 0;
-  const badge = TAG_BADGES.find(([t]) => p.tags?.includes(t))?.[1] ?? (p.stock_quantity > 0 && p.stock_quantity <= 5 ? "Low stock" : null);
+  const badge = TAG_BADGES.find(([t]) => p.tags?.includes(t))?.[1] ?? ((p.sold_30d ?? 0) >= 3 ? "Popular" : p.is_new ? "New" : null) ?? (p.stock_quantity > 0 && p.stock_quantity <= 5 ? "Low stock" : null);
+  const lowStock = !badge && p.stock_quantity > 0 && p.stock_quantity <= 5;
   return (
     <Tilt>
       <div className="group/card relative [container-type:inline-size]">
@@ -24,13 +25,14 @@ export function ProductCard({ p, priority = false }: { p: ProductSummary; priori
               className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${soldOut ? "opacity-50 grayscale" : ""}`} />
           )}
           <CardGlow image={p.images[0]} />
+          {p.images[1] && !soldOut && <HoverPhoto src={p.images[1]} />}
           {p.tags?.includes("recommended") && !soldOut && <span className="absolute left-0 top-14 bg-gold px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-darksurface">Recommended</span>}
           {isFileVideo(p.video_url) && !soldOut && <HoverVideo src={p.video_url!} />}
           {p.discount_pct && !soldOut && (
             <span className="badge-discount absolute left-0 top-4 bg-accent px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-onbrand">-{p.discount_pct}%</span>
           )}
-          {badge && !soldOut && (
-            <span className="glass absolute bottom-3 left-3 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-fg">{badge}</span>
+          {(badge || lowStock) && !soldOut && (
+            <span className="glass absolute bottom-3 left-3 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-fg">{badge ?? "Low stock"}</span>
           )}
           {soldOut && <span className="absolute inset-x-0 bottom-0 bg-bg/80 py-2 text-center text-[0.65rem] font-semibold uppercase tracking-[0.25em] backdrop-blur">Sold out</span>}
         </div>

@@ -22,7 +22,7 @@ type Visuals = {
   mascotVoice: boolean; splash: boolean; logoMorph: boolean; logoSparkles: boolean; watermark: boolean; cardGlow: boolean; priceCountUp: boolean;
 };
 const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", depth: "flat", transition: "none", imageHover: "zoom", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none", mascotVoice: false, splash: false, logoMorph: false, logoSparkles: false, watermark: false, cardGlow: false, priceCountUp: false };
-interface Store { freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number }
+interface Store { freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number; dispatchCutoff?: number; deliveryMinDays?: number; deliveryMaxDays?: number }
 interface Footer { columns: { title: string; links: { label: string; href: string }[] }[]; showNewsletter: boolean; showPerks: boolean; showPayments: boolean; note: string }
 
 // Keep in sync with apps/web/src/themes/index.ts
@@ -259,6 +259,9 @@ export default function Settings() {
         <div className="grid grid-cols-2 gap-4">
           <label className={label}>Free delivery over (0 = always free)<input type="number" min={0} className={input} value={store.freeShippingThreshold} onChange={(e) => setStore({ ...store, freeShippingThreshold: Number(e.target.value) })} /></label>
           <label className={label}>Flat delivery fee<input type="number" min={0} className={input} value={store.shippingFee} onChange={(e) => setStore({ ...store, shippingFee: Number(e.target.value) })} /></label>
+          <label className={label}>Same-day dispatch if ordered before (hour, 1-23; 0 = do not show)<input type="number" min={0} max={23} className={input} value={store.dispatchCutoff ?? 0} onChange={(e) => setStore({ ...store, dispatchCutoff: Number(e.target.value) })} /></label>
+          <label className={label}>Delivery promise: fastest (days)<input type="number" min={0} max={30} className={input} value={store.deliveryMinDays ?? 2} onChange={(e) => setStore({ ...store, deliveryMinDays: Number(e.target.value) })} /></label>
+          <label className={label}>Delivery promise: slowest (days)<input type="number" min={0} max={30} className={input} value={store.deliveryMaxDays ?? 4} onChange={(e) => setStore({ ...store, deliveryMaxDays: Number(e.target.value) })} /></label>
           <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={!!store.giftWrapEnabled} onChange={(e) => setStore({ ...store, giftWrapEnabled: e.target.checked })} />Offer gift wrap with a message</label>
           <label className={label}>Gift wrap fee (0 = free)<input type="number" min={0} className={input} value={store.giftWrapFee ?? 0} onChange={(e) => setStore({ ...store, giftWrapFee: Number(e.target.value) })} /></label>
         </div>

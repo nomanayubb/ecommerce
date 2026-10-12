@@ -80,6 +80,7 @@ export function Footer({ brand, categories, store, footer, social }: {
       <div className="flex flex-col items-center justify-between gap-3 border-t border-line px-4 py-5 sm:flex-row md:pr-28">
         <p className="text-[0.7rem] uppercase tracking-[0.25em] text-muted">© {new Date().getFullYear()} {brand.name}. All rights reserved.{footer.note ? ` ${footer.note}` : ""}</p>
         <AssistantToggle />
+        <a href="#main" className="text-xs uppercase tracking-widest text-muted transition hover:text-accent">Back to top ↑</a>
         <A11yPanel />
         <InstallApp className="text-xs uppercase tracking-widest text-muted transition hover:text-accent" />
       </div>

@@ -161,45 +161,45 @@ Rule from the owner: professional, sophisticated and soft; never garish or "AI l
 Same rules: light, theme-aligned, professional, soft. Mark `[x]` when built AND checked; note anything unchecked in the CHANGELOG.
 
 Personal touches
-1. [ ] Cart reminder when you come back with items in the bag (once per visit)
-2. [ ] "Welcome back, <name>" greeting for signed-in shoppers (once per visit)
-3. [ ] Recently viewed products row inside the search panel
-4. [ ] Undo after removing an item from the bag
-5. [ ] "Clear bag" with a confirm step
+1. [x] Cart reminder when you come back with items in the bag (once per visit)
+2. [x] "Welcome back, <name>" greeting for signed-in shoppers (once per visit)
+3. [x] Recently viewed products row inside the search panel
+4. [x] Undo after removing an item from the bag
+5. [x] "Clear bag" with a confirm step
 
 Product cards and lists
-6. [ ] Second photo appears on hover (loads only when hovered)
-7. [ ] Automatic "New" badge for products added in the last 14 days
-8. [ ] Automatic "Popular" badge from real recent orders
-9. [ ] Quick price chips in the filters (Under 2,000, 2,000 to 5,000, ...)
-10. [ ] Sub-category chips on category pages
-11. [ ] Bag total shown next to the bag icon on desktop
+6. [x] Second photo appears on hover (loads only when hovered)
+7. [x] Automatic "New" badge for products added in the last 14 days
+8. [x] Automatic "Popular" badge from real recent orders
+9. [x] Quick price chips in the filters (Under 2,000, 2,000 to 5,000, ...)
+10. [x] Sub-category chips on category pages
+11. [x] Bag total shown next to the bag icon on desktop
 
 Product page
-12. [ ] Same-day dispatch countdown ("order within 2 h 14 m"), set in Settings
-13. [ ] Delivery date range promise (settings: min and max days) on product page and checkout
-14. [ ] Sticky section tabs (Details, Reviews, Questions) while scrolling
-15. [ ] Product tags are links that filter the shop
-16. [ ] Breadcrumb structured data for search engines
+12. [x] Same-day dispatch countdown ("order within 2 h 14 m"), set in Settings
+13. [x] Delivery date range promise (settings: min and max days) on product page and checkout
+14. [x] Sticky section tabs (Details, Reviews, Questions) while scrolling
+15. [x] Product tags are links that filter the shop
+16. [x] Breadcrumb structured data for search engines
 
 Page-builder sections
-17. [ ] Quick-link chips section (price bands, categories, anything)
-18. [ ] Marquee strip section (scrolling promises, respects motion setting)
-19. [ ] Promo banner section (image background with call to action)
-20. [ ] "How it works" numbered steps section
-21. [ ] Brand grid section (from your brands) + public brands API
-22. [ ] "Picked for you" section based on what you viewed
+17. [x] Quick-link chips section (price bands, categories, anything)
+18. [x] Marquee strip section (scrolling promises, respects motion setting)
+19. [x] Promo banner section (image background with call to action)
+20. [x] "How it works" numbered steps section
+21. [x] Brand grid section (from your brands) + public brands API
+22. [x] "Picked for you" section based on what you viewed
 
 Reading and recipes
-23. [ ] Listen to an article read aloud (browser voice)
-24. [ ] Related products at the end of an article (by tag)
-25. [ ] Recipe unit switch: metric or imperial
+23. [x] Listen to an article read aloud (browser voice)
+24. [x] Related products at the end of an article (by tag)
+25. [x] Recipe unit switch: metric or imperial
 
 Wishlist, compare, account
-26. [ ] Wishlist sort (newest, price) and "Add all available to bag"
-27. [ ] Add to bag buttons on the compare page
-28. [ ] Print / save invoice from an order page
+26. [x] Wishlist sort (newest, price) and "Add all available to bag"
+27. [x] Add to bag buttons on the compare page
+28. [x] Print / save invoice from an order page
 
 Site-wide
-29. [ ] Offline banner when the connection drops
-30. [ ] Back-to-top link in the footer
+29. [x] Offline banner when the connection drops
+30. [x] Back-to-top link in the footer

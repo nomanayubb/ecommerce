@@ -1,12 +1,20 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import type { Section, SectionCtx } from "@/lib/sections";
+import { api } from "@/lib/api";
 import { getPosts, getRecipes } from "@/lib/content";
+import { PickedLazy } from "./PickedLazy";
+import { ArrowRightIcon, TruckIcon, CashIcon, ShieldIcon, SupportIcon, PackageIcon, StarIcon, HeartIcon } from "../icons";
 import { Reveal } from "../Motion";
 import { RecipeCard } from "../RecipeBits";
-import { VideoPlayer } from "../PdpExtras";
-import { ContactForm, Countdown, LeafletMap, StatCounter } from "./ExtraClient";
 import { parseCoords, type Place } from "@/lib/geo";
+import dynamic from "next/dynamic";
+// Heavier interactive pieces load only on pages that actually render them (keeps the first load small).
+const VideoPlayer = dynamic(() => import("../PdpExtras").then((m) => m.VideoPlayer));
+const ContactForm = dynamic(() => import("./ExtraClient").then((m) => m.ContactForm));
+const Countdown = dynamic(() => import("./ExtraClient").then((m) => m.Countdown));
+const LeafletMap = dynamic(() => import("./ExtraClient").then((m) => m.LeafletMap));
+const StatCounter = dynamic(() => import("./ExtraClient").then((m) => m.StatCounter));
 
 type P = { s: Section; ctx: SectionCtx };
 type Settings = Record<string, string | number | boolean>;
@@ -239,4 +247,98 @@ export function CustomCode({ s }: P) {
   const html = String((s.settings as Settings).html ?? "");
   if (!html.trim()) return null;
   return <section dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
+export function Chips({ s }: P) {
+  const v = s.settings as Settings;
+  const items = s.blocks.filter((b) => b.settings.label && b.settings.href);
+  if (!items.length) return null;
+  return (
+    <section className={v.align === "center" ? "text-center" : ""}>
+      <Head eyebrow={v.eyebrow} heading={v.heading} center={v.align === "center"} />
+      <ul className={`flex flex-wrap gap-2.5 ${v.align === "center" ? "justify-center" : ""}`}>
+        {items.map((b) => <li key={b.id}><A href={String(b.settings.href)} className="inline-block border border-line bg-card px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition hover:border-accent hover:text-accent">{String(b.settings.label)}</A></li>)}
+      </ul>
+    </section>
+  );
+}
+
+/** Pure CSS ticker: the lines are repeated twice and slide left; with motion off it simply wraps. */
+export function Marquee({ s }: P) {
+  const v = s.settings as Settings;
+  const lines = String(v.text ?? "").split("\n").map((l) => l.trim()).filter(Boolean);
+  if (!lines.length) return null;
+  const row = (hidden: boolean) => (
+    <ul aria-hidden={hidden || undefined} className="marquee-row flex shrink-0 items-center">
+      {lines.map((l, i) => <li key={i} className="flex items-center whitespace-nowrap px-6 text-xs font-semibold uppercase tracking-[0.3em]">{l}<span aria-hidden className="ml-12 h-1.5 w-1.5 rotate-45 bg-accent" /></li>)}
+    </ul>
+  );
+  return (
+    <section aria-label="Highlights" className="marquee -mx-4 overflow-hidden border-y border-line bg-card/60 py-3.5 sm:mx-0" data-speed={String(v.speed ?? "normal")}>
+      <div className="marquee-track flex w-max">{row(false)}{row(true)}</div>
+    </section>
+  );
+}
+
+export function PromoBanner({ s }: P) {
+  const v = s.settings as Settings;
+  if (!v.heading && !v.text) return null;
+  const centre = v.align === "center";
+  return (
+    <section className={`promo relative -mx-4 overflow-hidden text-ondark sm:mx-0 ${v.height === "sm" ? "py-10" : "py-16 sm:py-24"}`} style={{ background: "rgb(var(--dark))" }}>
+      {v.imageUrl ? <img src={String(v.imageUrl)} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" /> : <div aria-hidden className="absolute inset-0" style={{ background: "radial-gradient(60% 90% at 80% 20%, rgb(var(--accent-bright) / .22), transparent 70%)" }} />}
+      <div className={`absolute inset-0 ${centre ? "bg-black/55" : "bg-gradient-to-r from-black/75 via-black/40 to-transparent"}`} />
+      <div className={`relative px-6 sm:px-14 ${centre ? "mx-auto max-w-2xl text-center" : "max-w-xl"}`}>
+        {v.eyebrow ? <p className="eyebrow">{String(v.eyebrow)}</p> : null}
+        {v.heading ? <h2 className="mt-3 text-3xl font-semibold uppercase leading-tight tracking-[0.06em] sm:text-4xl">{String(v.heading)}</h2> : null}
+        {v.text ? <p className="mt-4 max-w-md text-ondark/75" style={centre ? { marginInline: "auto" } : undefined}>{String(v.text)}</p> : null}
+        {v.buttonLabel && v.buttonHref ? <div className="mt-7"><A href={String(v.buttonHref)} className="btn btn-primary">{String(v.buttonLabel)} <ArrowRightIcon size={16} /></A></div> : null}
+      </div>
+    </section>
+  );
+}
+
+const STEP_ICON: Record<string, (p: { size?: number }) => ReactNode> = { truck: TruckIcon, cash: CashIcon, shield: ShieldIcon, support: SupportIcon, package: PackageIcon, star: StarIcon, heart: HeartIcon };
+export function Steps({ s }: P) {
+  const v = s.settings as Settings;
+  if (!s.blocks.length) return null;
+  return (
+    <section>
+      <Head eyebrow={v.eyebrow} heading={v.heading} />
+      <ol className={`relative grid gap-8 ${s.blocks.length >= 4 ? "md:grid-cols-4" : s.blocks.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2"}`}>
+        {s.blocks.map((b, i) => {
+          const Ic = STEP_ICON[String(b.settings.icon)] ?? PackageIcon;
+          return (
+            <li key={b.id}>
+              <Reveal delay={i * 90}>
+                <div className="flex items-center gap-4"><span className="grid h-12 w-12 shrink-0 place-items-center border border-accent text-accent"><Ic size={22} /></span><span aria-hidden className="h-px flex-1 bg-gradient-to-r from-accent/50 to-transparent" /></div>
+                <p className="mt-4 text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-accent">Step {i + 1}</p>
+                <h3 className="mt-1 text-base font-semibold">{String(b.settings.title ?? "")}</h3>
+                {b.settings.text ? <p className="mt-2 text-sm leading-relaxed text-muted">{String(b.settings.text)}</p> : null}
+              </Reveal>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+}
+
+export async function BrandGrid({ s }: P) {
+  const v = s.settings as Settings;
+  const brands = await api<{ name: string; slug: string }[]>("/brands", { revalidate: 300 }).catch(() => []);
+  if (!brands.length) return null;
+  return (
+    <section>
+      <Head eyebrow={v.eyebrow} heading={v.heading} />
+      <ul className="grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-3 lg:grid-cols-4">
+        {brands.map((b) => <li key={b.slug} className="bg-card"><Link href={`/products?brand=${b.slug}`} className="group flex h-24 items-center justify-center px-4 text-center text-sm font-semibold uppercase tracking-[0.3em] text-muted transition hover:bg-accent/5 hover:text-accent">{b.name}</Link></li>)}
+      </ul>
+    </section>
+  );
+}
+
+export function PickedForYou({ s }: P) {
+  const v = s.settings as Settings;
+  return <PickedLazy eyebrow={String(v.eyebrow ?? "")} heading={String(v.heading ?? "")} />;
 }

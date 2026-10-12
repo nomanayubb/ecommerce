@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import type { CategoryNode } from "@/lib/api";
+import { pkr, type CategoryNode } from "@/lib/api";
 import { useCart } from "./CartProvider";
 import { BagIcon, ContrastIcon, HeartIcon, MenuIcon, MotionIcon, SearchIcon, UserIcon } from "./icons";
 import { useSession } from "./SessionProvider";
@@ -165,6 +165,7 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
         <button data-bag onClick={() => setOpen(true)} className="relative flex items-center gap-2 p-2 transition hover:text-accent" aria-label={`Open bag, ${count} items`} title={ring > 0 ? (ring >= 1 ? "Free delivery unlocked" : `${Math.round(ring * 100)}% of the way to free delivery`) : undefined}>
           {ring > 0 && <svg aria-hidden viewBox="0 0 36 36" width={36} height={36} className="pointer-events-none absolute left-[1px] top-1/2 -translate-y-1/2 -rotate-90"><circle cx="18" cy="18" r="16" fill="none" stroke="currentColor" strokeOpacity=".12" strokeWidth="1.5" /><circle cx="18" cy="18" r="16" fill="none" stroke="rgb(var(--accent))" strokeWidth="1.8" strokeLinecap="round" strokeDasharray={100.5} strokeDashoffset={100.5 * (1 - Math.min(1, ring))} style={{ transition: "stroke-dashoffset .6s ease" }} /></svg>}
           <BagIcon size={22} />
+          {lines.length > 0 && <span className="hidden text-xs font-semibold tabular-nums xl:inline">{pkr(lines.reduce((t, l) => t + l.price * l.quantity, 0))}</span>}
           <span key={count} className="count-pop inline-flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-[0.65rem] font-semibold leading-5 text-onbrand">{count}</span>
         </button>
       </div>

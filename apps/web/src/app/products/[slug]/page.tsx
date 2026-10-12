@@ -12,6 +12,7 @@ import { RecentlyViewed, RecordView } from "@/components/RecentlyViewed";
 import { CareSteps, LiveViewers, ProductQA, SpecsTable, type Meta } from "@/components/PdpExtras";
 import { CookingTimer } from "@/components/CookingTimer";
 import { BackLink } from "@/components/BackLink";
+import { SectionTabs } from "@/components/SectionTabs";
 import { ShareButton } from "@/components/ShareButton";
 import { RecipeCard } from "@/components/RecipeBits";
 import type { RecipeCardData } from "@/lib/content";
@@ -63,7 +64,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([jsonLd, { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [["Home", "/"], ["Shop", "/products"], [p.title, `/products/${slug}`]].map(([name, path], i) => ({ "@type": "ListItem", position: i + 1, name, item: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}${path}` })) }]).replace(/</g, "\\u003c") }} />
       <RecordView p={{ id: p.id, slug, title: p.title, price: Number(p.selling_price), marked: Number(p.marked_price), image: p.images[0], brand: p.brand_name }} />
       <BackLink />
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Shop", href: "/products" }, { name: p.title }]} />
@@ -85,6 +86,10 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
                 <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{body}</p>
               </details>
             ))}
+            {(p.tags ?? []).filter((t) => !["new", "limited", "bestseller", "sale", "recommended"].includes(t)).length > 0 && (
+              <div className="py-4"><p className="text-xs font-semibold uppercase tracking-[0.2em]">Tags</p>
+                <ul className="mt-3 flex flex-wrap gap-2">{(p.tags ?? []).filter((t) => !["new", "limited", "bestseller", "sale", "recommended"].includes(t)).map((t) => <li key={t}><Link href={`/products?tag=${t}`} className="border border-line px-2.5 py-1 text-[0.65rem] uppercase tracking-widest text-muted transition hover:border-accent hover:text-accent">{t.replace(/-/g, " ")}</Link></li>)}</ul></div>
+            )}
             {rich.map(([t, node]) => (
               <details key={t} className="group py-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase tracking-[0.2em]">
@@ -97,11 +102,12 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
         </div>
       </div>
 
+      <SectionTabs tabs={[{ id: "reviews", label: "Reviews" }, { id: "questions", label: "Questions" }, ...(recipes.length ? [{ id: "recipes", label: "Recipes" }] : []), ...(related.length ? [{ id: "related", label: "You may also like" }] : [])]} />
       <Reviews slug={slug} />
       <ProductQA slug={slug} />
 
       {recipes.length > 0 && (
-        <section className="mt-20 border-t border-line pt-12">
+        <section id="recipes" className="mt-20 border-t border-line pt-12">
           <p className="eyebrow">Kitchen</p>
           <h2 className="mb-6 mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">Cooked with this</h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">{recipes.slice(0, 4).map((r) => <RecipeCard key={r.id} r={r} />)}</div>
@@ -109,7 +115,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
       )}
 
       {related.length > 0 && (
-        <section className="mt-24 pb-16 md:pb-0">
+        <section id="related" className="mt-24 pb-16 md:pb-0">
           <div className="mb-6 flex items-end justify-between">
             <div><p className="eyebrow">Complete the look</p><h2 className="mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">You may also like</h2></div>
             <Link href="/products" className="text-xs font-semibold uppercase tracking-[0.2em] hover:text-accent">View all →</Link>

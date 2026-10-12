@@ -5,6 +5,7 @@ import { apiAuthed } from "@/lib/session";
 import { pkr } from "@/lib/api";
 import { Timeline, type TimelineData } from "@/components/Timeline";
 import { ReorderButton } from "@/components/AccountBits";
+import { PrintButton } from "@/components/PrintButton";
 
 export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Promise<{ number: string }> }): Promise<Metadata> {
@@ -28,7 +29,7 @@ export default async function OrderDetail({ params }: { params: Promise<{ number
       <div className="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-6">
         <div><Link href="/account/orders" className="text-xs uppercase tracking-[0.2em] text-muted hover:text-accent">← All orders</Link><h1 className="mt-3 text-3xl font-semibold uppercase tracking-[0.1em]">Order #{o.order_number}</h1>
           <p className="mt-1 text-sm text-muted">Placed {new Date(o.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })} · {o.payment_method} · payment {o.payment_status.toLowerCase()}</p></div>
-        <ReorderButton items={d.items} />
+        <div className="flex items-center gap-5"><PrintButton className="btn btn-ghost" /><ReorderButton items={d.items} /></div>
       </div>
       <Timeline timeline={d.timeline} />
       <div className="grid gap-10 md:grid-cols-[1fr_280px]">

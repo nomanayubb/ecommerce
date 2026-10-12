@@ -102,6 +102,11 @@ export default async function Products({ searchParams }: { searchParams: Promise
         </aside>
 
         <section className="min-w-0">
+          {cat && cat.children.length > 0 && !sp.q && (
+            <div className="mb-5 flex flex-wrap gap-2" aria-label="Sub-categories">
+              {cat.children.map((c) => <Link key={c.id} href={`/products?category=${c.slug}`} className="border border-line px-3 py-1.5 text-xs uppercase tracking-widest text-muted transition hover:border-accent hover:text-accent">{c.name}</Link>)}
+            </div>
+          )}
           <div className="mb-5 flex max-w-full gap-2 overflow-x-auto pb-1 lg:hidden" aria-label="Sort">
             {([["newest", "Newest"], ["rating", "Top rated"], ["price_asc", "Price ↑"], ["price_desc", "Price ↓"], ["discount", "Deals"]] as const).map(([v, l]) => <Link key={v} href={sortHref(v)} className={`shrink-0 border px-3 py-1.5 text-xs uppercase tracking-widest ${(sp.sort ?? "newest") === v ? "border-accent text-accent" : "border-line text-muted"}`}>{l}</Link>)}
           </div>

@@ -67,3 +67,17 @@ export function PriceTag({ value, className = "" }: { value: number; className?:
   }, [on, value]);
   return <span ref={el} className={className}>{pkr(shown)}</span>;
 }
+
+/** Second photo that fades in when a mouse hovers the card. The image is not requested until the first hover. */
+export function HoverPhoto({ src }: { src: string }) {
+  const [on, setOn] = useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const card = ref.current?.closest(".pcard") as HTMLElement | null;
+    if (!card || document.documentElement.dataset.lite === "1") return;
+    const go = (e: PointerEvent) => { if (e.pointerType === "mouse") setOn(true); };
+    card.addEventListener("pointerenter", go, { once: true });
+    return () => card.removeEventListener("pointerenter", go);
+  }, []);
+  return <span ref={ref}>{on && <img src={src} alt="" decoding="async" className="pcard-alt pointer-events-none absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500" />}</span>;
+}

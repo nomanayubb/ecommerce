@@ -7,6 +7,7 @@ import { pkr } from "@/lib/api";
 import { motionAllowed } from "@/lib/motion";
 import { send } from "@/lib/client";
 import { CloseIcon, SearchIcon } from "./icons";
+import { useShopper } from "./Shopper";
 
 type Suggest = {
   products: { title: string; slug: string; image: string | null; selling_price: string; stock_quantity: number; discount_pct: string | null }[];
@@ -29,6 +30,7 @@ type SR = { start(): void; stop(): void; lang: string; interimResults: boolean; 
  */
 export function SearchBox({ hints, className, panelClass = "" }: { hints?: string[]; className: string; panelClass?: string }) {
   const router = useRouter();
+  const { recent: viewed } = useShopper();
   const id = useId();
   const box = useRef<HTMLFormElement>(null);
   const input = useRef<HTMLInputElement>(null);
@@ -129,7 +131,7 @@ export function SearchBox({ hints, className, panelClass = "" }: { hints?: strin
     rec.start();
   };
 
-  const showPanel = open && (rows.length > 0 || (q.length >= 2 && data));
+  const showPanel = open && (rows.length > 0 || (q.length >= 2 && data) || (q.length < 2 && viewed.length > 0));
   return (
     <form ref={box} action="/products" role="search" onSubmit={submit} className="relative">
       <SearchIcon size={16} className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-muted" />
@@ -148,7 +150,7 @@ export function SearchBox({ hints, className, panelClass = "" }: { hints?: strin
       )}
       {showPanel && (
         <div id={`${id}-list`} role="listbox" className={`absolute left-0 top-full z-50 mt-2 w-[min(22rem,calc(100vw-2rem))] border border-line bg-card p-2 shadow-2xl ${panelClass}`}>
-          {q.length < 2 && recent.length > 0 && (
+          {q.length < 2 && viewed.length > 0 && (
             <div className="flex items-center justify-between px-2 pb-1 pt-1">
               <p className="eyebrow !text-[0.6rem]">Recent</p>
               <button type="button" className="p-1 text-muted hover:text-accent" aria-label="Clear recent searches" onClick={() => { try { localStorage.removeItem(RECENT); } catch {} setRecent([]); }}><CloseIcon size={12} /></button>
@@ -183,6 +185,17 @@ export function SearchBox({ hints, className, panelClass = "" }: { hints?: strin
               </div>
             );
           })}
+          {q.length < 2 && recent.length > 0 && (
+            <div>
+              <p className="eyebrow !text-[0.6rem] px-2 pb-1 pt-3">Recently viewed</p>
+              {viewed.slice(0, 3).map((r) => (
+                <Link key={r.slug} href={`/products/${r.slug}`} onClick={() => setOpen(false)} className="flex items-center gap-3 px-2 py-2 text-sm transition hover:bg-line/40">
+                  {r.image ? <img src={r.image} alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-cover" /> : <span className="h-10 w-10 shrink-0 bg-line" />}
+                  <span className="min-w-0 flex-1"><span className="line-clamp-1">{r.title}</span><span className="text-xs text-muted">{pkr(r.price)}</span></span>
+                </Link>
+              ))}
+            </div>
+          )}
           {q.length >= 2 && data && data.products.length + data.categories.length + data.brands.length === 0 && (
             <p className="px-2 py-3 text-sm text-muted">No matches for “{q}”. Try a shorter word.</p>
           )}

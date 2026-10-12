@@ -1,19 +1,27 @@
-import { HeroParticles, Magnetic, KineticHeading, ParallaxLayers, FloatingDoodles, CompareSlider, MascotStory } from "./HeroFx";
 import { Scene3D } from "./Scene3DLazy";
-import { Timeline, Team, Contact, PlaceMap, Gallery as PhotoGallery, Events, Podcast, VideoStory, Stats, BlogGrid, RecipeGrid, CustomCode } from "./Extra";
+import { Timeline, Team, Contact, PlaceMap, Gallery as PhotoGallery, Events, Podcast, VideoStory, Stats, BlogGrid, RecipeGrid, CustomCode, Chips, Marquee, PromoBanner, Steps, BrandGrid, PickedForYou } from "./Extra";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { api, type ProductDetail, type ProductSummary } from "@/lib/api";
 import type { Section, SectionCtx } from "@/lib/sections";
 import { ProductCard } from "../ProductCard";
 import { Reveal } from "../Motion";
-import { Logo3D } from "../Logo3D";
-import { RecentlyViewed } from "../RecentlyViewed";
-import { NewsletterForm } from "../NewsletterForm";
-import { Gallery } from "../Gallery";
-import { BuyPanel } from "../BuyPanel";
-import { Countdown } from "./Countdown";
 import { ArrowRightIcon, CashIcon, HeartIcon, PackageIcon, ShieldIcon, StarIcon, SupportIcon, TruckIcon } from "../icons";
+import dynamic from "next/dynamic";
+// Heavier interactive pieces load only on pages that actually render them (keeps the first load small).
+const HeroParticles = dynamic(() => import("./HeroFx").then((m) => m.HeroParticles));
+const Magnetic = dynamic(() => import("./HeroFx").then((m) => m.Magnetic));
+const KineticHeading = dynamic(() => import("./HeroFx").then((m) => m.KineticHeading));
+const ParallaxLayers = dynamic(() => import("./HeroFx").then((m) => m.ParallaxLayers));
+const FloatingDoodles = dynamic(() => import("./HeroFx").then((m) => m.FloatingDoodles));
+const CompareSlider = dynamic(() => import("./HeroFx").then((m) => m.CompareSlider));
+const MascotStory = dynamic(() => import("./HeroFx").then((m) => m.MascotStory));
+const Logo3D = dynamic(() => import("../Logo3D").then((m) => m.Logo3D));
+const RecentlyViewed = dynamic(() => import("../RecentlyViewed").then((m) => m.RecentlyViewed));
+const NewsletterForm = dynamic(() => import("../NewsletterForm").then((m) => m.NewsletterForm));
+const Gallery = dynamic(() => import("../Gallery").then((m) => m.Gallery));
+const BuyPanel = dynamic(() => import("../BuyPanel").then((m) => m.BuyPanel));
+const Countdown = dynamic(() => import("./Countdown").then((m) => m.Countdown));
 
 type P = { s: Section; ctx: SectionCtx };
 type Settings = Record<string, any>;
@@ -376,6 +384,7 @@ const MAP: Record<string, (p: P) => any> = {
   "countdown-banner": CountdownBanner, newsletter: Newsletter, promise: PromiseSection,
   "recently-viewed": ({ s }) => <RecentlyViewed title={s.settings.heading || "Recently viewed"} />,
   timeline: Timeline, team: Team, contact: Contact, map: PlaceMap, gallery: PhotoGallery, events: Events, podcast: Podcast, "video-story": VideoStory, stats: Stats,
+  chips: Chips, marquee: Marquee, "promo-banner": PromoBanner, steps: Steps, "brand-grid": BrandGrid, "picked-for-you": PickedForYou,
   "blog-grid": BlogGrid, "recipe-grid": RecipeGrid, "custom-code": CustomCode,
   spacer: ({ s }) => <div aria-hidden style={{ height: Number(s.settings.height) || 48 }} />,
 };

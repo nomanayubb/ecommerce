@@ -188,6 +188,36 @@ export const SECTIONS: SectionDef[] = [
     type: "custom-code", label: "Custom HTML (developers)", group: "Content", description: "Raw HTML shown as written (embeds, widgets). Only paste code you trust: it runs on your shop pages.",
     fields: [{ key: "html", label: "HTML", type: "textarea", default: "", maxLength: 10000 }],
   },
+  {
+    type: "chips", label: "Quick links", group: "Products", description: "A row of small buttons: price bands, categories, occasions, anything.",
+    fields: [t("eyebrow", "Small heading", ""), t("heading", "Heading", "Shop quickly"), sel("align", "Alignment", [["left", "Left"], ["center", "Centre"]], "left")],
+    block: { type: "chip", label: "Link", max: 14, fields: [t("label", "Label", "", { maxLength: 30 }), url("href", "Link", "/products")] },
+  },
+  {
+    type: "marquee", label: "Scrolling strip", group: "Hero & banners", description: "A slim strip of short promises that glides across. Holds still when animations are off.",
+    fields: [ta("text", "Lines (one per row)", "Cash on delivery\nFree delivery over Rs. 5,000\nChecked and packed with care", { maxLength: 400 }), sel("speed", "Speed", [["slow", "Slow"], ["normal", "Normal"]], "normal")],
+  },
+  {
+    type: "promo-banner", label: "Promo banner", group: "Hero & banners", description: "A wide banner with a photo, a short message and one button.",
+    fields: [
+      t("eyebrow", "Small heading", ""), t("heading", "Headline", "", { maxLength: 100 }), ta("text", "Text", "", { maxLength: 240 }),
+      t("buttonLabel", "Button label", "Shop now"), url("buttonHref", "Button link", "/products"), url("imageUrl", "Background photo", ""),
+      sel("align", "Text position", [["left", "Left"], ["center", "Centre"]], "left"), sel("height", "Height", [["sm", "Slim"], ["md", "Medium"]], "md"),
+    ],
+  },
+  {
+    type: "steps", label: "How it works", group: "Content", description: "Numbered steps with icons, e.g. order, we pack, you pay on delivery.",
+    fields: [t("eyebrow", "Small heading", "Simple"), t("heading", "Heading", "How it works")],
+    block: { type: "step", label: "Step", max: 6, fields: [sel("icon", "Icon", ICONS, "package"), t("title", "Title", ""), ta("text", "Text", "", { maxLength: 200 })] },
+  },
+  {
+    type: "brand-grid", label: "Brands", group: "Products", description: "Tiles for each of your brands, linking to that brand's products.",
+    fields: [t("eyebrow", "Small heading", "Brands"), t("heading", "Heading", "Shop by brand")],
+  },
+  {
+    type: "picked-for-you", label: "Picked for you", group: "Products", description: "Products similar to what the visitor looked at. Hidden until they have viewed something.",
+    fields: [t("eyebrow", "Small heading", "For you"), t("heading", "Heading", "Picked for you")],
+  },
   { type: "spacer", label: "Spacer", group: "Content", description: "Empty vertical space.", fields: [num("height", "Height (px)", 48, 8, 240)] },
 ];
 
