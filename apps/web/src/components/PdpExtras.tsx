@@ -144,7 +144,7 @@ export function SizeGuideButton({ guide, title }: { guide: SizeGuide; title: str
 
 /* ------------------------------------------------------------------ specs, material, care */
 export function SpecsTable({ specs }: { specs: { label: string; value: string }[] }) {
-  return <dl className="divide-y divide-line text-sm">{specs.map((s) => <div key={s.label} className="flex justify-between gap-4 py-2"><dt className="text-muted">{s.label}</dt><dd className="text-right">{s.value}</dd></div>)}</dl>;
+  return <dl className="specs divide-y divide-line text-sm">{specs.map((s) => <div key={s.label} className="flex justify-between gap-4 py-2"><dt className="text-muted">{s.label}</dt><dd className="text-right">{s.value}</dd></div>)}</dl>;
 }
 
 /** Numbered care steps that draw in one after the other when opened. */

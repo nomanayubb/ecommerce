@@ -73,9 +73,9 @@ User request 2026-10-12: "add 50 more features", "list 30 more", on the rule tha
 60. [ ] Shopping list share to WhatsApp
 61. [ ] Voice-controlled timer steps
 62. [ ] Search "did you mean" suggestions
-63. [ ] Filter by rating
-64. [ ] Saved searches
-65. [ ] Cart reminder when returning with a full bag
+63. [x] Filter by rating
+64. [x] Saved searches
+65. [x] Cart reminder when returning with a full bag
 
 ---
 # Batch 10 (2026-10-12): 30 functional + 40 refinements
@@ -147,11 +147,11 @@ Rule from the owner: professional, sophisticated and soft; never garish or "AI l
 60. [x] Cover banner styling on category pages
 61. [x] Soft depth under light theme too (lighter shadows, no neon)
 62. [x] All of it switches off with data saver and print
-63. [ ] Section divider using the logo mark
-64. [ ] Animated gold shimmer on the main heading once per visit
-65. [ ] Frosted header on scroll with blur strength by depth
-66. [ ] Product page spec table zebra and icons
-67. [ ] Cart drawer item cards with depth
-68. [ ] Empty states with glow behind the mascot
-69. [ ] Review cards with quote ornament
-70. [ ] Account dashboard cards with depth
+63. [x] Section divider using the logo mark
+64. [x] Animated gold shimmer on the main heading once per visit
+65. [x] Frosted header on scroll with blur strength by depth
+66. [x] Product page spec table zebra and icons
+67. [x] Cart drawer item cards with depth
+68. [x] Empty states with glow behind the mascot
+69. [x] Review cards with quote ornament
+70. [x] Account dashboard cards with depth

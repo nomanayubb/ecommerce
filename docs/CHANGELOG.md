@@ -194,3 +194,8 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Speed: everything is CSS or tiny code; the depth effects ship zero extra JavaScript and switch off in data-saver mode.
 - Verified: type checks, API (did-you-mean returned kettle for kettel, rating filter, list fields), browser: atmosphere + depth attributes, quick-add buttons, sort chips, rating filter, footer Help links, FAQ and contact pages, did-you-mean + popular products on a zero-result search, product grid fits the phone width. Not verified: mirror reflection and glows by eye at desktop size, double-click zoom, swipe, cook-mode wake lock, auto theme switching, WhatsApp links, checkout memory, phone hint. List and statuses: docs/FEATURES_NEXT.md.
 - Found while testing: the new sort chips made the product list wider than a phone (grid column needed `min-w-0`); fixed.
+
+## 2026-10-12 — Batch 10 part 2: last eight refinements
+- Diamond ornament on the hairline between sections, frosted header after scrolling, striped specification tables, cards and drawer rows with depth, quote marks on reviews, glow behind large mascots in empty states, one-time glow on the hero headline (soft depth).
+- Checked: type checks pass; the product page renders with the new look and the mirror rule is applied (browser reports `-webkit-box-reflect`). The reflection is faint on the dark placeholder photos and will read better with real photography. Not checked by eye: striped specs, quote marks, header frosting (needs a scroll in a visible tab).
+

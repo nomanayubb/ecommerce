@@ -432,3 +432,28 @@ html[data-depth="soft"] .quick-add { box-shadow: var(--lift-1); }
 [data-lite] .gallery-main, [data-lite] .hero-title { -webkit-box-reflect: none !important; }
 @media print { .gallery-main, .hero-title { -webkit-box-reflect: none !important; } }
 
+/* ---------- Batch 10, part 2 ---------- */
+/* A small diamond sits in the middle of the hairline between sections (echoes the logo's angles) */
+main [data-section] + [data-section]::after { content: ""; position: absolute; left: 50%; top: calc(-2.5rem - 3px); width: 7px; height: 7px; background: rgb(var(--bg)); border: 1px solid rgb(var(--accent) / .55); transform: translateX(-50%) rotate(45deg); pointer-events: none; }
+/* The header turns to frosted glass once the page scrolls */
+html[data-scrolled] .header-bar { background-color: rgb(var(--bg) / .72); -webkit-backdrop-filter: blur(16px) saturate(1.2); backdrop-filter: blur(16px) saturate(1.2); }
+html[data-depth="soft"][data-scrolled] .header-bar { box-shadow: inset 0 -1px 0 rgb(var(--accent) / .12), 0 14px 30px -20px rgb(0 0 0 / .85); }
+/* Specification tables read in soft stripes */
+.specs > div:nth-child(even) { background: rgb(var(--fg) / .025); padding-inline: .5rem; }
+.specs > div { padding-inline: .5rem; }
+/* Surfaces that already use the card colour float a little under soft depth (summaries, account panels, the bag drawer) */
+html[data-depth="soft"] main .bg-card.border, html[data-depth="soft"] aside .bg-card { box-shadow: var(--lift-1); }
+html[data-depth="soft"] [aria-label="Shopping bag"] li { transition: background-color .25s; }
+html[data-depth="soft"] [aria-label="Shopping bag"] li:hover { background: rgb(var(--fg) / .03); }
+/* Quotes in reviews get an ornament */
+#reviews li.py-6 { position: relative; padding-left: 2.4rem; }
+#reviews li.py-6::before { content: "“"; position: absolute; left: 0; top: 1.15rem; font-family: Georgia, "Times New Roman", serif; font-size: 2.6rem; line-height: 1; color: rgb(var(--accent) / .55); }
+#reviews li.py-6:first-child::before { top: .2rem; }
+/* Empty states: the large mascots glow softly */
+html[data-depth="soft"] svg.mascot[width="84"], html[data-depth="soft"] svg.mascot[width="96"], html[data-depth="soft"] svg.mascot[width="120"] { filter: drop-shadow(0 0 26px rgb(var(--accent-bright) / .28)); }
+/* The hero headline catches the light once per visit */
+html[data-depth="soft"] .hero-title { animation: title-glow 2.4s ease-out 1.2s 1 both; }
+@keyframes title-glow { 0% { text-shadow: 0 1px 0 rgb(255 255 255 / .06), 0 10px 34px rgb(0 0 0 / .5); } 45% { text-shadow: 0 0 28px rgb(var(--accent-bright) / .55), 0 10px 34px rgb(0 0 0 / .5); } 100% { text-shadow: 0 1px 0 rgb(255 255 255 / .06), 0 10px 34px rgb(0 0 0 / .5); } }
+@media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) .hero-title { animation: none; } }
+[data-lite] main [data-section] + [data-section]::after { display: none; }
+
