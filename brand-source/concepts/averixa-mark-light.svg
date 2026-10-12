@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 340" width="440" height="340">
+<defs>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#f6e3a1"/><stop offset=".35" stop-color="#d9b04e"/>
+    <stop offset=".7" stop-color="#b8892c"/><stop offset="1" stop-color="#8a6416"/>
+  </linearGradient>
+  <linearGradient id="goldH" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#8a6416"/><stop offset=".5" stop-color="#f1d98c"/><stop offset="1" stop-color="#a97a22"/>
+  </linearGradient>
+  <linearGradient id="ink" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2b2f"/><stop offset="1" stop-color="#121214"/></linearGradient>
+  <linearGradient id="inkD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbf7ee"/><stop offset="1" stop-color="#d9d2c2"/></linearGradient>
+</defs><rect width="440" height="340" fill="#faf6ee"/>
+  <g>
+    <!-- A: left leg + fine parallel line -->
+    <polygon points="22,320 50,320 166,24 138,24" fill="url(#ink)"/>
+    <polygon points="74,320 83,320 175,86 166,86" fill="url(#ink)"/>
+    <!-- A: right leg, broken near the crossbar like the original -->
+    <polygon points="170,24 170,24 192,24 192,24" fill="url(#ink)"/>
+    <polygon points="138,24 166,24 240,200 212,200" fill="url(#ink)"/>
+    <!-- crossbar flowing into the cart -->
+    <polygon points="84,206 266,206 266,222 70,222" fill="url(#goldH)"/>
+    <!-- cart: handle tick, right diagonal, basket floor, left side back up to the crossbar -->
+    <path d="M436 92 L394 92 L360 262 L288 262 L266 214" fill="none" stroke="url(#gold)" stroke-width="15" stroke-linejoin="miter" stroke-miterlimit="10"/>
+    <!-- basket grid, kept inside the basket -->
+    <path d="M286 140 L372.4 140 M286 180 L364.4 180 M286 220 L356.4 220 M308 128 L296.0 244 M332 128 L320.0 244 M356 128 L344.0 244" stroke="url(#gold)" stroke-width="3" opacity=".5" fill="none"/>
+    <!-- wheels -->
+    <circle cx="312" cy="300" r="14" fill="none" stroke="url(#gold)" stroke-width="8"/>
+    <circle cx="372" cy="300" r="14" fill="none" stroke="url(#gold)" stroke-width="8"/>
+  </g></svg>

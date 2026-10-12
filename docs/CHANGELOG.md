@@ -216,3 +216,10 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Removed only those newer effects (headline reflection and glow, atmosphere line layer, extra header blur). The product photo reflection became a cheap static ground shadow. All older effects were kept exactly as they were, including the film grain.
 - The shop on port 3000 now runs the production build: measured page ready 87 ms, fully loaded 302 ms. Details in CLAUDE.md ("Judging speed").
 
+
+## 2026-10-13 — Cover photo + product photos 3 and 4
+- Home hero now uses `/photos/cover.webp` (black with flowing gold, 1600x640, 53 kB), chosen from three options as the best match for the ink/gold brand.
+- All 20 real products have photo slots 3 and 4 set to `/photos/<slug>-3.webp` / `-4.webp` (760x950 WebP, 30-210 kB each). Photos 1-2 stay as the generated `/ph/` placeholders. `test-phone` skipped.
+- Source: free-to-use Unsplash photos saved locally in `apps/web/public/photos/` (2.7 MB total), credits in `CREDITS.md`. They are stand-ins for real product photography; replace per product in admin.
+- Note: `next start` indexes `public/` at startup, so new static files need a production server restart.
+- Verified: files 200 on the production server; home hero and PDP thumbnail 3 seen in the browser. Photo 4 and the other products were not each viewed.

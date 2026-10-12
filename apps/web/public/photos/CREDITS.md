@@ -1,0 +1,45 @@
+# Photo credits
+
+Free-to-use photos from Unsplash (Unsplash License). They stand in for real product photography until you upload your own.
+
+- urbano-denim-jacket-3.webp: Caio Coelho, https://unsplash.com/photos/1611312449408
+- urbano-denim-jacket-4.webp: kemal alkan, https://unsplash.com/photos/1543076447
+- urbano-linen-shirt-3.webp: Robert Richman, https://unsplash.com/photos/1740711152088
+- urbano-linen-shirt-4.webp: tian dayong, https://unsplash.com/photos/1693443688057
+- apex-steel-water-bottle-750ml-3.webp: Joan Tran, https://unsplash.com/photos/1602143407151
+- apex-steel-water-bottle-750ml-4.webp: quokkabottles, https://unsplash.com/photos/1625708458528
+- urbano-bamboo-cutting-board-3.webp: Giorgio Trovato, https://unsplash.com/photos/1683570687112
+- urbano-bamboo-cutting-board-4.webp: Some Tale, https://unsplash.com/photos/1651697347337
+- nova-ceramic-knife-set-3.webp: Savernake Knives, https://unsplash.com/photos/1593618229012
+- nova-ceramic-knife-set-4.webp: Danilo Rios, https://unsplash.com/photos/1609467334293
+- apex-air-fryer-5l-3.webp: Marc Pell, https://unsplash.com/photos/1745846664210
+- apex-air-fryer-5l-4.webp: Paras Kapoor, https://unsplash.com/photos/1774074645537
+- apex-power-bank-20000mah-3.webp: I'M ZION, https://unsplash.com/photos/1566554738544
+- apex-power-bank-20000mah-4.webp: Reka Sarudi, https://unsplash.com/photos/1635861321688
+- nova-smart-watch-s2-3.webp: pratik prasad, https://unsplash.com/photos/1660844817855
+- nova-smart-watch-s2-4.webp: Daniel Korpai, https://unsplash.com/photos/1551816230
+- bulk-socks-12-3.webp: Nick Page, https://unsplash.com/photos/1585499583264
+- bulk-socks-12-4.webp: NIKHIL, https://unsplash.com/photos/1640026199235
+- apex-kettle-3.webp: engin akyurt, https://unsplash.com/photos/1643114786355
+- apex-kettle-4.webp: laura adai, https://unsplash.com/photos/1594213114663
+- nova-chef-pan-set-3.webp: Kevin McCutcheon, https://unsplash.com/photos/1528712306091
+- nova-chef-pan-set-4.webp: Cooker King, https://unsplash.com/photos/1592156328697
+- urbano-summer-dress-3.webp: Chalo Garcia, https://unsplash.com/photos/1613966570650
+- urbano-summer-dress-4.webp: Sofia, https://unsplash.com/photos/1609695813802
+- urbano-graphic-tee-3.webp: Alexander London, https://unsplash.com/photos/1678872844677
+- urbano-graphic-tee-4.webp: KOBU Agency, https://unsplash.com/photos/1602832339346
+- urbano-classic-tee-3.webp: Haryo Setyadi, https://unsplash.com/photos/1581655353564
+- urbano-classic-tee-4.webp: Anomaly, https://unsplash.com/photos/1521572163474
+- nova-boom-3.webp: Jonas Jacobsson, https://unsplash.com/photos/1507878566509
+- nova-boom-4.webp: Nicolas J Leclercq, https://unsplash.com/photos/1582978571763
+- apex-buds-3.webp: TheRegisti, https://unsplash.com/photos/1606220945770
+- apex-buds-4.webp: TheRegisti, https://unsplash.com/photos/1606220588913
+- nova-air-13-3.webp: Ales Nesetril, https://unsplash.com/photos/1531297484001
+- nova-air-13-4.webp: Howard Bouchevereau, https://unsplash.com/photos/1541807084
+- nova-pro-15-3.webp: Kari Shea, https://unsplash.com/photos/1496181133206
+- nova-pro-15-4.webp: Ricardo Resende, https://unsplash.com/photos/1648197395199
+- apex-x1-lite-3.webp: Jonas Leupe, https://unsplash.com/photos/1592890288564
+- apex-x1-lite-4.webp: Matteo Vella, https://unsplash.com/photos/1634403665481
+- apex-x1-3.webp: personalgraphic.com, https://unsplash.com/photos/1691256676376
+- apex-x1-4.webp: Vojtech Bruzek, https://unsplash.com/photos/1585060544812
+- cover.webp: Mehdi Mirzaie, https://unsplash.com/photos/1647101734210
