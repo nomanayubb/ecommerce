@@ -224,3 +224,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Note: `next start` indexes `public/` at startup, so new static files need a production server restart.
 - Verified: files 200 on the production server; home hero and PDP thumbnail 3 seen in the browser. Photo 4 and the other products were not each viewed.
 - Follow-up: product page thumbnails load eagerly (photos 3-4 were blank until scrolled); product card hover now shows photo 3 instead of the placeholder 2.
+- Follow-up: real photos are now photos 1-2 on all 20 products (placeholders moved to slots 3-4) so cards, shop lists and the product main image show real pictures.
