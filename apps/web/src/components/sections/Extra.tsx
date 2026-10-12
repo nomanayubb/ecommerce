@@ -5,7 +5,8 @@ import { getPosts, getRecipes } from "@/lib/content";
 import { Reveal } from "../Motion";
 import { RecipeCard } from "../RecipeBits";
 import { VideoPlayer } from "../PdpExtras";
-import { ContactForm, Countdown, LeafletMap, StatCounter, parseCoords, type Place } from "./ExtraClient";
+import { ContactForm, Countdown, LeafletMap, StatCounter } from "./ExtraClient";
+import { parseCoords, type Place } from "@/lib/geo";
 
 type P = { s: Section; ctx: SectionCtx };
 type Settings = Record<string, string | number | boolean>;

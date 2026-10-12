@@ -42,9 +42,9 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 30. [x] FAQ accordion
 31. [x] Countdown timer section
 32. [x] Banner with countdown (sale)
-33. [ ] Instagram/UGC feed
-34. [~] Blog post grid
-35. [ ] Custom code section for devs
+33. [~] Instagram/UGC feed
+34. [x] Blog post grid
+35. [x] Custom code section for devs
 
 ## Header & navigation (36-50)
 
@@ -103,9 +103,9 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 ## Content sections (81-90)
 
 81. [ ] About us with timeline
-82. [ ] Team members grid
-83. [ ] Contact form with map
-84. [ ] Store locator with map
+82. [x] Team members grid
+83. [x] Contact form with map
+84. [x] Store locator with map
 85. [ ] FAQ page with categories
 86. [~] Blog post with sidebar
 87. [x] Blog with featured post
@@ -127,4 +127,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 100. [x] Footer builder (columns, newsletter, payment icons)
 
 ---
-Total 100: 59 done, 22 partly, 19 not started (as of 2026-10-09).
+Total 100: 64 done, 22 partly, 14 not started (as of 2026-10-09).

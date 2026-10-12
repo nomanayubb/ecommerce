@@ -134,15 +134,15 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 113. [~] Cards with rating star animation
 114. [x] Cards with stock meter bar
 115. [x] Cards with chef-recommends ribbon
-116. [ ] Animated company-history timeline
-117. [ ] Founder story with 3D character
-118. [ ] Behind-the-scenes video section
-119. [ ] Sustainability dashboard
-120. [ ] Interactive sourcing map
+116. [x] Animated company-history timeline
+117. [~] Founder story with 3D character
+118. [x] Behind-the-scenes video section
+119. [x] Sustainability dashboard
+120. [~] Interactive sourcing map
 121. [~] Recipe blog with 3D illustrations
-122. [ ] Community gallery (customer creations)
-123. [ ] Live cooking events countdown
-124. [ ] Podcast embed section
+122. [x] Community gallery (customer creations)
+123. [x] Live cooking events countdown
+124. [x] Podcast embed section
 125. [ ] Newsletter with mascot waving
 126. [~] Animated footer (waves, particles)
 127. [ ] Footer with mini sleeping mascot
@@ -151,4 +151,4 @@ Legend: `[x]` done · `[~]` partly done · `[ ]` not started. Update when an ite
 130. [~] Back-to-top as rising souffle
 
 ---
-Total 130: 81 done, 16 partly, 33 not started (as of 2026-10-09).
+Total 130: 87 done, 18 partly, 25 not started (as of 2026-10-09).
