@@ -105,7 +105,7 @@ function Hero({ s, ctx }: P) {
           </picture>
           <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--dark))] via-[rgb(var(--dark))]/30 to-transparent sm:bg-gradient-to-r sm:from-black/75 sm:via-black/40 sm:to-transparent" />
         </div>
-        {parts}<div className="relative -mt-24 sm:mt-0">{copy}</div>
+        {parts}<div className="relative -mt-6 sm:mt-0">{copy}</div>
       </section>
     );
   if (variant === "video" && v.videoUrl)
