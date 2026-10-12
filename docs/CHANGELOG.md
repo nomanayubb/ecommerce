@@ -227,3 +227,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Follow-up: real photos are now photos 1-2 on all 20 products (placeholders moved to slots 3-4) so cards, shop lists and the product main image show real pictures.
 - Cover on phones: new optional hero field `imageUrlMobile` (Image hero) renders a tall crop (`/photos/cover-mobile.webp`, 47 kB) on screens under 640 px, with an even dark overlay so text stays readable. Desktop cover unchanged.
 - Cover on phones, take 2: the image hero now shows the whole photo as a band above the text on screens under 640 px (no zoomed crop), fading into the dark background. Desktop unchanged (photo behind text). Phone image field left empty.
+- Cover on phones, take 3: heading now overlaps the bottom of the photo band again (photo stays un-zoomed at 16:10, fades to dark under the text), as on desktop where the text sits on the photo.
