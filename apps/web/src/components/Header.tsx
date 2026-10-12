@@ -143,7 +143,7 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
         </details>
         <Link href="/" className="logo-reveal mr-auto flex shrink-0 items-center py-3 sm:mr-0" aria-label={brand.name}>
           <span className="logo-morph relative inline-flex items-center">
-            <span className="logo-full inline-flex items-center"><Logo logo={brand.logoUrl} logoDark={brand.logoUrlDark} name={brand.name} className="h-7 sm:h-9" /></span>
+            <span className="logo-full inline-flex items-center" style={brand.logoUrl ? ({ "--logo-mask": `url(${brand.logoUrlDark || brand.logoUrl})` } as React.CSSProperties) : undefined}><Logo logo={brand.logoUrl} logoDark={brand.logoUrlDark} name={brand.name} className="h-7 sm:h-9" />{brand.logoUrl && <span aria-hidden className="logo-sheen" />}</span>
             {useSite().branding.visuals?.logoMorph && <span aria-hidden className="logo-mini absolute left-0 top-1/2 -translate-y-1/2 text-fg"><MascotFigure mood="happy" size={36} /></span>}
           </span>
         </Link>

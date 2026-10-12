@@ -477,10 +477,13 @@ main tbody tr:hover { background: rgb(var(--fg) / .03); }
 html[data-contrast] .glass, html[data-contrast] .header-bar, html[data-contrast] [class*="backdrop-blur"] { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; background-color: rgb(var(--bg)) !important; }
 
 
-/* Animated brand name at the top of the image hero: letters rise in one by one, then a gold sheen travels along them. */
-.hero-brand { letter-spacing: .32em; padding-left: .32em; filter: drop-shadow(0 2px 8px rgba(0,0,0,.65)); }
-.hero-brand-l { display: inline-block; color: rgb(var(--accent-bright)); background: linear-gradient(100deg, #f6efe0 0 38%, rgb(var(--accent-bright)) 50%, #f6efe0 62% 100%); background-size: 320% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-  animation: brand-in .9s cubic-bezier(.2,.7,.2,1) both, brand-sheen 6s ease-in-out infinite; animation-delay: calc(var(--i, 0) * 110ms + 150ms), calc(var(--i, 0) * 110ms + 1400ms); }
-@keyframes brand-in { from { opacity: 0; transform: translateY(-.6em); } to { opacity: 1; transform: none; } }
-@keyframes brand-sheen { 0%, 55% { background-position: 100% 0; } 100% { background-position: 0 0; } }
-@media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) .hero-brand-l { animation: none; } }
+
+/* Header logo comes alive in place: a gold sheen sweeps across the logo shapes and a soft glow breathes. No size or position change. */
+.logo-full { position: relative; }
+.logo-sheen { position: absolute; inset: 0; pointer-events: none; -webkit-mask: var(--logo-mask) center / contain no-repeat; mask: var(--logo-mask) center / contain no-repeat;
+  background: linear-gradient(105deg, transparent 36%, rgb(var(--accent-bright)) 50%, transparent 64%); background-size: 260% 100%; background-position: 160% 0; animation: logo-sheen 5s ease-in-out 1.2s infinite; }
+@keyframes logo-sheen { 0%, 55% { background-position: 160% 0; } 100% { background-position: -60% 0; } }
+.logo-full img { animation: logo-glow 4s ease-in-out infinite; }
+@keyframes logo-glow { 0%, 100% { filter: drop-shadow(0 0 0 rgba(200, 156, 58, 0)); } 50% { filter: drop-shadow(0 0 7px rgba(200, 156, 58, .38)); } }
+@media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) :is(.logo-sheen, .logo-full img) { animation: none; } html:not([data-motion-pref="on"]) .logo-sheen { display: none; } }
+[data-motion="subtle"] :is(.logo-sheen, .logo-full img), [data-motion="off"] :is(.logo-sheen, .logo-full img) { animation: none !important; }

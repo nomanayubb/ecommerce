@@ -105,10 +105,7 @@ function Hero({ s, ctx }: P) {
           </picture>
           <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--dark))] via-[rgb(var(--dark))]/30 to-transparent sm:bg-gradient-to-r sm:from-black/75 sm:via-black/40 sm:to-transparent" />
         </div>
-        <p aria-hidden className="hero-brand pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center text-3xl font-semibold uppercase sm:left-14 sm:right-auto sm:top-8 sm:text-5xl">
-          {Array.from(String(eyebrow)).map((ch, n) => <span key={n} className="hero-brand-l" style={{ "--i": n } as CSSProperties}>{ch}</span>)}
-        </p>
-        {parts}<div className="relative -mt-6 sm:mt-0 [&_.eyebrow]:hidden">{copy}</div>
+        {parts}<div className="relative -mt-6 sm:mt-0">{copy}</div>
       </section>
     );
   if (variant === "video" && v.videoUrl)
