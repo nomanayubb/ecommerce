@@ -68,7 +68,7 @@ export function Gallery({ images, title, videoUrl, spinImages, modelUrl }: { ima
         {list.map((src, n) => (
           <button key={src} onClick={() => { setTab("photos"); setI(n); }} aria-label={`Show image ${n + 1}`} aria-current={n === i}
             className={`aspect-[4/5] w-16 overflow-hidden border transition sm:w-full ${n === i ? "border-accent" : "border-line opacity-70 hover:opacity-100"}`}>
-            <img src={src} alt="" width={72} height={90} loading="lazy" className="h-full w-full object-cover" />
+            <img src={src} alt="" width={72} height={90} className="h-full w-full object-cover" />
           </button>
         ))}
       </div>

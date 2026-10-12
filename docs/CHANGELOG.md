@@ -223,3 +223,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Source: free-to-use Unsplash photos saved locally in `apps/web/public/photos/` (2.7 MB total), credits in `CREDITS.md`. They are stand-ins for real product photography; replace per product in admin.
 - Note: `next start` indexes `public/` at startup, so new static files need a production server restart.
 - Verified: files 200 on the production server; home hero and PDP thumbnail 3 seen in the browser. Photo 4 and the other products were not each viewed.
+- Follow-up: product page thumbnails load eagerly (photos 3-4 were blank until scrolled); product card hover now shows photo 3 instead of the placeholder 2.
