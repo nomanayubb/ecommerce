@@ -109,8 +109,7 @@ function MegaItem({ node }: { node: CategoryNode }) {
                 <div key={c.id} className={wide ? "" : "mb-3 last:mb-0"}>
                   <Link href={`/collections/${c.slug}`} className="text-sm font-medium hover:text-accent">{c.name}</Link>
                   <ul className="ml-3 mt-1 space-y-0.5 text-sm text-muted">
-                    {c.children.slice(0, 8).map((g) => <li key={g.id}><Link href={`/collections/${g.slug}`} className="hover:text-accent">{g.name}</Link></li>)}
-                    {c.children.length > 8 && <li><Link href={`/collections/${c.slug}`} className="text-accent hover:underline">All {c.children.length} →</Link></li>}
+                    {c.children.map((g) => <li key={g.id}><Link href={`/collections/${g.slug}`} className="hover:text-accent">{g.name}</Link></li>)}
                   </ul>
                 </div>
               ))}
@@ -122,14 +121,41 @@ function MegaItem({ node }: { node: CategoryNode }) {
   );
 }
 
-/** Menus past the first few (admin: Settings, Menu links) sit under "More" so the header bar stays on one line. */
+/** Menus past the first few (admin: Settings, Menu links) sit under "More". Point at one to see its sub menus beside the list. */
 function MoreMenu({ nodes }: { nodes: CategoryNode[] }) {
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState<CategoryNode>(nodes[0]);
+  const kids = useBranch(active.slug, open && !!active.hasChildren);
   return (
-    <div className="group relative">
+    <div className="group relative" onMouseEnter={() => setOpen(true)} onFocus={() => setOpen(true)}>
       <button type="button" className="relative block whitespace-nowrap py-5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] transition hover:text-accent">More ▾</button>
-      <div className="invisible absolute right-0 top-full z-30 grid max-h-[70vh] w-[min(560px,92vw)] grid-cols-2 gap-x-6 gap-y-1 overflow-y-auto border border-line bg-card p-5 opacity-0 shadow-2xl transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-        {nodes.map((n) => <Link key={n.id} href={`/collections/${n.slug}`} className="py-1.5 text-sm hover:text-accent">{n.name}</Link>)}
-        <Link href="/collections" className="col-span-2 mt-2 border-t border-line pt-3 text-xs font-semibold uppercase tracking-[0.2em] text-accent">Browse all collections →</Link>
+      <div className="invisible absolute right-0 top-full z-30 grid max-h-[70vh] w-[min(940px,94vw)] grid-cols-[230px_1fr] overflow-hidden border border-line bg-card opacity-0 shadow-2xl transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+        <ul className="max-h-[70vh] overflow-y-auto border-r border-line py-2">
+          {nodes.map((n) => (
+            <li key={n.id}>
+              <Link href={`/collections/${n.slug}`} onMouseEnter={() => setActive(n)} onFocus={() => setActive(n)}
+                className={`flex items-center justify-between px-5 py-2 text-sm transition hover:text-accent ${active.id === n.id ? "bg-accent/10 text-accent" : ""}`}>
+                {n.name}{n.hasChildren && <span aria-hidden className="text-xs">›</span>}
+              </Link>
+            </li>
+          ))}
+          <li><Link href="/collections" className="mt-1 block border-t border-line px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-accent">Browse all collections →</Link></li>
+        </ul>
+        <div className="max-h-[70vh] overflow-y-auto p-5">
+          <Link href={`/collections/${active.slug}`} className="mb-3 block text-xs font-semibold uppercase tracking-[0.2em] text-accent">All {active.name} →</Link>
+          {!active.hasChildren ? <p className="text-sm text-muted">No sub menus.</p> : !kids ? <p className="text-sm text-muted">Loading…</p> : (
+            <div className="grid grid-cols-2 gap-x-8 gap-y-5">
+              {kids.map((c) => (
+                <div key={c.id}>
+                  <Link href={`/collections/${c.slug}`} className="text-sm font-medium hover:text-accent">{c.name}</Link>
+                  <ul className="ml-3 mt-1 space-y-0.5 text-sm text-muted">
+                    {c.children.map((g) => <li key={g.id}><Link href={`/collections/${g.slug}`} className="hover:text-accent">{g.name}</Link></li>)}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
