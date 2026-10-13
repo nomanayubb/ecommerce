@@ -127,9 +127,9 @@ function MoreMenu({ nodes }: { nodes: CategoryNode[] }) {
   const [active, setActive] = useState<CategoryNode>(nodes[0]);
   const kids = useBranch(active.slug, open && !!active.hasChildren);
   return (
-    <div className="group relative" onMouseEnter={() => setOpen(true)} onFocus={() => setOpen(true)}>
+    <div className="group" onMouseEnter={() => setOpen(true)} onFocus={() => setOpen(true)}>
       <button type="button" className="relative block whitespace-nowrap py-5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] transition hover:text-accent">More ▾</button>
-      <div className="invisible absolute right-0 top-full z-30 grid max-h-[70vh] w-[min(940px,94vw)] grid-cols-[230px_1fr] overflow-hidden border border-line bg-card opacity-0 shadow-2xl transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+      <div className="invisible absolute left-1/2 top-full z-30 grid max-h-[70vh] w-[min(1000px,96vw)] -translate-x-1/2 grid-cols-[240px_1fr] overflow-hidden border border-line bg-card opacity-0 shadow-2xl transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
         <ul className="max-h-[70vh] overflow-y-auto border-r border-line py-2">
           {nodes.map((n) => (
             <li key={n.id}>
