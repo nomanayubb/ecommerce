@@ -14,7 +14,7 @@ export default async function NotFound() {
         <input name="q" placeholder="Search the shop" aria-label="Search the shop" className="min-w-0 flex-1 border border-line bg-card px-4 py-3 text-sm outline-none focus:border-accent" />
         <button className="btn btn-primary !px-5">Search</button>
       </form>
-      {cats.length > 0 && <ul className="mt-6 flex flex-wrap justify-center gap-2">{cats.slice(0, 6).map((c) => <li key={c.id}><Link href={`/products?category=${c.slug}`} className="border border-line px-3 py-1.5 text-xs uppercase tracking-widest text-muted transition hover:border-accent hover:text-accent">{c.name}</Link></li>)}</ul>}
+      {cats.length > 0 && <ul className="mt-6 flex flex-wrap justify-center gap-2">{cats.slice(0, 6).map((c) => <li key={c.id}><Link href={`/collections/${c.slug}`} className="border border-line px-3 py-1.5 text-xs uppercase tracking-widest text-muted transition hover:border-accent hover:text-accent">{c.name}</Link></li>)}</ul>}
       <div className="mt-10 flex justify-center gap-4">
         <Link href="/" className="btn btn-ghost">Home</Link>
         <Link href="/products" className="btn btn-ghost">All products</Link>

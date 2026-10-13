@@ -31,7 +31,7 @@ export function Footer({ brand, categories, store, footer, social }: {
 }) {
   const columns = footer.columns.length
     ? footer.columns
-    : [{ title: "Shop", links: [{ label: "All products", href: "/products" }, ...categories.map((c) => ({ label: c.name, href: `/products?category=${c.slug}` }))] }];
+    : [{ title: "Shop", links: [{ label: "All products", href: "/products" }, ...categories.map((c) => ({ label: c.name, href: `/collections/${c.slug}` }))] }];
   const extra = columns.length + (footer.showPayments ? 1 : 0);
   const links = SOCIALS.filter(([k]) => social[k]);
 

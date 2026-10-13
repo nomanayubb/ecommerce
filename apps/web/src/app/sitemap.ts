@@ -19,8 +19,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const url = (path: string, priority: number, lastModified: Date = now) => ({ url: `${SITE}${path}`, lastModified, priority });
   return [
-    url("/", 1), url("/products", 0.9), url("/recipes", 0.7), url("/blog", 0.6), url("/bundles", 0.6), url("/guides", 0.5), url("/quiz", 0.4),
-    ...flat(tree).map((c) => url(`/products?category=${c.slug}`, 0.7)),
+    url("/", 1), url("/products", 0.9), url("/collections", 0.8), url("/recipes", 0.7), url("/blog", 0.6), url("/bundles", 0.6), url("/guides", 0.5), url("/quiz", 0.4),
+    ...flat(tree).map((c) => url(`/collections/${c.slug}`, 0.7)),
     ...products.items.map((p) => url(`/products/${p.slug}`, 0.8)),
     ...recipes.items.map((r) => url(`/recipes/${r.slug}`, 0.6)),
     ...posts.items.map((p) => url(`/blog/${p.slug}`, 0.5, p.published_at ? new Date(p.published_at) : now)),

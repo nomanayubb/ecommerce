@@ -64,7 +64,7 @@ function Edit() {
         <form onSubmit={save} className="space-y-4 rounded border border-line bg-card p-5">
           <h2 className="text-sm font-semibold uppercase tracking-widest">Details</h2>
           <label className={label}>Title<input required maxLength={120} className={input} value={c.name} onChange={(e) => set("name", e.target.value)} /></label>
-          <label className={label}>Address (used in /products?category=...)<input pattern="[a-z0-9-]*" maxLength={80} className={input} value={c.slug} onChange={(e) => set("slug", e.target.value)} /></label>
+          <label className={label}>Address (the shop address: /collections/this-address)<input pattern="[a-z0-9-]*" maxLength={80} className={input} value={c.slug} onChange={(e) => set("slug", e.target.value)} /></label>
           <label className={label}>Description (shown at the top of the collection page)<textarea rows={3} maxLength={2000} className={input} value={c.description ?? ""} onChange={(e) => set("description", e.target.value)} /></label>
           <label className={label}>Image address (optional)<input className={input} value={c.image_url ?? ""} onChange={(e) => set("image_url", e.target.value)} /></label>
           <label className={label}>Inside another collection
@@ -72,7 +72,7 @@ function Edit() {
           </label>
           <label className={label}>Order in menus (smaller comes first)<input type="number" min={0} className={input} value={c.sort_order} onChange={(e) => set("sort_order", Number(e.target.value))} /></label>
           <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={c.is_active} onChange={(e) => set("is_active", e.target.checked)} />Visible in the shop</label>
-          <div className="flex items-center gap-4"><button className="rounded bg-brand px-5 py-2 text-sm font-medium text-onbrand">Save</button><a href={`${STORE}/products?category=${c.slug}`} target="_blank" rel="noopener noreferrer" className="text-sm text-muted hover:text-accent">View in shop</a></div>
+          <div className="flex items-center gap-4"><button className="rounded bg-brand px-5 py-2 text-sm font-medium text-onbrand">Save</button><a href={`${STORE}/collections/${c.slug}`} target="_blank" rel="noopener noreferrer" className="text-sm text-muted hover:text-accent">View in shop</a></div>
         </form>
 
         <section className="space-y-4 rounded border border-line bg-card p-5">

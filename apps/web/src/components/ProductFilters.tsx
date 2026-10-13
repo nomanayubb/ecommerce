@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { CloseIcon } from "./icons";
 
@@ -20,12 +20,14 @@ const label = (t: string) => t.replace(/-/g, " ").replace(/^\w/, (c) => c.toUppe
 /** URL is the single source of truth: every change rewrites the query string and the server page re-renders. */
 function useFilterNav(params: Params) {
   const router = useRouter();
+  const path = usePathname();
+  const onColl = path.startsWith("/collections/");
   const [pending, start] = useTransition();
   const push = (patch: Params) => {
     const next: Params = { ...params, ...patch, page: undefined };
     const qs = new URLSearchParams();
-    for (const [k, v] of Object.entries(next)) if (v) qs.set(k, v);
-    start(() => router.replace(`/products${qs.size ? `?${qs}` : ""}`, { scroll: false }));
+    for (const [k, v] of Object.entries(next)) if (v && !(onColl && k === "category")) qs.set(k, v);
+    start(() => router.replace(`${onColl ? path : "/products"}${qs.size ? `?${qs}` : ""}`, { scroll: false }));
   };
   const toggle = (key: "brand" | "tag", value: string) => {
     const cur = split(params[key]);
@@ -101,7 +103,7 @@ export function ProductFilters({ params, facets }: { params: Params; facets: Fac
       )}
 
       {any && (
-        <Link href={params.category ? `/products?category=${params.category}` : "/products"} className="btn btn-ghost w-full !px-4 !py-2.5">Reset filters</Link>
+        <Link href={params.category ? `/collections/${params.category}` : "/products"} className="btn btn-ghost w-full !px-4 !py-2.5">Reset filters</Link>
       )}
       {pending && <div aria-hidden className="h-0.5 w-full overflow-hidden bg-line"><div className="h-full w-1/3 animate-[shimmer_1s_linear_infinite] bg-accent" /></div>}
     </div>

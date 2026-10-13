@@ -14,6 +14,7 @@ const CUSTOM = "__custom";
 const STATIC: Opt[] = [
   { group: "Shop", label: "Home", href: "/" },
   { group: "Shop", label: "All products", href: "/products" },
+  { group: "Shop", label: "All collections", href: "/collections" },
   { group: "Shop", label: "Best prices (low to high)", href: "/products?sort=price_asc" },
   { group: "Shop", label: "New arrivals", href: "/products?sort=newest" },
   { group: "Content", label: "Blog / journal", href: "/blog" },
@@ -77,7 +78,7 @@ export default function Navigation() {
       setFooter(s.footer);
       setOpts([
         ...STATIC,
-        ...cols.map((c) => ({ group: "Collections", label: c.name, href: `/products?category=${c.slug}` })),
+        ...cols.map((c) => ({ group: "Collections", label: c.name, href: `/collections/${c.slug}` })),
         ...pages.filter((p) => p.key.startsWith("page:")).map((p) => ({ group: "Pages", label: p.title, href: `/p/${p.key.slice(5)}` })),
       ]);
     }).catch((e) => setMsg({ ok: false, text: e.message }));

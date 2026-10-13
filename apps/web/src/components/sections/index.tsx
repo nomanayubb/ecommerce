@@ -164,7 +164,7 @@ function CollectionList({ s, ctx }: P) {
       <div className="grid auto-rows-[190px] grid-cols-2 gap-4 md:auto-rows-[210px] md:grid-cols-4">
         {cats.map((c, i) => (
           <Reveal key={c.id} delay={i * 90} className={i === 0 ? "col-span-2 row-span-2" : i < 3 ? "md:col-span-2" : ""}>
-            <Link href={`/products?category=${c.slug}`} className="lift group relative block h-full overflow-hidden border border-line">
+            <Link href={`/collections/${c.slug}`} className="lift group relative block h-full overflow-hidden border border-line">
               <img src={`/ph/${c.slug}?ar=4x3`} alt="" loading="lazy" width={800} height={600} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               <div className="absolute bottom-0 p-5 text-ondark">
@@ -191,7 +191,7 @@ async function FeaturedCollection({ s }: P) {
   const cols = ({ "2": "md:grid-cols-2", "3": "md:grid-cols-3", "4": "md:grid-cols-4" } as Record<string, string>)[String(v.columns)] ?? "md:grid-cols-4";
   return (
     <section>
-      <Reveal><Head eyebrow={v.eyebrow} heading={v.heading} href={v.showViewAll ? (v.categorySlug ? `/products?category=${v.categorySlug}` : "/products") : undefined} /></Reveal>
+      <Reveal><Head eyebrow={v.eyebrow} heading={v.heading} href={v.showViewAll ? (v.categorySlug ? `/collections/${v.categorySlug}` : "/products") : undefined} /></Reveal>
       <div className={`grid grid-cols-2 gap-4 ${cols}`}>{items.map((p, i) => <Reveal key={p.id} delay={(i % 4) * 80}><ProductCard p={p} /></Reveal>)}</div>
       {!items.length && <p className="text-muted">No products to show yet.</p>}
     </section>
@@ -204,7 +204,7 @@ async function ProductCarousel({ s }: P) {
   if (!items.length) return null;
   return (
     <section>
-      <Head eyebrow={v.eyebrow} heading={v.heading} href={v.categorySlug ? `/products?category=${v.categorySlug}` : "/products"} />
+      <Head eyebrow={v.eyebrow} heading={v.heading} href={v.categorySlug ? `/collections/${v.categorySlug}` : "/products"} />
       <div className="-mx-4 flex snap-x snap-proximity gap-4 overflow-x-auto px-4 pb-3 [scrollbar-width:thin]" tabIndex={0} aria-label={v.heading || "Products"}>
         {items.map((p) => <div key={p.id} className="w-56 shrink-0 snap-start sm:w-64"><ProductCard p={p} /></div>)}
       </div>

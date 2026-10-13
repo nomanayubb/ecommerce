@@ -81,7 +81,7 @@ function MotionToggle({ labelled = false, className = "" }: { labelled?: boolean
 function MegaItem({ node }: { node: CategoryNode }) {
   return (
     <div className="group relative">
-      <Link href={`/products?category=${node.slug}`} className="relative block whitespace-nowrap py-5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] transition hover:text-accent">
+      <Link href={`/collections/${node.slug}`} className="relative block whitespace-nowrap py-5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] transition hover:text-accent">
         {node.name}
         <span className="absolute inset-x-0 bottom-3 h-px origin-left scale-x-0 bg-accent transition-transform group-hover:scale-x-100" />
       </Link>
@@ -89,10 +89,10 @@ function MegaItem({ node }: { node: CategoryNode }) {
         <div className="invisible absolute left-0 top-full z-30 min-w-[260px] border border-line bg-card translate-y-1 p-5 opacity-0 shadow-2xl transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
           {node.children.map((c) => (
             <div key={c.id} className="mb-3 last:mb-0">
-              <Link href={`/products?category=${c.slug}`} className="text-sm font-medium hover:text-accent">{c.name}</Link>
+              <Link href={`/collections/${c.slug}`} className="text-sm font-medium hover:text-accent">{c.name}</Link>
               <ul className="ml-3 mt-1 space-y-0.5 text-sm text-muted">
                 {c.children.map((g) => (
-                  <li key={g.id}><Link href={`/products?category=${g.slug}`} className="hover:text-accent">{g.name}</Link></li>
+                  <li key={g.id}><Link href={`/collections/${g.slug}`} className="hover:text-accent">{g.name}</Link></li>
                 ))}
               </ul>
             </div>
@@ -132,7 +132,7 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
           <nav className="absolute left-0 top-full w-64 border border-line bg-card p-4 text-sm shadow-2xl">
             <div className="mb-3"><SearchBox hints={hints} className="w-full border-b border-line bg-transparent py-2 pl-6 text-sm outline-none placeholder:text-muted focus:border-accent" panelClass="!w-full" /></div>
             {categories.map((c) => (
-              <Link key={c.id} href={`/products?category=${c.slug}`} className="block py-2 uppercase tracking-widest">{c.name}</Link>
+              <Link key={c.id} href={`/collections/${c.slug}`} className="block py-2 uppercase tracking-widest">{c.name}</Link>
             ))}
             {(useSite().branding.navLinks ?? []).map((l) => <Link key={l.href + l.label} href={l.href} className="block py-2 uppercase tracking-widest text-accent">{l.label}</Link>)}
             <Link href="/products" className="block py-2 uppercase tracking-widest text-accent">All products</Link>

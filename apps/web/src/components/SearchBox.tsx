@@ -92,7 +92,7 @@ export function SearchBox({ hints, className, panelClass = "" }: { hints?: strin
   const rows: Row[] = [];
   if (q.length >= 2 && data) {
     data.products.forEach((p) => rows.push({ key: `p-${p.slug}`, href: `/products/${p.slug}`, label: p.title, kind: "product" }));
-    data.categories.forEach((c) => rows.push({ key: `c-${c.slug}`, href: `/products?category=${c.slug}`, label: c.name, kind: "category" }));
+    data.categories.forEach((c) => rows.push({ key: `c-${c.slug}`, href: `/collections/${c.slug}`, label: c.name, kind: "category" }));
     data.brands.forEach((b) => rows.push({ key: `b-${b.slug}`, href: `/products?brand=${b.slug}`, label: b.name, kind: "brand" }));
     rows.push({ key: "all", href: `/products?q=${encodeURIComponent(q)}`, label: `See all results for “${q}”`, kind: "all" });
   } else if (q.length < 2) {
