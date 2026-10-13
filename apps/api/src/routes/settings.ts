@@ -78,6 +78,55 @@ export const brandingSchema = z.object({
 export type Branding = z.infer<typeof brandingSchema>;
 
 /** Commerce rules that were hard-coded: change per store without touching code. */
+const fieldMode = z.enum(["required", "optional", "hidden"]);
+/** Which boxes the checkout form shows, and which of them the shopper must fill. Name is always required. */
+export const checkoutFieldsSchema = z.object({
+  email: fieldMode.default("hidden"), phone: fieldMode.default("required"), address: fieldMode.default("required"),
+  city: fieldMode.default("required"), postalCode: fieldMode.default("optional"), note: fieldMode.default("optional"),
+});
+export type CheckoutFields = z.infer<typeof checkoutFieldsSchema>;
+export const DEFAULT_CHECKOUT_FIELDS: CheckoutFields = { email: "hidden", phone: "required", address: "required", city: "required", postalCode: "optional", note: "optional" };
+
+const payMethod = z.object({
+  id: z.enum(["COD", "EASYPAISA", "JAZZCASH", "BANK_TRANSFER"]),
+  label: z.string().trim().min(1).max(40),
+  description: z.string().trim().max(200).default(""),
+  instructions: z.string().trim().max(500).default(""),
+  enabled: z.boolean(),
+});
+export type PayMethod = z.infer<typeof payMethod>;
+export const DEFAULT_PAYMENTS: PayMethod[] = [
+  { id: "COD", label: "Cash on delivery", description: "Pay the courier when your order arrives.", instructions: "", enabled: true },
+  { id: "EASYPAISA", label: "EasyPaisa", description: "Send the amount from your EasyPaisa app.", instructions: "", enabled: false },
+  { id: "JAZZCASH", label: "JazzCash", description: "Send the amount from your JazzCash app.", instructions: "", enabled: false },
+  { id: "BANK_TRANSFER", label: "Bank transfer", description: "Transfer to our bank account.", instructions: "", enabled: false },
+];
+
+/** Product page layout: which blocks show and how the photos sit. Defaults match the original page. */
+export const pdpSchema = z.object({
+  imageSide: z.enum(["left", "right"]).default("left"),
+  galleryThumbs: z.enum(["side", "below"]).default("side"),
+  showShare: z.boolean().default(true),
+  showSaveCompare: z.boolean().default(true),
+  showRating: z.boolean().default(true),
+  showLiveViewers: z.boolean().default(true),
+  showDetails: z.boolean().default(true),
+  showTags: z.boolean().default(true),
+  showSku: z.boolean().default(true),
+  showTrustIcons: z.boolean().default(true),
+  showDispatch: z.boolean().default(true),
+  showBenefits: z.boolean().default(true),
+  showReviews: z.boolean().default(true),
+  showQuestions: z.boolean().default(true),
+  showRecipes: z.boolean().default(true),
+  showRelated: z.boolean().default(true),
+  showRecentlyViewed: z.boolean().default(true),
+  showSectionTabs: z.boolean().default(true),
+  stickyInfo: z.boolean().default(true),
+});
+export type PdpSettings = z.infer<typeof pdpSchema>;
+export const DEFAULT_PDP: PdpSettings = pdpSchema.parse({});
+
 export const storeSchema = z.object({
   freeShippingThreshold: z.number().int().min(0).max(10_000_000),
   shippingFee: z.number().int().min(0).max(1_000_000),
@@ -86,9 +135,12 @@ export const storeSchema = z.object({
   deliveryMaxDays: z.number().int().min(0).max(30).default(4),
   giftWrapEnabled: z.boolean().default(false),
   giftWrapFee: z.number().int().min(0).max(100_000).default(0),
+  checkoutFields: checkoutFieldsSchema.default(DEFAULT_CHECKOUT_FIELDS),
+  paymentMethods: z.array(payMethod).max(8).default(DEFAULT_PAYMENTS),
+  pdp: pdpSchema.default(DEFAULT_PDP),
 });
 export type Store = z.infer<typeof storeSchema>;
-const STORE_DEFAULT: Store = { freeShippingThreshold: 5000, shippingFee: 250, dispatchCutoff: 0, deliveryMinDays: 2, deliveryMaxDays: 4, giftWrapEnabled: false, giftWrapFee: 0 };
+const STORE_DEFAULT: Store = { freeShippingThreshold: 5000, shippingFee: 250, dispatchCutoff: 0, deliveryMinDays: 2, deliveryMaxDays: 4, giftWrapEnabled: false, giftWrapFee: 0, checkoutFields: DEFAULT_CHECKOUT_FIELDS, paymentMethods: DEFAULT_PAYMENTS, pdp: DEFAULT_PDP };
 
 const load = async <T>(key: string, fallback?: T) => {
   const { rows } = await pool.query("SELECT value FROM site_settings WHERE key = $1", [key]);

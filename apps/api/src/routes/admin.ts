@@ -8,6 +8,7 @@ import { couponAdminRoutes } from "./coupons.js";
 import { productAdminRoutes } from "./productsAdmin.js";
 import { qaAdminRoutes } from "./qa.js";
 import { contentAdminRoutes } from "./content.js";
+import { collectionAdminRoutes } from "./collections.js";
 
 const STAFF = new Set(["SUPER_ADMIN", "ADMIN", "WAREHOUSE"]);
 
@@ -55,6 +56,7 @@ export const adminRoutes: FastifyPluginAsync = async (app) => {
   await app.register(productAdminRoutes);
   await app.register(qaAdminRoutes);
   await app.register(contentAdminRoutes);
+  await app.register(collectionAdminRoutes);
 
   app.post("/products", { preHandler: adminOnly }, async (req, reply) => {
     const b = productSchema.parse(req.body);

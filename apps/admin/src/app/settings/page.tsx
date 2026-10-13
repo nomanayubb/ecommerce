@@ -22,7 +22,17 @@ type Visuals = {
   mascotVoice: boolean; splash: boolean; logoMorph: boolean; logoSparkles: boolean; watermark: boolean; cardGlow: boolean; priceCountUp: boolean;
 };
 const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", depth: "flat", transition: "none", imageHover: "zoom", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none", mascotVoice: false, splash: false, logoMorph: false, logoSparkles: false, watermark: false, cardGlow: false, priceCountUp: false };
-interface Store { freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number; dispatchCutoff?: number; deliveryMinDays?: number; deliveryMaxDays?: number }
+type FieldMode = "required" | "optional" | "hidden";
+type CheckoutFields = Record<"email" | "phone" | "address" | "city" | "postalCode" | "note", FieldMode>;
+interface PayMethod { id: "COD" | "EASYPAISA" | "JAZZCASH" | "BANK_TRANSFER"; label: string; description: string; instructions: string; enabled: boolean }
+const CHECKOUT_DEFAULTS: CheckoutFields = { email: "hidden", phone: "required", address: "required", city: "required", postalCode: "optional", note: "optional" };
+const PAY_DEFAULTS: PayMethod[] = [
+  { id: "COD", label: "Cash on delivery", description: "Pay the courier when your order arrives.", instructions: "", enabled: true },
+  { id: "EASYPAISA", label: "EasyPaisa", description: "Send the amount from your EasyPaisa app.", instructions: "", enabled: false },
+  { id: "JAZZCASH", label: "JazzCash", description: "Send the amount from your JazzCash app.", instructions: "", enabled: false },
+  { id: "BANK_TRANSFER", label: "Bank transfer", description: "Transfer to our bank account.", instructions: "", enabled: false },
+];
+interface Store { checkoutFields?: CheckoutFields; paymentMethods?: PayMethod[]; freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number; dispatchCutoff?: number; deliveryMinDays?: number; deliveryMaxDays?: number }
 interface Footer { columns: { title: string; links: { label: string; href: string }[] }[]; showNewsletter: boolean; showPerks: boolean; showPayments: boolean; note: string }
 
 // Keep in sync with apps/web/src/themes/index.ts
@@ -74,7 +84,7 @@ export default function Settings() {
     api<{ branding: Branding; store: Store; footer: Footer }>("/settings")
       .then((r) => {
         setB({ ...r.branding, announcements: r.branding.announcements ?? [], headerCta: r.branding.headerCta ?? { label: "", href: "" }, social: { ...({ instagram: "", facebook: "", tiktok: "", youtube: "", whatsapp: "", x: "" } as Branding["social"]), ...(r.branding.social ?? {}) }, headingFont: r.branding.headingFont ?? "inherit", buttonStyle: r.branding.buttonStyle ?? "solid", cardStyle: r.branding.cardStyle ?? "classic", badgeStyle: r.branding.badgeStyle ?? "solid", layoutWidth: r.branding.layoutWidth ?? "boxed", motionPolicy: r.branding.motionPolicy ?? "respect", searchHints: r.branding.searchHints ?? [], navLinks: r.branding.navLinks ?? [], visuals: { ...DEFAULT_VISUALS, ...(r.branding.visuals ?? {}) }, effects: { ...({ ripple: true, flyToCart: true, backToTop: true, cookieNotice: true, newsletterPopup: false, iconBadges: true, whatsappButton: false } as Branding["effects"]), ...(r.branding.effects ?? {}) } });
-        setStore(r.store); setFooter(r.footer);
+        setStore({ ...r.store, checkoutFields: { ...CHECKOUT_DEFAULTS, ...(r.store.checkoutFields ?? {}) }, paymentMethods: PAY_DEFAULTS.map((d) => ({ ...d, ...(r.store.paymentMethods ?? []).find((m) => m.id === d.id) })) }); setFooter(r.footer);
         setLinksText(r.footer.columns.map((c) => c.links.map((l) => `${l.label} | ${l.href}`).join("\n")));
       })
       .catch((e) => setMsg({ ok: false, text: e.message }));
@@ -105,7 +115,37 @@ export default function Settings() {
     <form onSubmit={save} className="max-w-3xl space-y-4">
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="mr-auto text-2xl font-bold">Brand & theme</h1>
-        <button className="rounded bg-brand px-6 py-2 text-sm font-medium text-onbrand">Save everything</button>
+        <Group title="Checkout form">
+        <p className="text-xs text-muted">Choose which boxes shoppers see after pressing Buy now / Checkout, and which ones they must fill. Full name is always required. Order tracking asks for the phone number, so keep Phone shown if customers track orders.</p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {([["email", "Email"], ["phone", "Phone number"], ["address", "Street address"], ["city", "City"], ["postalCode", "Postal code"], ["note", "Delivery note shortcuts"]] as const).map(([k, l]) => (
+            <label key={k} className={label}>{l}
+              <select className={input} value={(store.checkoutFields ?? CHECKOUT_DEFAULTS)[k]} onChange={(e) => setStore({ ...store, checkoutFields: { ...(store.checkoutFields ?? CHECKOUT_DEFAULTS), [k]: e.target.value as FieldMode } })}>
+                <option value="required">Shown and required</option><option value="optional">Shown, optional</option><option value="hidden">Hidden</option>
+              </select>
+            </label>
+          ))}
+        </div>
+      </Group>
+
+      <Group title="Payment methods">
+        <p className="text-xs text-muted">Turn methods on or off and change the wording shoppers see. Cash on delivery is automatic. For EasyPaisa, JazzCash and bank transfer the shopper pays by transfer: write your account details in "Instructions" and mark the order paid yourself once the money arrives.</p>
+        {(store.paymentMethods ?? PAY_DEFAULTS).map((m, i) => {
+          const upd = (patch: Partial<PayMethod>) => setStore({ ...store, paymentMethods: (store.paymentMethods ?? PAY_DEFAULTS).map((x, n) => (n === i ? { ...x, ...patch } : x)) });
+          return (
+            <div key={m.id} className="space-y-3 rounded border border-line p-4">
+              <label className="flex items-center gap-2 text-sm font-medium"><input type="checkbox" checked={m.enabled} onChange={(e) => upd({ enabled: e.target.checked })} />{m.id === "COD" ? "Cash on delivery" : m.id === "BANK_TRANSFER" ? "Bank transfer" : m.id === "EASYPAISA" ? "EasyPaisa" : "JazzCash"}: show at checkout</label>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className={label}>Name shown<input className={input} maxLength={40} value={m.label} onChange={(e) => upd({ label: e.target.value })} /></label>
+                <label className={label}>Short description<input className={input} maxLength={200} value={m.description} onChange={(e) => upd({ description: e.target.value })} /></label>
+              </div>
+              {m.id !== "COD" && <label className={label}>Instructions (account name and number, shown when chosen and after the order)<textarea rows={3} className={input} maxLength={500} value={m.instructions} onChange={(e) => upd({ instructions: e.target.value })} /></label>}
+            </div>
+          );
+        })}
+      </Group>
+
+      <button className="rounded bg-brand px-6 py-2 text-sm font-medium text-onbrand">Save everything</button>
       </div>
       {msg && <p role="status" className={`text-sm ${msg.ok ? "text-accent" : "text-red-500"}`}>{msg.text}</p>}
 

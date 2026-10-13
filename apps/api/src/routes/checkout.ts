@@ -4,6 +4,7 @@ import { z } from "zod";
 import { pool } from "../lib/db.js";
 import { delPattern } from "../lib/redis.js";
 import { priceCart } from "../lib/pricing.js";
+import { loadStore } from "./settings.js";
 
 const itemSchema = z.object({
   productId: z.string().uuid(),
@@ -12,9 +13,10 @@ const itemSchema = z.object({
 });
 const addressSchema = z.object({
   name: z.string().min(1),
-  phone: z.string().min(7),
-  line1: z.string().min(1),
-  city: z.string().min(1),
+  email: z.string().trim().max(200).default(""),
+  phone: z.string().trim().max(50).default(""),
+  line1: z.string().trim().max(300).default(""),
+  city: z.string().trim().max(100).default(""),
   province: z.string().optional(),
   postalCode: z.string().optional(),
   country: z.string().default("PK"),
@@ -23,7 +25,7 @@ const checkoutSchema = z.object({
   items: z.array(itemSchema).min(1),
   shippingAddress: addressSchema,
   billingAddress: addressSchema.optional(),
-  paymentMethod: z.enum(["COD", "EASYPAISA", "JAZZCASH", "STRIPE"]),
+  paymentMethod: z.enum(["COD", "EASYPAISA", "JAZZCASH", "BANK_TRANSFER"]),
   notes: z.string().max(1000).optional(),
   couponCode: z.string().max(30).optional(),
   giftWrap: z.boolean().optional(),
@@ -49,10 +51,16 @@ export const checkoutRoutes: FastifyPluginAsync = async (app) => {
 
   app.post("/checkout/process", async (req, reply) => {
     const b = checkoutSchema.parse(req.body);
-    const enabled = (process.env.ENABLED_PAYMENT_METHODS ?? "COD").split(",").map((s) => s.trim());
-    if (!enabled.includes(b.paymentMethod)) {
-      return reply.status(400).send({ success: false, error: `${b.paymentMethod} is not available yet` });
-    }
+    // The shop decides which checkout boxes are shown and required (admin: Settings, Checkout form).
+    const cf = (await loadStore()).checkoutFields;
+    const a = b.shippingAddress;
+    const need: [string, string, string][] = [["email", a.email, "Email"], ["phone", a.phone, "Phone"], ["address", a.line1, "Address"], ["city", a.city, "City"]];
+    for (const [k, v, label] of need) if (cf[k as keyof typeof cf] === "required" && !v) return reply.status(400).send({ success: false, error: `${label} is required` });
+    if (cf.email !== "hidden" && a.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.email)) return reply.status(400).send({ success: false, error: "Please enter a valid email address" });
+    if (cf.phone !== "hidden" && a.phone && a.phone.replace(/\D/g, "").length < 7) return reply.status(400).send({ success: false, error: "Please enter a valid phone number" });
+    if (cf.note === "required" && !b.notes) return reply.status(400).send({ success: false, error: "A delivery note is required" });
+    const method = (await loadStore()).paymentMethods.find((m) => m.id === b.paymentMethod && m.enabled);
+    if (!method) return reply.status(400).send({ success: false, error: `${b.paymentMethod} is not available` });
     const user = await optionalUser(req);
     const client = await pool.connect();
     try {
@@ -105,7 +113,7 @@ export const checkoutRoutes: FastifyPluginAsync = async (app) => {
         orderId: order.id,
         orderNumber: order.order_number,
         grandTotal: cart.grandTotal,
-        paymentInstructions: paymentInstructions(b.paymentMethod, order.order_number, cart.grandTotal),
+        paymentInstructions: paymentInstructions(b.paymentMethod, order.order_number, cart.grandTotal, method.label, method.instructions),
       });
     } catch (e) {
       await client.query("ROLLBACK");
@@ -143,12 +151,8 @@ export const checkoutRoutes: FastifyPluginAsync = async (app) => {
   );
 };
 
-function paymentInstructions(method: string, orderNumber: number, amount: number) {
-  switch (method) {
-    case "COD":
-      return { type: "DIRECT_CONFIRMATION", message: "Order placed. Cash will be collected on delivery." };
-    // Gateway adapters need merchant credentials/sandbox access; they plug in here.
-    default:
-      return { type: "PENDING_GATEWAY", gateway: method, orderNumber, amount, message: `${method} adapter not configured yet` };
-  }
+function paymentInstructions(method: string, orderNumber: number, amount: number, label: string, instructions: string) {
+  if (method === "COD") return { type: "DIRECT_CONFIRMATION", message: "Order placed. Cash will be collected on delivery." };
+  // Manual methods: the shopper pays by transfer using the shop's own instructions; staff mark the order paid.
+  return { type: "MANUAL_TRANSFER", method: label, orderNumber, amount, message: instructions || `Pay with ${label}. We will contact you with the details.` };
 }

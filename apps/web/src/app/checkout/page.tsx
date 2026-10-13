@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { pkr } from "@/lib/api";
+import { pkr, type FieldMode, type PayMethod } from "@/lib/api";
+import { useSite } from "@/components/Site";
 import { send } from "@/lib/client";
 import { useSession } from "@/components/SessionProvider";
 import { useCart } from "@/components/CartProvider";
@@ -38,7 +39,12 @@ export default function Checkout() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [phoneHint, setPhoneHint] = useState(false);
-  const [done, setDone] = useState<{ orderNumber: number; grandTotal: number } | null>(null);
+  const { store } = useSite();
+  const cf: Record<"email" | "phone" | "address" | "city" | "postalCode" | "note", FieldMode> = { email: "hidden", phone: "required", address: "required", city: "required", postalCode: "optional", note: "optional", ...(store.checkoutFields ?? {}) };
+  const methods: PayMethod[] = (store.paymentMethods ?? []).filter((m) => m.enabled);
+  const [pay, setPay] = useState<string>("");
+  const payId = pay || methods[0]?.id || "COD";
+  const [done, setDone] = useState<{ orderNumber: number; grandTotal: number; message?: string; method?: string } | null>(null);
 
   const payload = lines.map((l) => ({ productId: l.productId, variantId: l.variantId, quantity: l.quantity }));
 
@@ -73,20 +79,20 @@ export default function Checkout() {
     setBusy(true);
     setError("");
     try {
-      const res = await send<{ orderNumber: number; grandTotal: number }>("POST", "checkout/process", {
+      const res = await send<{ orderNumber: number; grandTotal: number; paymentInstructions?: { type: string; message: string; method?: string } }>("POST", "checkout/process", {
         items: payload,
-        shippingAddress: { name: f.get("name"), phone: f.get("phone"), line1: f.get("line1"), city: f.get("city"), postalCode: f.get("postalCode") || undefined, country: "PK" },
+        shippingAddress: { name: f.get("name"), email: f.get("email") || undefined, phone: f.get("phone") || undefined, line1: f.get("line1") || undefined, city: f.get("city") || undefined, postalCode: f.get("postalCode") || undefined, country: "PK" },
         notes: extras.note || undefined,
         couponCode: extras.coupon || undefined,
         giftWrap: extras.giftWrap || undefined,
         giftMessage: extras.giftWrap ? extras.giftMessage || undefined : undefined,
-        paymentMethod: "COD",
+        paymentMethod: payId,
       });
       try { localStorage.setItem("checkout-details", JSON.stringify({ name: f.get("name"), phone: f.get("phone"), line1: f.get("line1"), city: f.get("city"), postalCode: f.get("postalCode") })); } catch {}
       try { sessionStorage.setItem("last-order", JSON.stringify({ number: res.orderNumber, phone: String(f.get("phone") ?? "") })); } catch {}
       if (user && saveAddr) send("POST", "account/addresses", { name: f.get("name"), phone: f.get("phone"), line1: f.get("line1"), city: f.get("city"), postalCode: f.get("postalCode") || undefined, isDefault: false }).catch(() => {});
       clear();
-      setDone(res);
+      setDone({ orderNumber: res.orderNumber, grandTotal: res.grandTotal, message: res.paymentInstructions?.type === "MANUAL_TRANSFER" ? res.paymentInstructions.message : undefined, method: res.paymentInstructions?.method });
       fireConfetti();
       mascotSay("celebrate", "Order placed. Thank you!");
       window.scrollTo({ top: 0 });
@@ -105,7 +111,7 @@ export default function Checkout() {
         <Steps at={3} />
         <p className="eyebrow">Order confirmed</p>
         <h1 className="mt-3 text-3xl font-semibold uppercase tracking-[0.1em]">Thank you</h1>
-        <p className="mt-4 text-muted">Your order <strong className="text-fg">#{done.orderNumber}</strong> has been placed. Please keep <strong className="text-fg">{pkr(done.grandTotal)}</strong> ready to pay in cash on delivery.</p>
+        <p className="mt-4 text-muted">Your order <strong className="text-fg">#{done.orderNumber}</strong> has been placed. {done.message ? <>Please pay <strong className="text-fg">{pkr(done.grandTotal)}</strong> by {done.method}.</> : <>Please keep <strong className="text-fg">{pkr(done.grandTotal)}</strong> ready to pay in cash on delivery.</>}</p>{done.message && <p className="mx-auto mt-4 max-w-sm whitespace-pre-line border border-line bg-card p-4 text-sm">{done.message}</p>}
         <div className="mt-10 flex flex-wrap justify-center gap-4"><Link href="/track" className="btn btn-primary">Track this order</Link><Link href="/products" className="btn btn-ghost">Continue shopping</Link><PrintButton className="btn btn-ghost" /></div>
         {ready && !user && <p className="mx-auto mt-8 max-w-sm border border-line bg-card p-4 text-sm text-muted">Want to see this order and your next ones in one place? <Link href="/register" className="text-accent hover:underline">Create a free account</Link>.</p>}
       </div>
@@ -142,29 +148,27 @@ export default function Checkout() {
             )}
             <div className="grid gap-4 sm:grid-cols-2">
               <label><span className={label}>Full name</span><input name="name" required autoComplete="name" className={field} /></label>
-              <label><span className={label}>Phone</span><input name="phone" required type="tel" autoComplete="tel" placeholder="03XX XXXXXXX" minLength={7} className={field} onChange={(e) => { const d = e.target.value.replace(/\D/g, ""); setPhoneHint(d.length > 0 && !/^(92|0)?3\d{9}$/.test(d) && !/^0\d{9,10}$/.test(d)); }} />{phoneHint && <span className="mt-1 block text-xs text-accent">Mobile numbers look like 03XX XXXXXXX. Please double-check so the courier can reach you.</span>}</label>
-              <label className="sm:col-span-2"><span className={label}>Address</span><input name="line1" required autoComplete="street-address" className={field} /></label>
-              <label><span className={label}>City</span><input name="city" required list="pk-cities" autoComplete="address-level2" className={field} /><datalist id="pk-cities">{PK_CITIES.map((c) => <option key={c} value={c} />)}</datalist></label>
-              <label><span className={label}>Postal code (optional)</span><input name="postalCode" autoComplete="postal-code" className={field} /></label>
+              {cf.email !== "hidden" && <label className="sm:col-span-2"><span className={label}>Email{cf.email === "optional" ? " (optional)" : ""}</span><input name="email" type="email" required={cf.email === "required"} autoComplete="email" className={field} /></label>}
+              {cf.phone !== "hidden" && <label><span className={label}>Phone{cf.phone === "optional" ? " (optional)" : ""}</span><input name="phone" required={cf.phone === "required"} type="tel" autoComplete="tel" placeholder="03XX XXXXXXX" minLength={7} className={field} onChange={(e) => { const d = e.target.value.replace(/\D/g, ""); setPhoneHint(d.length > 0 && !/^(92|0)?3\d{9}$/.test(d) && !/^0\d{9,10}$/.test(d)); }} />{phoneHint && <span className="mt-1 block text-xs text-accent">Mobile numbers look like 03XX XXXXXXX. Please double-check so the courier can reach you.</span>}</label>}
+              {cf.address !== "hidden" && <label className="sm:col-span-2"><span className={label}>Address{cf.address === "optional" ? " (optional)" : ""}</span><input name="line1" required={cf.address === "required"} autoComplete="street-address" className={field} /></label>}
+              {cf.city !== "hidden" && <label><span className={label}>City{cf.city === "optional" ? " (optional)" : ""}</span><input name="city" required={cf.city === "required"} list="pk-cities" autoComplete="address-level2" className={field} /><datalist id="pk-cities">{PK_CITIES.map((c) => <option key={c} value={c} />)}</datalist></label>}
+              {cf.postalCode !== "hidden" && <label><span className={label}>Postal code{cf.postalCode === "optional" ? " (optional)" : ""}</span><input name="postalCode" required={cf.postalCode === "required"} autoComplete="postal-code" className={field} /></label>}
             </div>
             {ready && user && <label className="mt-4 flex cursor-pointer items-center gap-3 text-sm"><input type="checkbox" checked={saveAddr} onChange={(e) => setSaveAddr(e.target.checked)} className="h-4 w-4 accent-[rgb(var(--accent))]" />Save this address to my account</label>}
             <div className="mt-4"><GiftOptions /></div>
-            <div className="mt-3 flex flex-wrap gap-2" aria-label="Delivery note shortcuts">
+            {cf.note !== "hidden" && <div className="mt-3 flex flex-wrap gap-2" aria-label="Delivery note shortcuts">
               {["Call before delivery", "Leave with a neighbour", "Deliver after 5 pm"].map((c) => <button key={c} type="button" onClick={() => setExtras({ note: extras.note.includes(c) ? extras.note : `${extras.note ? extras.note + ". " : ""}${c}` })} className="border border-line px-3 py-1.5 text-xs text-muted transition hover:border-accent hover:text-accent">+ {c}</button>)}
-            </div>
+            </div>}
           </section>
 
           <section>
             <h2 className="eyebrow mb-5">2 · Payment</h2>
             <div className="space-y-3">
-              <label className="flex cursor-pointer items-start gap-4 border border-accent bg-accent/5 p-4">
-                <input type="radio" name="pay" defaultChecked readOnly className="mt-1 accent-[rgb(var(--accent))]" />
-                <span><span className="block text-sm font-semibold">Cash on delivery</span><span className="text-sm text-muted">Pay the courier when your order arrives.</span></span>
-              </label>
-              {["EasyPaisa", "JazzCash", "Card"].map((m) => (
-                <div key={m} className="flex items-center justify-between border border-line p-4 text-sm text-muted opacity-60">
-                  <span>{m}</span><span className="text-[0.65rem] uppercase tracking-widest">Coming soon</span>
-                </div>
+              {(methods.length ? methods : [{ id: "COD", label: "Cash on delivery", description: "Pay the courier when your order arrives.", instructions: "", enabled: true } as PayMethod]).map((m) => (
+                <label key={m.id} className={`flex cursor-pointer items-start gap-4 border p-4 ${payId === m.id ? "border-accent bg-accent/5" : "border-line"}`}>
+                  <input type="radio" name="pay" checked={payId === m.id} onChange={() => setPay(m.id)} className="mt-1 accent-[rgb(var(--accent))]" />
+                  <span><span className="block text-sm font-semibold">{m.label}</span>{m.description && <span className="text-sm text-muted">{m.description}</span>}{payId === m.id && m.id !== "COD" && m.instructions && <span className="mt-2 block whitespace-pre-line border-l-2 border-accent pl-3 text-sm">{m.instructions}</span>}</span>
+                </label>
               ))}
             </div>
           </section>

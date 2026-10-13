@@ -6,19 +6,11 @@ import { useEffect, useState, type ReactNode } from "react";
 import { getToken, setToken } from "@/lib/api";
 import { BrandLogo, useBrand } from "@/lib/brand";
 
-const NAV = [
-  { href: "/", label: "Dashboard" },
-  { href: "/pages", label: "Pages" },
-  { href: "/products", label: "Products" },
-  { href: "/orders", label: "Orders" },
-  { href: "/reviews", label: "Reviews" },
-  { href: "/recipes", label: "Recipes" },
-  { href: "/bundles", label: "Bundles" },
-  { href: "/posts", label: "Blog" },
-  { href: "/questions", label: "Questions" },
-  { href: "/messages", label: "Messages" },
-  { href: "/coupons", label: "Coupons" },
-  { href: "/settings", label: "Brand & theme" },
+const NAV: { heading?: string; items: { href: string; label: string }[] }[] = [
+  { items: [{ href: "/", label: "Home" }, { href: "/orders", label: "Orders" }] },
+  { heading: "Products", items: [{ href: "/products", label: "Products" }, { href: "/collections", label: "Collections" }, { href: "/coupons", label: "Discounts" }, { href: "/bundles", label: "Bundles" }] },
+  { heading: "Customers", items: [{ href: "/reviews", label: "Reviews" }, { href: "/questions", label: "Questions" }, { href: "/messages", label: "Messages" }] },
+  { heading: "Online store", items: [{ href: "/pages", label: "Pages" }, { href: "/navigation", label: "Navigation" }, { href: "/page-layout", label: "Page layout" }, { href: "/posts", label: "Blog posts" }, { href: "/recipes", label: "Recipes" }, { href: "/settings", label: "Brand & settings" }] },
 ];
 
 export function Shell({ children }: { children: ReactNode }) {
@@ -38,17 +30,22 @@ export function Shell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen">
-      <aside className="w-52 shrink-0 border-r border-line bg-card p-4">
+      <aside className="w-56 shrink-0 border-r border-line bg-card p-4">
         <div className="mb-6"><BrandLogo brand={brand} className="h-7" /><p className="mt-2 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-accent">Admin</p></div>
-        <nav className="space-y-1 text-sm">
-          {NAV.map((n) => (
-            <Link
-              key={n.href}
-              href={n.href}
-              className={`block rounded px-3 py-2 ${(n.href === "/" ? path === "/" : path.startsWith(n.href)) ? "bg-brand/15 font-medium text-brand" : "hover:bg-line/50"}`}
-            >
-              {n.label}
-            </Link>
+        <nav className="space-y-5 text-sm">
+          {NAV.map((g, gi) => (
+            <div key={gi} className="space-y-1">
+              {g.heading && <p className="px-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted">{g.heading}</p>}
+              {g.items.map((n) => (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  className={`block rounded px-3 py-2 ${(n.href === "/" ? path === "/" : path.startsWith(n.href)) ? "bg-brand/15 font-medium text-brand" : "hover:bg-line/50"}`}
+                >
+                  {n.label}
+                </Link>
+              ))}
+            </div>
           ))}
         </nav>
         <button

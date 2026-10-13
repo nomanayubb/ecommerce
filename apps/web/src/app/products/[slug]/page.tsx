@@ -14,6 +14,7 @@ import { CookingTimer } from "@/components/CookingTimer";
 import { BackLink } from "@/components/BackLink";
 import { SectionTabs } from "@/components/SectionTabs";
 import { PdpActions, SkuCopy } from "@/components/PdpActions";
+import { DEFAULT_PDP } from "@/lib/api";
 import { ShareButton } from "@/components/ShareButton";
 import { RecipeCard } from "@/components/RecipeBits";
 import type { RecipeCardData } from "@/lib/content";
@@ -38,6 +39,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
   const recipes = await api<{ items: RecipeCardData[] }>(`/products/${slug}/recipes`).then((r) => r.items).catch(() => [] as RecipeCardData[]);
 
   const meta = (p.metafields ?? {}) as Meta;
+  const pdp = { ...DEFAULT_PDP, ...(store.pdp ?? {}) };
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -70,17 +72,17 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
       <BackLink />
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Shop", href: "/products" }, { name: p.title }]} />
       <div className="grid gap-10 md:grid-cols-2 lg:gap-16">
-        <Gallery images={p.images} title={p.title} videoUrl={meta.videoUrl || undefined} spinImages={meta.spinImages} modelUrl={p.model_3d_url || undefined} />
-        <div className="md:sticky md:top-24 md:self-start">
+        <div className={pdp.imageSide === "right" ? "md:order-2" : ""}><Gallery images={p.images} title={p.title} videoUrl={meta.videoUrl || undefined} spinImages={meta.spinImages} modelUrl={p.model_3d_url || undefined} thumbs={pdp.galleryThumbs} /></div>
+        <div className={pdp.stickyInfo ? "md:sticky md:top-24 md:self-start" : ""}>
           {p.brand_name && <p className="eyebrow">{p.brand_name}</p>}
           <h1 className="mt-2 text-3xl font-semibold leading-tight tracking-wide">{p.title}</h1>
-          <div className="mt-2 flex flex-wrap items-center gap-5"><ShareButton title={p.title} text={`${p.title} at ${p.brand_name ?? "our shop"}`} />{askHref && <a href={askHref} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold uppercase tracking-[0.2em] text-accent hover:underline">Ask on WhatsApp</a>}</div>
-          <div className="mt-4"><PdpActions p={p} /></div>
-          <div className="mb-6 mt-3 h-5">{!!p.rating_count && <a href="#reviews" className="inline-block" aria-label="Read reviews"><Stars value={Number(p.rating_avg)} size={16} count={p.rating_count} /></a>}</div>
+          {pdp.showShare && <div className="mt-2 flex flex-wrap items-center gap-5"><ShareButton title={p.title} text={`${p.title} at ${p.brand_name ?? "our shop"}`} />{askHref && <a href={askHref} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold uppercase tracking-[0.2em] text-accent hover:underline">Ask on WhatsApp</a>}</div>}
+          {pdp.showSaveCompare && <div className="mt-4"><PdpActions p={p} /></div>}
+          <div className="mb-6 mt-3 h-5">{pdp.showRating && !!p.rating_count && <a href="#reviews" className="inline-block" aria-label="Read reviews"><Stars value={Number(p.rating_avg)} size={16} count={p.rating_count} /></a>}</div>
           <BuyPanel p={p} />
-          <div className="mt-4"><LiveViewers slug={slug} /></div>
+          {pdp.showLiveViewers && <div className="mt-4"><LiveViewers slug={slug} /></div>}
           <div className="mt-8 divide-y divide-line border-y border-line">
-            {details.map(([t, body], i) => (
+            {pdp.showDetails && details.map(([t, body], i) => (
               <details key={t} open={i === 0} className="group py-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase tracking-[0.2em]">
                   {t}<span className="text-accent transition group-open:rotate-45">+</span>
@@ -88,11 +90,11 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
                 <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{body}</p>
               </details>
             ))}
-            {(p.tags ?? []).filter((t) => !["new", "limited", "bestseller", "sale", "recommended"].includes(t)).length > 0 && (
+            {pdp.showTags && (p.tags ?? []).filter((t) => !["new", "limited", "bestseller", "sale", "recommended"].includes(t)).length > 0 && (
               <div className="py-4"><p className="text-xs font-semibold uppercase tracking-[0.2em]">Tags</p>
                 <ul className="mt-3 flex flex-wrap gap-2">{(p.tags ?? []).filter((t) => !["new", "limited", "bestseller", "sale", "recommended"].includes(t)).map((t) => <li key={t}><Link href={`/products?tag=${t}`} className="border border-line px-2.5 py-1 text-[0.65rem] uppercase tracking-widest text-muted transition hover:border-accent hover:text-accent">{t.replace(/-/g, " ")}</Link></li>)}</ul></div>
             )}
-            {(p as unknown as { sku?: string }).sku && <SkuCopy sku={(p as unknown as { sku: string }).sku} />}
+            {pdp.showSku && (p as unknown as { sku?: string }).sku && <SkuCopy sku={(p as unknown as { sku: string }).sku} />}
             {rich.map(([t, node]) => (
               <details key={t} className="group py-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase tracking-[0.2em]">
@@ -105,11 +107,11 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
         </div>
       </div>
 
-      <SectionTabs tabs={[{ id: "reviews", label: "Reviews" }, { id: "questions", label: "Questions" }, ...(recipes.length ? [{ id: "recipes", label: "Recipes" }] : []), ...(related.length ? [{ id: "related", label: "You may also like" }] : [])]} />
-      <Reviews slug={slug} />
-      <ProductQA slug={slug} />
+      {pdp.showSectionTabs && <SectionTabs tabs={[{ id: "reviews", label: "Reviews" }, { id: "questions", label: "Questions" }, ...(recipes.length ? [{ id: "recipes", label: "Recipes" }] : []), ...(related.length ? [{ id: "related", label: "You may also like" }] : [])].filter((t) => (t.id === "reviews" ? pdp.showReviews : t.id === "questions" ? pdp.showQuestions : t.id === "recipes" ? pdp.showRecipes : pdp.showRelated))} />}
+      {pdp.showReviews && <Reviews slug={slug} />}
+      {pdp.showQuestions && <ProductQA slug={slug} />}
 
-      {recipes.length > 0 && (
+      {pdp.showRecipes && recipes.length > 0 && (
         <section id="recipes" className="mt-20 border-t border-line pt-12">
           <p className="eyebrow">Kitchen</p>
           <h2 className="mb-6 mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">Cooked with this</h2>
@@ -117,7 +119,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
         </section>
       )}
 
-      {related.length > 0 && (
+      {pdp.showRelated && related.length > 0 && (
         <section id="related" className="mt-24 pb-16 md:pb-0">
           <div className="mb-6 flex items-end justify-between">
             <div><p className="eyebrow">Complete the look</p><h2 className="mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">You may also like</h2></div>
@@ -126,7 +128,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">{related.map((r) => <ProductCard key={r.id} p={r} />)}</div>
         </section>
       )}
-      <RecentlyViewed exclude={slug} />
+      {pdp.showRecentlyViewed && <RecentlyViewed exclude={slug} />}
     </>
   );
 }

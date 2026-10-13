@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { pkr, type ProductDetail } from "@/lib/api";
+import { DEFAULT_PDP, pkr, type ProductDetail } from "@/lib/api";
 import { useCart } from "./CartProvider";
 import { useSite } from "./Site";
 import { DeliveryEstimate } from "./DeliveryEstimate";
@@ -21,6 +21,7 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
   const ctaRef = useRef<HTMLDivElement>(null);
   const [pastCta, setPastCta] = useState(false);
   const { store } = useSite();
+  const pdp = { ...DEFAULT_PDP, ...(store.pdp ?? {}) };
   const [variantId, setVariantId] = useState<string | null>(p.variants.find((v) => v.stock_quantity > 0)?.id ?? p.variants[0]?.id ?? null);
   const [qty, setQty] = useState(Math.max(1, p.moq));
   const [added, setAdded] = useState(false);
@@ -206,10 +207,10 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
       {soldOut && <StockAlert slug={p.slug} />}
       {p.moq > 1 && <p className="text-xs text-muted">Minimum order quantity: {p.moq}</p>}
 
-      {!compact && <TagIcons tags={p.tags} size={22} max={8} labels className="border-t border-line pt-6" />}
-      {!compact && !soldOut && <DispatchNote />}
+      {!compact && pdp.showTrustIcons && <TagIcons tags={p.tags} size={22} max={8} labels className="border-t border-line pt-6" />}
+      {!compact && pdp.showDispatch && !soldOut && <DispatchNote />}
       {!compact && showAddr && <DeliveryEstimate />}
-      {!compact && (<ul className="grid gap-3 border-t border-line pt-6 text-sm text-muted sm:grid-cols-2">
+      {!compact && pdp.showBenefits && (<ul className="grid gap-3 border-t border-line pt-6 text-sm text-muted sm:grid-cols-2">
         {([[CashIcon, "Cash on delivery available"], [TruckIcon, store.freeShippingThreshold > 0 ? `Free delivery over ${pkr(store.freeShippingThreshold)}` : "Free delivery"], [PackageIcon, "Checked and packed with care"], [SupportIcon, "Easy support if anything is off"]] as const).map(([Ic, t]) => (
           <li key={t} className="flex items-center gap-3"><Ic size={20} className="shrink-0 text-fg" />{t}</li>
         ))}

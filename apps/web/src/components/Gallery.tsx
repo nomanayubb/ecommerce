@@ -8,7 +8,8 @@ import { useSite } from "./Site";
 
 type Tab = "photos" | "video" | "spin" | "3d";
 
-export function Gallery({ images, title, videoUrl, spinImages, modelUrl }: { images: string[]; title: string; videoUrl?: string; spinImages?: string[]; modelUrl?: string }) {
+export function Gallery({ images, title, videoUrl, spinImages, modelUrl, thumbs = "side" }: { images: string[]; title: string; videoUrl?: string; spinImages?: string[]; modelUrl?: string; thumbs?: "side" | "below" }) {
+  const below = thumbs === "below";
   const { branding } = useSite();
   const mark = branding.visuals?.watermark ? branding.logoUrlDark || branding.logoUrl : "";
   const [i, setI] = useState(0);
@@ -47,7 +48,7 @@ export function Gallery({ images, title, videoUrl, spinImages, modelUrl }: { ima
   }, [box]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const media = tab !== "photos" && (
-    <div className="order-1 relative aspect-[4/5] overflow-hidden border border-line bg-card sm:order-2">
+    <div className={`order-1 relative aspect-[4/5] overflow-hidden border border-line bg-card ${below ? "" : "sm:order-2"}`}>
       {tab === "video" && videoUrl && <VideoPlayer url={videoUrl} poster={list[0]} title={title} />}
       {tab === "spin" && spinImages && <Spin360 frames={spinImages} title={title} />}
       {tab === "3d" && modelUrl && <Model3D src={modelUrl} poster={list[0]} title={title} />}
@@ -55,7 +56,7 @@ export function Gallery({ images, title, videoUrl, spinImages, modelUrl }: { ima
   );
 
   return (
-    <div className="grid gap-3 sm:grid-cols-[72px_1fr]">
+    <div className={`grid gap-3 ${below ? "" : "sm:grid-cols-[72px_1fr]"}`}>
       {tabs.length > 1 && (
         <div role="tablist" aria-label="Product media" className="order-0 flex flex-wrap gap-2 sm:col-span-2">
           {tabs.map(([k, l]) => (
@@ -64,10 +65,10 @@ export function Gallery({ images, title, videoUrl, spinImages, modelUrl }: { ima
           ))}
         </div>
       )}
-      <div className="order-2 flex gap-3 sm:order-1 sm:flex-col">
+      <div className={`order-2 flex gap-3 ${below ? "" : "sm:order-1 sm:flex-col"}`}>
         {list.map((src, n) => (
           <button key={src} onClick={() => { setTab("photos"); setI(n); }} aria-label={`Show image ${n + 1}`} aria-current={n === i}
-            className={`aspect-[4/5] w-16 overflow-hidden border transition sm:w-full ${n === i ? "border-accent" : "border-line opacity-70 hover:opacity-100"}`}>
+            className={`aspect-[4/5] w-16 overflow-hidden border transition ${below ? "" : "sm:w-full"} ${n === i ? "border-accent" : "border-line opacity-70 hover:opacity-100"}`}>
             <img src={src} alt="" width={72} height={90} className="h-full w-full object-cover" />
           </button>
         ))}
@@ -75,7 +76,7 @@ export function Gallery({ images, title, videoUrl, spinImages, modelUrl }: { ima
       {media}
       <button
         type="button" aria-label="Open image full screen" onClick={() => setBox(true)}
-        className={`gallery-main order-1 relative aspect-[4/5] cursor-zoom-in overflow-hidden border border-line bg-card sm:order-2 ${tab !== "photos" ? "hidden" : ""}`}
+        className={`gallery-main order-1 relative aspect-[4/5] cursor-zoom-in overflow-hidden border border-line bg-card ${below ? "" : "sm:order-2"} ${tab !== "photos" ? "hidden" : ""}`}
         onMouseMove={(e) => {
           const r = e.currentTarget.getBoundingClientRect();
           setZoom({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
