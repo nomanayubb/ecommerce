@@ -1,3 +1,4 @@
+import { CardLogo } from "../CardLogo";
 import { Scene3D } from "./Scene3DLazy";
 import { Timeline, Team, Contact, PlaceMap, Gallery as PhotoGallery, Events, Podcast, VideoStory, Stats, BlogGrid, RecipeGrid, CustomCode, Chips, Marquee, PromoBanner, Steps, BrandGrid, PickedForYou } from "./Extra";
 import Link from "next/link";
@@ -165,8 +166,9 @@ function CollectionList({ s, ctx }: P) {
         {cats.map((c, i) => (
           <Reveal key={c.id} delay={i * 90} className={i === 0 ? "col-span-2 row-span-2" : i < 3 ? "md:col-span-2" : ""}>
             <Link href={`/collections/${c.slug}`} className="lift group relative block h-full overflow-hidden border border-line">
-              <img src={`/ph/${c.slug}?ar=4x3`} alt="" loading="lazy" width={800} height={600} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+              <img src={c.image_url || `/cimg/${c.slug}?ar=4x3`} alt="" loading="lazy" width={800} height={600} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <CardLogo className="right-4 top-4" />
               <div className="absolute bottom-0 p-5 text-ondark">
                 <p className="text-[0.65rem] uppercase tracking-[0.3em] text-gold">{String(i + 1).padStart(2, "0")}</p>
                 <p className={`mt-1 font-semibold uppercase tracking-[0.15em] ${i === 0 ? "text-2xl" : "text-lg"}`}>{c.name}</p>

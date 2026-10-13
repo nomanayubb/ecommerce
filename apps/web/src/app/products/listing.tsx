@@ -8,6 +8,7 @@ import { ProductFilters, ActiveFilters, type Facets } from "@/components/Product
 import { ProductGrid } from "@/components/ProductGrid";
 import { FiltersFab } from "@/components/FiltersFab";
 import { ProductCard as Card } from "@/components/ProductCard";
+import { CardLogo } from "@/components/CardLogo";
 
 export type SP = Record<string, string | undefined>;
 
@@ -73,8 +74,9 @@ export async function Listing({ sp, base }: { sp: SP; base: string }) {
       )}
       {cat && !sp.q && (
         <div className="cat-banner relative -mx-4 mb-8 overflow-hidden sm:mx-0">
-          <img src={cat.image_url || `/ph/${cat.slug}?ar=cover`} alt="" width={1600} height={640} fetchPriority="high" className="h-36 w-full object-cover sm:h-48" />
+          <img src={cat.image_url || `/cimg/${cat.slug}?ar=cover`} alt="" width={1600} height={640} fetchPriority="high" className="h-36 w-full object-cover sm:h-48" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
+          <CardLogo className="bottom-4 right-6 sm:bottom-6 sm:right-10" />
           <div className="absolute inset-y-0 left-0 flex flex-col justify-center px-6 text-ondark sm:px-10"><p className="eyebrow">Collection</p><p className="mt-1 text-2xl font-semibold uppercase tracking-[0.12em] sm:text-3xl">{cat.name}</p></div>
         </div>
       )}
