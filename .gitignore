@@ -13,3 +13,4 @@ next-env.d.ts
 brand-source/preview.png
 .next-prod
 apps/web/public/kk/
+apps/api/scripts/.kk-cache.json

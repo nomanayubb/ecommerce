@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import { pool } from "../src/lib/db.js";
 import { delPattern } from "../src/lib/redis.js";
+import { markupPct } from "./markup.js";
 
 const BASE = "https://www.kkmart.pk";
 const UA = "Mozilla/5.0 (compatible; AVERIXA-catalogue-import; shop partner of KK Mart Multan)";
@@ -53,6 +54,9 @@ const titleCase = (t: string) =>
     if (ACR.has(lw)) return lw.toUpperCase();
     return i > 0 && SMALL.has(lw) ? lw : lw.charAt(0).toUpperCase() + lw.slice(1);
   }).join(" ");
+// The database text encoding is Windows-1252: emoji and other symbols it cannot store are dropped.
+const W1252 = new Set("€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ");
+const clean1252 = (s: string) => Array.from(s).filter((ch) => { const c = ch.codePointAt(0)!; return c < 0x100 || W1252.has(ch); }).join("").replace(/\s{2,}/g, " ").trim();
 const decode = (s: string) => s.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;|&rsquo;|&lsquo;/g, "'");
 const strip = (h: string) => decode(h.replace(/<(br|\/p|\/li|\/div|\/h\d)[^>]*>/gi, "\n").replace(/<[^>]+>/g, " ")).replace(/[ \t]+/g, " ").replace(/\n\s*\n+/g, "\n").trim();
 
@@ -125,7 +129,8 @@ console.log(`to import now: ${todo.length}${PHARMACY ? "" : " (Pharmacy menu lef
 async function photo(url: string, file: string): Promise<boolean> {
   const dest = path.join(OUT, file);
   if (fs.existsSync(dest)) return true;
-  const u = new URL(url); u.searchParams.set("width", "800");
+  // the shop's own address serves the same pictures much faster than the shared Shopify picture host
+  const u = new URL(url.replace(/^https:\/\/cdn\.shopify\.com\/s\/files\/1\/0640\/2428\/1300\//, `${BASE}/cdn/shop/`)); u.searchParams.set("width", "800");
   for (let i = 0; i < 4; i++) {
     try {
       const r = await fetch(u, { headers: { "user-agent": UA, accept: "image/webp,image/*;q=0.8" }, signal: AbortSignal.timeout(40000) });
@@ -157,22 +162,28 @@ for (let i = 0; i < todo.length; i += CH) {
   const chunk = todo.slice(i, i + CH);
   const jobs = chunk.flatMap((p) => p.images.map((im, k) => ({ p, im, k })));
   const okMap = new Map<string, boolean>();
-  if (!NO_IMAGES) await pool_(jobs, 12, async (j) => { const f = `${slugify(j.p.handle).slice(0, 90)}-${j.k + 1}.webp`; const ok = await photo(j.im.src, f); okMap.set(f, ok); ok ? photos++ : failedPhotos++; });
+  if (!NO_IMAGES) await pool_(jobs, 8, async (j) => {
+    await sleep(100); // steady, gentle pace: the photo server slows everything down when it is hit in bursts
+    const f = `${slugify(j.p.handle).slice(0, 90)}-${j.k + 1}.webp`; const ok = await photo(j.im.src, f); okMap.set(f, ok); ok ? photos++ : failedPhotos++; });
 
   for (const p of chunk) {
     const slug = slugify(p.handle).slice(0, 120);
     const v0 = p.variants[0];
     if (!v0) continue;
-    const title = titleCase(decode(p.title)).slice(0, 200);
-    const sell = Math.round(Number(v0.price) || 0);
-    const cmp = Math.round(Number(v0.compare_at_price) || 0);
+    const title = clean1252(titleCase(decode(p.title))).slice(0, 200);
+    // the shop's price rule (scripts/markup.ts) is applied to every new product: tier picked from KK Mart's price
+    const kkSell = Math.round(Number(v0.price) || 0);
+    const pct = flag("no-markup") ? 0 : markupPct(kkSell);
+    const up = (n: number) => Math.round(n * (1 + pct / 100));
+    const sell = up(kkSell);
+    const cmp = up(Math.round(Number(v0.compare_at_price) || 0));
     const marked = cmp > sell ? cmp : sell;
-    const vendor = (p.vendor ?? "").trim();
+    const vendor = clean1252((p.vendor ?? "").trim());
     let desc = strip(p.body_html ?? "");
     if (desc.length < 40 || norm(desc) === norm(p.title)) {
       desc = `${title}${vendor ? ` by ${titleCase(vendor)}` : ""}. Buy ${title} online in Pakistan at AVERIXA with cash on delivery and delivery across Pakistan.`;
     }
-    desc = desc.slice(0, 4000);
+    desc = clean1252(desc.slice(0, 4000));
     const files = p.images.map((_, k) => `${slugify(p.handle).slice(0, 90)}-${k + 1}.webp`).filter((f) => NO_IMAGES || okMap.get(f));
     const images = files.map((f) => `/kk/${f}`);
     const tags = [...new Set(p.tags.filter((t) => !PROMO.test(t) && t.length < 30).map((t) => slugify(t)).filter(Boolean))].slice(0, 8);
@@ -194,18 +205,18 @@ for (let i = 0; i < todo.length; i += CH) {
       const ins = await c.query(
         `INSERT INTO products (title, slug, sku, description, status, marked_price, selling_price, brand_id, stock_quantity, moq, images, tags, metafields)
          VALUES ($1,$2,$3,$4,'PUBLISHED',$5,$6,$7,$8,1,$9,$10,$11) ON CONFLICT (slug) DO NOTHING RETURNING id`,
-        [title, slug, uniqueSku(v0.sku || `KK-${p.id}`), desc, marked, sell, brandId, stock, JSON.stringify(images), tags, JSON.stringify({ source: "kkmart", kkProductId: p.id })]
+        [title, slug, uniqueSku(v0.sku || `KK-${p.id}`), desc, marked, sell, brandId, stock, JSON.stringify(images), tags, JSON.stringify({ source: "kkmart", kkProductId: p.id, markupApplied: true, markupPct: pct, priceBeforeMarkup: kkSell })]
       );
       if (!ins.rowCount) { await c.query("ROLLBACK"); continue; }
       const pid = ins.rows[0].id as string;
       if (multi) {
         for (const v of p.variants) {
           const attrs: Record<string, string> = {};
-          p.options.forEach((o, k) => { const val = [v.option1, v.option2, v.option3][k]; if (val && o.name !== "Title") attrs[o.name.toLowerCase()] = val; });
+          p.options.forEach((o, k) => { const val = [v.option1, v.option2, v.option3][k]; if (val && o.name !== "Title") attrs[clean1252(o.name.toLowerCase())] = clean1252(val); });
           const imageIndex = v.featured_image?.position ? v.featured_image.position - 1 : null;
           await c.query(
             "INSERT INTO product_variants (product_id, title, sku, price, stock_quantity, variant_attributes, image_index) VALUES ($1,$2,$3,$4,$5,$6,$7)",
-            [pid, titleCase(v.title).slice(0, 200), uniqueSku(v.sku || `KK-${v.id}`), Math.round(Number(v.price) || sell), v.available ? 20 : 0, JSON.stringify(attrs), imageIndex !== null && imageIndex < images.length ? imageIndex : null]
+            [pid, clean1252(titleCase(v.title)).slice(0, 200), uniqueSku(v.sku || `KK-${v.id}`), (() => { const vp = Math.round(Number(v.price) || 0); return vp ? Math.round(vp * (1 + (flag("no-markup") ? 0 : markupPct(vp)) / 100)) : sell; })(), v.available ? 20 : 0, JSON.stringify(attrs), imageIndex !== null && imageIndex < images.length ? imageIndex : null]
           );
         }
       }
