@@ -10,6 +10,7 @@ import { FiltersFab } from "@/components/FiltersFab";
 import { ProductCard as Card } from "@/components/ProductCard";
 import { CardLogo } from "@/components/CardLogo";
 
+const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 export type SP = Record<string, string | undefined>;
 
 export const find = (nodes: CategoryNode[], slug: string, trail: CategoryNode[] = []): CategoryNode[] | null => {
@@ -68,6 +69,12 @@ export async function Listing({ sp, base }: { sp: SP; base: string }) {
 
   return (
     <>
+      {onColl && cat && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([
+          { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ name: "Home", path: "/" }, { name: "Collections", path: "/collections" }, ...trail.map((c) => ({ name: c.name, path: `/collections/${c.slug}` }))].map((c, i) => ({ "@type": "ListItem", position: i + 1, name: c.name, item: `${SITE}${c.path}` })) },
+          { "@context": "https://schema.org", "@type": "CollectionPage", name: cat.name, description: cat.description ?? undefined, url: `${SITE}/collections/${cat.slug}`, mainEntity: { "@type": "ItemList", numberOfItems: data.total, itemListElement: data.items.slice(0, 24).map((it, i) => ({ "@type": "ListItem", position: i + 1, url: `${SITE}/products/${it.slug}`, name: it.title })) } },
+        ]).replace(/</g, "\u003c") }} />
+      )}
       <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Shop", href: trail.length ? "/products" : undefined }, ...trail.map((c, i) => ({ name: c.name, href: i < trail.length - 1 ? `/collections/${c.slug}` : undefined }))].map((c, i, a) => (i === a.length - 1 ? { name: c.name } : c))} />
       {oneBrand && !cat && !sp.q && (
         <div className="cat-banner mb-8 flex items-center justify-between gap-4 bg-card/60 px-6 py-5"><div><p className="eyebrow">Brand</p><p className="mt-1 text-2xl font-semibold uppercase tracking-[0.15em]">{oneBrand}</p></div><p className="text-sm text-muted">{data.total} {data.total === 1 ? "product" : "products"}</p></div>
@@ -87,6 +94,12 @@ export async function Listing({ sp, base }: { sp: SP; base: string }) {
         </div>
         <p className="text-sm text-muted">{data.total} {data.total === 1 ? "product" : "products"}</p>
       </div>
+      {cat && !sp.q && cat.description && <p className="-mt-2 mb-6 max-w-3xl text-sm leading-relaxed text-muted">{cat.description}</p>}
+      {!sp.q && (() => {
+        const on = sp.brand === "averixa";
+        const o = keep({ ...sp, brand: on ? undefined : "averixa", page: undefined });
+        return <div className="mb-6"><Link href={`${base}${Object.keys(o).length ? `?${new URLSearchParams(o)}` : ""}`} aria-pressed={on} className={`inline-flex items-center gap-2 border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${on ? "border-accent bg-accent/10 text-accent" : "border-line text-muted hover:border-accent hover:text-accent"}`}><span aria-hidden>{on ? "✓" : "○"}</span>AVERIXA products only</Link></div>;
+      })()}
 
       <FiltersFab count={activeCount} />
       <div className="grid gap-10 lg:grid-cols-[230px_1fr]">

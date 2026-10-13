@@ -7,6 +7,7 @@ import { TagIcons } from "./TagIcons";
 import { HoverVideo } from "./HoverVideo";
 import { CardGlow, HoverPhoto, PriceTag } from "./CardFx";
 import { QuickAdd } from "./QuickAdd";
+import { ImageMark } from "./ImageMark";
 import { isFileVideo } from "@/lib/media";
 
 const TAG_BADGES: [string, string][] = [["bestseller", "Bestseller"], ["limited", "Limited"], ["new", "New"]];
@@ -24,6 +25,7 @@ export function ProductCard({ p, priority = false }: { p: ProductSummary; priori
             <img src={p.images[0]} alt={p.title} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : undefined} decoding="async" width={600} height={750}
               className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${soldOut ? "opacity-50 grayscale" : ""}`} />
           )}
+          <ImageMark />
           <CardGlow image={p.images[0]} />
           {p.images[1] && !soldOut && <HoverPhoto src={p.images[2] ?? p.images[1]} />}
           {p.tags?.includes("recommended") && !soldOut && <span className="absolute left-0 top-14 bg-gold px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-darksurface">Recommended</span>}

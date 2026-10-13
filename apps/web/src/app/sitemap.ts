@@ -11,7 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const get = <T,>(p: string, d: T) => api<T>(p, { revalidate: 3600 }).catch(() => d);
   const [tree, products, recipes, posts, bundles] = await Promise.all([
     get<CategoryNode[]>("/categories/tree", []),
-    get<{ items: ProductSummary[] }>("/products?pageSize=100", { items: [] }),
+    (async () => { const all: ProductSummary[] = []; for (let pg = 1; pg <= 40; pg++) { const r = await get<{ items: ProductSummary[]; total: number }>(`/products?pageSize=100&page=${pg}`, { items: [], total: 0 }); all.push(...r.items); if (all.length >= r.total || !r.items.length) break; } return { items: all }; })(),
     get<{ items: { slug: string }[] }>("/recipes?pageSize=48", { items: [] }),
     get<{ items: { slug: string; published_at: string | null }[] }>("/posts?pageSize=30", { items: [] }),
     get<{ items: { slug: string }[] }>("/bundles", { items: [] }),

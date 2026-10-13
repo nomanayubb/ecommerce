@@ -9,7 +9,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const tree = await api<CategoryNode[]>("/categories/tree", { revalidate: 300 }).catch(() => [] as CategoryNode[]);
   const c = find(tree, slug)?.at(-1);
-  return { title: c ? c.name : "Collection", alternates: { canonical: `/collections/${slug}` } };
+  const title = c ? (`${c.name} – Shop Online in Pakistan`.length <= 60 ? `${c.name} – Shop Online in Pakistan` : c.name) : "Collection";
+  return { title, description: c?.description ?? undefined, alternates: { canonical: `/collections/${slug}` }, openGraph: { title, description: c?.description ?? undefined, type: "website" } };
 }
 
 /** A collection: the product list filtered to one category, at /collections/<address>. */

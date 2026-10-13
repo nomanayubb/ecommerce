@@ -44,6 +44,7 @@ export interface CategoryNode {
   slug: string;
   image_url?: string | null;
   hasChildren?: boolean;
+  description?: string | null;
   children: CategoryNode[];
 }
 

@@ -21,6 +21,8 @@ export const metaSchema = z.object({
   care: z.array(z.string().trim().min(1).max(200)).max(12).default([]),
   material: z.string().trim().max(60).default(""),
   materialNote: z.string().trim().max(500).default(""),
+  seoTitle: z.string().trim().max(70).default(""),
+  seoDescription: z.string().trim().max(170).default(""),
   // null = follow the theme setting (admin: Brand & settings, Product page)
   showAddToCart: z.boolean().nullish().transform((v) => v ?? null),
   showBuyNow: z.boolean().nullish().transform((v) => v ?? null),

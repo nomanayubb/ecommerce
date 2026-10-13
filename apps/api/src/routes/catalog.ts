@@ -180,7 +180,7 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
   const categoryTree = () =>
     cached("catalog:categories:tree", 300, async () => {
       const { rows } = await pool.query(
-        "SELECT id, parent_id, name, slug, image_url FROM categories WHERE is_active ORDER BY sort_order, name"
+        "SELECT id, parent_id, name, slug, image_url, description FROM categories WHERE is_active ORDER BY sort_order, name"
       );
       const byId = new Map<string, any>(rows.map((r) => [r.id, { ...r, children: [] }]));
       const roots: any[] = [];

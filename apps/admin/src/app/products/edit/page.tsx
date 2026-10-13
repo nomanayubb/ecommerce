@@ -10,7 +10,7 @@ interface Product {
   id: string; title: string; slug: string; sku: string; description: string | null; status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   markedPrice: number; sellingPrice: number; wholesalePrice: number | null; brandId: string | null; stockQuantity: number; moq: number;
   images: string[]; tags: string[]; model3dUrl: string;
-  meta: { videoUrl: string; spinImages: string[]; sizeGuide: { note: string; columns: string[]; rows: string[][] } | null; specs: { label: string; value: string }[]; care: string[]; material: string; materialNote: string; showAddToCart: boolean | null; showBuyNow: boolean | null; showAddress: boolean | null };
+  meta: { videoUrl: string; spinImages: string[]; sizeGuide: { note: string; columns: string[]; rows: string[][] } | null; specs: { label: string; value: string }[]; care: string[]; material: string; materialNote: string; seoTitle: string; seoDescription: string; showAddToCart: boolean | null; showBuyNow: boolean | null; showAddress: boolean | null };
   categoryIds: string[]; variants: Variant[]; priceTiers: { minQty: number; unitPrice: number }[];
 }
 
@@ -133,6 +133,11 @@ function Editor() {
           <label className={label}>Categories (hold Ctrl to pick several)<select multiple size={5} className={input} value={p.categoryIds} onChange={(e) => set("categoryIds", [...e.target.selectedOptions].map((o) => o.value))}>{cats.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}</select></label>
         </div>
         <label className={label}>Tags, comma separated. Tags like <code>dishwasher-safe, oven-safe, microwave-safe, freezer-safe, induction, bpa-free, vegan, halal, gluten-free, eco, gift</code> show icons on the storefront; <code>bestseller, new, limited</code> show badges<input className={input} value={t.tags} onChange={(e) => setT({ ...t, tags: e.target.value })} /></label>
+      </Section>
+
+      <Section title="Search engine (Google) listing" hint="What shoppers see in Google. Leave empty to use the product title and the start of the description.">
+        <label className={label}>Page title (best under 60 characters: main words first, then the brand)<input maxLength={70} className={input} value={p.meta.seoTitle ?? ""} onChange={(e) => setMeta({ seoTitle: e.target.value })} /><span className="mt-1 block text-[0.7rem]">{(p.meta.seoTitle ?? "").length} / 60</span></label>
+        <label className={label}>Description (best 120 to 155 characters: what it is, who it is for, price or delivery)<textarea rows={3} maxLength={170} className={input} value={p.meta.seoDescription ?? ""} onChange={(e) => setMeta({ seoDescription: e.target.value })} /><span className="mt-1 block text-[0.7rem]">{(p.meta.seoDescription ?? "").length} / 155</span></label>
       </Section>
 
       <Section title="Buy buttons" hint="By default every product follows Brand & settings, Product page. Change a button here only for this product.">

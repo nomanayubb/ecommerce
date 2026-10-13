@@ -21,11 +21,16 @@ import type { RecipeCardData } from "@/lib/content";
 
 const load = (slug: string) => api<ProductDetail>(`/products/${slug}`).catch(() => null);
 
+const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const p = await load((await params).slug);
   if (!p) return { title: "Product not found" };
-  const desc = (p.description ?? p.title).slice(0, 160);
-  return { title: p.title, description: desc, alternates: { canonical: `/products/${(await params).slug}` }, openGraph: { title: p.title, description: desc, images: p.images.slice(0, 1) } };
+  const m = (p.metafields ?? {}) as { seoTitle?: string; seoDescription?: string };
+  const clean = (t: string) => t.replace(/\s+/g, " ").trim();
+  const title = m.seoTitle || (p.title.length > 48 ? p.title : `${p.title} – Buy Online in Pakistan`);
+  const desc = m.seoDescription || clean(p.description ?? p.title).slice(0, 155);
+  return { title, description: desc, alternates: { canonical: `/products/${(await params).slug}` }, openGraph: { title, description: desc, type: "website", images: p.images.filter((i) => !i.endsWith(".svg") && !i.startsWith("/ph/") && !i.startsWith("/cimg/")).slice(0, 1) } };
 }
 
 export default async function PDP({ params }: { params: Promise<{ slug: string }> }) {
@@ -47,9 +52,10 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
     sku: (p as unknown as { sku?: string }).sku,
     image: p.images,
     description: p.description ?? undefined,
+    url: `${SITE}/products/${slug}`,
     brand: p.brand_name ? { "@type": "Brand", name: p.brand_name } : undefined,
     aggregateRating: p.rating_count ? { "@type": "AggregateRating", ratingValue: p.rating_avg, reviewCount: p.rating_count } : undefined,
-    offers: { "@type": "Offer", priceCurrency: "PKR", price: p.selling_price, availability: p.stock_quantity > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" },
+    offers: { "@type": "Offer", url: `${SITE}/products/${slug}`, priceCurrency: "PKR", price: p.selling_price, itemCondition: "https://schema.org/NewCondition", priceValidUntil: new Date(Date.now() + 365 * 864e5).toISOString().slice(0, 10), seller: { "@type": "Organization", name: branding.name }, availability: p.stock_quantity > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" },
   };
 
   const details: [string, string][] = [
