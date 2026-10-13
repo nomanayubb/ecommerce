@@ -81,14 +81,16 @@ function MotionToggle({ labelled = false, className = "" }: { labelled?: boolean
 
 /** Loads one branch of the category tree the first time a menu is opened, so pages never carry the whole tree. */
 function useBranch(slug: string, enabled: boolean) {
-  const [kids, setKids] = useState<CategoryNode[] | null>(null);
+  const [cache, setCache] = useState<Record<string, CategoryNode[]>>({});
   useEffect(() => {
-    if (!enabled || kids) return;
+    if (!enabled || cache[slug]) return;
     let live = true;
-    send<{ children: CategoryNode[] }>("GET", `categories/children/${slug}`).then((r) => live && setKids(r.children)).catch(() => live && setKids([]));
+    send<{ children: CategoryNode[] }>("GET", `categories/children/${slug}`)
+      .then((r) => live && setCache((c) => ({ ...c, [slug]: r.children })))
+      .catch(() => live && setCache((c) => ({ ...c, [slug]: [] })));
     return () => { live = false; };
-  }, [enabled, kids, slug]);
-  return kids;
+  }, [enabled, cache, slug]);
+  return cache[slug] ?? null;
 }
 
 function MegaItem({ node }: { node: CategoryNode }) {
