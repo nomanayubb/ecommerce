@@ -235,3 +235,9 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Logo effects set back to the version before the extra always-on layers: gold shine every 2.75 s (short pause) and soft glow only. The always-on colour flow/drift layers were removed.
 - Logo shine now repeats instantly: no start delay and no pause between sweeps (2.25 s per sweep, linear).
 - Header logo (logo and text together) now drifts 6 px to the right and back every 5 s with a slight fade, like the footer logo's breathing. Transform only; neighbours do not move.
+
+## 2026-10-13 — Admin controls: buy buttons per product, more menu links
+- Product editor (admin) has a "Buy buttons" section: show "Add to bag" (also hides the quick-add on cards), show "Buy now" (adds the item and goes to checkout; off by default), show the delivery address/city check under the buttons. Stored in product metafields (no migration); defaults keep today's look.
+- Header menu links: up to 12 (was 6), label up to 30 characters, edited in admin Settings, Menu links.
+- With no buy button on, the quantity box and sticky buy bars are hidden too.
+- Verified: flags saved via the admin API and rendered on the production site (Buy now present, address check hidden); defaults restored afterwards. Admin form not clicked through by eye.

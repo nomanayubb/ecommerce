@@ -208,8 +208,8 @@ export default function Settings() {
       </Group>
 
       <Group title="Menu links">
-        <label className={label}>Extra links in the header menu, one per line: Label | /address (up to 6, e.g. Recipes | /recipes, Journal | /blog, Guides | /guides, Sets | /bundles)
-          <textarea rows={4} className={input} value={b.navLinks.map((l) => `${l.label} | ${l.href}`).join("\n")} onChange={(e) => set("navLinks", e.target.value.split("\n").slice(0, 6).map((ln) => { const [lab, ...rest] = ln.split("|"); return { label: lab.trim(), href: rest.join("|").trim() }; }))} />
+        <label className={label}>Extra links in the header menu, one per line: Label | /address (up to 12, e.g. Recipes | /recipes, Journal | /blog, Guides | /guides, Sets | /bundles)
+          <textarea rows={6} className={input} value={b.navLinks.map((l) => `${l.label} | ${l.href}`).join("\n")} onChange={(e) => set("navLinks", e.target.value.split("\n").slice(0, 12).map((ln) => { const [lab, ...rest] = ln.split("|"); return { label: lab.trim(), href: rest.join("|").trim() }; }))} />
         </label>
       </Group>
 

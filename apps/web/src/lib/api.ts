@@ -1,6 +1,7 @@
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
 
 export interface ProductSummary {
+  show_add_to_cart?: boolean;
   id: string;
   title: string;
   slug: string;

@@ -39,7 +39,7 @@ export const brandingSchema = z.object({
     instagram: url.default(""), facebook: url.default(""), tiktok: url.default(""),
     youtube: url.default(""), whatsapp: url.default(""), x: url.default(""),
   }).default({}),
-  navLinks: z.array(z.object({ label: z.string().trim().min(1).max(24), href: url })).max(6).default([]),
+  navLinks: z.array(z.object({ label: z.string().trim().min(1).max(30), href: url })).max(12).default([]),
   searchHints: z.array(z.string().trim().max(40)).max(6).default([]),
   effects: z.object({
     ripple: z.boolean().default(true),

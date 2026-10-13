@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { pkr, type ProductDetail } from "@/lib/api";
 import { useCart } from "./CartProvider";
 import { useSite } from "./Site";
@@ -13,7 +14,10 @@ import { DispatchNote } from "./Dispatch";
 import { CashIcon, PackageIcon, SupportIcon, TruckIcon } from "./icons";
 
 export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; compact?: boolean; onAdded?: () => void }) {
-  const { add, lines } = useCart();
+  const { add, lines, setOpen } = useCart();
+  const router = useRouter();
+  const flags = (p.metafields ?? {}) as Record<string, unknown>;
+  const showAdd = flags.showAddToCart !== false, showBuy = flags.showBuyNow === true, showAddr = flags.showAddress !== false;
   const ctaRef = useRef<HTMLDivElement>(null);
   const [pastCta, setPastCta] = useState(false);
   const { store } = useSite();
@@ -82,11 +86,26 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
     setTimeout(() => setAdded(false), 1800);
   };
 
-  const cta = (
-    <button disabled={soldOut || qty > stock} onClick={addToBag} className="btn btn-primary w-full disabled:cursor-not-allowed disabled:opacity-40">
-      {soldOut ? "Sold out" : added ? "Added ✓" : `Add to bag · ${pkr(unit * qty)}`}
-    </button>
-  );
+  const buyNow = () => {
+    add({ productId: p.id, variantId, title: variant ? `${p.title} - ${variant.title}` : p.title, price: unit, marked: Number(p.marked_price), image: p.images[0], quantity: qty });
+    setOpen(false);
+    router.push("/checkout");
+  };
+  const canBuy = showAdd || showBuy;
+  const cta = canBuy ? (
+    <div className="flex flex-col gap-2">
+      {showAdd && (
+        <button disabled={soldOut || qty > stock} onClick={addToBag} className="btn btn-primary w-full disabled:cursor-not-allowed disabled:opacity-40">
+          {soldOut ? "Sold out" : added ? "Added ✓" : `Add to bag · ${pkr(unit * qty)}`}
+        </button>
+      )}
+      {showBuy && !soldOut && (
+        <button disabled={qty > stock} onClick={buyNow} className={`btn w-full disabled:cursor-not-allowed disabled:opacity-40 ${showAdd ? "border border-fg/50 hover:border-accent hover:text-accent" : "btn-primary"}`}>
+          Buy now · {pkr(unit * qty)}
+        </button>
+      )}
+    </div>
+  ) : null;
 
   return (
     <div className="space-y-6">
@@ -173,14 +192,14 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
         </div>
       )}
 
-      <div className="flex items-stretch gap-3">
+      {canBuy && <div className="flex items-stretch gap-3">
         <div className="flex items-center border border-line" role="group" aria-label="Quantity">
           <button className="h-full px-4 text-lg transition hover:text-accent" onClick={() => setQty((q) => clamp(q - 1))} aria-label="Decrease quantity">−</button>
           <input value={qty} onChange={(e) => setQty(clamp(Number(e.target.value) || p.moq))} inputMode="numeric" onFocus={(e) => e.currentTarget.select()} aria-label="Quantity" className="w-12 bg-transparent text-center text-sm outline-none" />
           <button className="h-full px-4 text-lg transition hover:text-accent" onClick={() => setQty((q) => clamp(q + 1))} aria-label="Increase quantity">+</button>
         </div>
         <div ref={ctaRef} className="flex-1">{cta}</div>
-      </div>
+      </div>}
       {!soldOut && store.freeShippingThreshold > 0 && (
         <p className="text-xs text-muted">{toFree > 0 ? <>Add <strong className="text-fg">{pkr(toFree)}</strong> more to your order for free delivery.</> : <span className="text-accent">This order qualifies for free delivery.</span>}</p>
       )}
@@ -189,14 +208,14 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
 
       {!compact && <TagIcons tags={p.tags} size={22} max={8} labels className="border-t border-line pt-6" />}
       {!compact && !soldOut && <DispatchNote />}
-      {!compact && <DeliveryEstimate />}
+      {!compact && showAddr && <DeliveryEstimate />}
       {!compact && (<ul className="grid gap-3 border-t border-line pt-6 text-sm text-muted sm:grid-cols-2">
         {([[CashIcon, "Cash on delivery available"], [TruckIcon, store.freeShippingThreshold > 0 ? `Free delivery over ${pkr(store.freeShippingThreshold)}` : "Free delivery"], [PackageIcon, "Checked and packed with care"], [SupportIcon, "Easy support if anything is off"]] as const).map(([Ic, t]) => (
           <li key={t} className="flex items-center gap-3"><Ic size={20} className="shrink-0 text-fg" />{t}</li>
         ))}
       </ul>)}
 
-      {!compact && pastCta && (
+      {!compact && canBuy && pastCta && (
         <div className="fixed inset-x-0 bottom-0 z-30 hidden border-t border-line bg-bg/95 backdrop-blur md:block">
           <div className="mx-auto flex max-w-[var(--maxw)] items-center gap-6 px-4 py-3">
             <p className="flex-1 truncate text-sm font-medium">{p.title}</p>
@@ -206,7 +225,7 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
         </div>
       )}
       {/* Mobile sticky bar */}
-      {!compact && <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-line bg-bg/95 p-3 backdrop-blur md:hidden"><p className="min-w-0 flex-1 truncate text-xs font-medium">{p.title}</p><div className="w-48 shrink-0">{cta}</div></div>}
+      {!compact && canBuy && <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-line bg-bg/95 p-3 backdrop-blur md:hidden"><p className="min-w-0 flex-1 truncate text-xs font-medium">{p.title}</p><div className="w-48 shrink-0">{cta}</div></div>}
     </div>
   );
 }

@@ -10,7 +10,7 @@ interface Product {
   id: string; title: string; slug: string; sku: string; description: string | null; status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   markedPrice: number; sellingPrice: number; wholesalePrice: number | null; brandId: string | null; stockQuantity: number; moq: number;
   images: string[]; tags: string[]; model3dUrl: string;
-  meta: { videoUrl: string; spinImages: string[]; sizeGuide: { note: string; columns: string[]; rows: string[][] } | null; specs: { label: string; value: string }[]; care: string[]; material: string; materialNote: string };
+  meta: { videoUrl: string; spinImages: string[]; sizeGuide: { note: string; columns: string[]; rows: string[][] } | null; specs: { label: string; value: string }[]; care: string[]; material: string; materialNote: string; showAddToCart: boolean; showBuyNow: boolean; showAddress: boolean };
   categoryIds: string[]; variants: Variant[]; priceTiers: { minQty: number; unitPrice: number }[];
 }
 
@@ -133,6 +133,12 @@ function Editor() {
           <label className={label}>Categories (hold Ctrl to pick several)<select multiple size={5} className={input} value={p.categoryIds} onChange={(e) => set("categoryIds", [...e.target.selectedOptions].map((o) => o.value))}>{cats.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}</select></label>
         </div>
         <label className={label}>Tags, comma separated. Tags like <code>dishwasher-safe, oven-safe, microwave-safe, freezer-safe, induction, bpa-free, vegan, halal, gluten-free, eco, gift</code> show icons on the storefront; <code>bestseller, new, limited</code> show badges<input className={input} value={t.tags} onChange={(e) => setT({ ...t, tags: e.target.value })} /></label>
+      </Section>
+
+      <Section title="Buy buttons" hint="Choose what shoppers see on this product's page.">
+        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={p.meta.showAddToCart} onChange={(e) => setMeta({ showAddToCart: e.target.checked })} />Show "Add to bag" (also the quick-add on product cards)</label>
+        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={p.meta.showBuyNow} onChange={(e) => setMeta({ showBuyNow: e.target.checked })} />Show "Buy now" (adds the item and goes straight to checkout)</label>
+        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={p.meta.showAddress} onChange={(e) => setMeta({ showAddress: e.target.checked })} />Show the delivery address / city check under the buttons</label>
       </Section>
 
       <Section title="Photos, video, 360 and 3D" hint="Paste web addresses (or /path on the storefront). The first photo is the main one.">

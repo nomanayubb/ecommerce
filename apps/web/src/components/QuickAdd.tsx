@@ -9,7 +9,7 @@ import { CheckIcon } from "./icons";
 export function QuickAdd({ p }: { p: ProductSummary }) {
   const { add } = useCart();
   const [done, setDone] = useState(false);
-  if (p.stock_quantity <= 0 || p.has_variants || (p.moq ?? 1) > 1) return null;
+  if (p.show_add_to_cart === false || p.stock_quantity <= 0 || p.has_variants || (p.moq ?? 1) > 1) return null;
   return (
     <button
       type="button" aria-label={`Add ${p.title} to bag`}
