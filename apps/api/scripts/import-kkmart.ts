@@ -29,7 +29,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 async function getJson<T>(url: string): Promise<T | null> {
   for (let i = 0; i < 5; i++) {
     try {
-      const r = await fetch(url, { headers: { "user-agent": UA, accept: "application/json" } });
+      const r = await fetch(url, { headers: { "user-agent": UA, accept: "application/json" }, signal: AbortSignal.timeout(30000) });
       if (r.status === 429 || r.status >= 500) { await sleep(2000 * (i + 1)); continue; }
       if (!r.ok) return null;
       return (await r.json()) as T;
@@ -38,7 +38,7 @@ async function getJson<T>(url: string): Promise<T | null> {
   return null;
 }
 async function getText(url: string): Promise<string> {
-  for (let i = 0; i < 4; i++) { try { const r = await fetch(url, { headers: { "user-agent": UA } }); if (r.ok) return await r.text(); } catch {} await sleep(1500); }
+  for (let i = 0; i < 4; i++) { try { const r = await fetch(url, { headers: { "user-agent": UA }, signal: AbortSignal.timeout(30000) }); if (r.ok) return await r.text(); } catch {} await sleep(1500); }
   return "";
 }
 
@@ -80,11 +80,13 @@ for (const [h, text] of navHandles) { const hit = byName.get(norm(text)); if (hi
 console.log(`menu links ${navHandles.size}, matched to our collections ${handleToCats.size}`);
 
 // ---- 2. which products sit in which collection
-const productCats = new Map<string, Set<string>>(); // product handle -> our category ids
+const CACHE = path.join(here, ".kk-cache.json");
+const cached = !flag("refresh") && !ONLY && fs.existsSync(CACHE) && Date.now() - fs.statSync(CACHE).mtimeMs < 24 * 3600e3 ? JSON.parse(fs.readFileSync(CACHE, "utf8")) as { cats: [string, string[]][]; products: KProduct[] } : null;
+const productCats = new Map<string, Set<string>>(cached ? cached.cats.map(([h, ids]) => [h, new Set(ids)]) : []); // product handle -> our category ids
 const wanted = ONLY ? new Map([...handleToCats].filter(([h]) => h === ONLY)) : handleToCats;
 if (ONLY && !wanted.size) { const alt = await getJson<{ collection: { title: string } }>(`${BASE}/collections/${ONLY}.json`); const hit = alt && byName.get(norm(alt.collection.title)); if (hit) wanted.set(ONLY, hit); }
 let n = 0;
-await pool_([...wanted], 6, async ([handle, targets]) => {
+if (!cached) await pool_([...wanted], 6, async ([handle, targets]) => {
   for (let pg = 1; pg <= 60; pg++) {
     const d = await getJson<{ products: { handle: string }[] }>(`${BASE}/collections/${handle}/products.json?limit=250&page=${pg}`);
     if (!d || !d.products.length) break;
@@ -94,7 +96,7 @@ await pool_([...wanted], 6, async ([handle, targets]) => {
   if (++n % 50 === 0) console.log(`  collections read ${n}/${wanted.size}`);
 });
 // keep only the deepest collections of each product (parents show their children's products anyway)
-for (const [h, set] of productCats) {
+if (!cached) for (const [h, set] of productCats) {
   const drop = new Set<string>();
   for (const id of set) for (const a of ancestors(id)) if (set.has(a)) drop.add(a);
   productCats.set(h, new Set([...set].filter((id) => !drop.has(id))));
@@ -102,14 +104,15 @@ for (const [h, set] of productCats) {
 console.log(`products placed in collections: ${productCats.size}`);
 
 // ---- 3. the products themselves
-const products: KProduct[] = [];
-for (let pg = 1; pg <= 300; pg++) {
+const products: KProduct[] = cached ? cached.products : [];
+if (!cached) for (let pg = 1; pg <= 300; pg++) {
   const d = await getJson<{ products: KProduct[] }>(`${BASE}/products.json?limit=250&page=${pg}`);
   if (!d || !d.products.length) break;
   products.push(...d.products);
   if (d.products.length < 250) break;
 }
-console.log(`products in the KK Mart feed: ${products.length}`);
+console.log(`products in the KK Mart feed: ${products.length}${cached ? " (from the saved copy)" : ""}`);
+if (!cached && !ONLY) fs.writeFileSync(CACHE, JSON.stringify({ cats: [...productCats].map(([h, set]) => [h, [...set]]), products }));
 
 let todo = products.filter((p) => (ONLY ? productCats.has(p.handle) : true));
 if (!PHARMACY) todo = todo.filter((p) => ![...(productCats.get(p.handle) ?? [])].some((id) => norm(topOf(id).name) === "pharmacy"));
@@ -122,10 +125,10 @@ console.log(`to import now: ${todo.length}${PHARMACY ? "" : " (Pharmacy menu lef
 async function photo(url: string, file: string): Promise<boolean> {
   const dest = path.join(OUT, file);
   if (fs.existsSync(dest)) return true;
-  const u = new URL(url); u.searchParams.set("width", "1000");
+  const u = new URL(url); u.searchParams.set("width", "800");
   for (let i = 0; i < 4; i++) {
     try {
-      const r = await fetch(u, { headers: { "user-agent": UA } });
+      const r = await fetch(u, { headers: { "user-agent": UA, accept: "image/webp,image/*;q=0.8" }, signal: AbortSignal.timeout(40000) });
       if (r.status === 429 || r.status >= 500) { await sleep(2000 * (i + 1)); continue; }
       if (!r.ok) return false;
       const buf = Buffer.from(await r.arrayBuffer());
@@ -154,7 +157,7 @@ for (let i = 0; i < todo.length; i += CH) {
   const chunk = todo.slice(i, i + CH);
   const jobs = chunk.flatMap((p) => p.images.map((im, k) => ({ p, im, k })));
   const okMap = new Map<string, boolean>();
-  if (!NO_IMAGES) await pool_(jobs, 24, async (j) => { const f = `${slugify(j.p.handle).slice(0, 90)}-${j.k + 1}.webp`; const ok = await photo(j.im.src, f); okMap.set(f, ok); ok ? photos++ : failedPhotos++; });
+  if (!NO_IMAGES) await pool_(jobs, 12, async (j) => { const f = `${slugify(j.p.handle).slice(0, 90)}-${j.k + 1}.webp`; const ok = await photo(j.im.src, f); okMap.set(f, ok); ok ? photos++ : failedPhotos++; });
 
   for (const p of chunk) {
     const slug = slugify(p.handle).slice(0, 120);
