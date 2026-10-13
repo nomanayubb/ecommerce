@@ -83,6 +83,72 @@ export const collectionAdminRoutes: FastifyPluginAsync = async (app) => {
     return { ok: true };
   });
 
+  // Bulk edit: apply the same change to every product in the collection (or just the chosen ones).
+  const bulkSchema = z.object({
+    productIds: z.array(z.string().uuid()).max(2000).optional(),
+    status: z.enum(["PUBLISHED", "DRAFT", "ARCHIVED"]).optional(),
+    price: z.object({ mode: z.enum(["percent", "amount", "set", "discount"]), value: z.number().min(-1_000_000).max(10_000_000), alsoMarked: z.boolean().default(true) }).optional(),
+    stock: z.object({ mode: z.enum(["set", "add"]), value: z.number().int().min(-1_000_000).max(1_000_000) }).optional(),
+    addTags: z.array(z.string().trim().toLowerCase().min(1).max(40)).max(10).optional(),
+    removeTags: z.array(z.string().trim().toLowerCase().min(1).max(40)).max(10).optional(),
+    showAddToCart: z.boolean().optional(),
+    showBuyNow: z.boolean().optional(),
+    showAddress: z.boolean().optional(),
+  });
+  async function runBulk(collectionId: string | null, b: z.infer<typeof bulkSchema>) {
+    const c = await pool.connect();
+    let changed = 0;
+    try {
+      await c.query("BEGIN");
+      const base = collectionId
+        ? { sql: `SELECT p.id, p.marked_price, p.selling_price, p.stock_quantity, p.tags, p.metafields FROM product_categories pc JOIN products p ON p.id = pc.product_id WHERE pc.category_id = $1 FOR UPDATE OF p`, args: [collectionId] }
+        : { sql: `SELECT p.id, p.marked_price, p.selling_price, p.stock_quantity, p.tags, p.metafields FROM products p FOR UPDATE OF p`, args: [] as string[] };
+      const rows = (await c.query(base.sql, base.args)).rows.filter((r) => !b.productIds || b.productIds.includes(r.id));
+      for (const r of rows) {
+        let marked = Number(r.marked_price), sell = Number(r.selling_price), stock = r.stock_quantity as number;
+        let factor: ((n: number) => number) | null = null;
+        if (b.price) {
+          const v = b.price.value;
+          if (b.price.mode === "percent") factor = (n) => n * (1 + v / 100);
+          else if (b.price.mode === "amount") factor = (n) => n + v;
+          else if (b.price.mode === "set") sell = v;
+          else sell = marked * (1 - v / 100);
+          if (factor) { sell = factor(sell); if (b.price.alsoMarked) marked = factor(marked); }
+          sell = Math.max(0, Math.round(sell));
+          marked = Math.max(0, Math.round(marked));
+          if (sell > marked) marked = sell;
+        }
+        if (b.stock) stock = Math.max(0, b.stock.mode === "set" ? b.stock.value : stock + b.stock.value);
+        let tags: string[] = r.tags ?? [];
+        if (b.addTags?.length) tags = [...new Set([...tags, ...b.addTags])];
+        if (b.removeTags?.length) tags = tags.filter((t) => !b.removeTags!.includes(t));
+        const meta = { ...(r.metafields ?? {}) } as Record<string, unknown>;
+        for (const k of ["showAddToCart", "showBuyNow", "showAddress"] as const) if (b[k] !== undefined) meta[k] = b[k];
+        await c.query(
+          "UPDATE products SET status = COALESCE($2, status), marked_price = $3, selling_price = $4, stock_quantity = $5, tags = $6, metafields = $7, updated_at = now() WHERE id = $1",
+          [r.id, b.status ?? null, marked, sell, stock, tags, JSON.stringify(meta)]
+        );
+        if (b.price && (b.price.mode === "percent" || b.price.mode === "amount")) {
+          const v = b.price.value;
+          await c.query(
+            b.price.mode === "percent" ? "UPDATE product_variants SET price = GREATEST(0, round(price * (1 + $2::numeric / 100))) WHERE product_id = $1" : "UPDATE product_variants SET price = GREATEST(0, round(price + $2::numeric)) WHERE product_id = $1",
+            [r.id, v]
+          );
+        }
+        changed++;
+      }
+      await c.query("COMMIT");
+    } catch (e) { await c.query("ROLLBACK"); throw e; } finally { c.release(); }
+    await delPattern("catalog:*");
+    return { ok: true, changed };
+  }
+  app.post<{ Params: { id: string } }>("/collections/:id/bulk", { preHandler: writer }, async (req, reply) => {
+    if (!isId(req.params.id)) return reply.status(404).send({ success: false, error: "Not found" });
+    return runBulk(req.params.id, bulkSchema.parse(req.body));
+  });
+  // Same edit across every product in the shop (or the chosen ones).
+  app.post("/products/bulk-edit", { preHandler: writer }, async (req) => runBulk(null, bulkSchema.parse(req.body)));
+
   // Replace the whole product list of a collection in one go.
   app.put<{ Params: { id: string } }>("/collections/:id/products", { preHandler: writer }, async (req, reply) => {
     if (!isId(req.params.id)) return reply.status(404).send({ success: false, error: "Not found" });

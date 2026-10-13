@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api, pkr, type AdminProduct } from "@/lib/api";
+import { BulkPanel } from "@/components/BulkPanel";
 
 type Edit = { sellingPrice?: number; stockQuantity?: number; status?: AdminProduct["status"] };
 
@@ -11,6 +12,8 @@ export default function Products() {
   const [edits, setEdits] = useState<Record<string, Edit>>({});
   const [q, setQ] = useState("");
   const [msg, setMsg] = useState("");
+  const [sel, setSel] = useState<string[]>([]);
+  const toggle = (id: string) => setSel((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
 
   const load = (search = q) =>
     api<AdminProduct[]>(`/admin/products?q=${encodeURIComponent(search)}`).then(setRows).catch((e) => setMsg(e.message));
@@ -48,15 +51,17 @@ export default function Products() {
         <Link href="/products/new" className="rounded border border-line px-4 py-1.5 text-sm">New product</Link>
       </div>
       {msg && <p className="mb-2 text-sm text-muted">{msg}</p>}
+      <BulkPanel endpoint="/admin/products/bulk-edit" selected={sel} total={rows.length} scopeLabel="products" onDone={() => { setSel([]); load(); }} />
       <table className="w-full text-left text-sm">
         <thead className="text-muted">
-          <tr><th className={cell}>Product</th><th className={cell}>SKU</th><th className={cell}>Price</th><th className={cell}>Stock</th><th className={cell}>Status</th></tr>
+          <tr><th className={cell}><input type="checkbox" aria-label="Select all shown" checked={rows.length > 0 && sel.length === rows.length} onChange={(e) => setSel(e.target.checked ? rows.map((r) => r.id) : [])} /></th><th className={cell}>Product</th><th className={cell}>SKU</th><th className={cell}>Price</th><th className={cell}>Stock</th><th className={cell}>Status</th></tr>
         </thead>
         <tbody>
           {rows.map((p) => {
             const e = edits[p.id] ?? {};
             return (
               <tr key={p.id} className={edits[p.id] ? "bg-brand/5" : ""}>
+                <td className={cell}><input type="checkbox" aria-label={`Select ${p.title}`} checked={sel.includes(p.id)} onChange={() => toggle(p.id)} /></td>
                 <td className={cell}><Link href={`/products/edit?id=${p.id}`} className="underline-offset-4 hover:underline">{p.title}</Link></td>
                 <td className={`${cell} text-muted`}>{p.sku}</td>
                 <td className={cell}>
