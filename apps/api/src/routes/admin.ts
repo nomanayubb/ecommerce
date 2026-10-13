@@ -93,6 +93,16 @@ export const adminRoutes: FastifyPluginAsync = async (app) => {
     }
   });
 
+  // How many products match a search (for the products page counter and "apply to all" bulk edits).
+  app.get("/products/count", async (req) => {
+    const q = z.object({ q: z.string().optional(), status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).optional() }).parse(req.query);
+    const r = await pool.query(
+      `SELECT count(*)::int AS n FROM products WHERE ($1::text IS NULL OR title ILIKE '%' || $1 || '%' OR sku ILIKE '%' || $1 || '%') AND ($2::text IS NULL OR status = $2)`,
+      [q.q || null, q.status ?? null]
+    );
+    return { total: r.rows[0].n as number };
+  });
+
   app.get("/products", async (req) => {
     const q = z.object({
       q: z.string().optional(),

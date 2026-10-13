@@ -11,7 +11,7 @@ const label = "block text-xs font-medium text-muted";
 const tags = (v: string) => v.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
 
 /** Change many products at once: price up or down by a number or percent, stock, status, tags and buy buttons. */
-export function BulkPanel({ endpoint, selected, total, scopeLabel, onDone }: { endpoint: string; selected: string[]; total: number; scopeLabel: string; onDone: () => void }) {
+export function BulkPanel({ endpoint, selected, total, scopeLabel, onDone, extra }: { endpoint: string; selected: string[]; total: number; scopeLabel: string; onDone: () => void; extra?: Record<string, unknown> }) {
   const [priceAct, setPriceAct] = useState<PriceAct>("");
   const [unit, setUnit] = useState<"percent" | "amount">("amount");
   const [priceVal, setPriceVal] = useState("");
@@ -29,7 +29,7 @@ export function BulkPanel({ endpoint, selected, total, scopeLabel, onDone }: { e
 
   const count = selected.length || total;
   async function apply() {
-    const body: Record<string, unknown> = {};
+    const body: Record<string, unknown> = { ...(extra ?? {}) };
     if (selected.length) body.productIds = selected;
     if (priceAct) {
       const n = Number(priceVal);
@@ -50,7 +50,7 @@ export function BulkPanel({ endpoint, selected, total, scopeLabel, onDone }: { e
     if (cart) body.showAddToCart = fv(cart);
     if (buy) body.showBuyNow = fv(buy);
     if (addr) body.showAddress = fv(addr);
-    if (Object.keys(body).filter((k) => k !== "productIds").length === 0) return setMsg({ ok: false, text: "Choose at least one change" });
+    if (Object.keys(body).filter((k) => k !== "productIds" && !(extra && k in extra)).length === 0) return setMsg({ ok: false, text: "Choose at least one change" });
     if (!confirm(`Apply these changes to ${count} product${count === 1 ? "" : "s"} (${selected.length ? "selected" : scopeLabel})?`)) return;
     setBusy(true); setMsg(null);
     try {

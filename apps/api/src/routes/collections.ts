@@ -94,6 +94,9 @@ export const collectionAdminRoutes: FastifyPluginAsync = async (app) => {
     showAddToCart: z.boolean().nullable().optional(),
     showBuyNow: z.boolean().nullable().optional(),
     showAddress: z.boolean().nullable().optional(),
+    // shop-wide edits only: limit to what the products page is currently searching for
+    filterQ: z.string().max(100).optional(),
+    filterStatus: z.enum(["PUBLISHED", "DRAFT", "ARCHIVED"]).optional(),
   });
   async function runBulk(collectionId: string | null, b: z.infer<typeof bulkSchema>) {
     const c = await pool.connect();
@@ -102,7 +105,7 @@ export const collectionAdminRoutes: FastifyPluginAsync = async (app) => {
       await c.query("BEGIN");
       const base = collectionId
         ? { sql: `SELECT p.id, p.marked_price, p.selling_price, p.stock_quantity, p.tags, p.metafields FROM product_categories pc JOIN products p ON p.id = pc.product_id WHERE pc.category_id = $1 FOR UPDATE OF p`, args: [collectionId] }
-        : { sql: `SELECT p.id, p.marked_price, p.selling_price, p.stock_quantity, p.tags, p.metafields FROM products p FOR UPDATE OF p`, args: [] as string[] };
+        : { sql: `SELECT p.id, p.marked_price, p.selling_price, p.stock_quantity, p.tags, p.metafields FROM products p WHERE ($1::text IS NULL OR p.title ILIKE '%' || $1 || '%' OR p.sku ILIKE '%' || $1 || '%') AND ($2::text IS NULL OR p.status = $2) FOR UPDATE OF p`, args: [b.filterQ || null, b.filterStatus ?? null] as (string | null)[] };
       const rows = (await c.query(base.sql, base.args)).rows.filter((r) => !b.productIds || b.productIds.includes(r.id));
       for (const r of rows) {
         let marked = Number(r.marked_price), sell = Number(r.selling_price), stock = r.stock_quantity as number;

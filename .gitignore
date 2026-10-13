@@ -12,3 +12,4 @@ next-env.d.ts
 .admin.log
 brand-source/preview.png
 .next-prod
+apps/web/public/kk/

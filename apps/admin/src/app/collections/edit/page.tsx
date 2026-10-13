@@ -24,17 +24,19 @@ function Edit() {
 
   const load = useCallback(() => {
     if (!id) return;
-    Promise.all([api<Coll>(`/admin/collections/${id}`), api<AllProduct[]>("/admin/products"), api<Row[]>("/admin/collections")])
-      .then(([col, prods, cols]) => { setC(col); setAll(prods); setOthers(cols.filter((x) => x.id !== id)); })
+    Promise.all([api<Coll>(`/admin/collections/${id}`), api<Row[]>("/admin/collections")])
+      .then(([col, cols]) => { setC(col); setOthers(cols.filter((x) => x.id !== id)); })
       .catch((e) => setMsg({ ok: false, text: e.message }));
   }, [id]);
   useEffect(() => { load(); }, [load]);
 
+  // Product search runs on the server (the shop can have tens of thousands of products).
+  useEffect(() => {
+    const t = setTimeout(() => { api<AllProduct[]>(`/admin/products?q=${encodeURIComponent(q.trim())}`).then(setAll).catch(() => {}); }, 250);
+    return () => clearTimeout(t);
+  }, [q]);
   const inIds = useMemo(() => new Set(c?.products.map((p) => p.id)), [c]);
-  const matches = useMemo(() => {
-    const t = q.trim().toLowerCase();
-    return all.filter((p) => !inIds.has(p.id) && (!t || p.title.toLowerCase().includes(t))).slice(0, 12);
-  }, [all, inIds, q]);
+  const matches = useMemo(() => all.filter((p) => !inIds.has(p.id)).slice(0, 12), [all, inIds]);
 
   if (!id) return <p>Missing collection. <Link href="/collections" className="underline">Back to collections</Link></p>;
   if (!c) return <p className="text-muted">{msg?.text ?? "Loading..."}</p>;
