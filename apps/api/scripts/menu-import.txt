@@ -1,0 +1,925 @@
+# GROCERY
+## EDIBLE GROCERY
+### CANNED FOOD & FRUIT COCKTAIL
+### CEREALS
+### SOUPS & STOCKS
+### COOKING & BAKING ITEMS
+### HUSK
+### JAMS & JELLY
+### MAYONNAISE & SPREADS
+### KETCHUP
+### MACRONIES & PASTA & NOODLES
+### BABY FOOD
+### MILK POWDER
+### OLIVES & MASHROOMS
+### ORGANIC FOOD
+### PICKLES
+### SAUCES VINEGAR & DRESSING
+### SEASONAL DRINKS
+### SWEETNERS
+### HONEY
+## KARYANA
+### SUGAR
+### CORN & RICE FLOUR
+### PULSES & GRAINS
+### SPICES LOCAL
+### RICE
+### SPICES
+### SALT
+### Flour
+## EDIBLE OIL & GHEE
+### OIL & GHEE
+### OLIVE OIL
+### MEDICATED OILS
+## TEA & COFFEE
+### TEA
+### COFFEE
+## DRYFRUIT & DATES
+### DATES
+### Dryfruit
+## DAIRY
+### BUTTER
+### CHEESE
+### CREAM
+### LASSI
+### YOUGURT
+### RAITA
+### LIQUID WHITENER
+### LIQUID MILK
+## Bakery
+### Eggs
+### Bread
+### Cake & Rusk
+## DESERTS
+### PUDDING
+### KHEER & FEERNI
+### CUSTARD
+## FROZEN ITEMS
+### FROZEN FOOD
+## SNACKS & CONFECTIONARY
+### CHOCOLATES
+### BISCUITS & CAKES
+### SWEETS & GUMS
+### POPCORN
+### CRISPS & SNACKS
+### MOUTH FRESHENERS
+## BAVERAGES
+### COLD DRINK
+### FLAVOUR MILK
+### JUICE
+### MINERAL WATER
+## DAILY ESSENTIALS
+### SPRAY STARCH
+### AIR FRESHNER
+### ANTISEPTIC ITEMS
+### CAR WASH ACCESSORIES
+### DETERGENTS
+### DISHWASH SOAPS & SPONGES
+### DISPOSABLE ITEMS
+### FABRIC SOFTENER & BLEACHING
+### FOIL PAPER & WRAPING SHEET
+### INSECT KILLER
+### TISSUE PAPER
+### Shoe Polish
+## BATH & HOME CLEANER
+### BATH CLEANER
+### GLASS CLEANER
+### HOME CLEANER
+### PHENYLE
+## ORAL CARE
+### TOOTH PASTE
+### TOOTH BRUSH
+### MOUTH WASH
+### Dental Floss
+## MEN'S GROOMING
+### AFTER SHAVE
+### SHAVING BLADE
+### SHAVING BRUSH
+### SHAVING CREAM
+### SHAVING FOAM
+### SHAVING GEL
+### SHAVING RAZOR
+## HAIR ESSENTIALS
+### CONDITIONER
+### SHAMPOO
+## BODY WASHES & SOAPS
+### BODY WASH
+### HAND SANITIZER
+### HAND WASH
+### SOAPS
+## PET FOOD & ESSENTIALS
+### FOOD CAT
+### FOOD DOG
+### FOOD FISH
+### PET ACCESSORIES
+# COSMETICS
+## MAKEUP
+### BB CREAM
+### CONTOUR KIT & CONCEALER
+### EYE BROW PALETTE
+### EYE SHADE KITS
+### FACE POWDER
+### FOUNDATIONS
+### MASCARA
+### NAIL PAINT
+### LIPGLOSS
+### Lip Balm
+### LIPSTICK
+### MAKEUP FIXER & PRIMER
+### PAN CAKE DRY
+### HIGHLIGHTER & BLUSH ON
+### WET CAKE
+### LINER
+### KAJAL
+### Lip & Eye Pencil
+### Liquid Tint
+### Tv paint stick
+## SKIN CARE
+### ALOE VERA GEL
+### COLD CREAM
+### LOTION
+### FACE MASK & SHEET MASK
+### CREAM BLEACH
+### ROSE WATER
+### GLYCERINE
+### FACE CREAM
+### FACE STRIP & NOSE STRIP
+### FACE OIL & FACE SERUM
+### FACE WASH
+### SUN BLOCK
+### TALCUM POWDER
+### UBTAN
+### Hand & Foot Cream
+### Essential oil
+### Skin Care Kit
+### Whitening Capsule
+### Eye Cream & Mask
+## FACIAL PRODUCTS
+### SCRUB
+### CLEANSER
+### FACIAL KIT
+### CLEANSING MILK
+### MASSAGE CREAM
+### TONER
+### Face Mask
+### Ice Roller
+## SKIN POLISH
+### SOOTHING LOTION
+### SKIN SHINER
+### DEVELOPER & BLEACH POWDER
+## HAIR CARE
+### HAIR DEVELOPER & HAIR BLONDING POWDER
+### HAIR MASK & HAIR CREAM
+### HAIR OIL & HAIR SERUM
+### HAIR COLOR
+### Hair gel, wax & spray
+## Women's Care
+### Face & Body Massager
+### FACE & BODY TRIMMER
+## MEN'S CARE
+### TRIMMER & SHAVER
+## HAIR STYLING TOOLS & ACCESSORIES
+### HAIR STYLER
+### STRAIGHTNER
+### CRIMPER
+### DRYER
+### HAIR STYLING
+### CURLER
+### HAIR BRUSH & COMB
+## MAKEUP TOOLS & ACCESSORIES
+### Beauty Box & Pouch
+### Makeup Organizer
+### MAKEUP BRUSH
+### MIRROR
+### MAKEUP PUFF
+### FACIAL PUFF
+### BLACKHEAD PIN
+### Scissors & Sharpener
+### EPILATOR
+### STEAMER
+### FACIAL BOWL
+### Fixing pallete
+### BLEACH & DYE BRUSH
+### FACIAL BAND & SHOWER CAP
+### THREAD,TWEEZER & EYEBROW RAZOR
+### EYELASH ACCESSORIES
+### Cotton Buds
+### Eye lens
+### Cream Containers
+## NAIL ACCESSORIES
+### ARTIFICIAL NAILS
+### NAIL PAINT REMOVER WIPES
+### NAIL CLIPPER
+### NAIL GLUE
+### CUTICLE REMOVER
+## REMOVERS & WIPES
+### Makeup Removers & Wipes
+## WAX AND STRIPS
+### WAX
+### WAX STRIP
+### WAX HEATER
+## MEHNDI
+# HOUSEHOLD
+## Cookware & Bakeware
+### Cooking Containers & Pots
+### Fry Pan
+### Hot Plate
+### Kitchen Sets
+### Pressure Cooker
+### Sauce Pan (Silver Steel)
+### Steamer Stand
+### Tawa
+### Wok
+### Belan & Belan Set
+### SS Pot Stand
+### Sizzling Plate
+## Bathroom Accessories
+### Soap Dish & Dispenser
+### Bath Holder & Rack
+### Stool & Bath Seat
+### Bath Sponge & Belts
+### Toilet Brush
+### Foot Filer
+### Bath Set
+## Beater & Mixture
+### Coffee Mixer
+### Egg Beater
+### Push Mixer
+## Essential Cooking Spoon
+### ladle
+### Spatulas
+### Broth Spoon
+### Turner
+## Lunch Box & Tiffins
+### Lunch Box
+### Tiffen
+## Bottles
+### Hot & cold bottles
+### Fancy Mug
+### Tumblers
+### Fridge Bottles
+### Ketchup Bottles
+### Sports Bottle
+### School Bottles
+### Feeding Bottles
+### Oil Bottles
+### Spray Bottle and Planters
+### Straw Glass & Chopstick
+### Water Cooler
+## Jug & Glass
+### Jug
+### Glass
+### Jug Set
+## Cake Baking Accessories
+### Baking Moulds
+### Cake Decorator
+### Cake Misc Items
+### Cup Cake Paper and Moulds
+### Measuring Cup and Spoons
+### Cake Stands
+### Cake Cutting Knife
+## Cleaning Items
+### Solar Brush
+### Glass Wiper
+### Wiper & Brush
+### Dustpan & Sets
+### Bottle Brush
+### Cloth Brush
+### Mops and Brooms
+### Door Stopper
+## Dustbin & Tissue Box
+### Padle Dustbin
+### Open Dustbin
+### Fancy Dustbin
+### Mini Dustbin
+### Dustbin Bag
+### Tissue Box
+## Hanger & Hooks
+### Sticky Hooks
+### SS Cloth Hook
+### Hanger
+### Clips
+### Cloth & Iron Stand
+### Cloth Ropes
+## Kitchen Organizers
+### Tray
+### Box & Organizers
+### Jars
+### Racks
+### Storage Box
+### Baskets
+### Ice Cube Tray
+### Ice Cream & Kulfi Mould
+## Kitchen Tools & Utensils
+### Salt Pot
+### Knife & Knife Sets
+### Kitchen Items
+### Spoon Fork & Sets
+### Cutting Board
+### Strainer
+### Glass Stand
+### Grater
+### Honey Stick
+### Ice Cream Scoop
+### Masher
+### Kitchen Gloves
+### Multi functional Handy GRINDER
+### Peeler
+### Lemon & Garlic Presser
+### BBQ Accessories
+### Spoon Holder
+### Sieve and Strainer
+### Tong
+### Vegetable Cutter & Chopper
+### Water Dispenser & Pump
+### Bottle Holder
+### Funnel
+### Other Essentials
+## Storage & Organizers
+### Multi organizers
+## Hardware accessories
+### Tools
+### Blower
+### Drill machine
+### Digital meter
+### Ladders
+## Umbrella
+### Rain umbrella
+### Umbrella for Kids
+# CROCKERY
+## Drinkware
+### Mugs
+### Water Glass
+### Water Set
+### Tea Set (Cup Set)
+## Serveware
+### Dinner set
+### Dry Fruit Tray
+### Tray & Dish
+### Soup Set
+### Bowls
+### Plates
+### Casserole
+### Ice Cream Set
+### Fruit Set
+### KETTLE
+### Multi Serving Set
+### Coaster
+### Ash Tray
+### Glass & Cup Stand
+### Thal (Stainless Steel)
+### Jug (Stainless Steel)
+### Dool (Stainless Steel)
+## Spoons
+### Curry Spoons
+### Rice Spoons
+### Soup Spoons
+### Spoons Set
+## Food Warmers
+### Hot Pot
+### Thermos
+### Kettle
+### Flask
+# BABY ACCESSORIES
+## Feeder & Accessories
+### Baby Feeder
+### Soother & Teether
+### Baby Spoon & Fork
+### Baby Feeder Covers
+### Baby Milk Container
+### Feeder Brush & Nipples
+### Sterilizer & Warmer
+### Baby Feeder Cleaner
+### Breast Pump
+## Diaper & Wipes
+### Diapers
+### Pants
+### Nappy
+### Wipes
+## New Born Essentials
+### Baby Bib Apron
+### Baby Socks & Caps
+### Wrapping sheet & Towels
+### Baby Bags
+### Baby Blankets
+### Baby suits
+### Knicker
+### Bath Gown
+### Baby Bed & Pillows
+### Baby Bather
+## Baby Care
+### Baby Showergel & Bodywash
+### Baby Shampoo
+### Baby Lotion & Creams
+### Baby Nappy Rash Cream
+### Baby Oil
+### Baby Powder
+### Baby Soap
+### Baby Perfumes
+### Baby Manicure Pedicure Kits
+### Baby Gift Set
+### Baby Cotton Buds
+# TOYS
+## GAMES & PUZZLES
+### MONEY BANK
+### BUILDING BLOCKS
+### PUZZLE GAMES
+### TRAIN & TRACK SET
+### BOARD GAMES
+### BOWLING
+### FROG & FISH GAME
+### ARCHERY SET
+### POPIT TOY
+### Lego Blocks
+## STUFF TOYS
+### STUFF CUSHION
+### STUFF ANIMALS
+### STUFF CHARACTER
+### STUFF BABY SEATER
+## REMOTE CONTROL TOY
+### CARS
+### FLYING TOY
+### DRONES
+## TOY GUNS
+### BUBBLE GUN
+### BULLET GUN
+### WATER GUN
+### MUSICAL GUN
+### Spider Shooter
+### Orbeez Gun
+## SUPER HERO TOY
+### CHARACTER SET
+### AVENGERS SET
+## BABY GEARS
+### BABY COT
+### BABY POTS
+### BABY WALKERS
+### BABY STROLLER
+### BABY CHAIRS
+### SWINGS
+### BABY PLAY MAT
+## RIDE ONS
+### BATTERY VEHICLES
+### TRICYCLE
+### PUSH CAR AND TWISTER
+### Bicycles
+### ROCKING RIDES
+### SCOOTY
+## MUSICAL TOYS & ORNAMENTS
+### MUSICAL TOYS
+## COUNTER TOYS
+### FRICTION TOYS
+### Metal Models
+### BEYBLADE AND YOYO
+### WILD ANIMALS
+## EDUCATIONAL TOYS
+### LEARNING GAMES
+### WRITING BOARDS
+### PROJECTOR & BINOCULAR
+### Activity Toys
+## OUTDOOR PLAY
+### TENT HOUSE
+### Games
+## SWIMMING POOL & ACCESSORIES
+### SWIMMING POOLS
+### Swimming Accessories
+### Air Pump
+### Kick Board
+### Floats
+### Swimming Goggle
+### Swimming Shoes
+### Swimming Jacket
+## RATTLE AND SOFT TOYS
+### SOFT TOYS
+### RATTLE TOYS
+## GIRLS TOYS
+### DOLLS
+### KITCHEN TOY SETS
+### DOLL HOUSE
+### HOME APPLIANCE SETS
+### COSMETICS TOY SET
+### Dressing Table
+# SPORTS
+## Exercise & Fitness
+### Yoga Mats
+### EXERCISE MACHINES
+### Tummy Trimmer
+### Skippy & Gym Ball
+### Belts & Shapers
+### Shaker Bottles
+### Weight Scale
+### Jump Rope
+### Rubber & Spring Extender
+### Weight Rod & Twisters
+### Fit Ab Wheel
+### Hand Grip
+### Head & Wrist Bands
+### Hula Hoop
+### Massagers
+### Dumbbells
+### Fingers Grip
+### Chest Expander
+### Nunchaku
+## Skateboards & skates
+### Skateboards
+### Skate Shoes
+### Skate Helmet
+## Darts & Equipment
+### Dartboards
+### Dartboard Arrows
+## Supports & Braces
+### Knee Support
+### Ankle Support
+### Knee & Elbow Support Sets
+### Ankle & Wrist Weight
+### Sleeping Eye Mask
+## Balls
+### Foam & Practice Ball
+### Footballs
+### Cricket Ball
+### Table Tennis Balls
+### Volley ball
+## Sports Gloves & Socks
+### Half Gloves
+### Boxing Gloves & MOUTHGUARD
+### Bating Gloves
+### Sports Socks
+## Baseball Bat & Set
+## Outdoor Games
+### Frisbee
+### Discus Throwing
+### Tug of War Rope
+### Football
+### Football Misc
+### Whistles
+## Cricket
+### Cricket Bat
+### Cricket Ball Tape
+## Board & Indoor Games
+### Monopoly
+### Ludo & Carrom Goti
+### Ludo & Carrom Board
+### Scrabble
+### Card Games
+### CHESS GAME
+### Snooker & Billiards
+### Poker Set
+## Basketball & Accessories
+### Basket Ball
+### BASKET BALL RING & NET
+## Tennis & Rackets
+### Padel Racket
+### Table Tennis Net & Post
+### Table Tennis Racket
+### Badminton Rackets
+### Badminton Shuttle Cock
+### Badminton Net
+### RACKET GRIPS
+## Air Pump
+## Weight plate & rod
+# FRAGRANCES
+## MEN FRAGRANCES
+### Men Perfumes
+### Men Body Spray
+### Men Roll on
+### Men Body Mist
+### Men Gift Set
+## Women Fragrances
+### Women Perfumes
+### Women Body Spray
+### Women Body Mist
+### Women Roll on
+### Women Gift Set
+## Unisex
+### Unisex Body Spray
+### Unisex Perfume
+# TEXTILE
+## MATS & SHEETS
+### TABLE MAT
+### FOOT MAT
+### TABLE SHEET
+### Table Runners
+### Prayer Mats
+### Bed Sheet
+### Sufra
+## PILLOW
+### Cushion Pillow
+### Neck Pillow
+### Cushion Pillow Cover
+## Towel
+### Bath Towel
+### Kitchen Towel
+### Hair Towel
+## Other Essentials
+### Hanging Pocket
+### Cleaning Cloths
+### Pot Holder
+### ROTI BOX
+### Roti Romal
+### Curtain
+## Covers
+### Fridge covers
+### Mattress Cover
+### Oven Cover
+### Sofa Cover
+### Chair & Dining Table Covers
+### Washing Machine Cover
+### Quran Cover
+### Iron Stand Covers
+## Blankets
+### Blankets
+### Baby Blankets
+# GADGETS & ACCESSORIES
+## Audio
+### Air Buds
+### Headphone
+### Handfree
+### Speakers
+### Neckbands
+### Microphones & Mic
+## Smart Gadgets
+### Smart Glasses
+### Smart Watches
+### Mobile Cooling Fan
+## Charging & Power
+### Charger
+### Data Cable
+### Power Bank
+## Mobile Protection
+### Glass protector
+### Mobile Stand
+### Selfie Stick
+# ELECTRONICS
+## HOME APPLIANCES
+### Portable Fan
+### Pedestal fan
+### Washing Machine
+### Charging Fan
+### Heaters
+### Air Cooler
+### Gyser
+### Humidifier
+### VACCUM CLEANER
+### Garments Steamer
+### Lint Remover
+### Insect killers
+### IRON
+### Solar Inverter
+## KITCHEN APPLIANCES
+### Food Processor
+### CHOPPER
+### Induction & Ceramic Plates
+### Electric Kettle
+### AIR FRYER
+### JUICER & BLENDER
+### MEAT GRINDER
+### TOASTER
+### Sandwich maker
+### Roti Maker
+### Egg Boiler
+### Dough Maker
+### Pizza Maker
+### Oven
+## MIXERS & BLENDER
+### HAND MIXER
+### Coffee Mixer
+### Hand Blender
+## Electronic Accessories
+### Extension & Adaptors
+### Light & Charging Light
+### Door Bell
+### Battery Cell
+# HOME DECORATION
+## Wall Decoration
+### Metal Frame
+### Scenery & Painting
+### Wall Mirror
+### Wall Clock
+### Ayat Frame
+### Wall Panels
+### Air Bells
+### Wall Mat
+## Table Decoration
+### Crystal Item
+### Candy Jar & Bowl
+### Table Decoration Misc
+### Alarm & Table Clock
+### Statue
+### Diffusers & Fragrances
+## Flower & Plant
+### Pot With Flower
+### Flower Branch
+### Flower Bunch
+### Plants
+### Artificial Plants
+## Candle & Lights
+### LED Candles
+### Wax Candles
+### Decoration Lights
+## Furniture
+### Multi Rack
+### Table
+### Storage Stools
+### Tea Trolley
+## Vase & Planter
+### Table Vase
+### PLANTERS
+### Vase
+## Candle Stand
+### Fancy candle Stand
+### Floor Candle Stand
+## Lamp
+### Table Lamp
+### Floor Lamp
+## Decoration Books & Box
+### Decorative Book
+### Decorative Drawers
+### Boxes
+## Decoration Misc
+### Potpourri Shells & Beads
+### Aquarium Accessories
+### Magnets
+## Clock
+# PHARMACY
+## Medicine
+### Syrup
+### Tablets
+### Capsule
+### Homeopathic
+### Injection
+### Saniplast
+### GEL
+### Ointment
+### Drops
+### INHALER
+### SACHET
+### Balm
+## Personal Care
+### MEDICATED SOAP
+### Medicated SKIN SERUM
+### Medicated Shampoo
+### Medicated Lotion
+### Medicated Sunblock
+### Pharmacy Medicated oil
+### Medicated MOUTH WASH
+### Medicated Powder
+### Medicated Cream
+### Medicated Spray
+### Medicated Solution
+### Medicated cleanser
+### MEDICATED MOISTUREIZER
+### MEDICATED BODY MILK
+### Medicated Hygiene Washes
+### CONDOMS
+### Adult Diaper & Pants
+### GEL LUBE
+## Milk Powder
+### Baby Milk Powder
+### Adult Milk Powder
+## Multivitamins
+### Nutrifactor
+### Route 2 Health
+### Natural factors
+### Webber Naturals
+### Herbiotics
+### AllTime Multivitamins
+## Surgical
+### STETHOSCOPE
+### Meter & Strip
+### Cushion
+### Syringe
+### Nebulizer
+### Surgical Gloves
+### Baby Nose Cleaner
+# MEN ESSENTIAL
+## Sports Wear
+### T-Shirts
+### TANK TOPS
+### HOODIES
+### Compression Shirt
+### Trousers
+### Shorts
+## Men Undergarments
+### Vest
+## Men Bags
+# STATIONERY
+## School Supplies
+### Pen
+### Ink
+### Glue
+### Clipboard
+### Tape
+### Notebook & Diary
+### Marker & Highlighter
+### Pencil & pencil colour
+### Sharpener & Eraser
+### Pouch & Geometry box
+### Money Box
+### Sticker
+### Mathametical Accessories
+### Cute Stationary
+### White Board
+## School Essentials
+### Lunch Boxes
+### School Bags
+### College Bags
+## Office Supplies
+### Table Accessories & Sets
+### Office File
+### Calculator
+### Sticky notes
+### Stapler
+### Paper Clip
+### Magnifier
+## Books
+### Learning & Puzzle
+### Colouring Books
+### Writing & Sketch Book
+## Scissors & Cutter
+### Scissors
+### Paper Cutter
+## Slime & Play dough
+### Gel Slime
+### Play Dough
+## Fine Arts
+### Art Accessories
+### Paint & Mediums
+### Canvas & Art Sheet
+### Craft Accessories
+### Fine Art Misc
+### Water Color
+## Birthday Gift & Accessories
+### Decorating Items
+### Gift Bags
+### Celebrating Items
+### Balloons
+# LUGGAGE
+## Suit Cases and Set
+### Suit Cases
+### Suit Case Set
+## Bags & Accessories
+### Duffle Bag
+### Travel Accessories
+### Storage Bags
+# WATCHES
+## Men Watches
+### Men analog Watches
+### Smart Watches
+## Women Watches
+### Women Analog Watches
+# JEWELLERY
+## Rings & Earrings
+### Casual Earrings
+### Fancy Earrings
+### Rings
+## Bracelets
+### Bangle Bracelets
+### Beaded Bracelets
+## Hair Accessories
+### Hair Tie
+### Hair Clip
+### Hair Band
+### Hair Catcher Fancy
+### Hair Catcher Casual
+### Hair Pin
+## Scarf & Abaya Pin
+### Brooch
+## Necklace
+### Necklace Set
+### Mala
+## Bridal Jewellery
+### Jewellery set
+## Foot jewellery
+### Anklet
+## Scrunchies
+### Beaded scrunchies
+## Jewellery Organizers
+### Ring Boxes
+### Bracelet Boxes
+### Jewellery Boxes
+# LADIES BAG
+## Shoulder & Handbags
+### Shoulder bags
+### Handbags
+## Bridal & Casual Clutch
+### Bridal Clutch
+### Casual Clutch
+## Cross Body & Backpack
+### Ladies Backpack
+### Cross body bags
+# FOOTWEAR
+## Kids shoes
+### Kids slipper
+### kids Jogger
+### Kids Crocs
+### Kids Sandals
+## Ladies Footwear
+### Ladies Slipper
+### Ladies Crocs
+### Ladies Shoes
+## Gents Footwear
+### Gents Crocs
+### Gents Slippers
+### Gents Sandals
+### Gents Shoes
+## Bath Slipper

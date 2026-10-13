@@ -177,7 +177,7 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
   // Brand names for the storefront's brand grid.
   app.get("/brands", async () => cached("catalog:brands", 300, async () => (await pool.query("SELECT name, slug FROM brands ORDER BY name")).rows));
 
-  app.get("/categories/tree", async () =>
+  const categoryTree = () =>
     cached("catalog:categories:tree", 300, async () => {
       const { rows } = await pool.query(
         "SELECT id, parent_id, name, slug, image_url FROM categories WHERE is_active ORDER BY sort_order, name"
@@ -189,6 +189,15 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
         (parent ? parent.children : roots).push(n);
       }
       return roots;
-    })
-  );
+    });
+  app.get("/categories/tree", async () => categoryTree());
+
+  // One branch of the tree (children and grandchildren) so menus can load a drop-down only when it is opened.
+  app.get<{ Params: { slug: string } }>("/categories/children/:slug", async (req, reply) => {
+    const roots: any[] = await categoryTree();
+    const find = (nodes: any[]): any => { for (const n of nodes) { if (n.slug === req.params.slug) return n; const h = find(n.children); if (h) return h; } return null; };
+    const node = find(roots);
+    if (!node) return reply.status(404).send({ success: false, error: "Not found" });
+    return { name: node.name, slug: node.slug, children: node.children };
+  });
 };

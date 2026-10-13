@@ -8,6 +8,7 @@ import { BagIcon, ContrastIcon, HeartIcon, MenuIcon, MotionIcon, SearchIcon, Use
 import { useSession } from "./SessionProvider";
 import { useShopper } from "./Shopper";
 import { SearchBox } from "./SearchBox";
+import { send } from "@/lib/client";
 import { SoundToggle } from "./SoundToggle";
 import { MascotFigure } from "./Mascot";
 import { useSite } from "./Site";
@@ -78,26 +79,76 @@ function MotionToggle({ labelled = false, className = "" }: { labelled?: boolean
   );
 }
 
+/** Loads one branch of the category tree the first time a menu is opened, so pages never carry the whole tree. */
+function useBranch(slug: string, enabled: boolean) {
+  const [kids, setKids] = useState<CategoryNode[] | null>(null);
+  useEffect(() => {
+    if (!enabled || kids) return;
+    let live = true;
+    send<{ children: CategoryNode[] }>("GET", `categories/children/${slug}`).then((r) => live && setKids(r.children)).catch(() => live && setKids([]));
+    return () => { live = false; };
+  }, [enabled, kids, slug]);
+  return kids;
+}
+
 function MegaItem({ node }: { node: CategoryNode }) {
+  const [wanted, setWanted] = useState(false);
+  const kids = useBranch(node.slug, wanted && !!node.hasChildren);
+  const wide = (kids?.length ?? 0) > 6;
   return (
-    <div className="group relative">
+    <div className="group relative" onMouseEnter={() => setWanted(true)} onFocus={() => setWanted(true)}>
       <Link href={`/collections/${node.slug}`} className="relative block whitespace-nowrap py-5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] transition hover:text-accent">
         {node.name}
         <span className="absolute inset-x-0 bottom-3 h-px origin-left scale-x-0 bg-accent transition-transform group-hover:scale-x-100" />
       </Link>
-      {node.children.length > 0 && (
-        <div className="invisible absolute left-0 top-full z-30 min-w-[260px] border border-line bg-card translate-y-1 p-5 opacity-0 shadow-2xl transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-          {node.children.map((c) => (
-            <div key={c.id} className="mb-3 last:mb-0">
-              <Link href={`/collections/${c.slug}`} className="text-sm font-medium hover:text-accent">{c.name}</Link>
-              <ul className="ml-3 mt-1 space-y-0.5 text-sm text-muted">
-                {c.children.map((g) => (
-                  <li key={g.id}><Link href={`/collections/${g.slug}`} className="hover:text-accent">{g.name}</Link></li>
-                ))}
-              </ul>
+      {node.hasChildren && (
+        <div className={`invisible absolute left-0 top-full z-30 max-h-[70vh] overflow-y-auto border border-line bg-card translate-y-1 p-5 opacity-0 shadow-2xl transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 ${wide ? "w-[min(920px,92vw)]" : "min-w-[260px]"}`}>
+          {!kids ? <p className="text-sm text-muted">Loading…</p> : (
+            <div className={wide ? "grid grid-cols-3 gap-x-8 gap-y-5" : ""}>
+              {kids.map((c) => (
+                <div key={c.id} className={wide ? "" : "mb-3 last:mb-0"}>
+                  <Link href={`/collections/${c.slug}`} className="text-sm font-medium hover:text-accent">{c.name}</Link>
+                  <ul className="ml-3 mt-1 space-y-0.5 text-sm text-muted">
+                    {c.children.slice(0, 8).map((g) => <li key={g.id}><Link href={`/collections/${g.slug}`} className="hover:text-accent">{g.name}</Link></li>)}
+                    {c.children.length > 8 && <li><Link href={`/collections/${c.slug}`} className="text-accent hover:underline">All {c.children.length} →</Link></li>}
+                  </ul>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
+      )}
+    </div>
+  );
+}
+
+/** Menus past the sixth sit under "More" so the header bar stays on one line. */
+function MoreMenu({ nodes }: { nodes: CategoryNode[] }) {
+  return (
+    <div className="group relative">
+      <button type="button" className="relative block whitespace-nowrap py-5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] transition hover:text-accent">More ▾</button>
+      <div className="invisible absolute right-0 top-full z-30 grid max-h-[70vh] w-[min(560px,92vw)] grid-cols-2 gap-x-6 gap-y-1 overflow-y-auto border border-line bg-card p-5 opacity-0 shadow-2xl transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+        {nodes.map((n) => <Link key={n.id} href={`/collections/${n.slug}`} className="py-1.5 text-sm hover:text-accent">{n.name}</Link>)}
+        <Link href="/collections" className="col-span-2 mt-2 border-t border-line pt-3 text-xs font-semibold uppercase tracking-[0.2em] text-accent">Browse all collections →</Link>
+      </div>
+    </div>
+  );
+}
+
+/** Phone menu: one line per top menu, opening to its sub menus. */
+function MobileCat({ node }: { node: CategoryNode }) {
+  const [open, setOpen] = useState(false);
+  const kids = useBranch(node.slug, open && !!node.hasChildren);
+  return (
+    <div>
+      <div className="flex items-center justify-between">
+        <Link href={`/collections/${node.slug}`} className="block flex-1 py-2 uppercase tracking-widest">{node.name}</Link>
+        {node.hasChildren && <button type="button" aria-expanded={open} aria-label={`Show ${node.name} sub menus`} onClick={() => setOpen((v) => !v)} className="px-3 py-2 text-accent">{open ? "−" : "+"}</button>}
+      </div>
+      {open && (
+        <ul className="mb-2 ml-3 max-h-72 space-y-1 overflow-y-auto border-l border-line pl-3 text-muted">
+          {!kids ? <li>Loading…</li> : kids.map((c) => <li key={c.id}><Link href={`/collections/${c.slug}`} className="block py-1 hover:text-accent">{c.name}</Link></li>)}
+        </ul>
       )}
     </div>
   );
@@ -131,9 +182,7 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
           <summary className="cursor-pointer list-none p-2" aria-label="Menu"><MenuIcon size={22} /></summary>
           <nav className="absolute left-0 top-full w-64 border border-line bg-card p-4 text-sm shadow-2xl">
             <div className="mb-3"><SearchBox hints={hints} className="w-full border-b border-line bg-transparent py-2 pl-6 text-sm outline-none placeholder:text-muted focus:border-accent" panelClass="!w-full" /></div>
-            {categories.map((c) => (
-              <Link key={c.id} href={`/collections/${c.slug}`} className="block py-2 uppercase tracking-widest">{c.name}</Link>
-            ))}
+            <div className="max-h-[50vh] overflow-y-auto">{categories.map((c) => <MobileCat key={c.id} node={c} />)}</div>
             {(useSite().branding.navLinks ?? []).map((l) => <Link key={l.href + l.label} href={l.href} className="block py-2 uppercase tracking-widest text-accent">{l.label}</Link>)}
             <Link href="/products" className="block py-2 uppercase tracking-widest text-accent">All products</Link>
             <Link href={user ? "/account" : "/login"} className="block py-2 uppercase tracking-widest">{user ? "My account" : "Sign in"}</Link>
@@ -148,7 +197,8 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
           </span>
         </Link>
         <nav className="hidden flex-1 justify-center gap-8 lg:flex">
-          {categories.map((c) => <MegaItem key={c.id} node={c} />)}
+          {categories.slice(0, 6).map((c) => <MegaItem key={c.id} node={c} />)}
+          {categories.length > 6 && <MoreMenu nodes={categories.slice(6)} />}
           {(useSite().branding.navLinks ?? []).map((l) => <Link key={l.href + l.label} href={l.href} className="px-3 py-4 text-xs font-semibold uppercase tracking-[0.2em] transition hover:text-accent">{l.label}</Link>)}
         </nav>
         <div className="ml-auto hidden lg:block"><SearchBox hints={hints} className="w-36 border-b border-line bg-transparent py-1 pl-6 pr-1 text-sm outline-none transition-all placeholder:text-muted focus:w-52 focus:border-accent" /></div>

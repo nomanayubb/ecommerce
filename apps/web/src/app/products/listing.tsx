@@ -20,6 +20,9 @@ export const find = (nodes: CategoryNode[], slug: string, trail: CategoryNode[] 
   return null;
 };
 
+const holds = (n: CategoryNode, slug?: string): boolean => !!slug && (n.slug === slug || n.children.some((c) => holds(c, slug)));
+
+/** Top menus always; deeper levels only along the branch being viewed, so a big catalogue stays a short list. */
 function CategoryList({ nodes, active, depth = 0 }: { nodes: CategoryNode[]; active?: string; depth?: number }) {
   return (
     <ul className={depth ? "ml-3 border-l border-line pl-3" : ""}>
@@ -28,7 +31,7 @@ function CategoryList({ nodes, active, depth = 0 }: { nodes: CategoryNode[]; act
           <Link href={`/collections/${n.slug}`} className={`block py-1.5 text-sm transition hover:text-accent ${active === n.slug ? "font-semibold text-accent" : "text-muted"}`}>
             {n.name}
           </Link>
-          {n.children.length > 0 && <CategoryList nodes={n.children} active={active} depth={depth + 1} />}
+          {n.children.length > 0 && holds(n, active) && <CategoryList nodes={n.children} active={active} depth={depth + 1} />}
         </li>
       ))}
     </ul>

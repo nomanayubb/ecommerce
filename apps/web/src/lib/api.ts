@@ -43,6 +43,7 @@ export interface CategoryNode {
   name: string;
   slug: string;
   image_url?: string | null;
+  hasChildren?: boolean;
   children: CategoryNode[];
 }
 

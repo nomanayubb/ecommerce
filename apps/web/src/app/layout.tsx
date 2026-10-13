@@ -51,6 +51,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     api<CategoryNode[]>("/categories/tree", { revalidate: 300 }).catch(() => []),
     getSite(),
   ]);
+  // Menus get only the top level; each drop-down loads its own branch when opened, so the page stays light.
+  const topCats: CategoryNode[] = categories.map((c) => ({ ...c, hasChildren: c.children.length > 0, children: [] }));
   const { branding, pack } = applyPack(site.branding);
   const { store, footer } = site;
   const messages = (branding.announcements?.length ? branding.announcements : branding.announcement ? [branding.announcement] : []).filter(Boolean);
@@ -80,9 +82,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <CartProvider>
         <ShopperProvider>
           <AnnouncementBar messages={messages} />
-          <Header categories={categories} brand={{ name: branding.name, ...logos }} cta={branding.headerCta} hints={branding.searchHints} />
+          <Header categories={topCats} brand={{ name: branding.name, ...logos }} cta={branding.headerCta} hints={branding.searchHints} />
           <main id="main" tabIndex={-1} className="mx-auto max-w-[var(--maxw)] px-4 py-8 outline-none">{children}</main>
-          <Footer brand={{ name: branding.name, tagline: branding.tagline, footerText: branding.footerText, ...logos }} categories={categories} store={store} footer={footer} social={branding.social ?? {}} />
+          <Footer brand={{ name: branding.name, tagline: branding.tagline, footerText: branding.footerText, ...logos }} categories={topCats} store={store} footer={footer} social={branding.social ?? {}} />
           <LazyDrawer />
           <LazyQuickView />
           <LazyCompareTray />

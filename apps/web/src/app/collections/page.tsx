@@ -20,6 +20,14 @@ export default async function Collections() {
             <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-sm font-semibold uppercase tracking-[0.15em] text-white">{c.name}</span>
           </Link>
         ))}
+      </div>
+      <div className="mt-14 space-y-8">
+        {tree.filter((c) => c.children.length > 0).map((c) => (
+          <section key={c.id}>
+            <h2 className="text-sm font-semibold uppercase tracking-[0.2em]"><Link href={`/collections/${c.slug}`} className="hover:text-accent">{c.name}</Link></h2>
+            <ul className="mt-3 flex flex-wrap gap-2">{c.children.map((k) => <li key={k.id}><Link href={`/collections/${k.slug}`} className="border border-line px-3 py-1.5 text-xs text-muted transition hover:border-accent hover:text-accent">{k.name}</Link></li>)}</ul>
+          </section>
+        ))}
         {tree.length === 0 && <p className="text-muted">No collections yet.</p>}
       </div>
     </>
