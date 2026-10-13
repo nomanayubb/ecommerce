@@ -58,7 +58,8 @@ export async function Listing({ sp, base }: { sp: SP; base: string }) {
   const pages = Math.max(1, Math.ceil(data.total / data.pageSize));
   const link = (page: number) => `${base}?${new URLSearchParams({ ...keep(sp), page: String(page) })}`;
   const cat = trail.at(-1);
-  const popular = data.items.length === 0 ? await api<{ items: ProductSummary[] }>("/products?sort=popular&pageSize=4").then((r) => r.items).catch(() => [] as ProductSummary[]) : [];
+  const emptyShelf = data.items.length === 0 && onColl && !(sp.minRating || sp.minPrice || sp.maxPrice || sp.inStock || sp.onSale || sp.brand || sp.tag) && !sp.q;
+  const popular = data.items.length === 0 && !emptyShelf ? await api<{ items: ProductSummary[] }>("/products?sort=popular&pageSize=4").then((r) => r.items).catch(() => [] as ProductSummary[]) : [];
   const didYouMean = data.items.length === 0 && sp.q ? await api<{ suggestion: string | null }>(`/search/didyoumean?q=${encodeURIComponent(sp.q)}`).then((r) => r.suggestion).catch(() => null) : null;
   const sortHref = (v: string) => { const o = keep({ ...sp, sort: undefined, page: undefined }); return `${base}${Object.keys(o).length || v !== "newest" ? `?${new URLSearchParams({ ...o, ...(v === "newest" ? {} : { sort: v }) })}` : ""}`; };
   const filterActive = !!(sp.minRating || sp.minPrice || sp.maxPrice || sp.inStock || sp.onSale || sp.brand || sp.tag);
@@ -133,10 +134,10 @@ export async function Listing({ sp, base }: { sp: SP; base: string }) {
           ) : (
             <div className="border border-dashed border-line py-24 text-center">
               <MascotFigure mood="confused" size={96} className="mx-auto mb-4 text-fg" />
-              <p className="eyebrow">No results</p>
-              <p className="mt-3 text-muted">Nothing matches those filters.</p>
+              <p className="eyebrow">{emptyShelf ? "Coming soon" : "No results"}</p>
+              <p className="mt-3 text-muted">{emptyShelf ? "Products for this collection are on their way." : "Nothing matches those filters."}</p>
               {didYouMean && <p className="mt-3 text-sm">Did you mean <Link href={`/products?q=${encodeURIComponent(didYouMean)}`} className="font-semibold text-accent underline-offset-4 hover:underline">{didYouMean}</Link>?</p>}
-              <Link href="/products" className="btn btn-primary mt-6">Clear filters</Link>
+              <Link href={emptyShelf ? "/collections" : "/products"} className="btn btn-primary mt-6">{emptyShelf ? "Browse other collections" : "Clear filters"}</Link>
               {popular.length > 0 && <div className="mx-auto mt-12 max-w-3xl text-left"><p className="eyebrow mb-4 text-center">Popular right now</p><div className="grid grid-cols-2 gap-4 md:grid-cols-4">{popular.map((p) => <Card key={p.id} p={p} />)}</div></div>}
             </div>
           )}

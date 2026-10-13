@@ -84,7 +84,7 @@ const productCats = new Map<string, Set<string>>(); // product handle -> our cat
 const wanted = ONLY ? new Map([...handleToCats].filter(([h]) => h === ONLY)) : handleToCats;
 if (ONLY && !wanted.size) { const alt = await getJson<{ collection: { title: string } }>(`${BASE}/collections/${ONLY}.json`); const hit = alt && byName.get(norm(alt.collection.title)); if (hit) wanted.set(ONLY, hit); }
 let n = 0;
-for (const [handle, targets] of wanted) {
+await pool_([...wanted], 6, async ([handle, targets]) => {
   for (let pg = 1; pg <= 60; pg++) {
     const d = await getJson<{ products: { handle: string }[] }>(`${BASE}/collections/${handle}/products.json?limit=250&page=${pg}`);
     if (!d || !d.products.length) break;
@@ -92,7 +92,7 @@ for (const [handle, targets] of wanted) {
     if (d.products.length < 250) break;
   }
   if (++n % 50 === 0) console.log(`  collections read ${n}/${wanted.size}`);
-}
+});
 // keep only the deepest collections of each product (parents show their children's products anyway)
 for (const [h, set] of productCats) {
   const drop = new Set<string>();
@@ -149,12 +149,12 @@ const PROMO = /(off|sale|eid|festival|bachat|exclusive|offer|deal|discount|clear
 
 let done = 0, photos = 0, failedPhotos = 0;
 const t0 = Date.now();
-const CH = 24;
+const CH = 48;
 for (let i = 0; i < todo.length; i += CH) {
   const chunk = todo.slice(i, i + CH);
   const jobs = chunk.flatMap((p) => p.images.map((im, k) => ({ p, im, k })));
   const okMap = new Map<string, boolean>();
-  if (!NO_IMAGES) await pool_(jobs, 10, async (j) => { const f = `${slugify(j.p.handle).slice(0, 90)}-${j.k + 1}.webp`; const ok = await photo(j.im.src, f); okMap.set(f, ok); ok ? photos++ : failedPhotos++; });
+  if (!NO_IMAGES) await pool_(jobs, 24, async (j) => { const f = `${slugify(j.p.handle).slice(0, 90)}-${j.k + 1}.webp`; const ok = await photo(j.im.src, f); okMap.set(f, ok); ok ? photos++ : failedPhotos++; });
 
   for (const p of chunk) {
     const slug = slugify(p.handle).slice(0, 120);
