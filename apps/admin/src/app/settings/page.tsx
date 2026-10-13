@@ -33,7 +33,7 @@ const PAY_DEFAULTS: PayMethod[] = [
   { id: "JAZZCASH", label: "JazzCash", description: "Send the amount from your JazzCash app.", instructions: "", enabled: false },
   { id: "BANK_TRANSFER", label: "Bank transfer", description: "Transfer to our bank account.", instructions: "", enabled: false },
 ];
-interface Store { pdp?: Partial<PdpValues>; checkoutFields?: CheckoutFields; paymentMethods?: PayMethod[]; freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number; dispatchCutoff?: number; deliveryMinDays?: number; deliveryMaxDays?: number }
+interface Store { headerMenuCount?: number; pdp?: Partial<PdpValues>; checkoutFields?: CheckoutFields; paymentMethods?: PayMethod[]; freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number; dispatchCutoff?: number; deliveryMinDays?: number; deliveryMaxDays?: number }
 interface Footer { columns: { title: string; links: { label: string; href: string }[] }[]; showNewsletter: boolean; showPerks: boolean; showPayments: boolean; note: string }
 
 // Keep in sync with apps/web/src/themes/index.ts
@@ -253,6 +253,9 @@ export default function Settings() {
       </Group>
 
       <Group title="Menu links">
+        <label className={label}>Menus shown across the top before "More" (the rest go under More)
+          <input type="number" min={1} max={12} className={input} value={store.headerMenuCount ?? 4} onChange={(e) => setStore({ ...store, headerMenuCount: Math.min(12, Math.max(1, Number(e.target.value) || 1)) })} />
+        </label>
         <label className={label}>Extra links in the header menu, one per line: Label | /address (up to 12, e.g. Recipes | /recipes, Journal | /blog, Guides | /guides, Sets | /bundles)
           <textarea rows={6} className={input} value={b.navLinks.map((l) => `${l.label} | ${l.href}`).join("\n")} onChange={(e) => set("navLinks", e.target.value.split("\n").slice(0, 12).map((ln) => { const [lab, ...rest] = ln.split("|"); return { label: lab.trim(), href: rest.join("|").trim() }; }))} />
         </label>

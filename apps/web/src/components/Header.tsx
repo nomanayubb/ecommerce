@@ -122,7 +122,7 @@ function MegaItem({ node }: { node: CategoryNode }) {
   );
 }
 
-/** Menus past the sixth sit under "More" so the header bar stays on one line. */
+/** Menus past the first few (admin: Settings, Menu links) sit under "More" so the header bar stays on one line. */
 function MoreMenu({ nodes }: { nodes: CategoryNode[] }) {
   return (
     <div className="group relative">
@@ -157,6 +157,7 @@ function MobileCat({ node }: { node: CategoryNode }) {
 export function Header({ categories, brand, cta, hints }: { categories: CategoryNode[]; brand: { name: string; logoUrl: string; logoUrlDark?: string }; cta?: { label: string; href: string }; hints?: string[] }) {
   const { count, setOpen, lines } = useCart();
   const freeAt = useSite().store.freeShippingThreshold;
+  const shown = Math.max(1, useSite().store.headerMenuCount ?? 4);
   const ring = freeAt > 0 && lines.length ? lines.reduce((t, l) => t + l.price * l.quantity, 0) / freeAt : 0;
   const { wish } = useShopper();
   const { user } = useSession();
@@ -197,8 +198,8 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
           </span>
         </Link>
         <nav className="hidden flex-1 justify-center gap-8 lg:flex">
-          {categories.slice(0, 6).map((c) => <MegaItem key={c.id} node={c} />)}
-          {categories.length > 6 && <MoreMenu nodes={categories.slice(6)} />}
+          {categories.slice(0, shown).map((c) => <MegaItem key={c.id} node={c} />)}
+          {categories.length > shown && <MoreMenu nodes={categories.slice(shown)} />}
           {(useSite().branding.navLinks ?? []).map((l) => <Link key={l.href + l.label} href={l.href} className="px-3 py-4 text-xs font-semibold uppercase tracking-[0.2em] transition hover:text-accent">{l.label}</Link>)}
         </nav>
         <div className="ml-auto hidden lg:block"><SearchBox hints={hints} className="w-36 border-b border-line bg-transparent py-1 pl-6 pr-1 text-sm outline-none transition-all placeholder:text-muted focus:w-52 focus:border-accent" /></div>
