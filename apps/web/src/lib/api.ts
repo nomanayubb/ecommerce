@@ -1,7 +1,7 @@
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
 
 export interface ProductSummary {
-  show_add_to_cart?: boolean;
+  show_add_to_cart?: boolean | null;
   id: string;
   title: string;
   slug: string;
@@ -89,8 +89,8 @@ export const DEFAULT_FOOTER: FooterConfig = {
   columns: [{ title: "Shop", links: [{ label: "All products", href: "/products" }, { label: "Track your order", href: "/track" }, { label: "My account", href: "/account" }] }],
   showNewsletter: true, showPerks: true, showPayments: true, note: "",
 };
-export interface Pdp { imageSide: "left" | "right"; galleryThumbs: "side" | "below"; showShare: boolean; showSaveCompare: boolean; showRating: boolean; showLiveViewers: boolean; showDetails: boolean; showTags: boolean; showSku: boolean; showTrustIcons: boolean; showDispatch: boolean; showBenefits: boolean; showReviews: boolean; showQuestions: boolean; showRecipes: boolean; showRelated: boolean; showRecentlyViewed: boolean; showSectionTabs: boolean; stickyInfo: boolean }
-export const DEFAULT_PDP: Pdp = { imageSide: "left", galleryThumbs: "side", showShare: true, showSaveCompare: true, showRating: true, showLiveViewers: true, showDetails: true, showTags: true, showSku: true, showTrustIcons: true, showDispatch: true, showBenefits: true, showReviews: true, showQuestions: true, showRecipes: true, showRelated: true, showRecentlyViewed: true, showSectionTabs: true, stickyInfo: true };
+export interface Pdp { showAddToCart: boolean; showBuyNow: boolean; showAddress: boolean; imageSide: "left" | "right"; galleryThumbs: "side" | "below"; showShare: boolean; showSaveCompare: boolean; showRating: boolean; showLiveViewers: boolean; showDetails: boolean; showTags: boolean; showSku: boolean; showTrustIcons: boolean; showDispatch: boolean; showBenefits: boolean; showReviews: boolean; showQuestions: boolean; showRecipes: boolean; showRelated: boolean; showRecentlyViewed: boolean; showSectionTabs: boolean; stickyInfo: boolean }
+export const DEFAULT_PDP: Pdp = { showAddToCart: true, showBuyNow: false, showAddress: true, imageSide: "left", galleryThumbs: "side", showShare: true, showSaveCompare: true, showRating: true, showLiveViewers: true, showDetails: true, showTags: true, showSku: true, showTrustIcons: true, showDispatch: true, showBenefits: true, showReviews: true, showQuestions: true, showRecipes: true, showRelated: true, showRecentlyViewed: true, showSectionTabs: true, stickyInfo: true };
 export type FieldMode = "required" | "optional" | "hidden";
 export interface PayMethod { id: "COD" | "EASYPAISA" | "JAZZCASH" | "BANK_TRANSFER"; label: string; description: string; instructions: string; enabled: boolean }
 export interface Store { pdp?: Partial<Pdp>; checkoutFields?: Record<"email" | "phone" | "address" | "city" | "postalCode" | "note", FieldMode>; paymentMethods?: PayMethod[]; freeShippingThreshold: number; shippingFee: number; dispatchCutoff: number; deliveryMinDays: number; deliveryMaxDays: number; giftWrapEnabled: boolean; giftWrapFee: number }

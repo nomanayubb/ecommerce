@@ -3,13 +3,15 @@
 import { useState } from "react";
 import type { ProductSummary } from "@/lib/api";
 import { useCart } from "./CartProvider";
+import { useSite } from "./Site";
 import { CheckIcon } from "./icons";
 
 /** One-tap add for simple products (no options, no minimum order). Sits at the bottom-right of the photo. */
 export function QuickAdd({ p }: { p: ProductSummary }) {
   const { add } = useCart();
+  const { store } = useSite();
   const [done, setDone] = useState(false);
-  if (p.show_add_to_cart === false || p.stock_quantity <= 0 || p.has_variants || (p.moq ?? 1) > 1) return null;
+  if ((p.show_add_to_cart ?? store.pdp?.showAddToCart ?? true) === false || p.stock_quantity <= 0 || p.has_variants || (p.moq ?? 1) > 1) return null;
   return (
     <button
       type="button" aria-label={`Add ${p.title} to bag`}

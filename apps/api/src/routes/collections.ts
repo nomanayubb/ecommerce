@@ -91,9 +91,9 @@ export const collectionAdminRoutes: FastifyPluginAsync = async (app) => {
     stock: z.object({ mode: z.enum(["set", "add"]), value: z.number().int().min(-1_000_000).max(1_000_000) }).optional(),
     addTags: z.array(z.string().trim().toLowerCase().min(1).max(40)).max(10).optional(),
     removeTags: z.array(z.string().trim().toLowerCase().min(1).max(40)).max(10).optional(),
-    showAddToCart: z.boolean().optional(),
-    showBuyNow: z.boolean().optional(),
-    showAddress: z.boolean().optional(),
+    showAddToCart: z.boolean().nullable().optional(),
+    showBuyNow: z.boolean().nullable().optional(),
+    showAddress: z.boolean().nullable().optional(),
   });
   async function runBulk(collectionId: string | null, b: z.infer<typeof bulkSchema>) {
     const c = await pool.connect();
@@ -123,7 +123,7 @@ export const collectionAdminRoutes: FastifyPluginAsync = async (app) => {
         if (b.addTags?.length) tags = [...new Set([...tags, ...b.addTags])];
         if (b.removeTags?.length) tags = tags.filter((t) => !b.removeTags!.includes(t));
         const meta = { ...(r.metafields ?? {}) } as Record<string, unknown>;
-        for (const k of ["showAddToCart", "showBuyNow", "showAddress"] as const) if (b[k] !== undefined) meta[k] = b[k];
+        for (const k of ["showAddToCart", "showBuyNow", "showAddress"] as const) if (b[k] === null) delete meta[k]; else if (b[k] !== undefined) meta[k] = b[k];
         await c.query(
           "UPDATE products SET status = COALESCE($2, status), marked_price = $3, selling_price = $4, stock_quantity = $5, tags = $6, metafields = $7, updated_at = now() WHERE id = $1",
           [r.id, b.status ?? null, marked, sell, stock, tags, JSON.stringify(meta)]

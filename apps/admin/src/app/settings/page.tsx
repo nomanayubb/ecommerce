@@ -22,6 +22,7 @@ type Visuals = {
   mascotVoice: boolean; splash: boolean; logoMorph: boolean; logoSparkles: boolean; watermark: boolean; cardGlow: boolean; priceCountUp: boolean;
 };
 const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", depth: "flat", transition: "none", imageHover: "zoom", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none", mascotVoice: false, splash: false, logoMorph: false, logoSparkles: false, watermark: false, cardGlow: false, priceCountUp: false };
+import { ProductPageSettings, type PdpValues } from "@/components/ProductPageSettings";
 type FieldMode = "required" | "optional" | "hidden";
 type CheckoutFields = Record<"email" | "phone" | "address" | "city" | "postalCode" | "note", FieldMode>;
 interface PayMethod { id: "COD" | "EASYPAISA" | "JAZZCASH" | "BANK_TRANSFER"; label: string; description: string; instructions: string; enabled: boolean }
@@ -32,7 +33,7 @@ const PAY_DEFAULTS: PayMethod[] = [
   { id: "JAZZCASH", label: "JazzCash", description: "Send the amount from your JazzCash app.", instructions: "", enabled: false },
   { id: "BANK_TRANSFER", label: "Bank transfer", description: "Transfer to our bank account.", instructions: "", enabled: false },
 ];
-interface Store { checkoutFields?: CheckoutFields; paymentMethods?: PayMethod[]; freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number; dispatchCutoff?: number; deliveryMinDays?: number; deliveryMaxDays?: number }
+interface Store { pdp?: Partial<PdpValues>; checkoutFields?: CheckoutFields; paymentMethods?: PayMethod[]; freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number; dispatchCutoff?: number; deliveryMinDays?: number; deliveryMaxDays?: number }
 interface Footer { columns: { title: string; links: { label: string; href: string }[] }[]; showNewsletter: boolean; showPerks: boolean; showPayments: boolean; note: string }
 
 // Keep in sync with apps/web/src/themes/index.ts
@@ -115,7 +116,11 @@ export default function Settings() {
     <form onSubmit={save} className="max-w-3xl space-y-4">
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="mr-auto text-2xl font-bold">Brand & theme</h1>
-        <Group title="Checkout form">
+        <Group title="Product page">
+        <ProductPageSettings value={store.pdp} onChange={(v) => setStore({ ...store, pdp: v })} />
+      </Group>
+
+      <Group title="Checkout form">
         <p className="text-xs text-muted">Choose which boxes shoppers see after pressing Buy now / Checkout, and which ones they must fill. Full name is always required. Order tracking asks for the phone number, so keep Phone shown if customers track orders.</p>
         <div className="grid gap-3 sm:grid-cols-2">
           {([["email", "Email"], ["phone", "Phone number"], ["address", "Street address"], ["city", "City"], ["postalCode", "Postal code"], ["note", "Delivery note shortcuts"]] as const).map(([k, l]) => (

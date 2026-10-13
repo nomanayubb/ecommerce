@@ -10,7 +10,7 @@ const NAV: { heading?: string; items: { href: string; label: string }[] }[] = [
   { items: [{ href: "/", label: "Home" }, { href: "/orders", label: "Orders" }] },
   { heading: "Products", items: [{ href: "/products", label: "Products" }, { href: "/collections", label: "Collections" }, { href: "/coupons", label: "Discounts" }, { href: "/bundles", label: "Bundles" }] },
   { heading: "Customers", items: [{ href: "/reviews", label: "Reviews" }, { href: "/questions", label: "Questions" }, { href: "/messages", label: "Messages" }] },
-  { heading: "Online store", items: [{ href: "/pages", label: "Pages" }, { href: "/navigation", label: "Navigation" }, { href: "/page-layout", label: "Page layout" }, { href: "/posts", label: "Blog posts" }, { href: "/recipes", label: "Recipes" }, { href: "/settings", label: "Brand & settings" }] },
+  { heading: "Online store", items: [{ href: "/pages", label: "Pages" }, { href: "/navigation", label: "Navigation" }, { href: "/posts", label: "Blog posts" }, { href: "/recipes", label: "Recipes" }, { href: "/settings", label: "Brand & settings" }] },
 ];
 
 export function Shell({ children }: { children: ReactNode }) {

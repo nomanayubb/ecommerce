@@ -17,11 +17,13 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
   const { add, lines, setOpen } = useCart();
   const router = useRouter();
   const flags = (p.metafields ?? {}) as Record<string, unknown>;
-  const showAdd = flags.showAddToCart !== false, showBuy = flags.showBuyNow === true, showAddr = flags.showAddress !== false;
+  
   const ctaRef = useRef<HTMLDivElement>(null);
   const [pastCta, setPastCta] = useState(false);
   const { store } = useSite();
   const pdp = { ...DEFAULT_PDP, ...(store.pdp ?? {}) };
+  const pick3 = (v: unknown, dflt: boolean) => (typeof v === "boolean" ? v : dflt);
+  const showAdd = pick3(flags.showAddToCart, pdp.showAddToCart), showBuy = pick3(flags.showBuyNow, pdp.showBuyNow), showAddr = pick3(flags.showAddress, pdp.showAddress);
   const [variantId, setVariantId] = useState<string | null>(p.variants.find((v) => v.stock_quantity > 0)?.id ?? p.variants[0]?.id ?? null);
   const [qty, setQty] = useState(Math.max(1, p.moq));
   const [added, setAdded] = useState(false);

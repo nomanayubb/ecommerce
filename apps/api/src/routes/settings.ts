@@ -106,6 +106,9 @@ export const DEFAULT_PAYMENTS: PayMethod[] = [
 export const pdpSchema = z.object({
   imageSide: z.enum(["left", "right"]).default("left"),
   galleryThumbs: z.enum(["side", "below"]).default("side"),
+  showAddToCart: z.boolean().default(true),
+  showBuyNow: z.boolean().default(false),
+  showAddress: z.boolean().default(true),
   showShare: z.boolean().default(true),
   showSaveCompare: z.boolean().default(true),
   showRating: z.boolean().default(true),
@@ -166,7 +169,11 @@ export const DEFAULT_FOOTER: FooterSettings = {
 
 export const loadBranding = () => cached("settings:branding", 60, () => load<Branding>("branding"));
 export const loadFooter = () => cached("settings:footer", 60, () => load<FooterSettings>("footer", DEFAULT_FOOTER));
-export const loadStore = () => cached("settings:store", 60, async () => ({ ...STORE_DEFAULT, ...(await load<Partial<Store>>("store", {})) }));
+export const loadStore = () => cached("settings:store", 60, async () => {
+  const saved = await load<Partial<Store>>("store", {});
+  // Nested groups are merged key by key so settings added later still get their defaults.
+  return { ...STORE_DEFAULT, ...saved, pdp: { ...DEFAULT_PDP, ...(saved.pdp ?? {}) }, checkoutFields: { ...DEFAULT_CHECKOUT_FIELDS, ...(saved.checkoutFields ?? {}) } };
+});
 
 const save = async (key: string, value: unknown) => {
   await pool.query(

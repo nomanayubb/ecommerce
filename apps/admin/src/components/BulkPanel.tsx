@@ -5,7 +5,7 @@ import { api } from "@/lib/api";
 
 type PriceAct = "" | "inc" | "dec" | "set" | "discount";
 type StockAct = "" | "set" | "inc" | "dec";
-type Flag = "" | "show" | "hide";
+type Flag = "" | "show" | "hide" | "theme";
 const input = "rounded border border-line bg-card px-3 py-2 text-sm";
 const label = "block text-xs font-medium text-muted";
 const tags = (v: string) => v.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
@@ -46,9 +46,10 @@ export function BulkPanel({ endpoint, selected, total, scopeLabel, onDone }: { e
     if (status) body.status = status;
     if (tags(addTags).length) body.addTags = tags(addTags);
     if (tags(removeTags).length) body.removeTags = tags(removeTags);
-    if (cart) body.showAddToCart = cart === "show";
-    if (buy) body.showBuyNow = buy === "show";
-    if (addr) body.showAddress = addr === "show";
+    const fv = (f: Flag) => (f === "theme" ? null : f === "show");
+    if (cart) body.showAddToCart = fv(cart);
+    if (buy) body.showBuyNow = fv(buy);
+    if (addr) body.showAddress = fv(addr);
     if (Object.keys(body).filter((k) => k !== "productIds").length === 0) return setMsg({ ok: false, text: "Choose at least one change" });
     if (!confirm(`Apply these changes to ${count} product${count === 1 ? "" : "s"} (${selected.length ? "selected" : scopeLabel})?`)) return;
     setBusy(true); setMsg(null);
@@ -62,7 +63,7 @@ export function BulkPanel({ endpoint, selected, total, scopeLabel, onDone }: { e
   }
 
   const flag = (v: Flag, set: (f: Flag) => void) => (
-    <select className={`mt-1 w-full ${input}`} value={v} onChange={(e) => set(e.target.value as Flag)}><option value="">No change</option><option value="show">Show</option><option value="hide">Hide</option></select>
+    <select className={`mt-1 w-full ${input}`} value={v} onChange={(e) => set(e.target.value as Flag)}><option value="">No change</option><option value="show">Show</option><option value="hide">Hide</option><option value="theme">Follow the theme setting</option></select>
   );
   return (
     <details className="mb-6 rounded border border-line bg-card" open>

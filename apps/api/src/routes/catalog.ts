@@ -69,7 +69,7 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
       const total = Number((await pool.query(`SELECT count(*) ${from}`, args)).rows[0].count);
       const { rows } = await pool.query(
         `SELECT p.id, p.title, p.slug, p.marked_price, p.selling_price, p.stock_quantity, p.images, p.tags,
-                p.metafields->>'videoUrl' AS video_url, p.moq, COALESCE((p.metafields->>'showAddToCart')::boolean, true) AS show_add_to_cart, EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = p.id) AS has_variants,
+                p.metafields->>'videoUrl' AS video_url, p.moq, (p.metafields->>'showAddToCart')::boolean AS show_add_to_cart, EXISTS (SELECT 1 FROM product_variants pv WHERE pv.product_id = p.id) AS has_variants,
                 (p.id IN (SELECT n.id FROM products n WHERE n.status = 'PUBLISHED' AND n.created_at > now() - interval '14 days' ORDER BY n.created_at DESC LIMIT 6)) AS is_new,
                 (SELECT coalesce(sum(oi.quantity), 0)::int FROM order_items oi JOIN orders od ON od.id = oi.order_id WHERE oi.product_id = p.id AND od.created_at > now() - interval '30 days' AND od.order_status <> 'CANCELED') AS sold_30d,
                 (SELECT count(*)::int FROM recipe_products rp JOIN recipes rc ON rc.id = rp.recipe_id WHERE rp.product_id = p.id AND rc.status = 'PUBLISHED') AS recipe_count,
@@ -157,7 +157,7 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
       (SELECT round(avg(rv.rating)::numeric, 1) FROM reviews rv WHERE rv.product_id = p.id AND rv.status = 'APPROVED') AS rating_avg,
       ${RATING_COUNT} AS rating_count,
       CASE WHEN p.marked_price > p.selling_price THEN round((p.marked_price - p.selling_price) / p.marked_price * 100) END AS discount_pct,
-      p.moq, COALESCE((p.metafields->>'showAddToCart')::boolean, true) AS show_add_to_cart, EXISTS (SELECT 1 FROM product_variants v WHERE v.product_id = p.id) AS has_variants`;
+      p.moq, (p.metafields->>'showAddToCart')::boolean AS show_add_to_cart, EXISTS (SELECT 1 FROM product_variants v WHERE v.product_id = p.id) AS has_variants`;
     const same = ids.length
       ? (await pool.query(
           `SELECT DISTINCT ${cols} FROM products p LEFT JOIN brands b ON b.id = p.brand_id
