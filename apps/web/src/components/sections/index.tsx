@@ -155,8 +155,50 @@ function Hero({ s, ctx }: P) {
   );
 }
 
+/** Every top-level collection as a card: picture with the animated logo, name, size, and a few of its sub menus. */
+function CollectionShowcase({ s, ctx }: P) {
+  const v = s.settings as Settings;
+  const cats = ctx.categories.slice(0, Math.min(40, v.count ?? 40));
+  if (!cats.length) return null;
+  return (
+    <section>
+      <Reveal><Head eyebrow={v.eyebrow} heading={v.heading} /></Reveal>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-4">
+        {cats.map((c, i) => {
+          const wide = i < 2;
+          const subs = c.children;
+          return (
+            <Reveal key={c.id} delay={(i % 4) * 70} className={wide ? "col-span-2" : ""}>
+              <article className="group">
+                <Link href={`/collections/${c.slug}`} className="lift relative block overflow-hidden border border-line">
+                  <img src={c.image_url || `/cimg/${c.slug}?ar=${wide ? "cover" : "4x3"}`} alt="" loading={i < 4 ? "eager" : "lazy"} width={wide ? 1600 : 800} height={wide ? 640 : 600}
+                    className={`w-full object-cover transition duration-700 group-hover:scale-105 ${wide ? "aspect-[16/7]" : "aspect-[4/3]"}`} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+                  <CardLogo className="right-3 top-3" />
+                  <div className="absolute inset-x-0 bottom-0 p-4 text-ondark sm:p-5">
+                    <p className="text-[0.6rem] uppercase tracking-[0.3em] text-gold">{String(i + 1).padStart(2, "0")}{subs.length ? ` · ${subs.length} sub menus` : ""}</p>
+                    <p className={`mt-1 font-semibold uppercase tracking-[0.14em] ${wide ? "text-xl sm:text-2xl" : "text-sm sm:text-base"}`}>{c.name}</p>
+                  </div>
+                </Link>
+                {subs.length > 0 && (
+                  <ul className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted">
+                    {subs.slice(0, wide ? 6 : 3).map((k) => <li key={k.id}><Link href={`/collections/${k.slug}`} className="transition hover:text-accent">{k.name}</Link></li>)}
+                    <li><Link href={`/collections/${c.slug}`} className="font-semibold text-accent hover:underline">{subs.length > (wide ? 6 : 3) ? `+${subs.length - (wide ? 6 : 3)} more` : "View all"} →</Link></li>
+                  </ul>
+                )}
+              </article>
+            </Reveal>
+          );
+        })}
+      </div>
+      <Reveal><div className="mt-10 text-center"><Link href="/collections" className="btn btn-ghost">Browse every collection</Link></div></Reveal>
+    </section>
+  );
+}
+
 function CollectionList({ s, ctx }: P) {
   const v = s.settings as Settings;
+  if (v.layout === "all") return <CollectionShowcase s={s} ctx={ctx} />;
   const cats = ctx.categories.slice(0, v.count ?? 5);
   if (!cats.length) return null;
   return (

@@ -63,8 +63,8 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    type: "collection-list", label: "Category tiles", group: "Products", description: "Bento grid of your top-level categories.",
-    fields: [t("eyebrow", "Small heading", "Explore"), t("heading", "Heading", "Shop by category"), num("count", "How many", 5, 2, 8)],
+    type: "collection-list", label: "Category tiles", group: "Products", description: "Your top-level collections as a bento grid, or a showcase of all of them.",
+    fields: [t("eyebrow", "Small heading", "Explore"), t("heading", "Heading", "Shop by category"), sel("layout", "Layout", [["bento", "Bento grid (a few big tiles)"], ["all", "Showcase of all collections, with their sub menus"]], "bento"), num("count", "How many", 5, 2, 40)],
   },
   {
     type: "featured-collection", label: "Product grid", group: "Products", description: "A grid of products, optionally from one category.",
