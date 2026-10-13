@@ -233,3 +233,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Header logo, second effect redone: a slow gold light flows through the logo non-stop in one direction (7 s per pass, seamless loop, no pause), alongside the sheen (which pauses between sweeps) and the glow. Replaces the faint back-and-forth drift that was reverted.
 - Logo flow made obvious: whole logo colour now flows between cream and gold continuously (6 s per pass, no pause). Previous version was too faint to notice. Verified animation values advance (0 px to 160 px over the loop); the hidden preview pane cannot paint animation frames, so motion was not seen by eye.
 - Logo effects set back to the version before the extra always-on layers: gold shine every 2.75 s (short pause) and soft glow only. The always-on colour flow/drift layers were removed.
+- Logo shine now repeats instantly: no start delay and no pause between sweeps (2.25 s per sweep, linear).

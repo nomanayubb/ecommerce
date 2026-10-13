@@ -481,8 +481,8 @@ html[data-contrast] .glass, html[data-contrast] .header-bar, html[data-contrast]
 /* Header logo comes alive in place: a gold sheen sweeps across the logo shapes and a soft glow breathes. No size or position change. */
 .logo-full { position: relative; }
 .logo-sheen { position: absolute; inset: 0; pointer-events: none; -webkit-mask: var(--logo-mask) center / contain no-repeat; mask: var(--logo-mask) center / contain no-repeat;
-  background: linear-gradient(105deg, transparent 36%, rgb(var(--accent-bright)) 50%, transparent 64%); background-size: 260% 100%; background-position: 160% 0; animation: logo-sheen 2.75s ease-in-out .3s infinite; }
-@keyframes logo-sheen { 0%, 18% { background-position: 160% 0; } 100% { background-position: -60% 0; } }
+  background: linear-gradient(105deg, transparent 36%, rgb(var(--accent-bright)) 50%, transparent 64%); background-size: 260% 100%; background-position: 160% 0; animation: logo-sheen 2.25s linear 0s infinite; }
+@keyframes logo-sheen { 0% { background-position: 160% 0; } 100% { background-position: -60% 0; } }
 .logo-full img { animation: logo-glow 4s ease-in-out infinite; }
 @keyframes logo-glow { 0%, 100% { filter: drop-shadow(0 0 0 rgba(200, 156, 58, 0)); } 50% { filter: drop-shadow(0 0 7px rgba(200, 156, 58, .38)); } }
 @media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) :is(.logo-sheen, .logo-full img) { animation: none; } html:not([data-motion-pref="on"]) .logo-sheen { display: none; } }
