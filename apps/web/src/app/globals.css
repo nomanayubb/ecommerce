@@ -524,3 +524,10 @@ html[data-contrast] .glass, html[data-contrast] .header-bar, html[data-contrast]
 .pcard:hover .pcard-shadow { transform: translateX(-50%) scale(.9); opacity: .8; }
 html[data-imghover="none"] .pcard-disc, html[data-imghover="none"] .pcard-ring, html[data-imghover="none"] .pcard-shadow { transition: none; }
 .gallery-cut { filter: drop-shadow(0 18px 22px rgb(0 0 0 / .5)); }
+
+/* Square version of the product card stage (Brand & settings, Visuals, Product card picture frame): same gold edge, theme shadow and hover lift, with a square plinth instead of a disc. */
+html[data-stage="square"] .pcard-disc { width: 80%; top: 45%; border-radius: 3px; background: linear-gradient(145deg, rgb(255 255 255 / .09), transparent 46%), radial-gradient(circle at 50% 60%, rgb(var(--accent) / .14), transparent 72%), rgb(var(--card)); }
+html[data-stage="square"] .pcard-ring { width: 92%; top: 45%; border-radius: 2px; }
+html[data-stage="square"] .pcard-ring::after { border-radius: 2px; inset: -3.5%; }
+html[data-stage="square"] .pcard-shadow { top: 84%; width: 62%; height: 5%; }
+html[data-stage="square"] .pcard-disc.is-cut .pcard-photo { padding: 9%; }

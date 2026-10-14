@@ -16,12 +16,12 @@ interface Branding {
 }
 type Visuals = {
   cursor: "none" | "ring" | "whisk"; background: "none" | "atmosphere" | "aurora" | "mesh" | "wood" | "marble" | "paper"; depth: "flat" | "soft"; transition: "none" | "fade" | "wipe";
-  imageHover: "zoom" | "liquid" | "none"; particles: "none" | "herbs" | "spices" | "flour" | "steam" | "sparkles" | "petals" | "snow";
+  imageHover: "zoom" | "liquid" | "none"; cardStage: "round" | "square"; particles: "none" | "herbs" | "spices" | "flour" | "steam" | "sparkles" | "petals" | "snow";
   scrollIndicator: "bar" | "cup"; headerStyle: "flat" | "layered" | "gradient" | "peek"; loader: "ring" | "stir" | "chop" | "pulse" | "mascot";
   addSplash: boolean; sound: boolean; mascotOutfit: "none" | "chef" | "auto";
   mascotVoice: boolean; splash: boolean; logoMorph: boolean; logoSparkles: boolean; watermark: boolean; cardGlow: boolean; priceCountUp: boolean;
 };
-const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", depth: "flat", transition: "none", imageHover: "zoom", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none", mascotVoice: false, splash: false, logoMorph: false, logoSparkles: false, watermark: false, cardGlow: false, priceCountUp: false };
+const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", depth: "flat", transition: "none", imageHover: "zoom", cardStage: "round", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none", mascotVoice: false, splash: false, logoMorph: false, logoSparkles: false, watermark: false, cardGlow: false, priceCountUp: false };
 import { ProductPageSettings, type PdpValues } from "@/components/ProductPageSettings";
 type FieldMode = "required" | "optional" | "hidden";
 type CheckoutFields = Record<"email" | "phone" | "address" | "city" | "postalCode" | "note", FieldMode>;
@@ -231,6 +231,7 @@ export default function Settings() {
             ["depth", "Surface depth", [["flat", "Flat"], ["soft", "Soft 3D: layered shadows and a gentle glow"]]],
             ["transition", "Page transition", [["none", "None"], ["fade", "Quick fade"], ["wipe", "Wipe with loader"]]],
             ["imageHover", "Product photo on hover", [["zoom", "Slow zoom"], ["liquid", "Liquid ripple"], ["none", "No effect"]]],
+            ["cardStage", "Product card picture frame", [["round", "Round"], ["square", "Square"]]],
             ["particles", "Floating particles", [["none", "None"], ["herbs", "Herbs and leaves"], ["spices", "Spices"], ["flour", "Flour dust"], ["steam", "Steam"], ["sparkles", "Gold sparkles"], ["petals", "Petals"], ["snow", "Snow"]]],
             ["scrollIndicator", "Scroll progress", [["bar", "Thin top bar"], ["cup", "Measuring cup that fills"]]],
             ["headerStyle", "Header style", [["flat", "Flat"], ["layered", "Layered (deepens on scroll)"], ["gradient", "Animated gradient edge"], ["peek", "Mascot peeks from under the header"]]],

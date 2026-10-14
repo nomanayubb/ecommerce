@@ -56,6 +56,7 @@ export const brandingSchema = z.object({
     depth: z.enum(["flat", "soft"]).default("flat"),
     transition: z.enum(["none", "fade", "wipe"]).default("none"),
     imageHover: z.enum(["zoom", "liquid", "none"]).default("zoom"),
+    cardStage: z.enum(["round", "square"]).default("round"),
     particles: z.enum(["none", "herbs", "spices", "flour", "steam", "sparkles", "petals", "snow"]).default("none"),
     scrollIndicator: z.enum(["bar", "cup"]).default("bar"),
     headerStyle: z.enum(["flat", "layered", "gradient", "peek"]).default("flat"),
