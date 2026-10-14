@@ -310,3 +310,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Verified through the API: picture upload and serve (200, image/webp), 1 product created, 2 bad rows reported, same SKU again updated, product page data shows the /uploads picture and brand. Test data removed. The admin screen itself was not clicked through by eye.
 - Home headline: 'Premium Essentials' ('Shop' removed).
 - Home cover line under the headline: 'Grab your best pick.' (owner's words; replaced the longer brand text there).
+- Home headline: 'Grab your best pick.' (replaces Premium Essentials); line under it back to the original brand text.
