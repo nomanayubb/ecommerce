@@ -309,3 +309,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Pictures are resized to 1400 px and saved as WebP in the browser, stored in the database (table `uploads`, migration 011) and served at `/uploads/<name>` from the shop's own address. Needs no server restart. The import checks that every picture named in the sheet was chosen and reports rows with problems (unknown collection, missing picture) without stopping the rest.
 - Verified through the API: picture upload and serve (200, image/webp), 1 product created, 2 bad rows reported, same SKU again updated, product page data shows the /uploads picture and brand. Test data removed. The admin screen itself was not clicked through by eye.
 - Home headline: 'Premium Essentials' ('Shop' removed).
+- Home cover line under the headline: 'Grab your best pick.' (owner's words; replaced the longer brand text there).
