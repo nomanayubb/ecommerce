@@ -296,3 +296,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Home cover headline words changed (only the words; style, small heading, text and photo unchanged): 'Quality goods. Honest prices.' - two short balanced lines like the original, on desktop and phone. Edit in Pages, home, cover section, Headline.
 - Home cover wording redone: headline 'Everyday, elevated.'; buttons 'Explore collections' (to /collections) and 'New arrivals' (to newest products), replacing 'Shop the collection' and 'Best prices'. Style, paragraph and photo unchanged.
 - Home cover wording, another option: headline 'Thoughtfully curated.', buttons 'Discover the range' and 'Best sellers'.
+- Home cover wording: headline 'Live better, every day.'; buttons 'Discover the range' and 'New arrivals'.
