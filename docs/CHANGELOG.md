@@ -299,3 +299,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Home cover wording: headline 'Live better, every day.'; buttons 'Discover the range' and 'New arrivals'.
 - Home cover headline: 'Live better every day.' (comma removed). House rule for shop copy: no commas, dots are fine.
 - Home cover supporting line changed to: 'Everyday essentials for your home and family. Delivered across Pakistan. Pay when it arrives.' (was the brand hero text: 'Considered products, honest prices, delivered to your door across Pakistan. Pay when it arrives.').
+- Home cover: supporting line put back to the original brand text; headline now 'Quality you can trust.' (only the headline words changed).
