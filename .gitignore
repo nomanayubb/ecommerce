@@ -14,3 +14,4 @@ brand-source/preview.png
 .next-prod
 apps/web/public/kk/
 apps/api/scripts/.kk-cache.json
+start-shop.log
