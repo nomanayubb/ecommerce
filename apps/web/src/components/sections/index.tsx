@@ -73,7 +73,13 @@ function Hero({ s, ctx }: P) {
   const pad = v.height === "md" ? "py-14 sm:py-20" : "py-20 sm:py-28";
   const packGrad = ctx.pack.decor?.heroGradient;
   const gradient = packGrad ?? "linear-gradient(120deg, rgb(var(--dark)) 0%, color-mix(in srgb, rgb(var(--dark)) 86%, rgb(var(--accent-bright))) 55%, rgb(var(--dark)) 100%)";
-  const words = heading.split(" ").map((w: string, n: number) => <span key={n} className="kword" style={{ "--i": n } as CSSProperties}>{w}&nbsp;</span>);
+  const elegant = v.headingStyle === "elegant";
+  // *word* marks the gold accent in the elegant look; in the bold look the stars are simply dropped
+  const words = heading.split(" ").map((w: string, n: number, all: string[]) => {
+    const open = all.slice(0, n + 1).join(" ").split("*").length % 2 === 0;
+    const accent = elegant && (open || /^\*|\*$/.test(w));
+    return <span key={n} className={`kword ${accent ? "hero-accent" : ""}`} style={{ "--i": n } as CSSProperties}>{w.replace(/\*/g, "")}&nbsp;</span>;
+  });
   const variant = String(v.variant ?? "gradient");
   const rotating = String(v.rotatingWords ?? "").split(",").map((x) => x.trim()).filter(Boolean);
   const story = String(v.storyLines ?? "").split("\n").map((x) => x.trim()).filter(Boolean);
@@ -82,8 +88,8 @@ function Hero({ s, ctx }: P) {
   ) : null;
   const copy = (
     <div className="relative max-w-xl">
-      <p className="eyebrow">{eyebrow}</p>
-      {variant === "kinetic" ? <KineticHeading heading={heading} words={rotating} /> : <h1 className="hero-title mt-5 text-4xl font-semibold uppercase leading-[1.08] tracking-[0.04em] sm:text-6xl">{words}</h1>}
+      <p className={`eyebrow ${elegant ? "hero-eyebrow-elegant" : ""}`}>{eyebrow}</p>
+      {variant === "kinetic" ? <KineticHeading heading={heading} words={rotating} /> : <h1 className={elegant ? "hero-title hero-title-elegant mt-5" : "hero-title mt-5 text-4xl font-semibold uppercase leading-[1.08] tracking-[0.04em] sm:text-6xl"}>{words}</h1>}
       {text && <p className="mt-6 max-w-md text-base leading-relaxed text-ondark/70">{text}</p>}
       {variant === "mascot" && story.length > 0 && <div className="mt-8"><MascotStory lines={story} /></div>}
       <div className="mt-10 flex flex-wrap items-center gap-4">

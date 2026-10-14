@@ -498,3 +498,9 @@ html[data-contrast] .glass, html[data-contrast] .header-bar, html[data-contrast]
 .card-logo img { animation: logo-glow 4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) :is(.card-logo, .card-logo img) { animation: none; } }
 [data-motion="subtle"] :is(.card-logo, .card-logo img), [data-motion="off"] :is(.card-logo, .card-logo img) { animation: none !important; }
+
+/* Hero headline, elegant look: sentence case, light weight, one gold accent phrase, a fine gold rule above the small heading. */
+.hero-title-elegant { font-size: clamp(2.1rem, 5.4vw, 4.4rem); font-weight: 300; line-height: 1.1; letter-spacing: -.01em; text-transform: none; max-width: 14ch; }
+.hero-title-elegant .hero-accent { font-weight: 500; font-style: italic; color: rgb(var(--accent-bright)); }
+.hero-eyebrow-elegant { display: flex; align-items: center; gap: .9rem; letter-spacing: .34em; }
+.hero-eyebrow-elegant::before { content: ""; width: 2.6rem; height: 1px; background: rgb(var(--accent-bright)); }
