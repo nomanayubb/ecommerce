@@ -4,15 +4,22 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { pkr } from "@/lib/api";
 import { useShopper, type Lite } from "./Shopper";
+import { ImageMark } from "./ImageMark";
 
 /** Small card used by wishlist and recently viewed. */
 export function LiteCard({ p, onRemove }: { p: Lite; onRemove?: () => void }) {
   const off = p.marked > p.price ? Math.round(((p.marked - p.price) / p.marked) * 100) : 0;
   return (
     <div className="lift group relative border border-line bg-card">
-      <Link href={`/products/${p.slug}`} className="block">
-        <div className="relative aspect-[4/5] overflow-hidden bg-line/40">
-          {p.image && <img src={p.image} alt={p.title} loading="lazy" width={600} height={750} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />}
+      <Link href={`/products/${p.slug}`} className="pcard block">
+        <div className="pcard-img pcard-stage relative aspect-[4/5] overflow-hidden">
+          <span className="pcard-ring" aria-hidden />
+          <div className={`pcard-disc ${p.image?.includes("/kk/c/") ? "is-cut" : ""}`}>
+            <ImageMark behind />
+            {p.image && <img src={p.image} alt={p.title} loading="lazy" decoding="async" width={600} height={750} className="pcard-photo relative" />}
+          </div>
+          <span className="pcard-shadow" aria-hidden />
+          <ImageMark />
           {off > 0 && <span className="absolute left-0 top-4 bg-accent px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-onbrand">-{off}%</span>}
         </div>
         <div className="p-4">

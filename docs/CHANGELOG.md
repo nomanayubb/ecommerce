@@ -324,3 +324,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 
 ## 2026-10-14 — Square product card frame
 - New setting Brand & settings, Visuals, "Product card picture frame": Round (the disc) or Square (same gold edge, outer ring, theme shadow, logo and hover lift on a square plinth). Square is now on. CSS only via `data-stage` on the page; checked in the browser on the products page.
+- Recently viewed (and the wishlist, which uses the same small card) now use the same round picture frame, gold ring, theme shadow and logo as the product cards, so it follows the Round or Square setting. Checked in the browser.
