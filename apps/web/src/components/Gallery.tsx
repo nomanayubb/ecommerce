@@ -86,7 +86,7 @@ export function Gallery({ images, title, videoUrl, spinImages, modelUrl, thumbs 
         onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - touchX.current; if (Math.abs(dx) > 45 && list.length > 1) { e.preventDefault(); go(dx < 0 ? 1 : -1); } }}
       >
         <img src={list[i]} alt={title} width={800} height={1000} fetchPriority="high"
-          className="h-full w-full object-cover transition-transform duration-200"
+          className={`h-full w-full transition-transform duration-200 ${list[i]?.includes("/kk/c/") ? "gallery-cut object-contain p-[7%]" : "object-cover"}`}
           style={zoom ? { transform: "scale(1.8)", transformOrigin: `${zoom.x}% ${zoom.y}%` } : undefined} />
         <span aria-hidden className={`glass absolute left-3 top-3 hidden px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] transition-opacity md:block ${zoom ? "opacity-0" : "opacity-90"}`}>{i + 1} / {list.length} · hover to zoom</span>
         {list.length > 1 && <span aria-hidden className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5 sm:hidden">{list.map((_, n) => <span key={n} className={`h-1.5 rounded-full transition-all ${n === i ? "w-5 bg-accent" : "w-1.5 bg-fg/40"}`} />)}</span>}

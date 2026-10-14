@@ -20,14 +20,19 @@ export function ProductCard({ p, priority = false }: { p: ProductSummary; priori
     <Tilt>
       <div className="group/card relative [container-type:inline-size]">
       <Link href={`/products/${p.slug}`} className="lift pcard group block border border-line bg-card">
-        <div className="pcard-img relative aspect-[4/5] overflow-hidden bg-line/40">
-          {p.images[0] && (
-            <img src={p.images[0]} alt={p.title} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : undefined} decoding="async" width={600} height={750}
-              className={`h-full w-full object-cover transition duration-700 group-hover:scale-105 ${soldOut ? "opacity-50 grayscale" : ""}`} />
-          )}
+        <div className="pcard-img pcard-stage relative aspect-[4/5] overflow-hidden">
+          <span className="pcard-ring" aria-hidden />
+          <div className={`pcard-disc ${p.images[0]?.includes("/kk/c/") ? "is-cut" : ""}`}>
+            <ImageMark behind />
+            {p.images[0] && (
+              <img src={p.images[0]} alt={p.title} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : undefined} decoding="async" width={600} height={750}
+                className={`pcard-photo relative ${soldOut ? "opacity-50 grayscale" : ""}`} />
+            )}
+            {p.images[1] && !soldOut && <HoverPhoto src={p.images[2] ?? p.images[1]} />}
+          </div>
+          <span className="pcard-shadow" aria-hidden />
           <ImageMark />
           <CardGlow image={p.images[0]} />
-          {p.images[1] && !soldOut && <HoverPhoto src={p.images[2] ?? p.images[1]} />}
           {p.tags?.includes("recommended") && !soldOut && <span className="absolute left-0 top-14 bg-gold px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-darksurface">Recommended</span>}
           {isFileVideo(p.video_url) && !soldOut && <HoverVideo src={p.video_url!} />}
           {p.discount_pct && !soldOut && (
