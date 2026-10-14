@@ -302,3 +302,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Home cover: supporting line put back to the original brand text; headline now 'Quality you can trust.' (only the headline words changed).
 - Home headline: 'Made for modern living.'
 - Home headline set to the owner's own words: 'Premium Standards, Exquisite Quality' (kept exactly, comma included, because the owner wrote it).
+- Home headline replaced by 'Shop Premium Essentials' (short, two lines, the cover keeps its usual look).
