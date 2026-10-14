@@ -303,3 +303,8 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Home headline: 'Made for modern living.'
 - Home headline set to the owner's own words: 'Premium Standards, Exquisite Quality' (kept exactly, comma included, because the owner wrote it).
 - Home headline replaced by 'Shop Premium Essentials' (short, two lines, the cover keeps its usual look).
+
+## 2026-10-14 — Product import with pictures
+- Admin, Products, "Import products": download a CSV template (title, sku, selling_price, marked_price, stock, collections, brand, tags, status, description, seo_title, seo_description, images), fill it, pick it together with the picture files, and all products are created in one go. A known SKU updates that product. Collections are matched by name or address, brands are created if new, several values are separated with |.
+- Pictures are resized to 1400 px and saved as WebP in the browser, stored in the database (table `uploads`, migration 011) and served at `/uploads/<name>` from the shop's own address. Needs no server restart. The import checks that every picture named in the sheet was chosen and reports rows with problems (unknown collection, missing picture) without stopping the rest.
+- Verified through the API: picture upload and serve (200, image/webp), 1 product created, 2 bad rows reported, same SKU again updated, product page data shows the /uploads picture and brand. Test data removed. The admin screen itself was not clicked through by eye.

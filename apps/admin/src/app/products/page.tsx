@@ -53,6 +53,7 @@ export default function Products() {
         <button disabled={!dirty} onClick={save} className="rounded bg-brand px-4 py-1.5 text-sm text-onbrand disabled:opacity-40">
           Save {dirty || ""} change{dirty === 1 ? "" : "s"}
         </button>
+        <Link href="/products/import" className="rounded border border-line px-4 py-1.5 text-sm">Import products</Link>
         <Link href="/products/new" className="rounded border border-line px-4 py-1.5 text-sm">New product</Link>
       </div>
       {msg && <p className="mb-2 text-sm text-muted">{msg}</p>}

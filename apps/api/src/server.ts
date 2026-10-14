@@ -9,6 +9,7 @@ import { qaRoutes } from "./routes/qa.js";
 import { contentRoutes } from "./routes/content.js";
 import { checkoutRoutes } from "./routes/checkout.js";
 import { adminRoutes } from "./routes/admin.js";
+import { uploadPublicRoutes } from "./routes/uploads.js";
 import { settingsRoutes } from "./routes/settings.js";
 import { accountRoutes } from "./routes/account.js";
 import { engagementRoutes } from "./routes/engagement.js";
@@ -56,6 +57,7 @@ await app.register(settingsRoutes, { prefix: "/api/v1" });
 await app.register(accountRoutes, { prefix: "/api/v1" });
 await app.register(engagementRoutes, { prefix: "/api/v1" });
 await app.register(templateRoutes, { prefix: "/api/v1" });
+await app.register(uploadPublicRoutes, { prefix: "/api/v1" });
 await app.register(adminRoutes, { prefix: "/api/v1/admin" });
 
 await app.listen({ port: Number(process.env.PORT ?? 4000), host: "0.0.0.0" });
