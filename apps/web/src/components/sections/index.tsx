@@ -158,14 +158,16 @@ function Hero({ s, ctx }: P) {
 /** Every top-level collection as a card: picture with the animated logo, name, size, and a few of its sub menus. */
 function CollectionShowcase({ s, ctx }: P) {
   const v = s.settings as Settings;
-  const cats = ctx.categories.slice(0, Math.min(40, v.count ?? 40));
+  const pick = String(v.slugs ?? "").split(",").map((x) => x.trim().toLowerCase()).filter(Boolean);
+  const pool = pick.length ? pick.map((sl) => ctx.categories.find((c) => c.slug === sl)).filter((c): c is NonNullable<typeof c> => !!c) : ctx.categories;
+  const cats = pool.slice(0, Math.min(40, v.count ?? 40));
   if (!cats.length) return null;
   return (
     <section>
       <Reveal><Head eyebrow={v.eyebrow} heading={v.heading} /></Reveal>
       <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-4">
         {cats.map((c, i) => {
-          const wide = i < 2;
+          const wide = !!v.featured && i < 2;
           const subs = c.children;
           return (
             <Reveal key={c.id} delay={(i % 4) * 70} className={wide ? "col-span-2" : ""}>

@@ -64,7 +64,7 @@ export const SECTIONS: SectionDef[] = [
   },
   {
     type: "collection-list", label: "Category tiles", group: "Products", description: "Your top-level collections as a bento grid, or a showcase of all of them.",
-    fields: [t("eyebrow", "Small heading", "Explore"), t("heading", "Heading", "Shop by category"), sel("layout", "Layout", [["bento", "Bento grid (a few big tiles)"], ["all", "Showcase of all collections, with their sub menus"]], "bento"), num("count", "How many", 5, 2, 40)],
+    fields: [t("eyebrow", "Small heading", "Explore"), t("heading", "Heading", "Shop by category"), sel("layout", "Layout", [["bento", "Bento grid (a few big tiles)"], ["all", "Showcase of all collections, with their sub menus"]], "bento"), num("count", "How many", 5, 2, 40), t("slugs", "Only these collections (addresses, comma separated; empty = all)", "", { help: "For the Showcase layout, e.g. cosmetics, household, toys. They show in this order." }), tog("featured", "Make the first two cards bigger (Showcase)", false)],
   },
   {
     type: "featured-collection", label: "Product grid", group: "Products", description: "A grid of products, optionally from one category.",
