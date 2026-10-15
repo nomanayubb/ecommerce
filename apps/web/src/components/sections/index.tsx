@@ -258,7 +258,7 @@ async function FeaturedCollection({ s }: P) {
 
 async function ProductCarousel({ s }: P) {
   const v = s.settings as Settings;
-  const items = await products({ ...v, sort: "newest" });
+  const items = await products({ ...v, sort: v.sort || "newest" });
   if (!items.length) return null;
   return (
     <section>
@@ -424,6 +424,48 @@ function Newsletter({ s }: P) {
   );
 }
 
+/** KK Mart style cards: each card shows 4 collections (picture and name) or one big one, with a link under it. */
+async function CollectionCards({ s }: P) {
+  const v = s.settings as Settings;
+  const cards = (s.blocks ?? []).map((b) => {
+    const st = b.settings;
+    const slugs = (st.layout === "one" ? [st.cat1] : [st.cat1, st.cat2, st.cat3, st.cat4]).map(String).filter(Boolean);
+    return { id: b.id, title: String(st.title ?? ""), one: st.layout === "one", slugs, linkLabel: String(st.linkLabel || "See more"), linkHref: String(st.linkHref || (slugs[0] ? `/collections/${slugs[0]}` : "/collections")) };
+  }).filter((c) => c.slugs.length);
+  if (!cards.length) return null;
+  const all = [...new Set(cards.flatMap((c) => c.slugs))];
+  const covers = await api<{ slug: string; name: string | null; image: string | null }[]>(`/categories/covers?slugs=${all.join(",")}`, { revalidate: 300 }).catch(() => []);
+  const by = new Map(covers.map((c) => [c.slug, c]));
+  return (
+    <section>
+      {(v.eyebrow || v.heading) && <Reveal><Head eyebrow={v.eyebrow} heading={v.heading} /></Reveal>}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((c, n) => (
+          <Reveal key={c.id} delay={(n % 4) * 70}>
+            <article className="flex h-full flex-col border border-line bg-card p-4 sm:p-5">
+              {c.title && <h3 className="mb-4 text-sm font-semibold uppercase leading-snug tracking-[0.12em]">{c.title}</h3>}
+              <div className={c.one ? "flex-1" : "grid flex-1 grid-cols-2 gap-3"}>
+                {c.slugs.map((slug) => {
+                  const it = by.get(slug);
+                  return (
+                    <Link key={slug} href={`/collections/${slug}`} className="group block">
+                      <span className={`relative block overflow-hidden border border-line bg-white ${c.one ? "aspect-[4/5]" : "aspect-square"}`}>
+                        <img src={it?.image || `/cimg/${slug}?ar=4x3`} alt="" loading="lazy" width={400} height={400} className={`h-full w-full transition duration-500 group-hover:scale-105 ${it?.image ? "object-contain p-2" : "object-cover"}`} />
+                      </span>
+                      <span className="mt-2 line-clamp-2 block text-xs leading-snug text-muted transition group-hover:text-accent">{it?.name || slug}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+              <Link href={c.linkHref} className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-accent hover:underline">{c.linkLabel} →</Link>
+            </article>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 const TRUST_ICONS = { truck: TruckIcon, price: CashIcon, shield: ShieldIcon, package: PackageIcon, support: SupportIcon } as const;
 /** Three promises in a row (icon, title, line), in the theme's gold line style. */
 function TrustStrip({ s }: P) {
@@ -474,7 +516,7 @@ function PromiseSection({ s, ctx }: P) {
 const MAP: Record<string, (p: P) => any> = {
   hero: Hero, "collection-list": CollectionList, "featured-collection": FeaturedCollection, "product-carousel": ProductCarousel, "product-spotlight": Spotlight,
   "image-with-text": ImageWithText, "rich-text": RichText, multicolumn: Multicolumn, testimonials: Testimonials, "logo-bar": LogoBar, faq: Faq,
-  "countdown-banner": CountdownBanner, newsletter: Newsletter, promise: PromiseSection, "trust-strip": TrustStrip,
+  "countdown-banner": CountdownBanner, newsletter: Newsletter, promise: PromiseSection, "trust-strip": TrustStrip, "collection-cards": CollectionCards,
   "recently-viewed": ({ s }) => <RecentlyViewed title={s.settings.heading || "Recently viewed"} />,
   timeline: Timeline, team: Team, contact: Contact, map: PlaceMap, gallery: PhotoGallery, events: Events, podcast: Podcast, "video-story": VideoStory, stats: Stats,
   chips: Chips, marquee: Marquee, "promo-banner": PromoBanner, steps: Steps, "brand-grid": BrandGrid, "picked-for-you": PickedForYou,

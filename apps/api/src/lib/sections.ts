@@ -89,7 +89,20 @@ export const SECTIONS: SectionDef[] = [
   },
   {
     type: "product-carousel", label: "Product carousel", group: "Products", description: "Swipeable row of products.",
-    fields: [t("eyebrow", "Small heading", ""), t("heading", "Heading", "Bestsellers"), { key: "categorySlug", label: "Category", type: "category", default: "" }, num("count", "How many", 8, 3, 16)],
+    fields: [t("eyebrow", "Small heading", ""), t("heading", "Heading", "Bestsellers"), { key: "categorySlug", label: "Category", type: "category", default: "" }, num("count", "How many", 8, 3, 16), sel("sort", "Order", [["newest", "Newest"], ["popular", "Trending (most bought and rated)"], ["price_asc", "Price: low to high"], ["price_desc", "Price: high to low"]], "newest")],
+  },
+  {
+    type: "collection-cards", label: "Collection cards (4 pictures each)", group: "Products", description: "A row of cards. Each card shows 4 collections with a picture and a name, or one big collection. Like KK Mart.",
+    fields: [t("eyebrow", "Small heading", ""), t("heading", "Heading", "")],
+    block: {
+      type: "card", label: "Card", max: 8,
+      fields: [
+        t("title", "Card title", "", { maxLength: 60 }), sel("layout", "Layout", [["four", "4 collections (2 x 2)"], ["one", "1 big collection"]], "four"),
+        { key: "cat1", label: "Collection 1", type: "category", default: "" }, { key: "cat2", label: "Collection 2", type: "category", default: "" },
+        { key: "cat3", label: "Collection 3", type: "category", default: "" }, { key: "cat4", label: "Collection 4", type: "category", default: "" },
+        t("linkLabel", "Link text", "See more"), url("linkHref", "Link (empty = the first collection)", ""),
+      ],
+    },
   },
   {
     type: "product-spotlight", label: "Product spotlight", group: "Products", description: "One hero product with image gallery and buy box.",

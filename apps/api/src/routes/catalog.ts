@@ -192,6 +192,24 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
     });
   app.get("/categories/tree", async () => categoryTree());
 
+  // A real product picture for each collection (newest in stock product of the collection or its sub collections), for picture cards.
+  app.get("/categories/covers", async (req) => {
+    const slugs = String((req.query as { slugs?: string }).slugs ?? "").split(",").map((s) => s.trim()).filter((s) => /^[a-z0-9-]{1,80}$/.test(s)).slice(0, 60);
+    return cached(`catalog:covers:${slugs.join(",")}`, 300, async () => {
+      const out: { slug: string; name: string | null; image: string | null }[] = [];
+      for (const slug of slugs) {
+        const r = (await pool.query(
+          `WITH RECURSIVE t AS (SELECT id FROM categories WHERE slug = $1 UNION ALL SELECT c.id FROM categories c JOIN t ON c.parent_id = t.id)
+           SELECT (SELECT name FROM categories WHERE slug = $1) AS name,
+                  (SELECT p.images->>0 FROM products p JOIN product_categories pc ON pc.product_id = p.id
+                    WHERE pc.category_id IN (SELECT id FROM t) AND p.status = 'PUBLISHED' AND p.stock_quantity > 0 AND p.images->>0 IS NOT NULL
+                    ORDER BY p.created_at DESC LIMIT 1) AS image`, [slug])).rows[0];
+        out.push({ slug, name: r?.name ?? null, image: r?.image ?? null });
+      }
+      return out;
+    });
+  });
+
   // One branch of the tree (children and grandchildren) so menus can load a drop-down only when it is opened.
   app.get<{ Params: { slug: string } }>("/categories/children/:slug", async (req, reply) => {
     const roots: any[] = await categoryTree();
