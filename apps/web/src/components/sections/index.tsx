@@ -1,5 +1,4 @@
 import { CardLogo } from "../CardLogo";
-import { TrustGlitter } from "../TrustGlitter";
 import { Scene3D } from "./Scene3DLazy";
 import { Timeline, Team, Contact, PlaceMap, Gallery as PhotoGallery, Events, Podcast, VideoStory, Stats, BlogGrid, RecipeGrid, CustomCode, Chips, Marquee, PromoBanner, Steps, BrandGrid, PickedForYou } from "./Extra";
 import Link from "next/link";
@@ -430,8 +429,7 @@ function TrustStrip({ s }: P) {
   ].filter((i) => i.title || i.text);
   return (
     <Reveal>
-      <section aria-label="Our promises" className="trust-strip relative isolate grid divide-y divide-line border-y border-line bg-card/40 md:grid-cols-3 md:divide-x md:divide-y-0">
-        <TrustGlitter />
+      <section aria-label="Our promises" className="trust-strip relative grid divide-y divide-line overflow-hidden border-y border-line bg-card/40 md:grid-cols-3 md:divide-x md:divide-y-0">
         {items.map((it, n) => {
           const Ic = TRUST_ICONS[it.icon as keyof typeof TRUST_ICONS] ?? TruckIcon;
           return (
