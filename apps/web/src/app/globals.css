@@ -555,3 +555,11 @@ html[data-stage="square"] .pcard-disc, html[data-stage="square"] .pcard-ring, ht
 .pcard:hover .pcard-disc:not(.is-cut) { box-shadow: 0 0 0 1px rgb(var(--accent) / .85), 0 3px 6px rgb(0 0 0 / .22), 0 34px 46px -22px rgb(0 0 0 / .85); }
 .pcard-stage { background-image: radial-gradient(120% 80% at 50% 38%, rgb(var(--accent) / .13), transparent 60%), radial-gradient(90% 60% at 12% 0%, rgb(255 255 255 / .05), transparent 55%), linear-gradient(180deg, rgb(var(--card)), rgb(var(--bg))); }
 .pcard-ring { border-color: rgb(var(--accent) / .3); }
+
+/* Gold light under the product frame: a soft gradient in the theme gold spills out from the bottom edge of the white frame and fades away,
+   with a fine gold line along the edge. Only for ordinary photos (cut-outs keep their own ground shadow). */
+.pcard-stage:has(.pcard-disc:not(.is-cut))::after { content: ""; position: absolute; left: 50%; top: 78.4%; width: 84%; height: 17%; transform: translateX(-50%); pointer-events: none;
+  background: radial-gradient(ellipse 62% 100% at 50% 0%, rgb(var(--accent-bright) / .62), rgb(var(--accent) / .3) 42%, transparent 74%), linear-gradient(90deg, transparent, rgb(var(--accent-bright) / .9) 50%, transparent);
+  background-size: 100% 100%, 100% 1px; background-repeat: no-repeat; background-position: center, center top; filter: blur(.4px); transition: opacity .5s, transform .6s cubic-bezier(.2,.7,.2,1); opacity: .85; }
+.pcard:hover .pcard-stage:has(.pcard-disc:not(.is-cut))::after { opacity: 1; transform: translateX(-50%) scaleX(1.06); }
+html[data-imghover="none"] .pcard-stage::after { transition: none; }
