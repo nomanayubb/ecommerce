@@ -356,3 +356,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Product cards: the three small buttons were removed (heart and compare at the top right, quick add at the bottom right). They are still on the product page itself.
 - Product cards: the yellow discount percent tag now sits flush in the top-left corner of the card, clear of the ring lines; the frame and rings moved down a little (centre 50 percent instead of 46) to make room.
 - Correction: the product frame, rings and shadow are back exactly where they were (centre 46 percent). Instead the yellow discount tag was made smaller (8 px text) and placed at the top left under the ring's top line, above the photo frame, so it fits without touching the frame.
+- Reverted at the owner's request: the discount tag is back to its original size and place (left 0, top 16 px) and the frame is as before. Cards are as they were before the tag change.
