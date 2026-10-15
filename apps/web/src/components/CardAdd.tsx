@@ -6,8 +6,8 @@ import { useCart } from "./CartProvider";
 import { useSite } from "./Site";
 import { CheckIcon } from "./icons";
 
-/** One small add-to-bag button on the same line as the price. Shown only for simple products (no options, no minimum order, in stock). */
-export function CardAdd({ p }: { p: ProductSummary }) {
+/** One small add-to-bag button on the picture, level with the AVERIXA logo mark and just to its left. Shown only for simple products (no options, no minimum order, in stock). */
+export function CardAdd({ p, className = "" }: { p: ProductSummary; className?: string }) {
   const { add } = useCart();
   const { store } = useSite();
   const [done, setDone] = useState(false);
@@ -21,7 +21,7 @@ export function CardAdd({ p }: { p: ProductSummary }) {
         add({ productId: p.id, variantId: null, title: p.title, price: Number(p.selling_price), marked: Number(p.marked_price), image: p.images[0], quantity: 1 });
         setDone(true); setTimeout(() => setDone(false), 1600);
       }}
-      className="glass flex h-8 w-8 shrink-0 items-center justify-center transition hover:text-accent"
+      className={`glass flex h-8 w-8 shrink-0 items-center justify-center transition hover:text-accent ${className}`}
     >
       {done ? <CheckIcon size={16} /> : <svg viewBox="0 0 24 24" width={16} height={16} fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="square" aria-hidden><path d="M5 8h14l-1 12H6L5 8z" /><path d="M12 11v6M9 14h6" stroke="rgb(var(--accent))" /></svg>}
     </button>
