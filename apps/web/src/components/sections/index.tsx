@@ -429,11 +429,11 @@ function TrustStrip({ s }: P) {
   ].filter((i) => i.title || i.text);
   return (
     <Reveal>
-      <section aria-label="Our promises" className="grid divide-y divide-line border-y border-line bg-card/40 md:grid-cols-3 md:divide-x md:divide-y-0">
+      <section aria-label="Our promises" className="trust-strip relative grid divide-y divide-line overflow-hidden border-y border-line bg-card/40 md:grid-cols-3 md:divide-x md:divide-y-0">
         {items.map((it, n) => {
           const Ic = TRUST_ICONS[it.icon as keyof typeof TRUST_ICONS] ?? TruckIcon;
           return (
-            <div key={n} className="flex items-center gap-4 px-5 py-6 sm:px-8 sm:py-7">
+            <div key={n} className="relative z-[1] flex items-center gap-4 px-5 py-6 sm:px-8 sm:py-7">
               <span className="grid h-14 w-14 shrink-0 place-items-center border border-accent/40 bg-bg text-fg shadow-[0_14px_28px_-18px_rgb(var(--accent)/.7)]"><Ic size={26} /></span>
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.16em]">{it.title}</p>

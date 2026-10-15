@@ -328,3 +328,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 
 ## 2026-10-15 — Trust strip above the collections
 - New page section Trust strip (3 promises): icon in a gold-edged square, title in capitals and a line of text, side by side with hairline dividers (stacked on phones). Words, icons and the order are editable in the page builder. On the home page it sits just above Shop all collections with: Delivering across Pakistan / Fast, Reliable & Nationwide Coverage, Unbeatable Prices / Low on Price, High on Value, Trusted Quality / Delivering Trust Through Quality. Checked in the browser.
+- Trust strip background: a soft gold light and glittering gold sparks sweep from left to right behind the three promises (7 s per pass, loops without a gap, twinkling sparks, theme gold, CSS only, stills with reduced motion unless the shop motion policy is Always). Checked mid-sweep in the browser.
