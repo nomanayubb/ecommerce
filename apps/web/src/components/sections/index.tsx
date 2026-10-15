@@ -418,6 +418,35 @@ function Newsletter({ s }: P) {
   );
 }
 
+const TRUST_ICONS = { truck: TruckIcon, price: CashIcon, shield: ShieldIcon, package: PackageIcon, support: SupportIcon } as const;
+/** Three promises in a row (icon, title, line), in the theme's gold line style. */
+function TrustStrip({ s }: P) {
+  const v = s.settings as Settings;
+  const items = [
+    { icon: v.icon1 || "truck", title: v.title1 || "Delivering across Pakistan", text: v.text1 || "Fast, Reliable & Nationwide Coverage" },
+    { icon: v.icon2 || "price", title: v.title2 || "Unbeatable Prices", text: v.text2 || "Low on Price, High on Value" },
+    { icon: v.icon3 || "shield", title: v.title3 || "Trusted Quality", text: v.text3 || "Delivering Trust Through Quality" },
+  ].filter((i) => i.title || i.text);
+  return (
+    <Reveal>
+      <section aria-label="Our promises" className="grid divide-y divide-line border-y border-line bg-card/40 md:grid-cols-3 md:divide-x md:divide-y-0">
+        {items.map((it, n) => {
+          const Ic = TRUST_ICONS[it.icon as keyof typeof TRUST_ICONS] ?? TruckIcon;
+          return (
+            <div key={n} className="flex items-center gap-4 px-5 py-6 sm:px-8 sm:py-7">
+              <span className="grid h-14 w-14 shrink-0 place-items-center border border-accent/40 bg-bg text-fg shadow-[0_14px_28px_-18px_rgb(var(--accent)/.7)]"><Ic size={26} /></span>
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.16em]">{it.title}</p>
+                <p className="mt-1 text-sm text-muted">{it.text}</p>
+              </div>
+            </div>
+          );
+        })}
+      </section>
+    </Reveal>
+  );
+}
+
 function PromiseSection({ s, ctx }: P) {
   const v = s.settings as Settings;
   const b = ctx.branding;
@@ -439,7 +468,7 @@ function PromiseSection({ s, ctx }: P) {
 const MAP: Record<string, (p: P) => any> = {
   hero: Hero, "collection-list": CollectionList, "featured-collection": FeaturedCollection, "product-carousel": ProductCarousel, "product-spotlight": Spotlight,
   "image-with-text": ImageWithText, "rich-text": RichText, multicolumn: Multicolumn, testimonials: Testimonials, "logo-bar": LogoBar, faq: Faq,
-  "countdown-banner": CountdownBanner, newsletter: Newsletter, promise: PromiseSection,
+  "countdown-banner": CountdownBanner, newsletter: Newsletter, promise: PromiseSection, "trust-strip": TrustStrip,
   "recently-viewed": ({ s }) => <RecentlyViewed title={s.settings.heading || "Recently viewed"} />,
   timeline: Timeline, team: Team, contact: Contact, map: PlaceMap, gallery: PhotoGallery, events: Events, podcast: Podcast, "video-story": VideoStory, stats: Stats,
   chips: Chips, marquee: Marquee, "promo-banner": PromoBanner, steps: Steps, "brand-grid": BrandGrid, "picked-for-you": PickedForYou,

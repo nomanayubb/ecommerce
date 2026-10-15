@@ -325,3 +325,6 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 ## 2026-10-14 — Square product card frame
 - New setting Brand & settings, Visuals, "Product card picture frame": Round (the disc) or Square (same gold edge, outer ring, theme shadow, logo and hover lift on a square plinth). Square is now on. CSS only via `data-stage` on the page; checked in the browser on the products page.
 - Recently viewed (and the wishlist, which uses the same small card) now use the same round picture frame, gold ring, theme shadow and logo as the product cards, so it follows the Round or Square setting. Checked in the browser.
+
+## 2026-10-15 — Trust strip above the collections
+- New page section Trust strip (3 promises): icon in a gold-edged square, title in capitals and a line of text, side by side with hairline dividers (stacked on phones). Words, icons and the order are editable in the page builder. On the home page it sits just above Shop all collections with: Delivering across Pakistan / Fast, Reliable & Nationwide Coverage, Unbeatable Prices / Low on Price, High on Value, Trusted Quality / Delivering Trust Through Quality. Checked in the browser.

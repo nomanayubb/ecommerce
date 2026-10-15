@@ -128,6 +128,14 @@ export const SECTIONS: SectionDef[] = [
   { type: "newsletter", label: "Newsletter signup", group: "Engagement", description: "Email signup box.", fields: [t("heading", "Heading", "Be the first to know"), ta("text", "Text", "New arrivals and offers, straight to your inbox.", { maxLength: 300 })] },
   { type: "recently-viewed", label: "Recently viewed", group: "Products", description: "Products the visitor looked at (hidden when empty).", fields: [t("heading", "Heading", "Recently viewed")] },
   {
+    type: "trust-strip", label: "Trust strip (3 promises)", group: "Content", description: "Three short promises side by side with an icon, for example delivery, prices and quality. Best just above the collections.",
+    fields: [
+      t("title1", "First title", "Delivering across Pakistan"), t("text1", "First text", "Fast, Reliable & Nationwide Coverage"), sel("icon1", "First icon", [["truck", "Delivery truck"], ["price", "Price"], ["shield", "Shield"], ["package", "Parcel"], ["support", "Support"]], "truck"),
+      t("title2", "Second title", "Unbeatable Prices"), t("text2", "Second text", "Low on Price, High on Value"), sel("icon2", "Second icon", [["truck", "Delivery truck"], ["price", "Price"], ["shield", "Shield"], ["package", "Parcel"], ["support", "Support"]], "price"),
+      t("title3", "Third title", "Trusted Quality"), t("text3", "Third text", "Delivering Trust Through Quality"), sel("icon3", "Third icon", [["truck", "Delivery truck"], ["price", "Price"], ["shield", "Shield"], ["package", "Parcel"], ["support", "Support"]], "shield"),
+    ],
+  },
+  {
     type: "promise", label: "Brand promise (3D logo)", group: "Engagement", description: "Statement with the interactive 3D logo.",
     fields: [t("eyebrow", "Small heading", "", { help: "Empty = 'The <store> promise'" }), ta("text", "Statement", "", { help: "Empty = promise text from Brand & theme", maxLength: 400 }), tog("show3dLogo", "Show the 3D logo")],
   },
@@ -283,6 +291,7 @@ export const newSection = (type: string): SectionInstance => {
 /** What the home page shows until the owner publishes their own layout. Mirrors the original hard-coded home. */
 export const DEFAULT_HOME: SectionInstance[] = sanitizeSections([
   { id: "hero-1", type: "hero", settings: {} },
+  { id: "trust-1", type: "trust-strip", settings: {} },
   { id: "cats-1", type: "collection-list", settings: {} },
   { id: "new-1", type: "featured-collection", settings: {} },
   { id: "recent-1", type: "recently-viewed", settings: {} },
