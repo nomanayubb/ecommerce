@@ -429,8 +429,7 @@ function TrustStrip({ s }: P) {
   ].filter((i) => i.title || i.text);
   return (
     <Reveal>
-      <section aria-label="Our promises" className="trust-strip relative grid divide-y divide-line overflow-hidden border-y border-line bg-card/40 md:grid-cols-3 md:divide-x md:divide-y-0">
-        <span aria-hidden className="trust-fold trust-fold-tl" /><span aria-hidden className="trust-fold trust-fold-tr" /><span aria-hidden className="trust-fold trust-fold-bl" /><span aria-hidden className="trust-fold trust-fold-br" />
+      <section aria-label="Our promises" className="trust-strip relative grid divide-y divide-line overflow-hidden rounded-lg border border-line bg-card/40 md:grid-cols-3 md:divide-x md:divide-y-0">
         {items.map((it, n) => {
           const Ic = TRUST_ICONS[it.icon as keyof typeof TRUST_ICONS] ?? TruckIcon;
           return (

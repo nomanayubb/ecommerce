@@ -549,11 +549,3 @@ html[data-stage="square"] .pcard-disc.is-cut .pcard-photo { padding: 9%; }
 @keyframes trust-twinkle { from { opacity: .55; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) .trust-strip::before, html:not([data-motion-pref="on"]) .trust-strip::after { animation: none; } }
 [data-motion="subtle"] .trust-strip::before, [data-motion="subtle"] .trust-strip::after, [data-motion="off"] .trust-strip::before, [data-motion="off"] .trust-strip::after { animation: none !important; }
-
-/* Folded corners: the four corners are cut a little and a small gold flap is folded back over each cut. */
-.trust-strip { --fold: 16px; clip-path: polygon(var(--fold) 0, calc(100% - var(--fold)) 0, 100% var(--fold), 100% calc(100% - var(--fold)), calc(100% - var(--fold)) 100%, var(--fold) 100%, 0 calc(100% - var(--fold)), 0 var(--fold)); }
-.trust-fold { position: absolute; width: var(--fold); height: var(--fold); pointer-events: none; z-index: 2; background: linear-gradient(135deg, rgb(var(--accent-bright) / .55), rgb(var(--accent) / .18) 60%, rgb(0 0 0 / .35)); }
-.trust-fold-tl { left: 0; top: 0; clip-path: polygon(0 100%, 100% 0, 100% 100%); }
-.trust-fold-tr { right: 0; top: 0; clip-path: polygon(0 0, 100% 100%, 0 100%); }
-.trust-fold-bl { left: 0; bottom: 0; clip-path: polygon(0 0, 100% 0, 100% 100%); }
-.trust-fold-br { right: 0; bottom: 0; clip-path: polygon(0 0, 100% 0, 0 100%); }
