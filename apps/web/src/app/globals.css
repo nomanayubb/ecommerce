@@ -494,7 +494,7 @@ html[data-contrast] .glass, html[data-contrast] .header-bar, html[data-contrast]
 [data-motion="subtle"] .logo-morph, [data-motion="off"] .logo-morph, [data-motion-pref="off"] .logo-morph { animation: none !important; }
 
 /* Logo on collection pictures: same sheen, glow and sway as the header logo. */
-.card-logo { display: inline-block; animation: logo-sway 5s ease-in-out infinite; }
+.card-logo { display: inline-block; } /* fixed in place: no sway, only the sheen and glow */
 .card-logo img { animation: logo-glow 4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) :is(.card-logo, .card-logo img) { animation: none; } }
 [data-motion="subtle"] :is(.card-logo, .card-logo img), [data-motion="off"] :is(.card-logo, .card-logo img) { animation: none !important; }

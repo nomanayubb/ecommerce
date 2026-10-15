@@ -1,4 +1,5 @@
 import { CardLogo } from "../CardLogo";
+import { HeroSlideshow } from "../HeroSlideshow";
 import { Scene3D } from "./Scene3DLazy";
 import { Timeline, Team, Contact, PlaceMap, Gallery as PhotoGallery, Events, Podcast, VideoStory, Stats, BlogGrid, RecipeGrid, CustomCode, Chips, Marquee, PromoBanner, Steps, BrandGrid, PickedForYou } from "./Extra";
 import Link from "next/link";
@@ -101,8 +102,8 @@ function Hero({ s, ctx }: P) {
   const parts = v.particles && v.particles !== "none" ? <HeroParticles kind={v.particles as "flour"} /> : null;
   const frame = "relative -mx-4 overflow-hidden px-6 text-ondark sm:mx-0 sm:px-14";
 
-  if (variant === "image" && v.imageUrl)
-    return (
+  if (variant === "image" && v.imageUrl) {
+    const cover = (
       <section className={`${frame} pb-14 sm:py-28`} style={{ background: "rgb(var(--dark))" }}>
         {/* Phones: the whole photo as a band on top, text below. Desktop: photo behind the text. */}
         <div className="relative -mx-6 aspect-[16/10] overflow-hidden sm:absolute sm:inset-0 sm:mx-0 sm:mb-0 sm:aspect-auto">
@@ -115,6 +116,11 @@ function Hero({ s, ctx }: P) {
         {parts}<div className="relative -mt-6 sm:mt-0">{copy}</div>
       </section>
     );
+    // Extra slides (admin: the hero section, Extra slide) follow the cover; the cover itself is unchanged.
+    const extra = (s.blocks ?? []).filter((b) => b.settings.heading || b.settings.imageUrl);
+    if (!extra.length) return cover;
+    return <HeroSlideshow first={cover} seconds={Number(v.slideSeconds) || 6} slides={extra.map((b) => ({ id: b.id, eyebrow: String(b.settings.eyebrow ?? ""), heading: String(b.settings.heading ?? ""), text: String(b.settings.text ?? ""), buttonLabel: String(b.settings.buttonLabel ?? ""), buttonHref: String(b.settings.buttonHref ?? ""), imageUrl: String(b.settings.imageUrl ?? ""), art: String(b.settings.art ?? "") }))} />;
+  }
   if (variant === "video" && v.videoUrl)
     return (
       <section className={`${frame} ${pad}`} style={{ background: "rgb(var(--dark))" }}>

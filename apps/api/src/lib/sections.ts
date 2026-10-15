@@ -61,7 +61,17 @@ export const SECTIONS: SectionDef[] = [
       sel("particles", "Floating particles", [["none", "None"], ["flour", "Flour dust"], ["spices", "Spices"], ["steam", "Steam"], ["herbs", "Herbs"], ["sparkles", "Gold sparkles"]], "none"),
       tog("magnetic", "Main button leans toward the cursor", false),
       sel("height", "Height", [["md", "Medium"], ["lg", "Large"]], "lg"),
+      num("slideSeconds", "Seconds per slide (when extra slides are added)", 6, 3, 15),
     ],
+    block: {
+      type: "slide", label: "Extra slide", max: 8,
+      fields: [
+        t("eyebrow", "Small heading", ""), t("heading", "Headline", "", { maxLength: 80 }), ta("text", "Text", "", { maxLength: 200 }),
+        t("buttonLabel", "Button label", ""), url("buttonHref", "Button link", "/products"),
+        url("imageUrl", "Picture", "", { help: "Empty = a banner drawn in your theme colours" }),
+        sel("art", "Drawing (when no picture)", [["truck", "Delivery truck"], ["price", "Price tag"], ["shield", "Shield"], ["package", "Parcel"], ["sparkle", "Sparkle"]], "sparkle"),
+      ],
+    },
   },
   {
     type: "collection-list", label: "Category tiles", group: "Products", description: "Your top-level collections as a bento grid, or a showcase of all of them.",

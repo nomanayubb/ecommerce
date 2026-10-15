@@ -36,6 +36,12 @@ const ICONS: Record<string, string> = {
   hanger: '<path d="M100 78 Q100 40 120 42 Q134 44 132 58 Q130 68 100 78"/><path d="M100 78 L168 134 Q174 142 164 142 H36 Q26 142 32 134 Z"/>',
   kitchen: '<path d="M60 90 H140 V150 Q140 164 126 164 H74 Q60 164 60 150 Z"/><path d="M52 90 Q100 40 148 90"/><path d="M60 110 H40 V126 H60 M140 110 H160 V126 H140"/>',
   default: '<path d="M100 34 L166 100 L100 166 L34 100 Z"/><path d="M100 66 L134 100 L100 134 L66 100 Z"/>',
+  // Drawings for the home slideshow banners (/cimg/slide-x?ar=cover&f=truck)
+  truck: '<path d="M20 70H120V140H20Z"/><path d="M120 95H160L182 120V140H120Z"/><circle cx="55" cy="148" r="14"/><circle cx="150" cy="148" r="14"/><path d="M40 90H100"/>',
+  price: '<path d="M30 105L105 30H170V95L95 170Z"/><circle cx="138" cy="62" r="9"/><path d="M82 118L118 82"/>',
+  shield: '<path d="M100 28L168 52V104C168 142 140 166 100 176C60 166 32 142 32 104V52Z"/><path d="M70 100L92 122L132 78"/>',
+  package: '<path d="M30 70L100 32L170 70V140L100 178L30 140Z"/><path d="M30 70L100 108L170 70M100 108V178"/>',
+  sparkle: '<path d="M100 20C106 70 130 94 180 100C130 106 106 130 100 180C94 130 70 106 20 100C70 94 94 70 100 20Z"/><path d="M158 34C160 48 166 54 180 56C166 58 160 64 158 78C156 64 150 58 136 56C150 54 156 48 158 34Z"/>',
 };
 const FAMILY: [RegExp, string][] = [
   [/grocery/, "grocery"], [/cosmetic/, "cosmetics"], [/household/, "household"], [/crockery/, "crockery"], [/baby/, "baby"], [/toy/, "toys"], [/sport/, "sports"],
@@ -61,7 +67,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
   const cover = new URL(req.url).searchParams.get("ar") === "cover";
   const [w, h] = cover ? [1600, 640] : [800, 600];
   const top = topOf(tree, slug) ?? slug;
-  const family = FAMILY.find(([re]) => re.test(top))?.[1] ?? "default";
+  const pick = new URL(req.url).searchParams.get("f") ?? "";
+  const family = ICONS[pick] ? pick : FAMILY.find(([re]) => re.test(top))?.[1] ?? "default";
   const hs = hash(slug);
   const tilt = ((hs % 13) - 6);
   const gx = 0.3 + ((hs >> 4) % 40) / 100, gy = 0.25 + ((hs >> 9) % 35) / 100;
