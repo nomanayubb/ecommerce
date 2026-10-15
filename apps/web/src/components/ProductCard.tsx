@@ -6,7 +6,6 @@ import { TagIcons } from "./TagIcons";
 import { HoverVideo } from "./HoverVideo";
 import { CardGlow, HoverPhoto, PriceTag } from "./CardFx";
 import { ImageMark } from "./ImageMark";
-import { CardTools } from "./CardTools";
 import { isFileVideo } from "@/lib/media";
 
 const TAG_BADGES: [string, string][] = [["bestseller", "Bestseller"], ["limited", "Limited"], ["new", "New"]];
@@ -42,7 +41,7 @@ export function ProductCard({ p, priority = false }: { p: ProductSummary; priori
           )}
           {soldOut && <span className="absolute inset-x-0 bottom-0 bg-bg/80 py-2 text-center text-[0.65rem] font-semibold uppercase tracking-[0.25em] backdrop-blur">Sold out</span>}
         </div>
-        <div className="p-4 pr-12">
+        <div className="p-4">
           {p.brand_name && <p className="eyebrow !text-[0.6rem] !text-muted">{p.brand_name}</p>}
           <h3 className="mt-1 line-clamp-2 min-h-10 text-sm font-medium leading-5">{p.title}</h3>
           {!!p.recipe_count && <p className="mt-1 text-[0.65rem] uppercase tracking-widest text-accent">In {p.recipe_count} recipe{p.recipe_count === 1 ? "" : "s"}</p>}
@@ -62,7 +61,6 @@ export function ProductCard({ p, priority = false }: { p: ProductSummary; priori
           )}
         </div>
       </Link>
-      <CardTools p={p} />
       </div>
     </Tilt>
   );
