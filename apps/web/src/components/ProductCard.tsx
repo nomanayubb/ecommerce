@@ -34,7 +34,7 @@ export function ProductCard({ p, priority = false }: { p: ProductSummary; priori
           {p.tags?.includes("recommended") && !soldOut && <span className="absolute left-0 top-14 bg-gold px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-darksurface">Recommended</span>}
           {isFileVideo(p.video_url) && !soldOut && <HoverVideo src={p.video_url!} />}
           {p.discount_pct && !soldOut && (
-            <span className="badge-discount absolute left-0 top-4 bg-accent px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-onbrand">-{p.discount_pct}%</span>
+            <span className="badge-discount absolute left-0 top-0 z-[2] bg-accent px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-onbrand">-{p.discount_pct}%</span>
           )}
           {(badge || lowStock) && !soldOut && (
             <span className="glass absolute bottom-3 left-3 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-fg">{badge ?? "Low stock"}</span>

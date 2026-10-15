@@ -354,3 +354,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Product cards: a soft gold gradient in the theme gold spills out from the bottom edge of the white frame and fades, with a fine gold line along the edge; it brightens a little on hover. Only for ordinary photos. Checked in the browser.
 - Reverted: the gold gradient under the product frame was removed again at the owner's request. Cards are as after the white-mat polish.
 - Product cards: the three small buttons were removed (heart and compare at the top right, quick add at the bottom right). They are still on the product page itself.
+- Product cards: the yellow discount percent tag now sits flush in the top-left corner of the card, clear of the ring lines; the frame and rings moved down a little (centre 50 percent instead of 46) to make room.
