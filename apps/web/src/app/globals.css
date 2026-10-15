@@ -533,19 +533,19 @@ html[data-stage="square"] .pcard-shadow { top: 84%; width: 62%; height: 5%; }
 html[data-stage="square"] .pcard-disc.is-cut .pcard-photo { padding: 9%; }
 
 
-/* Trust strip, first effect (kept): a soft gold light with fine glitter sweeps behind the promises, now from right to left.
-   The spiralling aura with star glints (TrustGlitter canvas) runs on top of it. */
+/* Trust strip, first effect: a soft gold light with fine glitter sweeps behind the promises from left to right.
+   The spiralling aura with star glints (TrustGlitter canvas) lives on a lower layer, in the theme background around the strip. */
 .trust-strip::before, .trust-strip::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-repeat: no-repeat; }
-.trust-strip::before { background-image: linear-gradient(90deg, transparent 0%, rgb(var(--accent) / .14) 42%, rgb(var(--accent-bright) / .26) 50%, rgb(var(--accent) / .14) 58%, transparent 100%); background-size: 42% 100%; background-position: 170% 0; animation: trust-sweep 7s linear infinite; }
+.trust-strip::before { background-image: linear-gradient(90deg, transparent 0%, rgb(var(--accent) / .14) 42%, rgb(var(--accent-bright) / .26) 50%, rgb(var(--accent) / .14) 58%, transparent 100%); background-size: 42% 100%; background-position: -70% 0; animation: trust-sweep 7s linear infinite; }
 .trust-strip::after {
   background-image: radial-gradient(circle, rgb(var(--accent-bright)) 0 1px, transparent 1.6px), radial-gradient(circle, rgb(var(--accent-bright) / .9) 0 1.2px, transparent 1.8px), radial-gradient(circle, rgb(255 244 210 / .95) 0 .9px, transparent 1.4px);
   background-size: 74px 58px, 113px 91px, 53px 67px; background-position: 6px 9px, 31px 40px, 18px 22px; background-repeat: repeat;
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 50%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0%, #000 50%, transparent 100%);
-  -webkit-mask-size: 42% 100%; mask-size: 42% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: 170% 0; mask-position: 170% 0;
+  -webkit-mask-size: 42% 100%; mask-size: 42% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: -70% 0; mask-position: -70% 0;
   animation: trust-sweep-mask 7s linear infinite, trust-twinkle 1.7s ease-in-out infinite alternate;
 }
-@keyframes trust-sweep { from { background-position: 170% 0; } to { background-position: -70% 0; } }
-@keyframes trust-sweep-mask { from { -webkit-mask-position: 170% 0; mask-position: 170% 0; } to { -webkit-mask-position: -70% 0; mask-position: -70% 0; } }
+@keyframes trust-sweep { from { background-position: -70% 0; } to { background-position: 170% 0; } }
+@keyframes trust-sweep-mask { from { -webkit-mask-position: -70% 0; mask-position: -70% 0; } to { -webkit-mask-position: 170% 0; mask-position: 170% 0; } }
 @keyframes trust-twinkle { from { opacity: .55; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) .trust-strip::before, html:not([data-motion-pref="on"]) .trust-strip::after { animation: none; } }
 [data-motion="subtle"] .trust-strip::before, [data-motion="subtle"] .trust-strip::after, [data-motion="off"] .trust-strip::before, [data-motion="off"] .trust-strip::after { animation: none !important; }

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { motionAllowed } from "@/lib/motion";
 
 /**
- * Gold aura behind the trust strip. A soft light enters at the upper left, winds down, up and down again in loops, and leaves at the
+ * Gold aura on the theme background behind the trust strip (it spreads above and below the strip, under the strip's own sweep). A soft light enters at the upper left, winds down, up and down again in loops, and leaves at the
  * lower right, while real four-point glints appear around it at random places and fade. A few faint stars twinkle all the time.
  * Colours come from the theme's gold. One small canvas, paused while off screen or when the tab is hidden.
  */
@@ -40,7 +40,7 @@ export function TrustGlitter() {
     const at = (u: number) => {
       const e = u * u * (3 - 2 * u) * 0.35 + u * 0.65;
       const base = { x: -0.04 * W + e * 1.08 * W, y: H * (0.5 - 0.42 * Math.cos(2 * Math.PI * 1.5 * e)) };
-      const loop = Math.sin(Math.PI * u) * Math.min(H, 120) * 0.22;
+      const loop = Math.sin(Math.PI * u) * Math.min(H, 260) * 0.2;
       const a = 2 * Math.PI * 4.5 * u;
       return { x: base.x + loop * Math.cos(a) * 1.4, y: base.y + loop * Math.sin(a) };
     };
@@ -96,7 +96,7 @@ export function TrustGlitter() {
 
       if (moving) {
         // Aura: the head and a soft trail behind it.
-        const R = Math.max(70, Math.min(H * 0.95, 130));
+        const R = Math.max(110, Math.min(H * 0.62, 190));
         for (let k = 14; k >= 0; k--) {
           const p = at(Math.max(0, u - k * 0.012));
           const a = (1 - k / 15) * 0.28 * fade;
@@ -141,5 +141,5 @@ export function TrustGlitter() {
     return () => { cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); };
   }, []);
 
-  return <canvas ref={ref} aria-hidden className="pointer-events-none absolute inset-0 h-full w-full" />;
+  return <canvas ref={ref} aria-hidden className="pointer-events-none absolute -top-24 -bottom-24 left-0 right-0 -z-10 h-[calc(100%+12rem)] w-full" />;
 }
