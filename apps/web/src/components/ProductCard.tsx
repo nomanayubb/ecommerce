@@ -1,12 +1,10 @@
 import Link from "next/link";
 import { pkr, type ProductSummary } from "@/lib/api";
 import { Tilt } from "./Motion";
-import { CardActions } from "./CardActions";
 import { Stars } from "./Stars";
 import { TagIcons } from "./TagIcons";
 import { HoverVideo } from "./HoverVideo";
 import { CardGlow, HoverPhoto, PriceTag } from "./CardFx";
-import { QuickAdd } from "./QuickAdd";
 import { ImageMark } from "./ImageMark";
 import { isFileVideo } from "@/lib/media";
 
@@ -63,8 +61,6 @@ export function ProductCard({ p, priority = false }: { p: ProductSummary; priori
           )}
         </div>
       </Link>
-      <CardActions p={p} />
-      <QuickAdd p={p} />
       </div>
     </Tilt>
   );

@@ -353,3 +353,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Product card polish for ordinary white-background photos: a clean white mat with a gold hairline and one soft real shadow, no glow, no dark inner shading and no oval ground shadow (those stay for transparent cut-outs); the photo blends into the white; slightly richer stage gradient and softer ring. Checked in the browser on the products page.
 - Product cards: a soft gold gradient in the theme gold spills out from the bottom edge of the white frame and fades, with a fine gold line along the edge; it brightens a little on hover. Only for ordinary photos. Checked in the browser.
 - Reverted: the gold gradient under the product frame was removed again at the owner's request. Cards are as after the white-mat polish.
+- Product cards: the three small buttons were removed (heart and compare at the top right, quick add at the bottom right). They are still on the product page itself.
