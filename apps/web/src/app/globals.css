@@ -546,3 +546,12 @@ html[data-stage="square"] .pcard-disc, html[data-stage="square"] .pcard-ring, ht
 @keyframes trust-twinkle { from { opacity: .55; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) .trust-strip::before, html:not([data-motion-pref="on"]) .trust-strip::after { animation: none; } }
 [data-motion="subtle"] .trust-strip::before, [data-motion="subtle"] .trust-strip::after, [data-motion="off"] .trust-strip::before, [data-motion="off"] .trust-strip::after { animation: none !important; }
+
+/* Product cards, polish for ordinary photos (white background): a clean white mat with a gold hairline and one soft real shadow under the frame.
+   The glow, dark inner shading and the oval ground shadow are meant for transparent cut-outs and made white photos look dirty, so they are off here. */
+.pcard-disc:not(.is-cut) { background: #fff; width: 80%; box-shadow: 0 0 0 1px rgb(var(--accent) / .5), 0 2px 4px rgb(0 0 0 / .18), 0 26px 38px -22px rgb(0 0 0 / .8); }
+.pcard-disc:not(.is-cut) .pcard-photo { mix-blend-mode: multiply; }
+.pcard-disc:not(.is-cut) ~ .pcard-shadow { opacity: 0; }
+.pcard:hover .pcard-disc:not(.is-cut) { box-shadow: 0 0 0 1px rgb(var(--accent) / .85), 0 3px 6px rgb(0 0 0 / .22), 0 34px 46px -22px rgb(0 0 0 / .85); }
+.pcard-stage { background-image: radial-gradient(120% 80% at 50% 38%, rgb(var(--accent) / .13), transparent 60%), radial-gradient(90% 60% at 12% 0%, rgb(255 255 255 / .05), transparent 55%), linear-gradient(180deg, rgb(var(--card)), rgb(var(--bg))); }
+.pcard-ring { border-color: rgb(var(--accent) / .3); }
