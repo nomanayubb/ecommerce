@@ -361,3 +361,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Reverted at the owner's request: the column of three buttons beside the price was removed again. Product cards have no buttons, as before.
 - Product cards: one small add-to-bag button on the same line as the price, at the right, under the name (simple products only). The name is not narrowed. Clicking it adds to the bag without opening the product. Checked in the browser (24 buttons on the products page).
 - Product cards: the add-to-bag button moved from the price line to the picture, level with the AVERIXA logo mark at the bottom right and just to its left; the price line is as before. Checked in the browser.
+- Product cards: the add-to-bag button is back on the price line at the right, under the name (it was briefly on the picture by the logo mark).

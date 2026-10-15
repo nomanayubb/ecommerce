@@ -6,7 +6,7 @@ import { useCart } from "./CartProvider";
 import { useSite } from "./Site";
 import { CheckIcon } from "./icons";
 
-/** One small add-to-bag button on the picture, level with the AVERIXA logo mark and just to its left. Shown only for simple products (no options, no minimum order, in stock). */
+/** One small add-to-bag button on the same line as the price, at the right. Shown only for simple products (no options, no minimum order, in stock). */
 export function CardAdd({ p, className = "" }: { p: ProductSummary; className?: string }) {
   const { add } = useCart();
   const { store } = useSite();
