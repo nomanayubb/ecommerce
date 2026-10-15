@@ -337,3 +337,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Trust strip: the glitter dots are now small four-point stars (SVG tiles in two sizes, gold and warm white) that appear only where the gold light passes and twinkle; the four corners are cut a little with a gold flap folded back over each cut. Checked in the browser mid-sweep.
 - Trust strip glitter: stars are now gold only (no white) and small, and sit in exactly the same pattern, tile sizes and offsets as the original dots; only the shape changed from dot to four-point star.
 - Trust strip: the folded corners are removed; the strip now has very slightly rounded corners (6 px) with a thin border all round.
+- Trust strip: corners a little rounder (10 px) and the two divider lines between the three promises removed.
