@@ -23,11 +23,13 @@ export function TrustGlitter() {
     if (!ctx) return;
     const rgb = () => (getComputedStyle(document.documentElement).getPropertyValue("--accent-bright").trim() || "212 170 70").split(/\s+/).map(Number);
     let [gr, gg, gb] = rgb();
-    let W = 0, H = 0, dpr = 1;
+    let W = 0, H = 0, dpr = 1, boxTop = 0, boxH = 0; // boxTop/boxH: where the strip itself sits inside this canvas
     const resize = () => {
       const r = cv.getBoundingClientRect();
       dpr = Math.min(2, window.devicePixelRatio || 1);
       W = r.width; H = r.height;
+      const pr = cv.parentElement?.getBoundingClientRect();
+      boxTop = pr ? pr.top - r.top : 0; boxH = pr ? pr.height : 0;
       cv.width = Math.max(1, Math.round(W * dpr)); cv.height = Math.max(1, Math.round(H * dpr));
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       [gr, gg, gb] = rgb();
@@ -130,6 +132,7 @@ export function TrustGlitter() {
         glint(s.x * W, s.y * H, s.s, 0.5 * Math.sin(Math.PI * k) ** 2, s.rot, s.hue);
       }
       ctx.globalCompositeOperation = "source-over";
+      ctx.clearRect(0, boxTop, W, boxH); // nothing is drawn inside the strip: the aura lives on the page background around it
     };
 
     const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; }, { threshold: 0 });
@@ -137,6 +140,7 @@ export function TrustGlitter() {
     if (motionAllowed()) raf = requestAnimationFrame(frame);
     else { // motion is off: a few still glints, no movement
       for (const s of ambient) glint(s.x * W, s.y * H, s.s * 1.2, 0.5, s.rot, s.hue);
+      ctx.clearRect(0, boxTop, W, boxH);
     }
     return () => { cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); };
   }, []);
