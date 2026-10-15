@@ -17,4 +17,6 @@ if (-not (Up 3000)) {
   Launch "apps\web" "npx next start -p 3000"; Say "storefront started: $(WaitFor 3000 90)"
 }
 if (-not (Up 3001)) { Launch "apps\admin" "npx next dev -p 3001"; Say "admin started: $(WaitFor 3001 120)" }
+# Live preview: the storefront in development mode on port 3100. Every edit shows at once with no rebuild. The shop on 3000 is only rebuilt when we publish.
+if (-not (Up 3100)) { Remove-Item Env:NEXT_DIST_DIR -ErrorAction SilentlyContinue; Launch "apps\web" "npx next dev -p 3100"; Say "live preview started: $(WaitFor 3100 120)" }
 Say "done"

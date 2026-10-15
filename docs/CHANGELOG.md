@@ -338,3 +338,7 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Trust strip glitter: stars are now gold only (no white) and small, and sit in exactly the same pattern, tile sizes and offsets as the original dots; only the shape changed from dot to four-point star.
 - Trust strip: the folded corners are removed; the strip now has very slightly rounded corners (6 px) with a thin border all round.
 - Trust strip: corners a little rounder (10 px) and the two divider lines between the three promises removed.
+
+## 2026-10-16 — Instant changes: live preview on port 3100
+- Working method from now on: the storefront also runs in development mode at http://localhost:3100 (started by start-shop.ps1 with the rest). Every edit to the look, text or layout shows there within a second or two by itself, with no rebuild and no downtime. The shop on port 3000 (the fast production build, also used on the phone) is rebuilt only when we publish, one rebuild for any number of changes. Admin on 3001 was already instant.
+- Trust strip stars made 1 px bigger on every side (about 2 px wider) in the same pattern.
