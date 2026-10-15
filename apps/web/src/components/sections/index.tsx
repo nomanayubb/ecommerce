@@ -1,5 +1,6 @@
 import { CardLogo } from "../CardLogo";
 import { HeroSlideshow } from "../HeroSlideshow";
+import { isFileVideo } from "@/lib/media";
 import { Scene3D } from "./Scene3DLazy";
 import { Timeline, Team, Contact, PlaceMap, Gallery as PhotoGallery, Events, Podcast, VideoStory, Stats, BlogGrid, RecipeGrid, CustomCode, Chips, Marquee, PromoBanner, Steps, BrandGrid, PickedForYou } from "./Extra";
 import Link from "next/link";
@@ -263,8 +264,18 @@ async function ProductCarousel({ s }: P) {
   return (
     <section>
       <Head eyebrow={v.eyebrow} heading={v.heading} href={v.categorySlug ? `/collections/${v.categorySlug}` : "/products"} />
-      <div className="-mx-4 flex snap-x snap-proximity gap-4 overflow-x-auto px-4 pb-3 [scrollbar-width:thin]" tabIndex={0} aria-label={v.heading || "Products"}>
-        {items.map((p) => <div key={p.id} className="w-56 shrink-0 snap-start sm:w-64"><ProductCard p={p} /></div>)}
+      <div className={v.mediaUrl ? "flex flex-col gap-4 md:flex-row" : ""}>
+        {v.mediaUrl && (
+          <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden border border-line bg-card md:aspect-auto md:w-[34%]">
+            {isFileVideo(String(v.mediaUrl))
+              ? <video src={String(v.mediaUrl)} autoPlay muted loop playsInline preload="metadata" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+              : <img src={String(v.mediaUrl)} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          </div>
+        )}
+        <div className={`${v.mediaUrl ? "min-w-0 flex-1" : ""} -mx-4 flex snap-x snap-proximity gap-4 overflow-x-auto px-4 pb-3 [scrollbar-width:thin] md:mx-0 md:px-0`} tabIndex={0} aria-label={v.heading || "Products"}>
+          {items.map((p) => <div key={p.id} className="w-56 shrink-0 snap-start sm:w-64"><ProductCard p={p} /></div>)}
+        </div>
       </div>
     </section>
   );
@@ -442,22 +453,21 @@ async function CollectionCards({ s }: P) {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c, n) => (
           <Reveal key={c.id} delay={(n % 4) * 70}>
-            <article className="flex h-full flex-col border border-line bg-card p-4 sm:p-5">
-              {c.title && <h3 className="mb-4 text-sm font-semibold uppercase leading-snug tracking-[0.12em]">{c.title}</h3>}
+            <article className="flex h-full flex-col rounded-lg border border-line bg-card p-4 shadow-[0_8px_24px_-16px_rgb(0_0_0/.6)] sm:p-5">
+              {c.title && <h3 className="mb-4 text-lg font-semibold leading-snug">{c.title}</h3>}
               <div className={c.one ? "flex-1" : "grid flex-1 grid-cols-2 gap-3"}>
                 {c.slugs.map((slug) => {
                   const it = by.get(slug);
                   return (
                     <Link key={slug} href={`/collections/${slug}`} className="group block">
-                      <span className={`relative block overflow-hidden border border-line bg-white ${c.one ? "aspect-[4/5]" : "aspect-square"}`}>
+                      <span className={`relative block overflow-hidden rounded border border-line bg-white ${c.one ? "aspect-[4/5]" : "aspect-square"}`}>
                         <img src={it?.image || `/cimg/${slug}?ar=4x3`} alt="" loading="lazy" width={400} height={400} className={`h-full w-full transition duration-500 group-hover:scale-105 ${it?.image ? "object-contain p-2" : "object-cover"}`} />
                       </span>
-                      <span className="mt-2 line-clamp-2 block text-xs leading-snug text-muted transition group-hover:text-accent">{it?.name || slug}</span>
+                      <span className="mt-2 line-clamp-2 block text-center text-sm leading-snug text-fg transition group-hover:text-accent">{it?.name || slug}</span>
                     </Link>
                   );
                 })}
               </div>
-              <Link href={c.linkHref} className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-accent hover:underline">{c.linkLabel} →</Link>
             </article>
           </Reveal>
         ))}
