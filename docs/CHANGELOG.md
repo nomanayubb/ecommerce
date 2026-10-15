@@ -359,3 +359,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Reverted at the owner's request: the discount tag is back to its original size and place (left 0, top 16 px) and the frame is as before. Cards are as they were before the tag change.
 - Product cards: the three small buttons (save heart, compare, add to bag) are back as a vertical column in the info area at the right of the price, instead of over the picture. Add to bag shows only for simple products. Text keeps clear of them. Checked in the browser.
 - Reverted at the owner's request: the column of three buttons beside the price was removed again. Product cards have no buttons, as before.
+- Product cards: one small add-to-bag button on the same line as the price, at the right, under the name (simple products only). The name is not narrowed. Clicking it adds to the bag without opening the product. Checked in the browser (24 buttons on the products page).

@@ -6,6 +6,7 @@ import { TagIcons } from "./TagIcons";
 import { HoverVideo } from "./HoverVideo";
 import { CardGlow, HoverPhoto, PriceTag } from "./CardFx";
 import { ImageMark } from "./ImageMark";
+import { CardAdd } from "./CardAdd";
 import { isFileVideo } from "@/lib/media";
 
 const TAG_BADGES: [string, string][] = [["bestseller", "Bestseller"], ["limited", "Limited"], ["new", "New"]];
@@ -46,12 +47,15 @@ export function ProductCard({ p, priority = false }: { p: ProductSummary; priori
           <h3 className="mt-1 line-clamp-2 min-h-10 text-sm font-medium leading-5">{p.title}</h3>
           {!!p.recipe_count && <p className="mt-1 text-[0.65rem] uppercase tracking-widest text-accent">In {p.recipe_count} recipe{p.recipe_count === 1 ? "" : "s"}</p>}
           {!!p.rating_count && <div className="mt-1.5"><Stars value={Number(p.rating_avg)} size={13} count={p.rating_count} /></div>}
-          <div className="mt-2">
-            <p className="flex items-baseline gap-2">
-              <PriceTag value={Number(p.selling_price)} className="font-semibold" />
-              {p.discount_pct && <span className="text-xs text-muted line-through">{pkr(p.marked_price)}</span>}
-            </p>
-            <TagIcons tags={p.tags} size={16} max={4} className="mt-2.5 text-muted" />
+          <div className="mt-2 flex items-end justify-between gap-3">
+            <div className="min-w-0">
+              <p className="flex items-baseline gap-2">
+                <PriceTag value={Number(p.selling_price)} className="font-semibold" />
+                {p.discount_pct && <span className="text-xs text-muted line-through">{pkr(p.marked_price)}</span>}
+              </p>
+              <TagIcons tags={p.tags} size={16} max={4} className="mt-2.5 text-muted" />
+            </div>
+            <CardAdd p={p} />
           </div>
           {!soldOut && p.stock_quantity > 0 && p.stock_quantity <= 10 && (
             <div className="mt-3" role="img" aria-label={`Only ${p.stock_quantity} left`}>
