@@ -635,7 +635,7 @@ html[data-stage="square"] .pcard:hover .pcard-ring { border-color: transparent; 
 
 /* Card hover colour only: a deeper antique gold instead of the brighter yellow. Every gradient, line, glow and layout above is unchanged; the colour tokens are simply
    darker inside the hover elements (ring, frame, aura, options, arrows). The discount tag and everything else keep the normal gold. */
-.pcard-ring, .pcard-disc, .pcard-stage::before, .card-add-bar, .card-arrow { --accent: 166 124 46; --accent-bright: 184 142 56; }
+.pcard:hover .pcard-ring, .pcard:hover .pcard-disc, .pcard-stage::before, .card-add-bar, .card-arrow { --accent: 166 124 46; --accent-bright: 184 142 56; } /* hover-only, so the resting card keeps its original colours */
 .pcard:has(.pcard-stage):hover { border-color: rgb(166 124 46 / .6) !important; box-shadow: 0 24px 46px -24px rgb(166 124 46 / .32), 0 0 0 1px rgb(166 124 46 / .16) !important; }
 
 /* Outer card line: it now turns at all four corners, top as well as bottom. A masked overlay on the card edge adds a brighter antique-gold corner at each of the four corners that
