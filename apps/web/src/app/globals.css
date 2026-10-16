@@ -632,3 +632,8 @@ html[data-stage="square"] .pcard:hover .pcard-ring::before { opacity: 1; }
 /* Outer lines on hover: the card edge and the ring become one continuous, dark gold gradient line on all four sides (no gaps at the top). */
 .pcard:has(.pcard-stage):hover { border-color: rgb(var(--accent) / .4) !important; box-shadow: 0 22px 40px -26px rgb(var(--accent) / .3) !important; }
 html[data-stage="square"] .pcard:hover .pcard-ring { border-color: transparent; border-image: linear-gradient(135deg, rgb(var(--accent) / .8), rgb(var(--accent) / .3) 50%, rgb(var(--accent) / .8)) 1; }
+
+/* Card hover colour only: a deeper antique gold instead of the brighter yellow. Every gradient, line, glow and layout above is unchanged; the colour tokens are simply
+   darker inside the hover elements (ring, frame, aura, options, arrows). The discount tag and everything else keep the normal gold. */
+.pcard-ring, .pcard-disc, .pcard-stage::before, .card-add-bar, .card-arrow { --accent: 166 124 46; --accent-bright: 184 142 56; }
+.pcard:has(.pcard-stage):hover { border-color: rgb(166 124 46 / .6) !important; box-shadow: 0 24px 46px -24px rgb(166 124 46 / .32), 0 0 0 1px rgb(166 124 46 / .16) !important; }
