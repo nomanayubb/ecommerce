@@ -607,9 +607,9 @@ html[data-stage="square"] .pcard:hover .pcard-ring::before { opacity: 1; }
 @keyframes edge-twinkle { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
 .cbtn-view, .cbtn-add, .cbtn-qty { position: relative; height: 100%; min-width: 0; border: 0; background: transparent; box-shadow: none; font-size: clamp(.4rem, 2.35cqw, .54rem); letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; overflow: hidden; }
 .cbtn-view::before, .cbtn-add::before, .cbtn-qty::before { content: ""; position: absolute; inset: 0; padding: 1px; pointer-events: none; z-index: 2;
-  background: linear-gradient(90deg, #8f6a22 0%, #a07729 9%, #b48b36 19%, #c89f45 29%, #d9b457 38%, #e2c06a 44%, #d9b457 50%, #c89f45 59%, #b48b36 69%, #a07729 80%, #8f6a22 100%) 0 0 / 96px 100% repeat-x;
+  background: linear-gradient(90deg, #8f6a22 0%, #a07729 9%, #b48b36 19%, #c89f45 29%, #d9b457 38%, #e2c06a 44%, #d9b457 50%, #c89f45 59%, #b48b36 69%, #a07729 80%, #8f6a22 100%) 48px 0 / 96px 100% repeat-x;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask-composite: exclude; }
-.pcard:hover .cbtn-view::before, .pcard:hover .cbtn-add::before, .pcard:hover .cbtn-qty::before { animation: edge-shimmer 3.2s linear infinite; }
+.pcard:hover .cbtn-view::before, .pcard:hover .cbtn-add::before, .pcard:hover .cbtn-qty::before { /* the edge is held at the 50% frame of the shimmer: the moment that looked best */ }
 .cbtn-view::after, .cbtn-add::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2; opacity: 0;
   background: radial-gradient(circle at 22% 0, #fff3c4 0, rgb(255 243 196 / .8) 1px, transparent 3px), radial-gradient(circle at 78% 100%, #fff3c4 0, rgb(255 243 196 / .8) 1px, transparent 3px); }
 .pcard:hover .cbtn-view::after { animation: edge-twinkle 2.4s ease-in-out infinite; }
