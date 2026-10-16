@@ -601,21 +601,27 @@ html[data-stage="square"] .pcard-ring::before { content: ""; position: absolute;
     var(--h) bottom left / 22px 2px no-repeat, var(--vb) bottom left / 2px 22px no-repeat,
     var(--hr) bottom right / 22px 2px no-repeat, var(--vb) bottom right / 2px 22px no-repeat; }
 html[data-stage="square"] .pcard:hover .pcard-ring::before { opacity: 1; }
-/* Card buttons: QUICK VIEW is a dark glass button with a fine gold edge, ADD TO CART a gold theme gradient with a soft sheen; after a click it turns ink with a gold tick. */
-.cbtn-view, .cbtn-add, .cbtn-qty { height: 100%; min-width: 0; border: 1px solid transparent; font-size: clamp(.4rem, 2.35cqw, .54rem); letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; overflow: hidden;
-  --gold-line: linear-gradient(135deg, rgb(var(--accent-bright)), rgb(var(--accent) / .4) 48%, rgb(var(--accent-bright))); }
-.cbtn-view { display: flex; flex: 0 0 auto; align-items: center; justify-content: center; gap: 5px; padding: 0 clamp(6px, 3cqw, 12px); font-weight: 600; color: rgb(var(--fg));
-  background: linear-gradient(180deg, rgb(255 255 255 / .09), rgb(255 255 255 / 0) 55%) padding-box, linear-gradient(180deg, rgb(44 42 38), rgb(16 16 18)) padding-box, var(--gold-line) border-box;
-  box-shadow: 0 8px 16px -10px rgb(0 0 0 / .9); transition: filter .2s, color .2s, box-shadow .2s; }
+/* Card buttons: Quick view, the count and Add to Cart are clear glass (transparent inside, the card shows through) with a glittering dark-gold edge. The edge is a masked
+   1px ring of fine bright and deep gold bands that shimmers slowly while the card is hovered, with two tiny twinkling points on it. */
+@keyframes edge-shimmer { from { background-position: 0 0; } to { background-position: 80px 0; } }
+@keyframes edge-twinkle { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+.cbtn-view, .cbtn-add, .cbtn-qty { position: relative; height: 100%; min-width: 0; border: 0; background: transparent; box-shadow: none; font-size: clamp(.4rem, 2.35cqw, .54rem); letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; overflow: hidden; }
+.cbtn-view::before, .cbtn-add::before, .cbtn-qty::before { content: ""; position: absolute; inset: 0; padding: 1px; pointer-events: none; z-index: 2;
+  background: repeating-linear-gradient(100deg, #6b4d16 0, #b8892f 5px, #e2c06a 8px, #b8892f 11px, #6b4d16 16px, #8f6a22 22px, #6b4d16 28px) 0 0 / 80px 100%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask-composite: exclude; }
+.pcard:hover .cbtn-view::before, .pcard:hover .cbtn-add::before, .pcard:hover .cbtn-qty::before { animation: edge-shimmer 1.8s linear infinite; }
+.cbtn-view::after, .cbtn-add::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2; opacity: 0;
+  background: radial-gradient(circle at 22% 0, #fff3c4 0, rgb(255 243 196 / .8) 1px, transparent 3px), radial-gradient(circle at 78% 100%, #fff3c4 0, rgb(255 243 196 / .8) 1px, transparent 3px); }
+.pcard:hover .cbtn-view::after { animation: edge-twinkle 2.4s ease-in-out infinite; }
+.pcard:hover .cbtn-add::after { animation: edge-twinkle 2.4s ease-in-out 1.2s infinite; }
+.cbtn-view { display: flex; flex: 0 0 auto; align-items: center; justify-content: center; gap: 5px; padding: 0 clamp(6px, 3cqw, 12px); font-weight: 600; color: rgb(var(--fg)); transition: color .2s; }
 .cbtn-view svg { color: rgb(var(--accent-bright)); flex: none; }
-.cbtn-view:hover { color: rgb(var(--accent-bright)); filter: brightness(1.18); box-shadow: 0 8px 18px -10px rgb(var(--accent) / .7); }
-.cbtn-add { display: flex; flex: 1 1 0; align-items: center; justify-content: center; gap: 5px; padding: 0 clamp(4px, 2cqw, 8px); font-weight: 700; color: rgb(var(--accent-bright));
-  background: linear-gradient(180deg, rgb(255 255 255 / .1), rgb(255 255 255 / 0) 55%) padding-box, linear-gradient(135deg, rgb(var(--accent) / .3), rgb(var(--accent) / .1) 60%, rgb(18 18 20)) padding-box, linear-gradient(rgb(18 18 20), rgb(18 18 20)) padding-box, var(--gold-line) border-box;
-  box-shadow: 0 8px 16px -10px rgb(0 0 0 / .9); transition: filter .2s, color .2s, box-shadow .2s; }
+.cbtn-view:hover { color: rgb(var(--accent-bright)); }
+.cbtn-add { display: flex; flex: 1 1 0; align-items: center; justify-content: center; gap: 5px; padding: 0 clamp(4px, 2cqw, 8px); font-weight: 700; color: rgb(var(--accent-bright)); transition: color .2s; }
 .cbtn-add svg { flex: none; }
-.cbtn-add:hover { filter: brightness(1.25); color: #fff; box-shadow: 0 8px 18px -10px rgb(var(--accent-bright) / .8); }
-.cbtn-add.is-done { color: rgb(var(--accent-bright)); background: linear-gradient(180deg, rgb(255 255 255 / .06), rgb(255 255 255 / 0) 55%) padding-box, linear-gradient(180deg, rgb(34 32 28), rgb(16 16 18)) padding-box, var(--gold-line) border-box; }
-.cbtn-qty { display: flex; flex: none; align-items: stretch; border-right: 0; background: linear-gradient(180deg, rgb(34 32 28), rgb(16 16 18)) padding-box, var(--gold-line) border-box; }
+.cbtn-add:hover { color: rgb(var(--fg)); }
+.cbtn-add.is-done { color: rgb(var(--accent-bright)); }
+.cbtn-qty { display: flex; flex: none; align-items: stretch; color: rgb(var(--fg)); }
 .pcard-stage .pcard-alt { display: none !important; }
 
 /* Photo arrows on product cards: small, light round glass buttons with a fine gold chevron at the left and right edges of the frame. Hidden until the pointer is
