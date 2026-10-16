@@ -643,3 +643,10 @@ html[data-stage="square"] .pcard:hover .pcard-ring { border-color: transparent; 
 
 /* Narrow cards (two to a row on a phone): Quick view shrinks to its eye and the quantity box is dropped so Add to Cart keeps its full label. */
 @container (max-width: 240px) { .cbtn-qty, .cbtn-lbl { display: none; } .cbtn-view { padding: 0; width: 30px; } .card-add-bar { inset-inline: 7%; } }
+
+/* Softer settled edge, and no sharp divider: the edge sits at 85% with a faint soft glow (the crisp look only appeared once the fade-in finished), and the quantity box and Add to
+   Cart share one outline, so there is no doubled vertical line between them. */
+.cbtn-view::before, .cbtn-add::before, .cbtn-qty::before { opacity: .85; filter: drop-shadow(0 0 1.5px rgb(226 192 106 / .4)); }
+.cbtn-qty::before { padding: 1px 0 1px 1px; }
+.cbtn-qty + .cbtn-add::before { padding-left: 0; }
+@container (max-width: 240px) { .cbtn-qty + .cbtn-add::before { padding-left: 1px; } }
