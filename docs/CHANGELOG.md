@@ -2,6 +2,11 @@
 
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
+## Card hover refinements (2026-10-16)
+- Hover glow toned down (gold aura, card shadow, ring and frame glow), lines kept; the four corner marks removed.
+- Photo arrows smaller (20px, 11px chevron) and lighter (65% opacity, full on pointing).
+- Options row redesigned: one joined bar inside the bottom edge of the white frame (aligned to its edges, crossing no ring lines or the AVERIXA mark): chrome QUICK VIEW with eye on the left (opens the quick view), quantity box, gold-on-ink Add to Cart.
+
 ## 2026-10-07 — Foundation (API, DB, infra)
 - Created monorepo (`package.json` workspaces), `docker-compose.yml` (Postgres 16, Redis 7, Typesense 27), `.gitignore`.
 - `apps/api`: Fastify server, JWT auth (register/login/refresh), catalog (list/detail/category tree, Redis-cached), cart validate + checkout (server-side pricing, `FOR UPDATE` stock locking, stock decrement), payments webhook (HMAC), basic admin routes (product create, bulk edit, orders, status, analytics).

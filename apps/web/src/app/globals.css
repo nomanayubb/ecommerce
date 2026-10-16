@@ -583,30 +583,25 @@ html[data-depth="soft"] .pcard:has(.pcard-stage)::before, html[data-depth="soft"
    gold border and glow, a gold aura fills the stage behind the frame, the ring and dashed ring turn brighter gold and four sharp corner marks lock onto the
    ring corners, the white frame gets a gold edge and glow, and the photo eases in a little. The options panel and the photo arrows appear. */
 .pcard:has(.pcard-stage) { transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s, border-color .35s; }
-.pcard:has(.pcard-stage):hover { transform: translateY(-4px) !important; border-color: rgb(var(--accent) / .85) !important; box-shadow: 0 26px 50px -22px rgb(var(--accent) / .55), 0 0 0 1px rgb(var(--accent) / .22) !important; }
+.pcard:has(.pcard-stage):hover { transform: translateY(-4px) !important; border-color: rgb(var(--accent) / .6) !important; box-shadow: 0 24px 46px -24px rgb(var(--accent) / .32), 0 0 0 1px rgb(var(--accent) / .16) !important; }
 .pcard-stage::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .45s ease;
-  background: radial-gradient(90% 72% at 50% 46%, rgb(var(--accent) / .32), rgb(var(--accent) / .09) 56%, transparent 80%); }
+  background: radial-gradient(90% 72% at 50% 46%, rgb(var(--accent) / .2), rgb(var(--accent) / .05) 56%, transparent 80%); }
 .pcard:hover .pcard-stage::before { opacity: 1; }
-.pcard:hover .pcard-ring { border-color: rgb(var(--accent) / .8); transform: translate(-50%, -50%); }
-.pcard:hover .pcard-ring::after { border-color: rgb(var(--accent) / .4); }
+.pcard:hover .pcard-ring { border-color: rgb(var(--accent) / .55); transform: translate(-50%, -50%); }
+.pcard:hover .pcard-ring::after { border-color: rgb(var(--accent) / .2); }
 .pcard:hover .pcard-disc { transform: translate(-50%, -50%); }
-.pcard:hover .pcard-disc:not(.is-cut) { box-shadow: 0 0 0 1px rgb(var(--accent) / .95), 0 0 30px -3px rgb(var(--accent) / .5), 0 3px 6px rgb(0 0 0 / .22), 0 30px 42px -24px rgb(0 0 0 / .85); }
+.pcard:hover .pcard-disc:not(.is-cut) { box-shadow: 0 0 0 1px rgb(var(--accent) / .8), 0 0 22px -4px rgb(var(--accent) / .28), 0 3px 6px rgb(0 0 0 / .22), 0 30px 42px -24px rgb(0 0 0 / .85); }
 .pcard:hover .pcard-disc:not(.is-cut) .pcard-photo { transform: scale(1.05); }
 .pcard:hover .pcard-shadow { transform: translateX(-50%); }
-html[data-stage="square"] .pcard-ring::before { content: ""; position: absolute; inset: -1px; pointer-events: none; opacity: 0; transition: opacity .35s ease; --c: rgb(var(--accent-bright));
-  background:
-    linear-gradient(var(--c), var(--c)) top left / 18px 2px no-repeat, linear-gradient(var(--c), var(--c)) top left / 2px 18px no-repeat,
-    linear-gradient(var(--c), var(--c)) top right / 18px 2px no-repeat, linear-gradient(var(--c), var(--c)) top right / 2px 18px no-repeat,
-    linear-gradient(var(--c), var(--c)) bottom left / 18px 2px no-repeat, linear-gradient(var(--c), var(--c)) bottom left / 2px 18px no-repeat,
-    linear-gradient(var(--c), var(--c)) bottom right / 18px 2px no-repeat, linear-gradient(var(--c), var(--c)) bottom right / 2px 18px no-repeat; }
-html[data-stage="square"] .pcard:hover .pcard-ring::before { opacity: 1; }
+/* (the four corner marks were removed: fewer lines on hover) */
 .pcard-stage .pcard-alt { display: none !important; }
 
-/* Photo arrows on product cards: slim round glass buttons with a fine gold chevron at the left and right edges of the frame. They fill with gold when pointed at.
-   Hidden until the pointer is on the card (always shown on touch screens). */
-.card-arrow { position: absolute; top: 50%; z-index: 3; width: 26px; height: 26px; margin-top: -13px; display: grid; place-items: center; border-radius: 9999px; color: rgb(var(--accent-bright));
-  background: rgb(var(--bg) / .68); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); border: 1px solid rgb(var(--accent) / .55); box-shadow: 0 4px 12px -4px rgb(0 0 0 / .7);
-  opacity: 0; transition: opacity .25s ease, background-color .2s ease, color .2s ease, transform .2s ease; }
-.card-arrow:hover { background: rgb(var(--accent)); color: rgb(var(--on-brand, 20 20 22)); transform: scale(1.08); }
-.pcard:hover .card-arrow, .card-arrow:focus-visible { opacity: 1; }
-@media (hover: none) { .card-arrow { opacity: 1; } }
+/* Photo arrows on product cards: small, light round glass buttons with a fine gold chevron at the left and right edges of the frame. Hidden until the pointer is
+   on the card (always shown on touch screens); they firm up when pointed at. */
+.card-arrow { position: absolute; top: 50%; z-index: 3; width: 20px; height: 20px; margin-top: -10px; display: grid; place-items: center; border-radius: 9999px; color: rgb(var(--accent-bright));
+  background: rgb(var(--bg) / .42); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); border: 1px solid rgb(var(--accent) / .35);
+  opacity: 0; transition: opacity .25s ease, background-color .2s ease, color .2s ease; }
+.card-arrow:hover { background: rgb(var(--accent)); color: rgb(var(--on-brand, 20 20 22)); }
+.pcard:hover .card-arrow, .card-arrow:focus-visible { opacity: .65; }
+.pcard:hover .card-arrow:hover { opacity: 1; }
+@media (hover: none) { .card-arrow { opacity: .65; } }
