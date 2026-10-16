@@ -610,10 +610,6 @@ html[data-stage="square"] .pcard:hover .pcard-ring::before { opacity: 1; }
   background: linear-gradient(90deg, #8f6a22 0%, #a07729 9%, #b48b36 19%, #c89f45 29%, #d9b457 38%, #e2c06a 44%, #d9b457 50%, #c89f45 59%, #b48b36 69%, #a07729 80%, #8f6a22 100%) 0 0 / 96px 100% repeat-x;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask-composite: exclude; }
 .pcard:hover .cbtn-view::before, .pcard:hover .cbtn-add::before, .pcard:hover .cbtn-qty::before { animation: edge-shimmer 2.46s linear infinite; }
-.cbtn-view::after, .cbtn-add::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2; opacity: 0;
-  background: radial-gradient(circle at 22% 0, #fff3c4 0, rgb(255 243 196 / .8) 1px, transparent 3px), radial-gradient(circle at 78% 100%, #fff3c4 0, rgb(255 243 196 / .8) 1px, transparent 3px); }
-.pcard:hover .cbtn-view::after { animation: edge-twinkle 2.4s ease-in-out infinite; }
-.pcard:hover .cbtn-add::after { animation: edge-twinkle 2.4s ease-in-out 1.2s infinite; }
 .cbtn-view { display: flex; flex: 0 0 auto; align-items: center; justify-content: center; gap: 5px; padding: 0 clamp(6px, 3cqw, 12px); font-weight: 600; color: rgb(var(--fg)); transition: color .2s; }
 .cbtn-view svg { color: rgb(var(--accent-bright)); flex: none; }
 .cbtn-view:hover { color: rgb(var(--accent-bright)); }

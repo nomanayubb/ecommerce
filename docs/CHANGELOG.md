@@ -3,6 +3,7 @@
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
 ## Card hover refinements (2026-10-16)
+- Follow-up 29: the twinkle dots on Quick view and Add to Cart removed at the owner's request (the rest of the button animation unchanged). Port 3000 is on the dev server again for instant edits; run npm run build:prod only when the owner says to publish. Previous final state: tag cards-final.
 - FINAL (owner, 2026-10-17): card hover and button design is finished. Tagged cards-final. Production build: shared JS 104 kB, home 141 kB, collections and products 124 kB, product page 133 kB (all within budget); port 3000 serves the production build again. Do not change the card design unless asked; restore with git tag cards-final.
 - Follow-up 28: the twinkle points on Quick view and Add to Cart are back to the original (oldest) style, two small round glints per button; the rest of the button animation (smooth gradient edge, 30% faster speed) is unchanged. The four-point star experiment (7bd5a17 and after) was backed out.
 - Follow-up 27: the two twinkling white points on Quick view and Add to Cart are now small four-point champagne-gold sparkles placed identically on both buttons (top edge at 80%, bottom edge at 20%) and twinkling in sync. Previous glints: commit 246e772.
