@@ -569,7 +569,7 @@ html[data-stage="square"] .pcard-disc, html[data-stage="square"] .pcard-ring, ht
    edge and looked misaligned. Now nothing in the picture area moves: the ring and dashed ring simply glow a little brighter, the frame edge and
    glow strengthen, and the photo eases in slightly. The card itself still lifts as one piece. */
 .pcard-stage::after { display: none !important; }
-html[data-depth="soft"] .pcard:has(.pcard-stage)::before, html[data-depth="soft"] .pcard:has(.pcard-stage)::after { display: none !important; }
+html[data-depth="soft"] .pcard:has(.pcard-stage):hover::before, html[data-depth="soft"] .pcard:has(.pcard-stage):hover::after { filter: drop-shadow(0 0 4px rgb(var(--accent-bright) / .9)); }
 .tilt:has(.pcard-stage) { transform: none !important; }
 .tilt:has(.pcard-stage)::after { display: none !important; }
 .pcard:hover .pcard-disc, .pcard:hover .pcard-ring { transform: translate(-50%, -50%); }
@@ -593,7 +593,25 @@ html[data-depth="soft"] .pcard:has(.pcard-stage)::before, html[data-depth="soft"
 .pcard:hover .pcard-disc:not(.is-cut) { box-shadow: 0 0 0 1px rgb(var(--accent) / .8), 0 0 22px -4px rgb(var(--accent) / .28), 0 3px 6px rgb(0 0 0 / .22), 0 30px 42px -24px rgb(0 0 0 / .85); }
 .pcard:hover .pcard-disc:not(.is-cut) .pcard-photo { transform: scale(1.05); }
 .pcard:hover .pcard-shadow { transform: translateX(-50%); }
-/* (the four corner marks were removed: fewer lines on hover) */
+html[data-stage="square"] .pcard-ring::before { content: ""; position: absolute; inset: -1px; pointer-events: none; opacity: 0; transition: opacity .35s ease; --c: rgb(var(--accent-bright)); filter: drop-shadow(0 0 3px rgb(var(--accent-bright) / .95));
+  background:
+    linear-gradient(var(--c), var(--c)) top left / 18px 2px no-repeat, linear-gradient(var(--c), var(--c)) top left / 2px 18px no-repeat,
+    linear-gradient(var(--c), var(--c)) top right / 18px 2px no-repeat, linear-gradient(var(--c), var(--c)) top right / 2px 18px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom left / 18px 2px no-repeat, linear-gradient(var(--c), var(--c)) bottom left / 2px 18px no-repeat,
+    linear-gradient(var(--c), var(--c)) bottom right / 18px 2px no-repeat, linear-gradient(var(--c), var(--c)) bottom right / 2px 18px no-repeat; }
+html[data-stage="square"] .pcard:hover .pcard-ring::before { opacity: 1; }
+/* Card buttons: QUICK VIEW is a dark glass button with a fine gold edge, ADD TO CART a gold theme gradient with a soft sheen; after a click it turns ink with a gold tick. */
+.cbtn-view { display: flex; align-items: center; justify-content: center; gap: 5px; padding: 0 11px; white-space: nowrap; color: rgb(var(--fg)); font-size: .52rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+  background: linear-gradient(180deg, rgb(var(--bg) / .78), rgb(var(--bg) / .55)); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); border: 1px solid rgb(var(--accent) / .6);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .08); transition: border-color .2s, color .2s, background .2s; }
+.cbtn-view svg { color: rgb(var(--accent-bright)); }
+.cbtn-view:hover { border-color: rgb(var(--accent-bright)); color: rgb(var(--accent-bright)); background: linear-gradient(180deg, rgb(var(--accent) / .22), rgb(var(--bg) / .6)); }
+.cbtn-add { display: flex; flex: 1 1 auto; align-items: center; justify-content: center; gap: 5px; padding: 0 10px; white-space: nowrap; color: rgb(var(--on-brand, 20 20 22)); font-size: .52rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+  background: linear-gradient(180deg, rgb(255 255 255 / .3), rgb(255 255 255 / 0) 52%, rgb(0 0 0 / .1)), linear-gradient(100deg, rgb(var(--accent)), rgb(var(--accent-bright)) 52%, rgb(var(--accent)));
+  border: 1px solid rgb(var(--accent-bright)); box-shadow: inset 0 1px 0 rgb(255 255 255 / .35), 0 6px 14px -8px rgb(var(--accent) / .9); transition: filter .2s, box-shadow .2s, color .25s, background .25s; }
+.cbtn-add:hover { filter: brightness(1.08) saturate(1.05); box-shadow: inset 0 1px 0 rgb(255 255 255 / .4), 0 8px 18px -8px rgb(var(--accent-bright) / .9); }
+.cbtn-add.is-done { color: rgb(var(--accent-bright)); background: linear-gradient(180deg, rgb(var(--accent) / .22), rgb(var(--bg) / .92)); box-shadow: inset 0 0 0 1px rgb(var(--accent) / .35); }
+.cbtn-qty { display: flex; align-items: stretch; background: rgb(var(--bg) / .78); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); border: 1px solid rgb(var(--accent) / .6); border-right: 0; }
 .pcard-stage .pcard-alt { display: none !important; }
 
 /* Photo arrows on product cards: small, light round glass buttons with a fine gold chevron at the left and right edges of the frame. Hidden until the pointer is

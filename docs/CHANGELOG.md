@@ -3,6 +3,7 @@
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
 ## Card hover refinements (2026-10-16)
+- Follow-up: glowing corner marks and the two card corner brackets restored; QUICK VIEW is now dark glass with a gold edge, ADD TO CART a gold theme gradient (ink with a gold tick after a click); both centred in the strip between the dashed ring and the text area, Quick view left, Add to Cart right, with a gap.
 - Hover glow toned down (gold aura, card shadow, ring and frame glow), lines kept; the four corner marks removed.
 - Photo arrows smaller (20px, 11px chevron) and lighter (65% opacity, full on pointing).
 - Options row redesigned: one joined bar inside the bottom edge of the white frame (aligned to its edges, crossing no ring lines or the AVERIXA mark): chrome QUICK VIEW with eye on the left (opens the quick view), quantity box, gold-on-ink Add to Cart.
