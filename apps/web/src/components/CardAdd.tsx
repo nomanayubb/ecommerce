@@ -23,7 +23,7 @@ export function CardAdd({ p }: { p: ProductSummary }) {
         add({ productId: p.id, variantId: null, title: p.title, price: Number(p.selling_price), marked: Number(p.marked_price), image: p.images[0], quantity: 1 });
         setDone(true); setTimeout(() => setDone(false), 1600);
       }}
-      className="flex h-5 shrink-0 items-center gap-1 whitespace-nowrap rounded-sm border border-line px-1.5 text-[0.5rem] font-semibold uppercase tracking-[0.1em] text-muted transition hover:border-fg/30 hover:text-fg"
+      className="ml-auto flex h-[18px] shrink-0 items-center gap-1 whitespace-nowrap rounded-sm border border-line px-1 text-[0.46rem] font-semibold uppercase tracking-[0.06em] text-muted transition hover:border-fg/30 hover:text-fg"
     >
       {done ? "Added" : "Add to Cart"}
     </button>

@@ -365,3 +365,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Product cards: the add-to-bag button redrawn in the card's own grey: a small hairline-bordered square with a grey cart-plus sign, no fill and no gold, 24 px so the price line keeps its size. Same place beside the price.
 - Product cards: the button beside the price now says Add to Cart (small grey outlined button, same grey style, shows Added after a click).
 - Product cards: the Add to Cart button made smaller (20 px high, 8 px lettering).
+- Product cards: Add to Cart made smaller still (18 px high, 7 px lettering, tighter spacing) and the price row can wrap, so long prices like Rs. 118,625 with a crossed-out Rs. 148,281 never touch the button; if there is no room the button drops under the price at the right. Measured on all 12 cards of the Exercise Machines page: no overlap with the crossed-out price.
