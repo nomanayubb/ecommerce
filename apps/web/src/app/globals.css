@@ -569,7 +569,7 @@ html[data-stage="square"] .pcard-disc, html[data-stage="square"] .pcard-ring, ht
    edge and looked misaligned. Now nothing in the picture area moves: the ring and dashed ring simply glow a little brighter, the frame edge and
    glow strengthen, and the photo eases in slightly. The card itself still lifts as one piece. */
 .pcard-stage::after { display: none !important; }
-html[data-depth="soft"] .pcard:has(.pcard-stage)::before, html[data-depth="soft"] .pcard:has(.pcard-stage)::after { display: none !important; }
+html[data-depth="soft"] .pcard:has(.pcard-stage)::before { display: none !important; }
 .tilt:has(.pcard-stage) { transform: none !important; }
 .tilt:has(.pcard-stage)::after { display: none !important; }
 .pcard:hover .pcard-disc, .pcard:hover .pcard-ring { transform: translate(-50%, -50%); }
@@ -637,3 +637,13 @@ html[data-stage="square"] .pcard:hover .pcard-ring { border-color: transparent; 
    darker inside the hover elements (ring, frame, aura, options, arrows). The discount tag and everything else keep the normal gold. */
 .pcard-ring, .pcard-disc, .pcard-stage::before, .card-add-bar, .card-arrow { --accent: 166 124 46; --accent-bright: 184 142 56; }
 .pcard:has(.pcard-stage):hover { border-color: rgb(166 124 46 / .6) !important; box-shadow: 0 24px 46px -24px rgb(166 124 46 / .32), 0 0 0 1px rgb(166 124 46 / .16) !important; }
+
+/* Outer card line: it now turns at all four corners, top as well as bottom. A masked overlay on the card edge adds a brighter antique-gold corner at each of the four corners that
+   melts back into the normal edge line (never to black), with a soft matching glow all round instead of only underneath. */
+.pcard:has(.pcard-stage) { position: relative; }
+html .pcard:has(.pcard-stage)::after { content: "" !important; display: block !important; position: absolute !important; top: -1px !important; left: -1px !important; right: -1px !important; bottom: -1px !important; width: auto !important; height: auto !important;
+  border: 0 !important; padding: 1.5px; transform: none !important; opacity: 0 !important; pointer-events: none; z-index: 4; transition: opacity .35s ease; --a: 184 142 56;
+  background: radial-gradient(circle 120px at 0 0, rgb(var(--a)), transparent), radial-gradient(circle 120px at 100% 0, rgb(var(--a)), transparent), radial-gradient(circle 120px at 0 100%, rgb(var(--a)), transparent), radial-gradient(circle 120px at 100% 100%, rgb(var(--a)), transparent);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask-composite: exclude; filter: drop-shadow(0 0 3px rgb(166 124 46 / .5)); }
+html .pcard:has(.pcard-stage):hover::after { opacity: 1 !important; }
+.pcard:has(.pcard-stage):hover { box-shadow: 0 0 22px -8px rgb(166 124 46 / .3), 0 24px 46px -24px rgb(166 124 46 / .32), 0 0 0 1px rgb(166 124 46 / .16) !important; }

@@ -3,6 +3,7 @@
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
 ## Card hover refinements (2026-10-16)
+- Follow-up 8: outer card line now turns at all four corners (masked overlay: brighter antique-gold corners that melt back into the edge line, soft glow all round); home-page product carousel and Recently viewed row got top padding so the scroller no longer clips the lifted card and its top line.
 - Follow-up 7: colour only. The card hover elements (ring, frame, aura, card border glow, Quick view / Add to Cart bar, photo arrows) use a deeper antique gold (166 124 46, bright 184 142 56) via scoped colour tokens at the end of globals.css; all gradients, lines and layout unchanged; discount tag keeps the normal gold.
 - Follow-up 6: card hover restored exactly to the state of commit 51a4648 (web code identical to it); the later gradient-line and button experiments were backed out at the owner's request.
 - Follow-up 5 (reset to the earlier state and redone): fixed the real cause of the broken button colours (a duplicate older set of .cbtn rules was overriding the new ones). Hover lines (card edge, ring, frame edge) are one deep antique-gold metallic line using only dark golds with slow even banding (no fade to black, no flashes); ring corner marks keep their dark-gold glow, are longer, and blend into the ring line; Quick view is ink with a single gold border, Add to Cart a solid deep gold with a tiny gradient range and ink text.

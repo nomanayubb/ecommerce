@@ -48,7 +48,7 @@ export function RecentlyViewed({ exclude, title = "Recently viewed" }: { exclude
   return (
     <section className="mt-20" aria-label={title}>
       <div className="mb-6"><p className="eyebrow">Pick up where you left off</p><h2 className="mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">{title}</h2></div>
-      <div className="flex snap-x gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-5 md:overflow-visible">
+      <div className="-mt-2 flex snap-x gap-4 overflow-x-auto pb-2 pt-2 md:grid md:grid-cols-5 md:overflow-visible">
         {items.map((p) => <div key={p.slug} className="w-44 shrink-0 snap-start md:w-auto"><LiteCard p={p} /></div>)}
       </div>
     </section>
