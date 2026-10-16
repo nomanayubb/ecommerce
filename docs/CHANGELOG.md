@@ -3,6 +3,7 @@
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
 ## Card hover refinements (2026-10-16)
+- Follow-up 10: on touch screens the Quick view / Add to Cart bar and photo arrows were shown at rest and the AVERIXA mark and corner tag were hidden; removed those always-on touch rules so a resting card looks exactly as it did before the hover work (state of commit b8740c9). Options and arrows now only appear while the card is touched or focused.
 - Follow-up 9: the darker hover gold is now applied only while hovering (ring, frame); the resting card keeps exactly its original colours. Rule: hover work must never change how a card looks without the cursor on it.
 - Follow-up 8: outer card line now turns at all four corners (masked overlay: brighter antique-gold corners that melt back into the edge line, soft glow all round); home-page product carousel and Recently viewed row got top padding so the scroller no longer clips the lifted card and its top line.
 - Follow-up 7: colour only. The card hover elements (ring, frame, aura, card border glow, Quick view / Add to Cart bar, photo arrows) use a deeper antique gold (166 124 46, bright 184 142 56) via scoped colour tokens at the end of globals.css; all gradients, lines and layout unchanged; discount tag keeps the normal gold.

@@ -562,7 +562,7 @@ html[data-stage="square"] .pcard-disc, html[data-stage="square"] .pcard-ring, ht
 .pcard:hover .card-add-bar, .card-add-bar:focus-within { opacity: 1; transform: none; pointer-events: auto; }
 .image-mark-corner, .pcard-badge { transition: opacity .2s ease; }
 .pcard:hover .image-mark-corner, .pcard:hover .pcard-badge, .pcard:focus-within .image-mark-corner, .pcard:focus-within .pcard-badge { opacity: 0; }
-@media (hover: none) { .card-add-bar { opacity: 1; transform: none; pointer-events: auto; } .image-mark-corner, .pcard-badge { opacity: 0; } }
+/* (touch screens keep the card exactly as it rests: the options and arrows only show while the card is touched or focused) */
 
 /* Product card hover, one clean effect instead of many overlapping lines. On hover the older extras (a second inner frame line, the two gold
    corner brackets, the lifting and scaling of the ring and the frame, the tilt) used to stack on top of the ring, the dashed ring and the frame
@@ -627,7 +627,6 @@ html[data-stage="square"] .pcard:hover .pcard-ring::before { opacity: 1; }
 .card-arrow:hover { background: rgb(var(--accent)); color: rgb(var(--on-brand, 20 20 22)); }
 .pcard:hover .card-arrow, .card-arrow:focus-visible { opacity: .65; }
 .pcard:hover .card-arrow:hover { opacity: 1; }
-@media (hover: none) { .card-arrow { opacity: .65; } }
 
 /* Outer lines on hover: the card edge and the ring become one continuous, dark gold gradient line on all four sides (no gaps at the top). */
 .pcard:has(.pcard-stage):hover { border-color: rgb(var(--accent) / .4) !important; box-shadow: 0 22px 40px -26px rgb(var(--accent) / .3) !important; }
