@@ -4,7 +4,8 @@ import { Tilt } from "./Motion";
 import { Stars } from "./Stars";
 import { TagIcons } from "./TagIcons";
 import { HoverVideo } from "./HoverVideo";
-import { CardGlow, HoverPhoto, PriceTag } from "./CardFx";
+import { CardGlow, PriceTag } from "./CardFx";
+import { CardPhoto } from "./CardPhoto";
 import { ImageMark } from "./ImageMark";
 import { CardAdd } from "./CardAdd";
 import { isFileVideo } from "@/lib/media";
@@ -23,11 +24,7 @@ export function ProductCard({ p, priority = false }: { p: ProductSummary; priori
           <span className="pcard-ring" aria-hidden />
           <div className={`pcard-disc ${p.images[0]?.includes("/kk/c/") ? "is-cut" : ""}`}>
             <ImageMark behind />
-            {p.images[0] && (
-              <img src={p.images[0]} alt={p.title} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : undefined} decoding="async" width={600} height={750}
-                className={`pcard-photo relative ${soldOut ? "opacity-50 grayscale" : ""}`} />
-            )}
-            {p.images[1] && !soldOut && <HoverPhoto src={p.images[2] ?? p.images[1]} />}
+            <CardPhoto images={p.images} alt={p.title} priority={priority} soldOut={soldOut} />
           </div>
           <span className="pcard-shadow" aria-hidden />
           <ImageMark />

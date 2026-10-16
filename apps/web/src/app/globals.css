@@ -578,3 +578,23 @@ html[data-depth="soft"] .pcard:has(.pcard-stage)::before, html[data-depth="soft"
 .pcard:hover .pcard-ring::after { border-color: rgb(var(--accent) / .32); }
 .pcard:hover .pcard-shadow { transform: translateX(-50%); }
 .pcard:hover .pcard-disc:not(.is-cut) { box-shadow: 0 0 0 1px rgb(var(--accent) / .9), 0 0 26px -4px rgb(var(--accent) / .38), 0 3px 6px rgb(0 0 0 / .22), 0 30px 42px -24px rgb(0 0 0 / .85); }
+
+/* Product cards stay exactly as they are when the pointer arrives. The only things that change are the two options appearing under the frame and
+   the small logo mark and corner tag fading out. No lift, no glow, no colour change, no photo swap or zoom, no ring or frame movement. */
+.pcard:has(.pcard-stage):hover { transform: none !important; border-color: rgb(var(--line)) !important; box-shadow: var(--lift-1, none) !important; }
+.pcard:hover .pcard-ring { border-color: rgb(var(--accent) / .3); transform: translate(-50%, -50%); }
+.pcard:hover .pcard-ring::after { border-color: rgb(var(--accent) / .14); }
+.pcard:hover .pcard-disc { transform: translate(-50%, -50%); }
+.pcard:hover .pcard-disc:not(.is-cut) { box-shadow: 0 0 0 1px rgb(var(--accent) / .5), 0 2px 4px rgb(0 0 0 / .18), 0 26px 38px -22px rgb(0 0 0 / .8); }
+.pcard:hover .pcard-disc.is-cut { box-shadow: inset 0 0 0 1px rgb(var(--accent) / .38), inset 0 -22px 34px -14px rgb(0 0 0 / .38), 0 24px 42px -22px rgb(var(--accent) / .5); }
+.pcard:hover .pcard-disc.is-cut .pcard-photo, .pcard:hover .pcard-disc:not(.is-cut) .pcard-photo { transform: none; }
+.pcard:hover .pcard-shadow { transform: translateX(-50%); opacity: 1; }
+.pcard-stage .pcard-alt { display: none !important; }
+
+/* Photo arrows on product cards: small square buttons at the left and right edges of the frame, in the same gold-edged style as the options panel.
+   Hidden until the pointer is on the card (always shown on touch screens). */
+.card-arrow { position: absolute; top: 50%; z-index: 3; width: 24px; height: 32px; margin-top: -16px; display: grid; place-items: center; font-size: 20px; line-height: 1; color: rgb(var(--fg));
+  background: rgb(var(--bg) / .82); border: 1px solid rgb(var(--accent) / .5); opacity: 0; transition: opacity .25s ease, color .2s ease, border-color .2s ease; }
+.card-arrow:hover { color: rgb(var(--accent)); border-color: rgb(var(--accent)); }
+.pcard:hover .card-arrow, .card-arrow:focus-visible { opacity: 1; }
+@media (hover: none) { .card-arrow { opacity: 1; } }
