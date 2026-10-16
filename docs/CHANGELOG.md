@@ -3,6 +3,7 @@
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
 ## Card hover refinements (2026-10-16)
+- Follow-up 16: the glittering button edge now flows as a smooth gold gradient (11 eased stops from #8f6a22 to #e2c06a, no near-black), a seamless horizontal loop of exactly one tile width so nothing jumps at the animation restart, slowed to 3.2 s.
 - Follow-up 15: Quick view, the count and Add to Cart are clear glass (transparent inside) with a glittering dark-gold edge: a masked 1px ring of fine bright and deep gold bands that shimmers while the card is hovered, plus two tiny twinkling points. Replaced both older overlapping .cbtn rule sets with one clean set. Built and checked on the dev server; run npm run build:prod before publishing.
 - Follow-up 14: only the four second-line (ring) corner marks changed colour on hover: a darker gold gradient (#bd9440 > #a07a2e > #7a5a1e), fully opaque so they stay clearly distinct from the ring line; size, length, glow radius and everything else unchanged.
 - Follow-up 13: card hover restored again to the approved state (commit 51a4648 look, as in 62ea981); the later foil, overlay-line and bronze/gold button experiments were backed out at the owner's request. Kept only: darker gold applied on hover only, resting touch-screen cards unchanged (no always-on buttons or arrows), and the narrow phone-card button layout.
