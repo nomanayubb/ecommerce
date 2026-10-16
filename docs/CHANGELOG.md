@@ -3,6 +3,7 @@
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
 ## Card hover refinements (2026-10-16)
+- Follow-up 25: undid follow-up 24 (held edge) because the owner had not asked for a change; button styles are back to a723c1e. Rule: change nothing unless an explicit instruction says what to change.
 - Follow-up 24: the button edge (a723c1e smooth gradient) is held still at the 50% frame of its shimmer, the moment the owner said looked best; the moving shimmer (which looked worse toward the end of each loop) is switched off. The twinkling points still animate. To return to the moving version: restore a723c1e.
 - Follow-up 23: FINAL for the button edge: commit a723c1e (smooth gradient edge) chosen by the owner after comparing 40% (514d47a), 70% (a723c1e) and 100% (ce99b49). Do not change it unless asked.
 - Follow-up 22: button styles set to commit ce99b49 (softer edge, quantity box and Add to Cart share one outline) so the owner can compare it.
