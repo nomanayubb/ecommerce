@@ -3,6 +3,7 @@
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
 ## Card hover refinements (2026-10-16)
+- Follow-up 31: the two twinkle dots on Quick view and Add to Cart removed and published to port 3000 (production build in .next-new built while the old server kept running, then swapped in seconds; the previous build stays in .next-prod). Previous finalized state with dots: tag cards-final. This state: tag cards-final-no-dots.
 - Follow-up 30: restored the finalized card design (tag cards-final) and its production build on port 3000 after the dev-server swap changed what the owner was viewing. Port 3000 is the owner's production view: never stop or replace it without telling them; build into .next-prod first and swap only after success. Twinkle-dot removal (0e03421) is reverted by this restore.
 - Follow-up 29: the twinkle dots on Quick view and Add to Cart removed at the owner's request (the rest of the button animation unchanged). Port 3000 is on the dev server again for instant edits; run npm run build:prod only when the owner says to publish. Previous final state: tag cards-final.
 - FINAL (owner, 2026-10-17): card hover and button design is finished. Tagged cards-final. Production build: shared JS 104 kB, home 141 kB, collections and products 124 kB, product page 133 kB (all within budget); port 3000 serves the production build again. Do not change the card design unless asked; restore with git tag cards-final.
