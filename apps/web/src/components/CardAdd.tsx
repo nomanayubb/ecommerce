@@ -26,7 +26,7 @@ export function CardAdd({ p }: { p: ProductSummary }) {
     <div onClick={stop} className="card-add-bar absolute inset-x-[10%] bottom-[calc(6.6%-14px)] z-10 flex h-7 items-stretch gap-2.5">
       <button type="button" aria-label={`Quick view ${p.title}`} onClick={(e) => { stop(e); shopper.openQuick(toLite(p)); }} className="cbtn-view" style={canAdd ? undefined : { flex: "1 1 auto" }}>
         <svg viewBox="0 0 24 24" width={12} height={12} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></svg>
-        Quick view
+        <span className="cbtn-lbl">Quick view</span>
       </button>
       {canAdd && (
         <div className="flex min-w-0 flex-1 items-stretch">

@@ -3,6 +3,7 @@
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
 ## Card hover refinements (2026-10-16)
+- Follow-up 11: one gold foil for everything that shows on hover (card edge, ring, frame edge, corner marks, Quick view edge, Add to Cart fill): deep antique gold with a single soft champagne highlight band; the highlight sweeps once across on hover (no looping or random banding). Old overlapping .cbtn rules and the radial/border-image line experiments removed. Glow made warm amber and much softer (the earlier olive glow read as lizard green). Narrow cards (phone, two per row): Quick view shrinks to its eye and the quantity box is dropped so Add to Cart keeps its full label.
 - Follow-up 10: on touch screens the Quick view / Add to Cart bar and photo arrows were shown at rest and the AVERIXA mark and corner tag were hidden; removed those always-on touch rules so a resting card looks exactly as it did before the hover work (state of commit b8740c9). Options and arrows now only appear while the card is touched or focused.
 - Follow-up 9: the darker hover gold is now applied only while hovering (ring, frame); the resting card keeps exactly its original colours. Rule: hover work must never change how a card looks without the cursor on it.
 - Follow-up 8: outer card line now turns at all four corners (masked overlay: brighter antique-gold corners that melt back into the edge line, soft glow all round); home-page product carousel and Recently viewed row got top padding so the scroller no longer clips the lifted card and its top line.
