@@ -593,8 +593,8 @@ html[data-depth="soft"] .pcard:has(.pcard-stage)::before, html[data-depth="soft"
 .pcard:hover .pcard-disc:not(.is-cut) .pcard-photo { transform: scale(1.05); }
 .pcard:hover .pcard-shadow { transform: translateX(-50%); }
 html[data-stage="square"] .pcard-ring::before { content: ""; position: absolute; inset: -1px; pointer-events: none; opacity: 0; transition: opacity .35s ease; filter: drop-shadow(0 0 2px rgb(var(--accent) / .4));
-  --h: linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent) / .25)); --hr: linear-gradient(270deg, rgb(var(--accent)), rgb(var(--accent) / .25));
-  --v: linear-gradient(180deg, rgb(var(--accent)), rgb(var(--accent) / .25)); --vb: linear-gradient(0deg, rgb(var(--accent)), rgb(var(--accent) / .25));
+  --h: linear-gradient(90deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%); --hr: linear-gradient(270deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%);
+  --v: linear-gradient(180deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%); --vb: linear-gradient(0deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%);
   background:
     var(--h) top left / 22px 2px no-repeat, var(--v) top left / 2px 22px no-repeat,
     var(--hr) top right / 22px 2px no-repeat, var(--v) top right / 2px 22px no-repeat,
