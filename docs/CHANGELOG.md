@@ -362,3 +362,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Product cards: one small add-to-bag button on the same line as the price, at the right, under the name (simple products only). The name is not narrowed. Clicking it adds to the bag without opening the product. Checked in the browser (24 buttons on the products page).
 - Product cards: the add-to-bag button moved from the price line to the picture, level with the AVERIXA logo mark at the bottom right and just to its left; the price line is as before. Checked in the browser.
 - Product cards: the add-to-bag button is back on the price line at the right, under the name (it was briefly on the picture by the logo mark).
+- Product cards: the add-to-bag button redrawn in the card's own grey: a small hairline-bordered square with a grey cart-plus sign, no fill and no gold, 24 px so the price line keeps its size. Same place beside the price.
