@@ -364,3 +364,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Product cards: the add-to-bag button is back on the price line at the right, under the name (it was briefly on the picture by the logo mark).
 - Product cards: the add-to-bag button redrawn in the card's own grey: a small hairline-bordered square with a grey cart-plus sign, no fill and no gold, 24 px so the price line keeps its size. Same place beside the price.
 - Product cards: the button beside the price now says Add to Cart (small grey outlined button, same grey style, shows Added after a click).
+- Product cards: the Add to Cart button made smaller (20 px high, 8 px lettering).
