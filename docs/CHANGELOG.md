@@ -3,6 +3,7 @@
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
 ## Card hover refinements (2026-10-16)
+- Follow-up 21: button styles set back to commit a723c1e (smooth gradient edge) at the owner's request.
 - Follow-up 20: button styles set to commit 514d47a (transparent inside, glitter banded gold edge) at the owner's request.
 - Follow-up 19: button styles restored exactly to commit a723c1e (smooth gradient edge) at the owner's request; the softer-edge and shared-outline change (ce99b49) was backed out.
 - Follow-up 18: kept the smooth gradient edge (a723c1e); softened the settled edge (85% opacity plus a faint 1.5px glow, since it only looked crisp once the fade-in finished) and removed the doubled sharp vertical line between the quantity box and Add to Cart: they share one outline (the join edge is dropped; narrow cards where the quantity box is hidden keep a full ring).
