@@ -563,3 +563,18 @@ html[data-stage="square"] .pcard-disc, html[data-stage="square"] .pcard-ring, ht
 .image-mark-corner, .pcard-badge { transition: opacity .2s ease; }
 .pcard:hover .image-mark-corner, .pcard:hover .pcard-badge, .pcard:focus-within .image-mark-corner, .pcard:focus-within .pcard-badge { opacity: 0; }
 @media (hover: none) { .card-add-bar { opacity: 1; transform: none; pointer-events: auto; } .image-mark-corner, .pcard-badge { opacity: 0; } }
+
+/* Product card hover, one clean effect instead of many overlapping lines. On hover the older extras (a second inner frame line, the two gold
+   corner brackets, the lifting and scaling of the ring and the frame, the tilt) used to stack on top of the ring, the dashed ring and the frame
+   edge and looked misaligned. Now nothing in the picture area moves: the ring and dashed ring simply glow a little brighter, the frame edge and
+   glow strengthen, and the photo eases in slightly. The card itself still lifts as one piece. */
+.pcard-stage::after { display: none !important; }
+html[data-depth="soft"] .pcard:has(.pcard-stage)::before, html[data-depth="soft"] .pcard:has(.pcard-stage)::after { display: none !important; }
+.tilt:has(.pcard-stage) { transform: none !important; }
+.tilt:has(.pcard-stage)::after { display: none !important; }
+.pcard:hover .pcard-disc, .pcard:hover .pcard-ring { transform: translate(-50%, -50%); }
+.pcard:hover .pcard-ring { border-color: rgb(var(--accent) / .55); }
+.pcard-ring::after { transition: border-color .45s; }
+.pcard:hover .pcard-ring::after { border-color: rgb(var(--accent) / .32); }
+.pcard:hover .pcard-shadow { transform: translateX(-50%); }
+.pcard:hover .pcard-disc:not(.is-cut) { box-shadow: 0 0 0 1px rgb(var(--accent) / .9), 0 0 26px -4px rgb(var(--accent) / .38), 0 3px 6px rgb(0 0 0 / .22), 0 30px 42px -24px rgb(0 0 0 / .85); }
