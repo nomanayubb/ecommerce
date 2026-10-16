@@ -3,6 +3,7 @@
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
 ## Card hover refinements (2026-10-16)
+- Follow-up 28: the twinkle points on Quick view and Add to Cart are back to the original (oldest) style, two small round glints per button; the rest of the button animation (smooth gradient edge, 30% faster speed) is unchanged. The four-point star experiment (7bd5a17 and after) was backed out.
 - Follow-up 27: the two twinkling white points on Quick view and Add to Cart are now small four-point champagne-gold sparkles placed identically on both buttons (top edge at 80%, bottom edge at 20%) and twinkling in sync. Previous glints: commit 246e772.
 - Follow-up 26: button edge shimmer 30% faster (loop 3.2 s to 2.46 s) at the owner's request; nothing else changed. Previous speed: commit 58d2248.
 - Follow-up 25: undid follow-up 24 (held edge) because the owner had not asked for a change; button styles are back to a723c1e. Rule: change nothing unless an explicit instruction says what to change.
