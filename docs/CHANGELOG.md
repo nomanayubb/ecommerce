@@ -3,6 +3,7 @@
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
 ## Card hover refinements (2026-10-16)
+- Follow-up 23: FINAL for the button edge: commit a723c1e (smooth gradient edge) chosen by the owner after comparing 40% (514d47a), 70% (a723c1e) and 100% (ce99b49). Do not change it unless asked.
 - Follow-up 22: button styles set to commit ce99b49 (softer edge, quantity box and Add to Cart share one outline) so the owner can compare it.
 - Follow-up 21: button styles set back to commit a723c1e (smooth gradient edge) at the owner's request.
 - Follow-up 20: button styles set to commit 514d47a (transparent inside, glitter banded gold edge) at the owner's request.
