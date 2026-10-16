@@ -27,7 +27,7 @@ export function CardAdd({ p }: { p: ProductSummary }) {
     <div onClick={stop} className="card-add-bar absolute inset-x-[10%] bottom-[4%] z-10 flex flex-col gap-[5px]">
       <button
         type="button" aria-label={`View ${p.title}`} onClick={(e) => { stop(e); router.push(`/products/${p.slug}`); }}
-        className="flex h-6 items-center justify-center gap-1.5 border border-accent/50 bg-bg/95 text-[0.56rem] font-semibold uppercase tracking-[0.2em] text-fg transition hover:border-accent hover:text-accent"
+        className="flex h-6 items-center justify-center gap-1.5 bg-fg text-[0.56rem] font-bold uppercase tracking-[0.2em] text-bg shadow-[0_8px_18px_-10px_rgb(0_0_0/.9)] transition hover:bg-[rgb(var(--accent-bright))] hover:text-onbrand"
       >
         View product <span aria-hidden>→</span>
       </button>
@@ -45,7 +45,7 @@ export function CardAdd({ p }: { p: ProductSummary }) {
               add({ productId: p.id, variantId: null, title: p.title, price: Number(p.selling_price), marked: Number(p.marked_price), image: p.images[0], quantity: qty });
               setDone(true); setQty(1); setTimeout(() => setDone(false), 1600);
             }}
-            className="flex flex-1 items-center justify-center gap-1.5 bg-accent text-[0.58rem] font-bold uppercase tracking-[0.16em] text-onbrand transition hover:bg-accent-bright"
+            className="flex flex-1 items-center justify-center gap-1.5 bg-[linear-gradient(90deg,rgb(var(--accent)),rgb(var(--accent-bright)))] text-[0.58rem] font-bold uppercase tracking-[0.16em] text-onbrand transition hover:brightness-110"
           >
             <svg viewBox="0 0 24 24" width={13} height={13} fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               {done ? <path d="M5 12.5l4.5 4.5L19 7.5" /> : <><path d="M3 4h2.2l2 9.4c.1.5.5.8 1 .8h8.6c.5 0 .9-.3 1-.8L19.4 8H6" /><circle cx="9.5" cy="18.6" r="1.1" /><circle cx="16.5" cy="18.6" r="1.1" /></>}

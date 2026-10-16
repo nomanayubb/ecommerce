@@ -2,6 +2,11 @@
 
 import { useState } from "react";
 
+const Chevron = ({ dir }: { dir: "left" | "right" }) => (
+  <svg viewBox="0 0 24 24" width={14} height={14} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d={dir === "left" ? "M14.5 6l-6 6 6 6" : "M9.5 6l6 6-6 6"} />
+  </svg>
+);
 const stop = (e: React.SyntheticEvent) => { e.preventDefault(); e.stopPropagation(); }; // the card is a link: the arrows must not open the product
 
 /**
@@ -21,8 +26,8 @@ export function CardPhoto({ images, alt, priority, soldOut }: { images: string[]
       />
       {list.length > 1 && !soldOut && (
         <>
-          <button type="button" aria-label="Previous photo" onClick={(e) => { stop(e); go(-1); }} className="card-arrow left-1.5">‹</button>
-          <button type="button" aria-label="Next photo" onClick={(e) => { stop(e); go(1); }} className="card-arrow right-1.5">›</button>
+          <button type="button" aria-label="Previous photo" onClick={(e) => { stop(e); go(-1); }} className="card-arrow left-1.5"><Chevron dir="left" /></button>
+          <button type="button" aria-label="Next photo" onClick={(e) => { stop(e); go(1); }} className="card-arrow right-1.5"><Chevron dir="right" /></button>
           <span aria-live="polite" className="sr-only">Photo {i + 1} of {list.length}</span>
         </>
       )}
