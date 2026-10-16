@@ -60,3 +60,7 @@ Located at `C:\Users\noman\Desktop\live-tracker` (the `D:\live-tracker` copy is 
 - Prove motion by comparing frames over time (mean pixel change per second), not by one screenshot. Check the foreground window is Chrome first (focus returns to the Claude app after tool calls).
 - Privacy: it records the whole screen. Read only the latest frame/state; never open its `*_history.jsonl`/click logs. Stop it when done (kill only the `dual_tracker.py` PIDs) and say so.
 - Findings so far (2026-10-09): on the user's PC Windows animation effects are OFF, so by default the hero was static (measured 0.0 change); after pressing the Animations icon the glow/line art changed 2.4-5.0 per second.
+
+## Fast design iteration (do this, not a production build per edit)
+- Port 3000 runs the **dev server** (`npm run dev` in apps/web, started with `NEXT_PUBLIC_API_URL=http://192.168.1.166:4000/api/v1 npx next dev -p 3000 -H 0.0.0.0`): edits to CSS/TSX show in the open browser in about 1 to 3 seconds (hot reload). A full `npm run build:prod` + restart takes about 2 minutes, so run it only once at the end of a batch to verify bundle sizes before publishing.
+- Edit files with the Edit/Write tools or one small script; never chain a rebuild after every tweak.
