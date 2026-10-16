@@ -520,7 +520,7 @@ html[data-contrast] .glass, html[data-contrast] .header-bar, html[data-contrast]
 .pcard:hover .pcard-disc { transform: translate(-50%, -52%); box-shadow: inset 0 0 0 1px rgb(var(--accent) / .7), inset 0 -22px 34px -14px rgb(0 0 0 / .38), 0 34px 50px -22px rgb(var(--accent) / .65); }
 .pcard:hover .pcard-disc.is-cut .pcard-photo { transform: scale(1.07); }
 .pcard:hover .pcard-disc:not(.is-cut) .pcard-photo { transform: scale(1.06); }
-.pcard:hover .pcard-ring { border-color: rgb(var(--accent) / .6); transform: translate(-50%, -50%) scale(1.03); }
+.pcard:hover .pcard-ring { border-color: rgb(var(--accent) / .6); transform: translate(-50%, -52%) scale(1.03); }
 .pcard:hover .pcard-shadow { transform: translateX(-50%) scale(.9); opacity: .8; }
 html[data-imghover="none"] .pcard-disc, html[data-imghover="none"] .pcard-ring, html[data-imghover="none"] .pcard-shadow { transition: none; }
 .gallery-cut { filter: drop-shadow(0 18px 22px rgb(0 0 0 / .5)); }
@@ -555,3 +555,11 @@ html[data-stage="square"] .pcard-disc, html[data-stage="square"] .pcard-ring, ht
 .pcard:hover .pcard-disc:not(.is-cut) { box-shadow: 0 0 0 1px rgb(var(--accent) / .85), 0 3px 6px rgb(0 0 0 / .22), 0 34px 46px -22px rgb(0 0 0 / .85); }
 .pcard-stage { background-image: radial-gradient(120% 80% at 50% 38%, rgb(var(--accent) / .13), transparent 60%), radial-gradient(90% 60% at 12% 0%, rgb(255 255 255 / .05), transparent 55%), linear-gradient(180deg, rgb(var(--card)), rgb(var(--bg))); }
 .pcard-ring { border-color: rgb(var(--accent) / .3); }
+
+/* Card options (Add to Cart, View product): shown when the pointer is on the card, always on touch screens. The small logo mark and the corner tag
+   fade out while they show so nothing sits under the panel. The ring now lifts together with the frame so the lines stay concentric. */
+.card-add-bar { opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity .25s ease, transform .3s cubic-bezier(.2,.7,.2,1); }
+.pcard:hover .card-add-bar, .card-add-bar:focus-within { opacity: 1; transform: none; pointer-events: auto; }
+.image-mark-corner, .pcard-badge { transition: opacity .2s ease; }
+.pcard:hover .image-mark-corner, .pcard:hover .pcard-badge, .pcard:focus-within .image-mark-corner, .pcard:focus-within .pcard-badge { opacity: 0; }
+@media (hover: none) { .card-add-bar { opacity: 1; transform: none; pointer-events: auto; } .image-mark-corner, .pcard-badge { opacity: 0; } }

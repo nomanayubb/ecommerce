@@ -39,7 +39,7 @@ export function ProductCard({ p, priority = false }: { p: ProductSummary; priori
             <span className="badge-discount absolute left-0 top-4 bg-accent px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-onbrand">-{p.discount_pct}%</span>
           )}
           {(badge || lowStock) && !soldOut && (
-            <span className="glass absolute bottom-3 left-3 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-fg">{badge ?? "Low stock"}</span>
+            <span className="pcard-badge glass absolute bottom-3 left-3 px-2.5 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-fg">{badge ?? "Low stock"}</span>
           )}
           {soldOut && <span className="absolute inset-x-0 bottom-0 bg-bg/80 py-2 text-center text-[0.65rem] font-semibold uppercase tracking-[0.25em] backdrop-blur">Sold out</span>}
         </div>
