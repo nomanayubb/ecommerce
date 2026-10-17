@@ -593,8 +593,8 @@ html[data-stage="square"] .pcard-disc, html[data-stage="square"] .pcard-ring, ht
 .pcard:hover .pcard-disc:not(.is-cut) .pcard-photo { transform: scale(1.05); }
 .pcard:hover .pcard-shadow { transform: translateX(-50%); }
 html[data-stage="square"] .pcard-ring::before { content: ""; position: absolute; inset: -1px; pointer-events: none; opacity: 0; transition: opacity .35s ease; filter: drop-shadow(0 0 2px rgb(var(--accent) / .4));
-  --h: linear-gradient(90deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%); --hr: linear-gradient(270deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%);
-  --v: linear-gradient(180deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%); --vb: linear-gradient(0deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%);
+  --h: linear-gradient(90deg, #d0a851 0%, #b98f3b 50%, #9a7329 100%); --hr: linear-gradient(270deg, #d0a851 0%, #b98f3b 50%, #9a7329 100%);
+  --v: linear-gradient(180deg, #d0a851 0%, #b98f3b 50%, #9a7329 100%); --vb: linear-gradient(0deg, #d0a851 0%, #b98f3b 50%, #9a7329 100%);
   background:
     var(--h) top left / 22px .8px no-repeat, var(--v) top left / .8px 22px no-repeat,
     var(--hr) top right / 22px .8px no-repeat, var(--v) top right / .8px 22px no-repeat,
@@ -683,8 +683,8 @@ html[data-stage="square"] .pcard:hover .pcard-ring { border-color: transparent; 
 
 /* Outermost line: the same four glittering corner marks as the second line (same 22px x 2px arms, colours, glow radius and glitter timing), on the card's outer edge. */
 html .pcard:has(.pcard-stage)::before { content: ""; display: block; position: absolute; top: -1px; left: -1px; right: -1px; bottom: -1px; width: auto; height: auto; border: 0; transform: none; pointer-events: none; opacity: 0; z-index: 5; transition: opacity .35s ease; filter: drop-shadow(0 0 2px rgb(166 124 46 / .4));
-  --h: linear-gradient(90deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%); --hr: linear-gradient(270deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%);
-  --v: linear-gradient(180deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%); --vb: linear-gradient(0deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%);
+  --h: linear-gradient(90deg, #d0a851 0%, #b98f3b 50%, #9a7329 100%); --hr: linear-gradient(270deg, #d0a851 0%, #b98f3b 50%, #9a7329 100%);
+  --v: linear-gradient(180deg, #d0a851 0%, #b98f3b 50%, #9a7329 100%); --vb: linear-gradient(0deg, #d0a851 0%, #b98f3b 50%, #9a7329 100%);
   background:
     var(--h) top left / 22px .8px no-repeat, var(--v) top left / .8px 22px no-repeat,
     var(--hr) top right / 22px .8px no-repeat, var(--v) top right / .8px 22px no-repeat,
