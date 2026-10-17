@@ -593,20 +593,21 @@ html[data-depth="soft"] .pcard:has(.pcard-stage)::before { display: none !import
 .pcard:hover .pcard-disc:not(.is-cut) .pcard-photo { transform: scale(1.05); }
 .pcard:hover .pcard-shadow { transform: translateX(-50%); }
 html[data-stage="square"] .pcard-ring::before { content: ""; position: absolute; inset: -1px; pointer-events: none; opacity: 0; transition: opacity .35s ease; filter: drop-shadow(0 0 2px rgb(var(--accent) / .4));
-  --h: linear-gradient(90deg, #000, rgb(0 0 0 / .15)); --hr: linear-gradient(270deg, #000, rgb(0 0 0 / .15)); --v: linear-gradient(180deg, #000, rgb(0 0 0 / .15)); --vb: linear-gradient(0deg, #000, rgb(0 0 0 / .15));
+  --h: linear-gradient(90deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%); --hr: linear-gradient(270deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%);
+  --v: linear-gradient(180deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%); --vb: linear-gradient(0deg, #bd9440 0%, #a07a2e 50%, #7a5a1e 100%);
   background:
-    repeating-linear-gradient(0deg, #8f6a22 calc(var(--o) + 0px), #a07729 calc(var(--o) + 3.6px), #b48b36 calc(var(--o) + 7.6px), #c89f45 calc(var(--o) + 11.6px), #d9b457 calc(var(--o) + 15.2px), #e2c06a calc(var(--o) + 17.6px), #d9b457 calc(var(--o) + 20px), #c89f45 calc(var(--o) + 23.6px), #b48b36 calc(var(--o) + 27.6px), #a07729 calc(var(--o) + 32px), #8f6a22 calc(var(--o) + 40px)) top left / 2px 22px no-repeat,
-    repeating-linear-gradient(90deg, #8f6a22 calc(var(--o) + 0px), #a07729 calc(var(--o) + 3.6px), #b48b36 calc(var(--o) + 7.6px), #c89f45 calc(var(--o) + 11.6px), #d9b457 calc(var(--o) + 15.2px), #e2c06a calc(var(--o) + 17.6px), #d9b457 calc(var(--o) + 20px), #c89f45 calc(var(--o) + 23.6px), #b48b36 calc(var(--o) + 27.6px), #a07729 calc(var(--o) + 32px), #8f6a22 calc(var(--o) + 40px)) top left / 22px 2px no-repeat,
-    repeating-linear-gradient(0deg, #8f6a22 calc(var(--o) + 0px), #a07729 calc(var(--o) + 3.6px), #b48b36 calc(var(--o) + 7.6px), #c89f45 calc(var(--o) + 11.6px), #d9b457 calc(var(--o) + 15.2px), #e2c06a calc(var(--o) + 17.6px), #d9b457 calc(var(--o) + 20px), #c89f45 calc(var(--o) + 23.6px), #b48b36 calc(var(--o) + 27.6px), #a07729 calc(var(--o) + 32px), #8f6a22 calc(var(--o) + 40px)) top right / 2px 22px no-repeat,
-    repeating-linear-gradient(270deg, #8f6a22 calc(var(--o) + 0px), #a07729 calc(var(--o) + 3.6px), #b48b36 calc(var(--o) + 7.6px), #c89f45 calc(var(--o) + 11.6px), #d9b457 calc(var(--o) + 15.2px), #e2c06a calc(var(--o) + 17.6px), #d9b457 calc(var(--o) + 20px), #c89f45 calc(var(--o) + 23.6px), #b48b36 calc(var(--o) + 27.6px), #a07729 calc(var(--o) + 32px), #8f6a22 calc(var(--o) + 40px)) top right / 22px 2px no-repeat,
-    repeating-linear-gradient(180deg, #8f6a22 calc(var(--o) + 0px), #a07729 calc(var(--o) + 3.6px), #b48b36 calc(var(--o) + 7.6px), #c89f45 calc(var(--o) + 11.6px), #d9b457 calc(var(--o) + 15.2px), #e2c06a calc(var(--o) + 17.6px), #d9b457 calc(var(--o) + 20px), #c89f45 calc(var(--o) + 23.6px), #b48b36 calc(var(--o) + 27.6px), #a07729 calc(var(--o) + 32px), #8f6a22 calc(var(--o) + 40px)) bottom left / 2px 22px no-repeat,
-    repeating-linear-gradient(90deg, #8f6a22 calc(var(--o) + 0px), #a07729 calc(var(--o) + 3.6px), #b48b36 calc(var(--o) + 7.6px), #c89f45 calc(var(--o) + 11.6px), #d9b457 calc(var(--o) + 15.2px), #e2c06a calc(var(--o) + 17.6px), #d9b457 calc(var(--o) + 20px), #c89f45 calc(var(--o) + 23.6px), #b48b36 calc(var(--o) + 27.6px), #a07729 calc(var(--o) + 32px), #8f6a22 calc(var(--o) + 40px)) bottom left / 22px 2px no-repeat,
-    repeating-linear-gradient(180deg, #8f6a22 calc(var(--o) + 0px), #a07729 calc(var(--o) + 3.6px), #b48b36 calc(var(--o) + 7.6px), #c89f45 calc(var(--o) + 11.6px), #d9b457 calc(var(--o) + 15.2px), #e2c06a calc(var(--o) + 17.6px), #d9b457 calc(var(--o) + 20px), #c89f45 calc(var(--o) + 23.6px), #b48b36 calc(var(--o) + 27.6px), #a07729 calc(var(--o) + 32px), #8f6a22 calc(var(--o) + 40px)) bottom right / 2px 22px no-repeat,
-    repeating-linear-gradient(270deg, #8f6a22 calc(var(--o) + 0px), #a07729 calc(var(--o) + 3.6px), #b48b36 calc(var(--o) + 7.6px), #c89f45 calc(var(--o) + 11.6px), #d9b457 calc(var(--o) + 15.2px), #e2c06a calc(var(--o) + 17.6px), #d9b457 calc(var(--o) + 20px), #c89f45 calc(var(--o) + 23.6px), #b48b36 calc(var(--o) + 27.6px), #a07729 calc(var(--o) + 32px), #8f6a22 calc(var(--o) + 40px)) bottom right / 22px 2px no-repeat;
-  -webkit-mask: var(--h) top left / 22px 2px no-repeat, var(--v) top left / 2px 22px no-repeat, var(--hr) top right / 22px 2px no-repeat, var(--v) top right / 2px 22px no-repeat, var(--h) bottom left / 22px 2px no-repeat, var(--vb) bottom left / 2px 22px no-repeat, var(--hr) bottom right / 22px 2px no-repeat, var(--vb) bottom right / 2px 22px no-repeat; mask: var(--h) top left / 22px 2px no-repeat, var(--v) top left / 2px 22px no-repeat, var(--hr) top right / 22px 2px no-repeat, var(--v) top right / 2px 22px no-repeat, var(--h) bottom left / 22px 2px no-repeat, var(--vb) bottom left / 2px 22px no-repeat, var(--hr) bottom right / 22px 2px no-repeat, var(--vb) bottom right / 2px 22px no-repeat; }
-@property --o { syntax: "<length>"; inherits: false; initial-value: 0px; }
-@keyframes corner-flow { to { --o: 40px; } }
-html[data-stage="square"] .pcard:hover .pcard-ring::before { opacity: 1; animation: corner-flow 4s linear infinite; } /* corner marks: the shimmer runs up the vertical arm of the top corners and down the vertical arm of the bottom corners, then outward along the horizontal arm; mirrored left and right */
+    var(--h) top left / 22px 2px no-repeat, var(--v) top left / 2px 22px no-repeat,
+    var(--hr) top right / 22px 2px no-repeat, var(--v) top right / 2px 22px no-repeat,
+    var(--h) bottom left / 22px 2px no-repeat, var(--vb) bottom left / 2px 22px no-repeat,
+    var(--hr) bottom right / 22px 2px no-repeat, var(--vb) bottom right / 2px 22px no-repeat; }
+@keyframes corner-glitter {
+  0%, 100% { opacity: 1; }
+  20% { opacity: .5; }
+  40% { opacity: .95; }
+  60% { opacity: .6; }
+  80% { opacity: 1; }
+}
+html[data-stage="square"] .pcard:hover .pcard-ring::before { opacity: 1; animation: corner-glitter 2.4s ease-in-out infinite; } /* only the four corner marks: original colour, size and glow, glittering together */
 /* Card buttons: Quick view, the count and Add to Cart are clear glass (transparent inside, the card shows through) with a glittering dark-gold edge. The edge is a masked
    1px ring of fine bright and deep gold bands that shimmers slowly while the card is hovered, with two tiny twinkling points on it. */
 @keyframes edge-shimmer { from { background-position: 0 0; } to { background-position: 96px 0; } }
