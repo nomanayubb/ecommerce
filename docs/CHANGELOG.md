@@ -3,6 +3,7 @@
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
 ## Card hover refinements (2026-10-16)
+- Follow-up 33: reverted follow-up 32 at the owner's request; button edge colours back to the previous smooth gold and port 3000 serves the matching build (.next-new). State = tag cards-final-no-dots. The four-stop version remains available as tag cards-final-gold4 (build in .next-prod).
 - Follow-up 32: button edge colours set to the owner's four-stop gold formula: #4A3B18 (raw umber) > #9F8000 (bronze coin) > #D4AF37 (metallic gold) > #4A3B18, in the existing seamless 96px tile; only the colours changed (animation, speed, size and style untouched). Published to port 3000 (build in .next-prod, old build in .next-new). Previous colours: tag cards-final-no-dots. This state: tag cards-final-gold4.
 - Follow-up 31: the two twinkle dots on Quick view and Add to Cart removed and published to port 3000 (production build in .next-new built while the old server kept running, then swapped in seconds; the previous build stays in .next-prod). Previous finalized state with dots: tag cards-final. This state: tag cards-final-no-dots.
 - Follow-up 30: restored the finalized card design (tag cards-final) and its production build on port 3000 after the dev-server swap changed what the owner was viewing. Port 3000 is the owner's production view: never stop or replace it without telling them; build into .next-prod first and swap only after success. Twinkle-dot removal (0e03421) is reverted by this restore.
