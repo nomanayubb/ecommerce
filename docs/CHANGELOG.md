@@ -2,7 +2,8 @@
 
 Newest at the bottom. One entry per task. State what was verified and what was not.
 
-## Card hover refinements (2026-10-16)
+## Card hover refinements (2026-10-17)
+- Follow-up 35: button edge shimmer slower again (3.2 s to 4 s per loop); the three boxes (Quick view, quantity, Add to Cart) get a very small 3px corner radius on their outer corners (the quantity box and Add to Cart stay square where they meet; narrow cards round Add to Cart fully); the glitter edge is 9% less opaque (opacity .91). Published to port 3000 (build in .next-prod, previous build in .next-new). The twinkle dots had already been removed (tag cards-final-no-dots).
 - Follow-up 34: button edge shimmer slowed back from 2.46 s to 3.2 s per loop at the owner's request (less speed); nothing else changed. Published to port 3000 (build in .next-prod). Faster version: tag cards-final-no-dots.
 - Follow-up 33: reverted follow-up 32 at the owner's request; button edge colours back to the previous smooth gold and port 3000 serves the matching build (.next-new). State = tag cards-final-no-dots. The four-stop version remains available as tag cards-final-gold4 (build in .next-prod).
 - Follow-up 32: button edge colours set to the owner's four-stop gold formula: #4A3B18 (raw umber) > #9F8000 (bronze coin) > #D4AF37 (metallic gold) > #4A3B18, in the existing seamless 96px tile; only the colours changed (animation, speed, size and style untouched). Published to port 3000 (build in .next-prod, old build in .next-new). Previous colours: tag cards-final-no-dots. This state: tag cards-final-gold4.

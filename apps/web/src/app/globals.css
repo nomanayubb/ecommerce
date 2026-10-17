@@ -609,7 +609,7 @@ html[data-stage="square"] .pcard:hover .pcard-ring::before { opacity: 1; }
 .cbtn-view::before, .cbtn-add::before, .cbtn-qty::before { content: ""; position: absolute; inset: 0; padding: 1px; pointer-events: none; z-index: 2;
   background: linear-gradient(90deg, #8f6a22 0%, #a07729 9%, #b48b36 19%, #c89f45 29%, #d9b457 38%, #e2c06a 44%, #d9b457 50%, #c89f45 59%, #b48b36 69%, #a07729 80%, #8f6a22 100%) 0 0 / 96px 100% repeat-x;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask-composite: exclude; }
-.pcard:hover .cbtn-view::before, .pcard:hover .cbtn-add::before, .pcard:hover .cbtn-qty::before { animation: edge-shimmer 3.2s linear infinite; }
+.pcard:hover .cbtn-view::before, .pcard:hover .cbtn-add::before, .pcard:hover .cbtn-qty::before { animation: edge-shimmer 4s linear infinite; }
 .cbtn-view { display: flex; flex: 0 0 auto; align-items: center; justify-content: center; gap: 5px; padding: 0 clamp(6px, 3cqw, 12px); font-weight: 600; color: rgb(var(--fg)); transition: color .2s; }
 .cbtn-view svg { color: rgb(var(--accent-bright)); flex: none; }
 .cbtn-view:hover { color: rgb(var(--accent-bright)); }
@@ -639,3 +639,10 @@ html[data-stage="square"] .pcard:hover .pcard-ring { border-color: transparent; 
 
 /* Narrow cards (two to a row on a phone): Quick view shrinks to its eye and the quantity box is dropped so Add to Cart keeps its full label. */
 @container (max-width: 240px) { .cbtn-qty, .cbtn-lbl { display: none; } .cbtn-view { padding: 0; width: 30px; } .card-add-bar { inset-inline: 7%; } }
+
+/* Boxes: a very small corner radius (3px) on the outer corners; the edge ring follows it, and the edge is 9% less opaque. */
+.cbtn-view, .cbtn-add, .cbtn-qty { border-radius: 3px; }
+.cbtn-qty { border-radius: 3px 0 0 3px; }
+.cbtn-qty + .cbtn-add { border-radius: 0 3px 3px 0; }
+.cbtn-view::before, .cbtn-add::before, .cbtn-qty::before { border-radius: inherit; opacity: .91; }
+@container (max-width: 240px) { .cbtn-qty + .cbtn-add { border-radius: 3px; } }
