@@ -64,6 +64,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang="en" data-theme={branding.defaultTheme} data-motion={branding.motion ?? "full"} data-motion-policy={branding.motionPolicy ?? "respect"} data-button={branding.buttonStyle ?? "solid"} data-card={branding.cardStyle ?? "classic"} data-badge={branding.badgeStyle ?? "solid"} data-bg={visuals.background === "none" ? undefined : visuals.background} data-header={visuals.headerStyle} data-depth={visuals.depth === "soft" ? "soft" : undefined} data-imghover={visuals.imageHover} data-stage={visuals.cardStage === "square" ? "square" : undefined} data-sound={visuals.sound ? "1" : "0"} data-voice={visuals.mascotVoice ? "1" : "0"} data-logomorph={visuals.logoMorph ? "1" : undefined} suppressHydrationWarning>
       <head>
         <style dangerouslySetInnerHTML={{ __html: brandingCss(branding) }} />
+        <link rel="stylesheet" href="/card-fx.css" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
