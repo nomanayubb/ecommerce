@@ -646,3 +646,23 @@ html[data-stage="square"] .pcard:hover .pcard-ring { border-color: transparent; 
 .cbtn-qty + .cbtn-add { border-radius: 0 4px 4px 0; }
 .cbtn-view::before, .cbtn-add::before, .cbtn-qty::before { border-radius: inherit; opacity: .91; }
 @container (max-width: 240px) { .cbtn-qty + .cbtn-add { border-radius: 4px; } }
+
+/* Hover lines use the same gold as the Quick view / Add to Cart edge: the same gradient, 96px tile, 4s linear shimmer, 0.8px line and 91% opacity. The card's outer edge, the ring and the white
+   frame edge are masked overlays (the old flat lines beneath are made transparent on hover so only this line shows). Corner marks and the dashed ring are unchanged. */
+:root { --edge-gold: linear-gradient(90deg, #8f6a22 0%, #a07729 9%, #b48b36 19%, #c89f45 29%, #d9b457 38%, #e2c06a 44%, #d9b457 50%, #c89f45 59%, #b48b36 69%, #a07729 80%, #8f6a22 100%) 0 0 / 96px 100% repeat-x; }
+.pcard:has(.pcard-stage) { position: relative; }
+html .pcard:has(.pcard-stage)::after { content: "" !important; display: block !important; position: absolute !important; top: -1px !important; left: -1px !important; right: -1px !important; bottom: -1px !important; width: auto !important; height: auto !important;
+  border: 0 !important; padding: .8px; transform: none !important; opacity: 0 !important; pointer-events: none; z-index: 4; transition: opacity .35s ease; background: var(--edge-gold);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask-composite: exclude; }
+html .pcard:has(.pcard-stage):hover::after { opacity: .91 !important; animation: edge-shimmer 4s linear infinite; }
+.pcard:has(.pcard-stage):hover { border-color: transparent !important; }
+html[data-stage="square"] .pcard-stage::after { content: "" !important; display: block !important; position: absolute !important; inset: auto !important; left: 50% !important; top: 46% !important; width: 91% !important; height: auto !important; aspect-ratio: 1 !important;
+  transform: translate(-50%, -50%) !important; border: 0 !important; padding: .8px; opacity: 0 !important; pointer-events: none; z-index: 1; transition: opacity .35s ease; background: var(--edge-gold);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask-composite: exclude; }
+html[data-stage="square"] .pcard:hover .pcard-stage::after { opacity: .91 !important; animation: edge-shimmer 4s linear infinite; }
+html[data-stage="square"] .pcard:hover .pcard-ring { border-color: transparent; }
+.pcard-disc:not(.is-cut)::after { content: ""; position: absolute; inset: 0; padding: .8px; pointer-events: none; z-index: 2; opacity: 0; transition: opacity .35s ease; background: var(--edge-gold);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask-composite: exclude; }
+.pcard:hover .pcard-disc:not(.is-cut)::after { opacity: .91; animation: edge-shimmer 4s linear infinite; }
+.pcard:hover .pcard-disc:not(.is-cut) { box-shadow: 0 0 0 1px transparent, 0 0 16px -4px rgb(166 124 46 / .22), 0 3px 6px rgb(0 0 0 / .22), 0 30px 42px -24px rgb(0 0 0 / .85); }
+@media (prefers-reduced-motion: reduce) { html .pcard:hover::after, html .pcard:hover .pcard-stage::after, .pcard:hover .pcard-disc::after { animation: none !important; } }
