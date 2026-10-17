@@ -568,7 +568,7 @@ html[data-stage="square"] .pcard-disc, html[data-stage="square"] .pcard-ring, ht
    edge and looked misaligned. Now nothing in the picture area moves: the ring and dashed ring simply glow a little brighter, the frame edge and
    glow strengthen, and the photo eases in slightly. The card itself still lifts as one piece. */
 .pcard-stage::after { display: none !important; }
-html[data-depth="soft"] .pcard:has(.pcard-stage)::before, html[data-depth="soft"] .pcard:has(.pcard-stage)::after { display: none !important; }
+html[data-depth="soft"] .pcard:has(.pcard-stage)::before { display: none !important; } /* the ::after is the outer gold line, see the hover lines block at the end */
 .tilt:has(.pcard-stage) { transform: none !important; }
 .tilt:has(.pcard-stage)::after { display: none !important; }
 .pcard:hover .pcard-disc, .pcard:hover .pcard-ring { transform: translate(-50%, -50%); }
@@ -665,4 +665,4 @@ html[data-stage="square"] .pcard:hover .pcard-ring { border-color: transparent; 
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask-composite: exclude; }
 .pcard:hover .pcard-disc:not(.is-cut)::after { opacity: .91; animation: edge-shimmer 4s linear infinite; }
 .pcard:hover .pcard-disc:not(.is-cut) { box-shadow: 0 0 0 1px transparent, 0 0 16px -4px rgb(166 124 46 / .22), 0 3px 6px rgb(0 0 0 / .22), 0 30px 42px -24px rgb(0 0 0 / .85); }
-@media (prefers-reduced-motion: reduce) { html .pcard:hover::after, html .pcard:hover .pcard-stage::after, .pcard:hover .pcard-disc::after { animation: none !important; } }
+/* (no reduced-motion override here: the lines animate exactly like the Quick view / Add to Cart edge) */
