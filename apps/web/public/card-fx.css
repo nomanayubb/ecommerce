@@ -149,3 +149,6 @@ html .pcard:has(.pcard-stage):hover::before { opacity: 1; animation: corner-glit
 
 /* Second line: its corner marks now live in the same single element as its side lines (.pcard-stage::after), so they share one box exactly; the old separate corner element is retired. */
 html[data-stage="square"] .pcard-ring::before { display: none; }
+
+/* Home picture cards: KK Mart's own tile pictures are full-bleed artwork, so they fill the whole tile (product photos keep their padded fit). */
+article img[src^="/kk/tiles/"] { object-fit: cover !important; padding: 0 !important; }

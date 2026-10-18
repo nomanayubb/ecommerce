@@ -17,3 +17,4 @@ apps/api/scripts/.kk-cache.json
 start-shop.log
 apps/web/dev3000.log
 .next-new
+apps/api/kk-tiles.json

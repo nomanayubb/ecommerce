@@ -2,6 +2,7 @@ import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
 import { pool } from "../lib/db.js";
 import { cached } from "../lib/redis.js";
+import { readFileSync } from "node:fs";
 
 const csv = z.string().optional().transform((v) => (v ? v.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 20) : []));
 const listQuery = z.object({
@@ -197,6 +198,9 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
     const slugs = String((req.query as { slugs?: string }).slugs ?? "").split(",").map((s) => s.trim()).filter((s) => /^[a-z0-9-]{1,80}$/.test(s)).slice(0, 60);
     return cached(`catalog:covers:${slugs.join(",")}`, 300, async () => {
       const out: { slug: string; name: string | null; image: string | null }[] = [];
+      // Optional exact tile pictures (KK Mart distributor artwork kept on the server disk only): { "<collection slug>": "/kk/tiles/<slug>.webp" }
+      let tiles: Record<string, string> = {};
+      try { tiles = JSON.parse(readFileSync(new URL("../../kk-tiles.json", import.meta.url), "utf8")); } catch { /* no tile file, product pictures are used */ }
       for (const slug of slugs) {
         const r = (await pool.query(
           `WITH RECURSIVE t AS (SELECT id FROM categories WHERE slug = $1 UNION ALL SELECT c.id FROM categories c JOIN t ON c.parent_id = t.id)
@@ -204,7 +208,7 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
                   (SELECT p.images->>0 FROM products p JOIN product_categories pc ON pc.product_id = p.id
                     WHERE pc.category_id IN (SELECT id FROM t) AND p.status = 'PUBLISHED' AND p.stock_quantity > 0 AND p.images->>0 IS NOT NULL
                     ORDER BY p.created_at DESC LIMIT 1) AS image`, [slug])).rows[0];
-        out.push({ slug, name: r?.name ?? null, image: r?.image ?? null });
+        out.push({ slug, name: r?.name ?? null, image: tiles[slug] ?? r?.image ?? null });
       }
       return out;
     });
