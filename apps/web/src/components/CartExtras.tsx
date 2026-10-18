@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { pkr, type ProductSummary } from "@/lib/api";
 import { send } from "@/lib/client";
-import { useCart } from "./CartProvider";
+import { useCart, type CartLine } from "./CartProvider";
 import { useSite } from "./Site";
 import { CheckIcon, CloseIcon } from "./icons";
 import { GiftIcon } from "./icons/set";
@@ -22,8 +22,9 @@ export interface Priced {
   freeShippingRemaining: number;
 }
 
-export function useCartPricing() {
-  const { lines, extras } = useCart();
+export function useCartPricing(only?: CartLine[]) {
+  const { lines: bag, extras } = useCart();
+  const lines = only ?? bag;
   const [priced, setPriced] = useState<Priced | null>(null);
   const [error, setError] = useState("");
   const key = JSON.stringify({ i: lines.map((l) => [l.productId, l.variantId, l.quantity]), c: extras.coupon, g: extras.giftWrap });

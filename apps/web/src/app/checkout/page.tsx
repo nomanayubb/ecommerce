@@ -30,10 +30,15 @@ function Steps({ at }: { at: 1 | 2 | 3 }) {
 }
 
 export default function Checkout() {
-  const { lines, clear, extras, setExtras } = useCart();
+  const { lines: bag, clear, extras, setExtras, buyNowLine, setBuyNow } = useCart();
+  // "Buy now" opens /checkout?buynow=1 and orders only that product; the normal Checkout button (no address flag) orders the whole bag.
+  const [flag, setFlag] = useState<boolean | null>(null);
+  useEffect(() => { setFlag(new URLSearchParams(window.location.search).get("buynow") === "1"); }, []);
+  const buyNowMode = flag === true && !!buyNowLine;
+  const lines = buyNowMode && buyNowLine ? [buyNowLine] : bag;
   const errRef = useRef<HTMLParagraphElement>(null);
   const [saveAddr, setSaveAddr] = useState(false);
-  const { priced, error: priceError } = useCartPricing();
+  const { priced, error: priceError } = useCartPricing(lines);
   const { user, ready } = useSession();
   const [saved, setSaved] = useState<{ id: string; label: string | null; name: string; phone: string; line1: string; city: string; postal_code: string | null; is_default: boolean }[]>([]);
   const [error, setError] = useState("");
@@ -91,7 +96,7 @@ export default function Checkout() {
       try { localStorage.setItem("checkout-details", JSON.stringify({ name: f.get("name"), phone: f.get("phone"), line1: f.get("line1"), city: f.get("city"), postalCode: f.get("postalCode") })); } catch {}
       try { sessionStorage.setItem("last-order", JSON.stringify({ number: res.orderNumber, phone: String(f.get("phone") ?? "") })); } catch {}
       if (user && saveAddr) send("POST", "account/addresses", { name: f.get("name"), phone: f.get("phone"), line1: f.get("line1"), city: f.get("city"), postalCode: f.get("postalCode") || undefined, isDefault: false }).catch(() => {});
-      clear();
+      if (buyNowMode) { setBuyNow(null); setExtras({ coupon: "", giftWrap: false, giftMessage: "" }); } else clear();
       setDone({ orderNumber: res.orderNumber, grandTotal: res.grandTotal, message: res.paymentInstructions?.type === "MANUAL_TRANSFER" ? res.paymentInstructions.message : undefined, method: res.paymentInstructions?.method });
       fireConfetti();
       mascotSay("celebrate", "Order placed. Thank you!");
@@ -116,6 +121,8 @@ export default function Checkout() {
         {ready && !user && <p className="mx-auto mt-8 max-w-sm border border-line bg-card p-4 text-sm text-muted">Want to see this order and your next ones in one place? <Link href="/register" className="text-accent hover:underline">Create a free account</Link>.</p>}
       </div>
     );
+
+  if (flag === null) return <div className="py-24" aria-busy="true" />;
 
   if (lines.length === 0)
     return (

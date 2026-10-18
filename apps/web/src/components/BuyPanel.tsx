@@ -14,7 +14,7 @@ import { DispatchNote } from "./Dispatch";
 import { CashIcon, PackageIcon, SupportIcon, TruckIcon } from "./icons";
 
 export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; compact?: boolean; onAdded?: () => void }) {
-  const { add, lines, setOpen } = useCart();
+  const { add, lines, setOpen, setBuyNow } = useCart();
   const router = useRouter();
   const flags = (p.metafields ?? {}) as Record<string, unknown>;
   
@@ -90,10 +90,11 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
     setTimeout(() => setAdded(false), 1800);
   };
 
+  // Buy now orders only this product: it is not put in the bag, checkout gets it on its own (?buynow=1).
   const buyNow = () => {
-    add({ productId: p.id, variantId, title: variant ? `${p.title} - ${variant.title}` : p.title, price: unit, marked: Number(p.marked_price), image: p.images[0], quantity: qty });
+    setBuyNow({ productId: p.id, variantId, title: variant ? `${p.title} - ${variant.title}` : p.title, price: unit, marked: Number(p.marked_price), image: p.images[0], quantity: qty });
     setOpen(false);
-    router.push("/checkout");
+    router.push("/checkout?buynow=1");
   };
   const canBuy = showAdd || showBuy;
   const cta = canBuy ? (

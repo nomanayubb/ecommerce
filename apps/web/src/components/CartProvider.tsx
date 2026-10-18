@@ -32,6 +32,9 @@ interface CartCtx {
   removeSaved: (productId: string, variantId: string | null) => void;
   clear: () => void;
   count: number;
+  /** The single product of a "Buy now" click (kept for this tab only); checkout uses it instead of the bag when the address says so. */
+  buyNowLine: CartLine | null;
+  setBuyNow: (l: CartLine | null) => void;
 }
 
 const Ctx = createContext<CartCtx | null>(null);
@@ -55,11 +58,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [extras, setExtrasState] = useState<CartExtras>(NO_EXTRAS);
   const [open, setOpen] = useState(false);
   const [ready, setReady] = useState(false);
+  const [buyNowLine, setBuyNowLine] = useState<CartLine | null>(null);
 
   useEffect(() => {
     setLines(read("cart", []));
     setSaved(read("cart-saved", []));
     setExtrasState({ ...NO_EXTRAS, ...read("cart-extras", {}) });
+    try { setBuyNowLine(JSON.parse(sessionStorage.getItem("buy-now") ?? "null")); } catch {}
     setReady(true);
   }, []);
   useEffect(() => {
@@ -94,6 +99,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setLines((cur) => merge(cur, line));
   };
   const removeSaved = (p: string, v: string | null) => setSaved((cur) => cur.filter((x) => !same(x, p, v)));
+  const setBuyNow = (l: CartLine | null) => {
+    setBuyNowLine(l);
+    try { if (l) sessionStorage.setItem("buy-now", JSON.stringify(l)); else sessionStorage.removeItem("buy-now"); } catch {}
+  };
   const setExtras = (patch: Partial<CartExtras>) => setExtrasState((cur) => ({ ...cur, ...patch }));
 
   return (
@@ -102,6 +111,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         lines, saved, extras, setExtras, open, setOpen, add, setQty, saveForLater, moveToBag, removeSaved,
         clear: () => { setLines([]); setExtrasState(NO_EXTRAS); },
         count: lines.reduce((s, l) => s + l.quantity, 0),
+        buyNowLine, setBuyNow,
       }}
     >
       {children}
