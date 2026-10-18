@@ -34,11 +34,14 @@ export default function Checkout() {
   // "Buy now" opens /checkout?buynow=1 and orders only that product; the normal Checkout button (no address flag) orders the whole bag.
   const [flag, setFlag] = useState<boolean | null>(null);
   useEffect(() => { setFlag(new URLSearchParams(window.location.search).get("buynow") === "1"); }, []);
-  const [bnRemoved, setBnRemoved] = useState(false);
-  const buyNowMode = flag === true && !!buyNowLine && !bnRemoved;
-  const lines = flag === true && bnRemoved ? [] : buyNowMode && buyNowLine ? [buyNowLine] : bag;
-  const removeLine = (l: { productId: string; variantId: string | null }) => {
-    if (buyNowMode) { setBuyNow(null); setBnRemoved(true); } else setQty(l.productId, l.variantId, 0);
+  const buyNowMode = flag === true && !!buyNowLine;
+  const lines = buyNowMode && buyNowLine ? [buyNowLine] : bag;
+  // Remove is only for the normal checkout (whole bag); a Buy now order is the one product with no Remove.
+  const removeLine = (l: { productId: string; variantId: string | null }) => setQty(l.productId, l.variantId, 0);
+  // Quantity steps (1 to 99): the whole bag in normal checkout, the one product in a Buy now order.
+  const changeQty = (l: { productId: string; variantId: string | null; quantity: number }, q: number) => {
+    const next = Math.min(99, Math.max(1, q));
+    if (buyNowMode && buyNowLine) setBuyNow({ ...buyNowLine, quantity: next }); else setQty(l.productId, l.variantId, next);
   };
   const errRef = useRef<HTMLParagraphElement>(null);
   const [saveAddr, setSaveAddr] = useState(false);
@@ -200,8 +203,12 @@ export default function Checkout() {
                   {l.image && <img src={l.image} alt="" width={56} height={70} className="h-[70px] w-14 border border-line object-cover" />}
                   <div className="flex-1">
                     <p className="leading-snug">{l.title}</p>
-                    <p className="mt-1 text-xs text-muted">Qty {l.quantity}</p>
-                    <button type="button" onClick={() => removeLine(l)} aria-label={`Remove ${l.title} from this order`} className="mt-2 text-xs text-muted underline underline-offset-2 transition hover:text-accent">Remove</button>
+                    <div className="mt-2 inline-flex items-center border border-line text-sm" role="group" aria-label={`Quantity of ${l.title}`}>
+                      <button type="button" disabled={l.quantity <= 1} onClick={() => changeQty(l, l.quantity - 1)} aria-label="Decrease quantity" className="px-3 py-1 transition hover:text-accent disabled:opacity-40 disabled:hover:text-inherit">−</button>
+                      <span className="w-8 text-center text-xs" aria-live="polite">{l.quantity}</span>
+                      <button type="button" disabled={l.quantity >= 99} onClick={() => changeQty(l, l.quantity + 1)} aria-label="Increase quantity" className="px-3 py-1 transition hover:text-accent disabled:opacity-40 disabled:hover:text-inherit">+</button>
+                    </div>
+                    {!buyNowMode && <button type="button" onClick={() => removeLine(l)} aria-label={`Remove ${l.title} from this order`} className="mt-2 text-xs text-muted underline underline-offset-2 transition hover:text-accent">Remove</button>}
                   </div>
                   <p>{pkr(l.price * l.quantity)}</p>
                 </li>
