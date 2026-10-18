@@ -23,7 +23,8 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
   const { store } = useSite();
   const pdp = { ...DEFAULT_PDP, ...(store.pdp ?? {}) };
   const pick3 = (v: unknown, dflt: boolean) => (typeof v === "boolean" ? v : dflt);
-  const showAdd = pick3(flags.showAddToCart, pdp.showAddToCart), showBuy = pick3(flags.showBuyNow, pdp.showBuyNow), showAddr = pick3(flags.showAddress, pdp.showAddress);
+  // Product page (not the quick view window): Buy now takes the place of Add to bag. Cards and the quick view keep their own Add to Cart.
+  const showAdd = compact ? pick3(flags.showAddToCart, pdp.showAddToCart) : false, showBuy = compact ? pick3(flags.showBuyNow, pdp.showBuyNow) : true, showAddr = pick3(flags.showAddress, pdp.showAddress);
   const [variantId, setVariantId] = useState<string | null>(p.variants.find((v) => v.stock_quantity > 0)?.id ?? p.variants[0]?.id ?? null);
   const [qty, setQty] = useState(Math.max(1, p.moq));
   const [added, setAdded] = useState(false);
