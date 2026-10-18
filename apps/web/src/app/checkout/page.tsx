@@ -30,12 +30,16 @@ function Steps({ at }: { at: 1 | 2 | 3 }) {
 }
 
 export default function Checkout() {
-  const { lines: bag, clear, extras, setExtras, buyNowLine, setBuyNow } = useCart();
+  const { lines: bag, clear, extras, setExtras, buyNowLine, setBuyNow, setQty } = useCart();
   // "Buy now" opens /checkout?buynow=1 and orders only that product; the normal Checkout button (no address flag) orders the whole bag.
   const [flag, setFlag] = useState<boolean | null>(null);
   useEffect(() => { setFlag(new URLSearchParams(window.location.search).get("buynow") === "1"); }, []);
-  const buyNowMode = flag === true && !!buyNowLine;
-  const lines = buyNowMode && buyNowLine ? [buyNowLine] : bag;
+  const [bnRemoved, setBnRemoved] = useState(false);
+  const buyNowMode = flag === true && !!buyNowLine && !bnRemoved;
+  const lines = flag === true && bnRemoved ? [] : buyNowMode && buyNowLine ? [buyNowLine] : bag;
+  const removeLine = (l: { productId: string; variantId: string | null }) => {
+    if (buyNowMode) { setBuyNow(null); setBnRemoved(true); } else setQty(l.productId, l.variantId, 0);
+  };
   const errRef = useRef<HTMLParagraphElement>(null);
   const [saveAddr, setSaveAddr] = useState(false);
   const { priced, error: priceError } = useCartPricing(lines);
@@ -194,7 +198,11 @@ export default function Checkout() {
               {lines.map((l) => (
                 <li key={`${l.productId}:${l.variantId}`} className="flex gap-4 py-4 text-sm">
                   {l.image && <img src={l.image} alt="" width={56} height={70} className="h-[70px] w-14 border border-line object-cover" />}
-                  <div className="flex-1"><p className="leading-snug">{l.title}</p><p className="mt-1 text-xs text-muted">Qty {l.quantity}</p></div>
+                  <div className="flex-1">
+                    <p className="leading-snug">{l.title}</p>
+                    <p className="mt-1 text-xs text-muted">Qty {l.quantity}</p>
+                    <button type="button" onClick={() => removeLine(l)} aria-label={`Remove ${l.title} from this order`} className="mt-2 text-xs text-muted underline underline-offset-2 transition hover:text-accent">Remove</button>
+                  </div>
                   <p>{pkr(l.price * l.quantity)}</p>
                 </li>
               ))}
