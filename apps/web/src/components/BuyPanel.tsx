@@ -23,8 +23,8 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
   const { store } = useSite();
   const pdp = { ...DEFAULT_PDP, ...(store.pdp ?? {}) };
   const pick3 = (v: unknown, dflt: boolean) => (typeof v === "boolean" ? v : dflt);
-  // Product page (not the quick view window): Buy now takes the place of Add to bag. Cards and the quick view keep their own Add to Cart.
-  const showAdd = compact ? pick3(flags.showAddToCart, pdp.showAddToCart) : false, showBuy = compact ? pick3(flags.showBuyNow, pdp.showBuyNow) : true, showAddr = pick3(flags.showAddress, pdp.showAddress);
+  // Product page (not the quick view window): Buy now is the main button with a small Add to bag above it. Cards and the quick view keep their own Add to Cart.
+  const showAdd = compact ? pick3(flags.showAddToCart, pdp.showAddToCart) : true, showBuy = compact ? pick3(flags.showBuyNow, pdp.showBuyNow) : true, showAddr = pick3(flags.showAddress, pdp.showAddress);
   const [variantId, setVariantId] = useState<string | null>(p.variants.find((v) => v.stock_quantity > 0)?.id ?? p.variants[0]?.id ?? null);
   const [qty, setQty] = useState(Math.max(1, p.moq));
   const [added, setAdded] = useState(false);
@@ -99,12 +99,12 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
   const cta = canBuy ? (
     <div className="flex flex-col gap-2">
       {showAdd && (
-        <button disabled={soldOut || qty > stock} onClick={addToBag} className="btn btn-primary w-full disabled:cursor-not-allowed disabled:opacity-40">
-          {soldOut ? "Sold out" : added ? "Added ✓" : `Add to bag · ${pkr(unit * qty)}`}
+        <button disabled={soldOut || qty > stock} onClick={addToBag} className={compact ? "btn btn-primary w-full disabled:cursor-not-allowed disabled:opacity-40" : "btn w-full border border-accent/60 text-accent hover:border-accent disabled:cursor-not-allowed disabled:opacity-40 !px-3 !py-1.5 !text-[0.66rem]"}>
+          {soldOut ? "Sold out" : added ? "Added ✓" : compact ? `Add to bag · ${pkr(unit * qty)}` : "Add to bag"}
         </button>
       )}
       {showBuy && !soldOut && (
-        <button disabled={qty > stock} onClick={buyNow} className={`btn w-full disabled:cursor-not-allowed disabled:opacity-40 ${showAdd ? "border border-fg/50 hover:border-accent hover:text-accent" : "btn-primary"}`}>
+        <button disabled={qty > stock} onClick={buyNow} className={`btn w-full disabled:cursor-not-allowed disabled:opacity-40 ${showAdd && compact ? "border border-fg/50 hover:border-accent hover:text-accent" : "btn-primary"}`}>
           Buy now · {pkr(unit * qty)}
         </button>
       )}
@@ -196,8 +196,8 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
         </div>
       )}
 
-      {canBuy && <div className="flex items-stretch gap-3">
-        <div className="flex items-center border border-line" role="group" aria-label="Quantity">
+      {canBuy && <div className="flex items-end gap-3">
+        <div className="flex h-[2.725rem] items-center border border-line" role="group" aria-label="Quantity">
           <button className="h-full px-4 text-lg transition hover:text-accent" onClick={() => setQty((q) => clamp(q - 1))} aria-label="Decrease quantity">−</button>
           <input value={qty} onChange={(e) => setQty(clamp(Number(e.target.value) || p.moq))} inputMode="numeric" onFocus={(e) => e.currentTarget.select()} aria-label="Quantity" className="w-12 bg-transparent text-center text-sm outline-none" />
           <button className="h-full px-4 text-lg transition hover:text-accent" onClick={() => setQty((q) => clamp(q + 1))} aria-label="Increase quantity">+</button>
