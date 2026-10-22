@@ -10,7 +10,7 @@ import { useCart } from "@/components/CartProvider";
 import { MascotFigure } from "@/components/Mascot";
 import { GiftOptions, PromoField, useCartPricing } from "@/components/CartExtras";
 import { fireConfetti, mascotSay } from "@/lib/motion";
-import { PK_CITIES } from "@/lib/cities";
+import { TCS_CITIES, tcsCity } from "@/lib/tcs-cities";
 import { PrintButton } from "@/components/PrintButton";
 import { DispatchNote } from "@/components/Dispatch";
 
@@ -64,7 +64,7 @@ export default function Checkout() {
   const fillAddr = (a: Addr) => {
     const form = document.getElementById("checkout-form") as HTMLFormElement | null;
     if (!form) return;
-    const set = (n: string, v: string) => { const el = form.elements.namedItem(n) as HTMLInputElement | null; if (el) el.value = v; };
+    const set = (n: string, v: string) => { const el = form.elements.namedItem(n) as HTMLInputElement | null; if (el) el.value = n === "city" && !store.allowManualCity ? tcsCity(v) : v; };
     set("name", a.name); set("phone", a.phone); set("line1", a.line1); set("city", a.city); set("postalCode", a.postal_code ?? "");
   };
   // Guests: bring back the details used last time on this device.
@@ -76,7 +76,7 @@ export default function Checkout() {
       setTimeout(() => {
         const form = document.getElementById("checkout-form") as HTMLFormElement | null;
         if (!form) return;
-        for (const k of ["name", "phone", "line1", "city", "postalCode"]) { const el = form.elements.namedItem(k) as HTMLInputElement | null; if (el && !el.value && d[k]) el.value = d[k]; }
+        for (const k of ["name", "phone", "line1", "city", "postalCode"]) { const el = form.elements.namedItem(k) as HTMLInputElement | null; if (el && !el.value && d[k]) el.value = k === "city" && !store.allowManualCity ? tcsCity(String(d[k])) : d[k]; }
       }, 0);
     } catch {}
   }, [user, ready]);
@@ -165,7 +165,9 @@ export default function Checkout() {
               {cf.email !== "hidden" && <label className="sm:col-span-2"><span className={label}>Email{cf.email === "optional" ? " (optional)" : ""}</span><input name="email" type="email" required={cf.email === "required"} autoComplete="email" className={field} /></label>}
               {cf.phone !== "hidden" && <label><span className={label}>Phone{cf.phone === "optional" ? " (optional)" : ""}</span><input name="phone" required={cf.phone === "required"} type="tel" autoComplete="tel" placeholder="03XX XXXXXXX" minLength={7} className={field} onChange={(e) => { const d = e.target.value.replace(/\D/g, ""); setPhoneHint(d.length > 0 && !/^(92|0)?3\d{9}$/.test(d) && !/^0\d{9,10}$/.test(d)); }} />{phoneHint && <span className="mt-1 block text-xs text-accent">Mobile numbers look like 03XX XXXXXXX. Please double-check so the courier can reach you.</span>}</label>}
               {cf.address !== "hidden" && <label className="sm:col-span-2"><span className={label}>Address{cf.address === "optional" ? " (optional)" : ""}</span><input name="line1" required={cf.address === "required"} autoComplete="street-address" className={field} /></label>}
-              {cf.city !== "hidden" && <label><span className={label}>City{cf.city === "optional" ? " (optional)" : ""}</span><input name="city" required={cf.city === "required"} list="pk-cities" autoComplete="address-level2" className={field} /><datalist id="pk-cities">{PK_CITIES.map((c) => <option key={c} value={c} />)}</datalist></label>}
+              {cf.city !== "hidden" && <label><span className={label}>City{cf.city === "optional" ? " (optional)" : ""}</span>{store.allowManualCity
+                ? <><input name="city" required={cf.city === "required"} list="tcs-cities" autoComplete="address-level2" className={field} /><datalist id="tcs-cities">{TCS_CITIES.map((c) => <option key={c} value={c} />)}</datalist></>
+                : <select name="city" required={cf.city === "required"} defaultValue="" autoComplete="address-level2" className={field}><option value="" disabled>Select your city</option>{TCS_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}</select>}</label>}
               {cf.postalCode !== "hidden" && <label><span className={label}>Postal code{cf.postalCode === "optional" ? " (optional)" : ""}</span><input name="postalCode" required={cf.postalCode === "required"} autoComplete="postal-code" className={field} /></label>}
             </div>
             {ready && user && <label className="mt-4 flex cursor-pointer items-center gap-3 text-sm"><input type="checkbox" checked={saveAddr} onChange={(e) => setSaveAddr(e.target.checked)} className="h-4 w-4 accent-[rgb(var(--accent))]" />Save this address to my account</label>}

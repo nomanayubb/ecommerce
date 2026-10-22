@@ -140,12 +140,14 @@ export const storeSchema = z.object({
   giftWrapEnabled: z.boolean().default(false),
   giftWrapFee: z.number().int().min(0).max(100_000).default(0),
   checkoutFields: checkoutFieldsSchema.default(DEFAULT_CHECKOUT_FIELDS),
+  /** Checkout city box: false = pick from the TCS city list only, true = customers may type any city (the TCS list is offered as suggestions). */
+  allowManualCity: z.boolean().default(false),
   paymentMethods: z.array(payMethod).max(8).default(DEFAULT_PAYMENTS),
   pdp: pdpSchema.default(DEFAULT_PDP),
   headerMenuCount: z.number().int().min(1).max(12).default(4),
 });
 export type Store = z.infer<typeof storeSchema>;
-const STORE_DEFAULT: Store = { freeShippingThreshold: 5000, shippingFee: 250, dispatchCutoff: 0, deliveryMinDays: 2, deliveryMaxDays: 4, giftWrapEnabled: false, giftWrapFee: 0, checkoutFields: DEFAULT_CHECKOUT_FIELDS, paymentMethods: DEFAULT_PAYMENTS, pdp: DEFAULT_PDP, headerMenuCount: 4 };
+const STORE_DEFAULT: Store = { freeShippingThreshold: 5000, shippingFee: 250, dispatchCutoff: 0, deliveryMinDays: 2, deliveryMaxDays: 4, giftWrapEnabled: false, giftWrapFee: 0, checkoutFields: DEFAULT_CHECKOUT_FIELDS, allowManualCity: false, paymentMethods: DEFAULT_PAYMENTS, pdp: DEFAULT_PDP, headerMenuCount: 4 };
 
 const load = async <T>(key: string, fallback?: T) => {
   const { rows } = await pool.query("SELECT value FROM site_settings WHERE key = $1", [key]);

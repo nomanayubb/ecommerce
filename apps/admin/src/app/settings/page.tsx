@@ -33,7 +33,7 @@ const PAY_DEFAULTS: PayMethod[] = [
   { id: "JAZZCASH", label: "JazzCash", description: "Send the amount from your JazzCash app.", instructions: "", enabled: false },
   { id: "BANK_TRANSFER", label: "Bank transfer", description: "Transfer to our bank account.", instructions: "", enabled: false },
 ];
-interface Store { headerMenuCount?: number; pdp?: Partial<PdpValues>; checkoutFields?: CheckoutFields; paymentMethods?: PayMethod[]; freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number; dispatchCutoff?: number; deliveryMinDays?: number; deliveryMaxDays?: number }
+interface Store { allowManualCity?: boolean; headerMenuCount?: number; pdp?: Partial<PdpValues>; checkoutFields?: CheckoutFields; paymentMethods?: PayMethod[]; freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number; dispatchCutoff?: number; deliveryMinDays?: number; deliveryMaxDays?: number }
 interface Footer { columns: { title: string; links: { label: string; href: string }[] }[]; showNewsletter: boolean; showPerks: boolean; showPayments: boolean; note: string }
 
 // Keep in sync with apps/web/src/themes/index.ts
@@ -130,6 +130,11 @@ export default function Settings() {
               </select>
             </label>
           ))}
+          <label className={label}>Customers typing their own city
+            <select className={input} value={store.allowManualCity ? "yes" : "no"} onChange={(e) => setStore({ ...store, allowManualCity: e.target.value === "yes" })}>
+              <option value="no">Not allowed: pick a city from the TCS list</option><option value="yes">Allowed: they can type any city (the TCS list is suggested)</option>
+            </select>
+          </label>
         </div>
       </Group>
 
