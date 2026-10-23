@@ -10,7 +10,7 @@ import { useCart } from "@/components/CartProvider";
 import { MascotFigure } from "@/components/Mascot";
 import { GiftOptions, PromoField, useCartPricing } from "@/components/CartExtras";
 import { fireConfetti, mascotSay } from "@/lib/motion";
-import { TCS_CITIES, tcsCity } from "@/lib/tcs-cities";
+import { AREA_OTHER, TCS_CITIES, loadAreas, tcsCity } from "@/lib/tcs-cities";
 import { PrintButton } from "@/components/PrintButton";
 import { DispatchNote } from "@/components/Dispatch";
 
@@ -58,6 +58,17 @@ export default function Checkout() {
   const payId = pay || methods[0]?.id || "COD";
   const [done, setDone] = useState<{ orderNumber: number; grandTotal: number; message?: string; method?: string } | null>(null);
 
+  // Area list: once a TCS city is chosen its OpenStreetMap areas load (if there are any) and the customer picks one before typing the street.
+  const [cityVal, setCityVal] = useState("");
+  const [areas, setAreas] = useState<string[]>([]);
+  useEffect(() => {
+    const c = tcsCity(cityVal);
+    let live = true;
+    if (!c) { setAreas([]); return; }
+    loadAreas(c).then((l) => { if (live) setAreas(l); });
+    return () => { live = false; };
+  }, [cityVal]);
+
   const payload = lines.map((l) => ({ productId: l.productId, variantId: l.variantId, quantity: l.quantity }));
 
   type Addr = (typeof saved)[number];
@@ -65,7 +76,7 @@ export default function Checkout() {
     const form = document.getElementById("checkout-form") as HTMLFormElement | null;
     if (!form) return;
     const set = (n: string, v: string) => { const el = form.elements.namedItem(n) as HTMLInputElement | null; if (el) el.value = n === "city" && !store.allowManualCity ? tcsCity(v) : v; };
-    set("name", a.name); set("phone", a.phone); set("line1", a.line1); set("city", a.city); set("postalCode", a.postal_code ?? "");
+    set("name", a.name); set("phone", a.phone); set("line1", a.line1); set("city", a.city); set("postalCode", a.postal_code ?? ""); setCityVal(a.city);
   };
   // Guests: bring back the details used last time on this device.
   useEffect(() => {
@@ -77,6 +88,7 @@ export default function Checkout() {
         const form = document.getElementById("checkout-form") as HTMLFormElement | null;
         if (!form) return;
         for (const k of ["name", "phone", "line1", "city", "postalCode"]) { const el = form.elements.namedItem(k) as HTMLInputElement | null; if (el && !el.value && d[k]) el.value = k === "city" && !store.allowManualCity ? tcsCity(String(d[k])) : d[k]; }
+        if (d.city) setCityVal(String(d.city));
       }, 0);
     } catch {}
   }, [user, ready]);
@@ -91,9 +103,11 @@ export default function Checkout() {
     setBusy(true);
     setError("");
     try {
+      const area = String(f.get("area") ?? "");
+      const fullLine1 = [String(f.get("line1") ?? "").trim(), area && area !== AREA_OTHER ? area : ""].filter(Boolean).join(", ");
       const res = await send<{ orderNumber: number; grandTotal: number; paymentInstructions?: { type: string; message: string; method?: string } }>("POST", "checkout/process", {
         items: payload,
-        shippingAddress: { name: f.get("name"), email: f.get("email") || undefined, phone: f.get("phone") || undefined, line1: f.get("line1") || undefined, city: f.get("city") || undefined, postalCode: f.get("postalCode") || undefined, country: "PK" },
+        shippingAddress: { name: f.get("name"), email: f.get("email") || undefined, phone: f.get("phone") || undefined, line1: fullLine1 || undefined, city: f.get("city") || undefined, postalCode: f.get("postalCode") || undefined, country: "PK" },
         notes: extras.note || undefined,
         couponCode: extras.coupon || undefined,
         giftWrap: extras.giftWrap || undefined,
@@ -102,7 +116,7 @@ export default function Checkout() {
       });
       try { localStorage.setItem("checkout-details", JSON.stringify({ name: f.get("name"), phone: f.get("phone"), line1: f.get("line1"), city: f.get("city"), postalCode: f.get("postalCode") })); } catch {}
       try { sessionStorage.setItem("last-order", JSON.stringify({ number: res.orderNumber, phone: String(f.get("phone") ?? "") })); } catch {}
-      if (user && saveAddr) send("POST", "account/addresses", { name: f.get("name"), phone: f.get("phone"), line1: f.get("line1"), city: f.get("city"), postalCode: f.get("postalCode") || undefined, isDefault: false }).catch(() => {});
+      if (user && saveAddr) send("POST", "account/addresses", { name: f.get("name"), phone: f.get("phone"), line1: fullLine1, city: f.get("city"), postalCode: f.get("postalCode") || undefined, isDefault: false }).catch(() => {});
       if (buyNowMode) { setBuyNow(null); setExtras({ coupon: "", giftWrap: false, giftMessage: "" }); } else clear();
       setDone({ orderNumber: res.orderNumber, grandTotal: res.grandTotal, message: res.paymentInstructions?.type === "MANUAL_TRANSFER" ? res.paymentInstructions.message : undefined, method: res.paymentInstructions?.method });
       fireConfetti();
@@ -166,8 +180,9 @@ export default function Checkout() {
               {cf.phone !== "hidden" && <label><span className={label}>Phone{cf.phone === "optional" ? " (optional)" : ""}</span><input name="phone" required={cf.phone === "required"} type="tel" autoComplete="tel" placeholder="03XX XXXXXXX" minLength={7} className={field} onChange={(e) => { const d = e.target.value.replace(/\D/g, ""); setPhoneHint(d.length > 0 && !/^(92|0)?3\d{9}$/.test(d) && !/^0\d{9,10}$/.test(d)); }} />{phoneHint && <span className="mt-1 block text-xs text-accent">Mobile numbers look like 03XX XXXXXXX. Please double-check so the courier can reach you.</span>}</label>}
               {cf.address !== "hidden" && <label className="sm:col-span-2"><span className={label}>Address{cf.address === "optional" ? " (optional)" : ""}</span><input name="line1" required={cf.address === "required"} autoComplete="street-address" className={field} /></label>}
               {cf.city !== "hidden" && <label><span className={label}>City{cf.city === "optional" ? " (optional)" : ""}</span>{store.allowManualCity
-                ? <><input name="city" required={cf.city === "required"} list="tcs-cities" autoComplete="address-level2" className={field} /><datalist id="tcs-cities">{TCS_CITIES.map((c) => <option key={c} value={c} />)}</datalist></>
-                : <select name="city" required={cf.city === "required"} defaultValue="" autoComplete="address-level2" className={field}><option value="" disabled>Select your city</option>{TCS_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}</select>}</label>}
+                ? <><input name="city" required={cf.city === "required"} list="tcs-cities" autoComplete="address-level2" className={field} onChange={(e) => setCityVal(e.target.value)} /><datalist id="tcs-cities">{TCS_CITIES.map((c) => <option key={c} value={c} />)}</datalist></>
+                : <select name="city" required={cf.city === "required"} defaultValue="" autoComplete="address-level2" className={field} onChange={(e) => setCityVal(e.target.value)}><option value="" disabled>Select your city</option>{TCS_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}</select>}</label>}
+              {cf.city !== "hidden" && areas.length > 0 && <label><span className={label}>Area</span><select key={cityVal} name="area" required defaultValue="" className={field}><option value="" disabled>Select your area</option>{areas.map((a) => <option key={a} value={a}>{a}</option>)}<option value={AREA_OTHER}>My area is not listed</option></select><span className="mt-1 block text-[0.65rem] text-muted">Area names from OpenStreetMap contributors. Put the house number and street in the Address box above.</span></label>}
               {cf.postalCode !== "hidden" && <label><span className={label}>Postal code{cf.postalCode === "optional" ? " (optional)" : ""}</span><input name="postalCode" required={cf.postalCode === "required"} autoComplete="postal-code" className={field} /></label>}
             </div>
             {ready && user && <label className="mt-4 flex cursor-pointer items-center gap-3 text-sm"><input type="checkbox" checked={saveAddr} onChange={(e) => setSaveAddr(e.target.checked)} className="h-4 w-4 accent-[rgb(var(--accent))]" />Save this address to my account</label>}

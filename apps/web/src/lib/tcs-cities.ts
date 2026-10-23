@@ -561,3 +561,20 @@ export const tcsCity = (v: string): string => {
   const k = v.trim().toLowerCase();
   return TCS_CITIES.find((c) => c.toLowerCase() === k) ?? "";
 };
+
+/** Area names for a TCS city (suburbs, neighbourhoods, villages) from OpenStreetMap, one small file per city in /public/areas, loaded only when a city is chosen.
+ *  Returns [] when OpenStreetMap has none for that city. Data (c) OpenStreetMap contributors, ODbL, taken from the Geofabrik Pakistan extract of 2026-10-21. */
+const areaCache = new Map<string, string[]>();
+export const loadAreas = async (cityName: string): Promise<string[]> => {
+  const slug = cityName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  if (!slug) return [];
+  const hit = areaCache.get(slug);
+  if (hit) return hit;
+  try {
+    const r = await fetch(`/areas/${slug}.json`);
+    const list: string[] = r.ok ? await r.json() : [];
+    areaCache.set(slug, list);
+    return list;
+  } catch { return []; }
+};
+export const AREA_OTHER = "__other";
