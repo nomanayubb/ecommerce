@@ -84,9 +84,11 @@ const fieldMode = z.enum(["required", "optional", "hidden"]);
 export const checkoutFieldsSchema = z.object({
   email: fieldMode.default("hidden"), phone: fieldMode.default("required"), address: fieldMode.default("required"),
   city: fieldMode.default("required"), postalCode: fieldMode.default("optional"), note: fieldMode.default("optional"),
+  // The address boxes (joined into one address line): each can be required, optional or hidden on its own. `address` above is worked out from them (see loadStore).
+  house: fieldMode.default("required"), street: fieldMode.default("required"), area: fieldMode.default("required"), extra: fieldMode.default("optional"),
 });
 export type CheckoutFields = z.infer<typeof checkoutFieldsSchema>;
-export const DEFAULT_CHECKOUT_FIELDS: CheckoutFields = { email: "hidden", phone: "required", address: "required", city: "required", postalCode: "optional", note: "optional" };
+export const DEFAULT_CHECKOUT_FIELDS: CheckoutFields = { email: "hidden", phone: "required", address: "required", city: "required", postalCode: "optional", note: "optional", house: "required", street: "required", area: "required", extra: "optional" };
 
 const payMethod = z.object({
   id: z.enum(["COD", "EASYPAISA", "JAZZCASH", "BANK_TRANSFER"]),
@@ -171,12 +173,19 @@ export const DEFAULT_FOOTER: FooterSettings = {
   showNewsletter: true, showPerks: true, showPayments: true, note: "",
 };
 
+/** The order's address line is built from house, street, area and extra: it is required when any of the first three is required, otherwise optional when any box shows, otherwise hidden. */
+const withAddressMode = (f: CheckoutFields): CheckoutFields => {
+  const parts = [f.house, f.street, f.area, f.extra];
+  const address = [f.house, f.street, f.area].includes("required") ? "required" : parts.some((m) => m !== "hidden") ? "optional" : "hidden";
+  return { ...f, address };
+};
+
 export const loadBranding = () => cached("settings:branding", 60, () => load<Branding>("branding"));
 export const loadFooter = () => cached("settings:footer", 60, () => load<FooterSettings>("footer", DEFAULT_FOOTER));
 export const loadStore = () => cached("settings:store", 60, async () => {
   const saved = await load<Partial<Store>>("store", {});
   // Nested groups are merged key by key so settings added later still get their defaults.
-  return { ...STORE_DEFAULT, ...saved, pdp: { ...DEFAULT_PDP, ...(saved.pdp ?? {}) }, checkoutFields: { ...DEFAULT_CHECKOUT_FIELDS, ...(saved.checkoutFields ?? {}) } };
+  return { ...STORE_DEFAULT, ...saved, pdp: { ...DEFAULT_PDP, ...(saved.pdp ?? {}) }, checkoutFields: withAddressMode({ ...DEFAULT_CHECKOUT_FIELDS, ...(saved.checkoutFields ?? {}) }) };
 });
 
 const save = async (key: string, value: unknown) => {

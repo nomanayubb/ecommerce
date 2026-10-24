@@ -24,9 +24,9 @@ type Visuals = {
 const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", depth: "flat", transition: "none", imageHover: "zoom", cardStage: "round", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none", mascotVoice: false, splash: false, logoMorph: false, logoSparkles: false, watermark: false, cardGlow: false, priceCountUp: false };
 import { ProductPageSettings, type PdpValues } from "@/components/ProductPageSettings";
 type FieldMode = "required" | "optional" | "hidden";
-type CheckoutFields = Record<"email" | "phone" | "address" | "city" | "postalCode" | "note", FieldMode>;
+type CheckoutFields = Record<"email" | "phone" | "address" | "city" | "postalCode" | "note" | "house" | "street" | "area" | "extra", FieldMode>;
 interface PayMethod { id: "COD" | "EASYPAISA" | "JAZZCASH" | "BANK_TRANSFER"; label: string; description: string; instructions: string; enabled: boolean }
-const CHECKOUT_DEFAULTS: CheckoutFields = { email: "hidden", phone: "required", address: "required", city: "required", postalCode: "optional", note: "optional" };
+const CHECKOUT_DEFAULTS: CheckoutFields = { email: "hidden", phone: "required", address: "required", city: "required", postalCode: "optional", note: "optional", house: "required", street: "required", area: "required", extra: "optional" };
 const PAY_DEFAULTS: PayMethod[] = [
   { id: "COD", label: "Cash on delivery", description: "Pay the courier when your order arrives.", instructions: "", enabled: true },
   { id: "EASYPAISA", label: "EasyPaisa", description: "Send the amount from your EasyPaisa app.", instructions: "", enabled: false },
@@ -121,9 +121,9 @@ export default function Settings() {
       </Group>
 
       <Group title="Checkout form">
-        <p className="text-xs text-muted">Choose which boxes shoppers see after pressing Buy now / Checkout, and which ones they must fill. Full name is always required. Order tracking asks for the phone number, so keep Phone shown if customers track orders.</p>
+        <p className="text-xs text-muted">Choose which boxes shoppers see after pressing Buy now / Checkout, and which ones they must fill. Full name is always required. City, house, street and area are the address boxes: the address on the order is built from the ones that are shown. Order tracking asks for the phone number, so keep Phone shown if customers track orders.</p>
         <div className="grid gap-3 sm:grid-cols-2">
-          {([["email", "Email"], ["phone", "Phone number"], ["address", "Street address"], ["city", "City"], ["postalCode", "Postal code"], ["note", "Delivery note shortcuts"]] as const).map(([k, l]) => (
+          {([["email", "Email"], ["phone", "Phone number"], ["city", "City"], ["house", "House name or number"], ["street", "Street name or number"], ["area", "Area, colony or mohalla"], ["extra", "Additional address info"], ["postalCode", "Postal code"], ["note", "Delivery note shortcuts"]] as const).map(([k, l]) => (
             <label key={k} className={label}>{l}
               <select className={input} value={(store.checkoutFields ?? CHECKOUT_DEFAULTS)[k]} onChange={(e) => setStore({ ...store, checkoutFields: { ...(store.checkoutFields ?? CHECKOUT_DEFAULTS), [k]: e.target.value as FieldMode } })}>
                 <option value="required">Shown and required</option><option value="optional">Shown, optional</option><option value="hidden">Hidden</option>
