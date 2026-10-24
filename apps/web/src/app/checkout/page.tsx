@@ -207,7 +207,7 @@ export default function Checkout() {
                 {areas.length > 0 && <label className="sm:col-span-2"><span className={label}>Area, colony or mohalla</span><select key={cityVal} value={areaSel} onChange={(e) => setAreaSel(e.target.value)} required={cf.address === "required"} className={field}><option value="" disabled>Select your area</option>{areas.map((a) => <option key={a} value={a}>{a}</option>)}<option value={AREA_OTHER}>My area is not listed</option></select><span className="mt-1 block text-[0.65rem] text-muted">Area names from OpenStreetMap contributors.</span></label>}
                 {typedArea && <label className="sm:col-span-2"><span className={label}>{areas.length > 0 ? "Type your area, colony or mohalla" : "Area, colony or mohalla"}</span><input value={areaTxt} onChange={(e) => setAreaTxt(e.target.value)} required={cf.address === "required"} placeholder="e.g. Gulshan-e-Iqbal Block 13" autoComplete="off" className={field} /></label>}
                 <div className="sm:col-span-2 border-l-2 border-accent bg-card/40 px-4 py-3" aria-live="polite">
-                  <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted">Your address will read</p>
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted">Your full address (filled in automatically)</p>
                   <p className={`mt-1 text-sm leading-relaxed ${addr ? "text-fg" : "text-muted"}`}>{addr || "It builds itself as you fill in the boxes above."}</p>
                   <input type="hidden" name="line1" value={addr} />
                 </div>

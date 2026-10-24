@@ -11,7 +11,7 @@ Build a structured address block for my shop's checkout page (Next.js storefront
 2. One row of three boxes: **House name or number** (required), **Street number or name** (required), **Additional address info (optional)** (for example "near Jamia Masjid, 2nd floor").
 3. **Area, colony or mohalla**: a required scrollable dropdown filled from the chosen city, with a last choice "My area is not listed". When that is chosen, or the city has no list, show a typing box "Type your area, colony or mohalla". Show the note "Area names from OpenStreetMap contributors".
 4. Below the group: **Postal code** (optional).
-5. Under the group, a plain text strip (not a box that looks like a form field): "Your address will read" followed by the joined text, or "It builds itself as you fill in the boxes above." until something is typed.
+5. Under the group, a plain text strip (not a box that looks like a form field): "Your full address (filled in automatically)" followed by the joined text, or "It builds itself as you fill in the boxes above." until something is typed.
 
 **Joined address.** `house, street, area, extra info` (empty parts left out, joined with ", "), for example "House 7, Street 3, Abdali Colony, near the park". Carry it with the order in one hidden field named `line1`; the order request and the database stay unchanged. Saved account addresses and the "remember me on this device" details fill the whole text.
 

@@ -533,3 +533,7 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 
 ## Docs: reusable prompt for the checkout address block (2026-10-24)
 - Owner asked for a prompt of the approved checkout address (tag checkout-address-approved, commit 77a0c19). Added docs/PROMPT_CHECKOUT_ADDRESS.md: the layout, the joined address text, how the area data is built from the Geofabrik OpenStreetMap file, the admin switch, the rules and the checks, ready to paste into another project. Docs only, no code or build, nothing run.
+
+## Checkout: label wording on the address strip (2026-10-24)
+- Owner: after approving the checkout address, asked only to change the words "Your address will read" back to the old text. The strip's label now says "Your full address (filled in automatically)"; nothing else changed (same look, same hidden line1 field, same joined text). docs/PROMPT_CHECKOUT_ADDRESS.md updated to the same words. The approved restore point stays tag checkout-address-approved (commit 77a0c19, with the old "will read" wording).
+- File: apps/web/src/app/checkout/page.tsx (one text). Build: one production build (about 2 minutes) into .next-prod and a shop restart; checkout 126 kB, shared 104 kB. Verified in the preview browser on Buy now checkout: the label shows the new words, the old words are gone, one "Address" legend, line1 is still a hidden field. Not tested: placing a real order.
