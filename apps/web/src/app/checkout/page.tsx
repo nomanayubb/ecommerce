@@ -10,10 +10,9 @@ import { useCart } from "@/components/CartProvider";
 import { MascotFigure } from "@/components/Mascot";
 import { GiftOptions, PromoField, useCartPricing } from "@/components/CartExtras";
 import { fireConfetti, mascotSay } from "@/lib/motion";
-import { AREA_OTHER, TCS_CITIES, loadAreas, tcsCity } from "@/lib/tcs-cities";
+import { TCS_CITIES, tcsCity } from "@/lib/tcs-cities";
 import { CityPicker } from "@/components/CityPicker";
 import { latinInput, latinOnly, noNonLatin } from "@/lib/latin";
-import { SearchPicker } from "@/components/SearchPicker";
 import { PrintButton } from "@/components/PrintButton";
 import { DispatchNote } from "@/components/Dispatch";
 
@@ -61,31 +60,27 @@ export default function Checkout() {
   const payId = pay || methods[0]?.id || "COD";
   const [done, setDone] = useState<{ orderNumber: number; grandTotal: number; message?: string; method?: string } | null>(null);
 
-  // Area list: once a TCS city is chosen its OpenStreetMap areas load (if there are any) and the customer picks one before typing the street.
   const [cityVal, setCityVal] = useState("");
-  const [areas, setAreas] = useState<string[]>([]);
-  useEffect(() => {
-    const c = tcsCity(cityVal);
-    let live = true;
-    if (!c) { setAreas([]); return; }
-    loadAreas(c).then((l) => { if (live) setAreas(l); });
-    return () => { live = false; };
-  }, [cityVal]);
+  // Name, phone, city, house, street and area are mandatory: leaving one empty (or sending the form with it empty) shows a red message right under the box.
+  const [miss, setMiss] = useState<Record<string, boolean>>({});
+  const need = (k: string, empty: boolean) => setMiss((m) => (m[k] === empty ? m : { ...m, [k]: empty }));
+  const bad = (k: string, msg: string) => miss[k] ? <p role="alert" className="mt-1.5 text-xs font-medium text-red-400">{msg}</p> : null;
+  const watch = (k: string) => ({ onBlur: (e: React.FocusEvent<HTMLInputElement>) => need(k, !e.target.value.trim()), onInvalid: () => need(k, true), "aria-invalid": miss[k] ? true : undefined });
 
   // Structured address: house, street and area are filled in separate boxes and joined into the Address box automatically.
   const [house, setHouse] = useState("");
   const [streetNo, setStreetNo] = useState("");
-  const [areaSel, setAreaSel] = useState("");
   const [areaTxt, setAreaTxt] = useState("");
   const [extra, setExtra] = useState("");
   const [addr, setAddr] = useState("");
-  const typedArea = areas.length === 0 || areaSel === AREA_OTHER;
-  const areaName = typedArea ? areaTxt.trim() : areaSel;
-  useEffect(() => { setAreaSel(""); }, [cityVal]);
+  const areaName = areaTxt.trim();
   useEffect(() => {
     const parts = [house.trim(), streetNo.trim(), areaName, extra.trim()].filter(Boolean);
     if (parts.length) setAddr(parts.join(", "));
   }, [house, streetNo, areaName, extra]);
+  useEffect(() => { if (house.trim()) need("house", false); }, [house]);       // the red message goes as soon as the box has text
+  useEffect(() => { if (streetNo.trim()) need("street", false); }, [streetNo]);
+  useEffect(() => { if (areaTxt.trim()) need("area", false); }, [areaTxt]);
 
   const payload = lines.map((l) => ({ productId: l.productId, variantId: l.variantId, quantity: l.quantity }));
 
@@ -193,29 +188,28 @@ export default function Checkout() {
               </label>
             )}
             <div className="grid gap-4 sm:grid-cols-2">
-              <label><span className={label}>Full name</span><input name="name" required autoComplete="name" className={field} {...latinInput} /></label>
+              <label><span className={label}>Full name</span><input name="name" required autoComplete="name" className={`${field} ${miss.name ? "!border-red-400" : ""}`} {...latinInput} {...watch("name")} onChange={() => need("name", false)} />{bad("name", "Please enter your full name")}</label>
               {cf.email !== "hidden" && <label className="sm:col-span-2"><span className={label}>Email{cf.email === "optional" ? " (optional)" : ""}</span><input name="email" type="email" required={cf.email === "required"} autoComplete="email" className={field} /></label>}
-              {cf.phone !== "hidden" && <label><span className={label}>Phone{cf.phone === "optional" ? " (optional)" : ""}</span><input name="phone" required={cf.phone === "required"} type="tel" autoComplete="tel" placeholder="03XX XXXXXXX" minLength={7} className={field} onChange={(e) => { const d = e.target.value.replace(/\D/g, ""); setPhoneHint(d.length > 0 && !/^(92|0)?3\d{9}$/.test(d) && !/^0\d{9,10}$/.test(d)); }} />{phoneHint && <span className="mt-1 block text-xs text-accent">Mobile numbers look like 03XX XXXXXXX. Please double-check so the courier can reach you.</span>}</label>}
-              {(cf.city !== "hidden" || cf.address !== "hidden") && <fieldset className="grid gap-4 border border-line p-4 sm:col-span-2 sm:grid-cols-2 sm:p-5">
+              <label><span className={label}>Phone</span><input name="phone" required type="tel" autoComplete="tel" placeholder="03XX XXXXXXX" minLength={7} className={`${field} ${miss.phone ? "!border-red-400" : ""}`} {...watch("phone")} onChange={(e) => { need("phone", false); const d = e.target.value.replace(/\D/g, ""); setPhoneHint(d.length > 0 && !/^(92|0)?3\d{9}$/.test(d) && !/^0\d{9,10}$/.test(d)); }} />{phoneHint && <span className="mt-1 block text-xs text-accent">Mobile numbers look like 03XX XXXXXXX. Please double-check so the courier can reach you.</span>}{bad("phone", "Please enter your phone number")}</label>
+              <fieldset className="grid gap-4 border border-line p-4 sm:col-span-2 sm:grid-cols-2 sm:p-5">
               <legend className="px-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-accent">Address</legend>
-              {cf.city !== "hidden" && <label><span className={label}>City{cf.city === "optional" ? " (optional)" : ""}</span>{store.allowManualCity
-                ? <><input name="city" required={cf.city === "required"} list="tcs-cities" autoComplete="address-level2" className={field} onChange={(e) => setCityVal(latinOnly(e.target.value))} {...latinInput} /><datalist id="tcs-cities">{TCS_CITIES.map((c) => <option key={c} value={c} />)}</datalist></>
-                : <CityPicker cities={TCS_CITIES} value={cityVal} onChange={setCityVal} required={cf.city === "required"} className={field} />}</label>}
-              {cf.address !== "hidden" && <>
+              <label><span className={label}>City</span>{store.allowManualCity
+                ? <><input name="city" required list="tcs-cities" autoComplete="address-level2" className={field} onChange={(e) => setCityVal(latinOnly(e.target.value))} {...latinInput} /><datalist id="tcs-cities">{TCS_CITIES.map((c) => <option key={c} value={c} />)}</datalist></>
+                : <CityPicker cities={TCS_CITIES} value={cityVal} onChange={setCityVal} required className={field} />}</label>
+              <>
                 <div className="grid gap-4 sm:col-span-2 sm:grid-cols-3">
-                  <label><span className={label}>House name or number</span><input value={house} onChange={(e) => setHouse(latinOnly(e.target.value))} onBeforeInput={noNonLatin} required={cf.address === "required"} placeholder="e.g. House 12" autoComplete="off" className={field} /></label>
-                  <label><span className={label}>Street name or number</span><input value={streetNo} onChange={(e) => setStreetNo(latinOnly(e.target.value))} onBeforeInput={noNonLatin} required={cf.address === "required"} placeholder="e.g. Street 5" autoComplete="off" className={field} /></label>
-                  {cityVal.trim() !== "" && (areas.length > 0 ? <label><span className={label}>Area, colony or mohalla</span><SearchPicker key={cityVal} items={areas} value={areaSel} onChange={setAreaSel} required={cf.address === "required"} className={field} placeholder="Type to search your area, colony or mohalla" extra={{ value: AREA_OTHER, label: "My area is not listed" }} invalidMessage="Please choose your area from the list, or pick “My area is not listed”" hint={(_n, total) => `Type to search all ${total} areas, or pick “My area is not listed”`} noMatch={(q) => `No area matches “${q}”. Check the spelling or pick “My area is not listed”.`} /><span className="mt-1 block text-[0.65rem] text-muted">Area names from OpenStreetMap contributors.</span></label> : <label><span className={label}>Area, colony or mohalla</span><input value={areaTxt} onChange={(e) => setAreaTxt(latinOnly(e.target.value))} onBeforeInput={noNonLatin} required={cf.address === "required"} placeholder="e.g. Gulshan-e-Iqbal Block 13" autoComplete="off" className={field} /></label>)}
+                  <label><span className={label}>House name or number</span><input value={house} onChange={(e) => setHouse(latinOnly(e.target.value))} onBeforeInput={noNonLatin} required placeholder="e.g. House 12" autoComplete="off" className={`${field} ${miss.house ? "!border-red-400" : ""}`} {...watch("house")} />{bad("house", "Please enter your house name or number")}</label>
+                  <label><span className={label}>Street name or number</span><input value={streetNo} onChange={(e) => setStreetNo(latinOnly(e.target.value))} onBeforeInput={noNonLatin} required placeholder="e.g. Street 5" autoComplete="off" className={`${field} ${miss.street ? "!border-red-400" : ""}`} {...watch("street")} />{bad("street", "Please enter your street name or number")}</label>
+                  {cityVal.trim() !== "" && <label><span className={label}>Area, colony or mohalla</span><input value={areaTxt} onChange={(e) => setAreaTxt(latinOnly(e.target.value))} onBeforeInput={noNonLatin} required placeholder="e.g. Gulshan-e-Iqbal Block 13" autoComplete="off" className={`${field} ${miss.area ? "!border-red-400" : ""}`} {...watch("area")} />{bad("area", "Please enter your area, colony or mohalla")}</label>}
                 </div>
-                {areas.length > 0 && areaSel === AREA_OTHER && <label className="sm:col-span-2"><span className={label}>{areas.length > 0 ? "Type your area, colony or mohalla" : "Area, colony or mohalla"}</span><input value={areaTxt} onChange={(e) => setAreaTxt(latinOnly(e.target.value))} onBeforeInput={noNonLatin} required={cf.address === "required"} placeholder="e.g. Gulshan-e-Iqbal Block 13" autoComplete="off" className={field} /></label>}
                 <label className="sm:col-span-2"><span className={label}>Additional address info (optional)</span><input value={extra} onChange={(e) => setExtra(latinOnly(e.target.value))} onBeforeInput={noNonLatin} placeholder="e.g. near Jamia Masjid, 2nd floor" autoComplete="off" className={field} /></label>
                 <div className="sm:col-span-2 border-l-2 border-accent bg-card/40 px-4 py-3" aria-live="polite">
                   <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted">Your full address (filled in automatically)</p>
                   <p className={`mt-1 text-sm leading-relaxed ${addr ? "text-fg" : "text-muted"}`}>{addr || "It builds itself as you fill in the boxes above."}</p>
                   <input type="hidden" name="line1" value={addr} />
                 </div>
-              </>}
-              </fieldset>}
+              </>
+              </fieldset>
               {cf.postalCode !== "hidden" && <label><span className={label}>Postal code{cf.postalCode === "optional" ? " (optional)" : ""}</span><input name="postalCode" required={cf.postalCode === "required"} autoComplete="postal-code" className={field} /></label>}
             </div>
             {ready && user && <label className="mt-4 flex cursor-pointer items-center gap-3 text-sm"><input type="checkbox" checked={saveAddr} onChange={(e) => setSaveAddr(e.target.checked)} className="h-4 w-4 accent-[rgb(var(--accent))]" />Save this address to my account</label>}
