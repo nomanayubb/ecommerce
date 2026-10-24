@@ -23,9 +23,10 @@ function dl(a: string, b: string): number {
   return d[m][n];
 }
 
-export function searchList(items: string[], query: string, popular: string[] | undefined, aliases: Record<string, string> | undefined): string[] {
+export function searchList(items: string[], query: string, popular: string[] | undefined, aliases: Record<string, string> | undefined, rank?: string[]): string[] {
   const q = norm(query);
-  if (!q) return popular ? popular.filter((c) => items.includes(c)) : items.slice(0, 25);
+  const az = (a: string, b: string) => a.localeCompare(b, "en", { numeric: true, sensitivity: "base" });
+  if (!q) return rank ? [...items].sort(az) : popular ? popular.filter((c) => items.includes(c)) : items.slice(0, 25);
   const qs = squash(q), toks = q.split(" ");
   const alias = aliases?.[q];
   const scored: [number, string][] = [];
@@ -44,15 +45,21 @@ export function searchList(items: string[], query: string, popular: string[] | u
     }
     if (s < 99) scored.push([s, c]);
   }
+  if (rank) {
+    // exact or short-name hit first, then the major cities (biggest first), then everything else A to Z
+    const pos = (c: string) => { const i = rank.indexOf(c); return i < 0 ? 9999 : i; };
+    scored.sort((a, b) => (a[0] === 0 ? 0 : 1) - (b[0] === 0 ? 0 : 1) || pos(a[1]) - pos(b[1]) || az(a[1], b[1]));
+    return scored.slice(0, 80).map((x) => x[1]);
+  }
   scored.sort((a, b) => a[0] - b[0] || a[1].length - b[1].length || a[1].localeCompare(b[1]));
   return scored.slice(0, 40).map((x) => x[1]);
 }
 
 export function SearchPicker({
-  items, value, onChange, required, className, placeholder, popular, aliases, extra, invalidMessage, hint, noMatch, name,
+  items, value, onChange, required, className, placeholder, popular, aliases, rank, extra, invalidMessage, hint, noMatch, name,
 }: {
   items: string[]; value: string; onChange: (v: string) => void; required?: boolean; className?: string; placeholder: string;
-  popular?: string[]; aliases?: Record<string, string>; extra?: { value: string; label: string };
+  popular?: string[]; aliases?: Record<string, string>; rank?: string[]; extra?: { value: string; label: string };
   invalidMessage: string; hint: (count: number, total: number) => string; noMatch: (q: string) => string; name?: string;
 }) {
   const labelOf = (v: string) => (extra && v === extra.value ? extra.label : v);
@@ -63,9 +70,9 @@ export function SearchPicker({
   const boxRef = useRef<HTMLDivElement>(null);
   const id = useId();
   const rows = useMemo(() => {
-    const r = searchList(items, query, popular, aliases);
+    const r = searchList(items, query, popular, aliases, rank);
     return extra ? [...r, extra.value] : r;
-  }, [items, query, popular, aliases, extra]);
+  }, [items, query, popular, aliases, rank, extra]);
 
   useEffect(() => { setQuery(labelOf(value)); }, [value]);              // a value set from outside (saved address, remembered city)
   useEffect(() => { setHi(0); }, [query]);
