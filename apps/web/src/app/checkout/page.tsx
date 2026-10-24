@@ -193,6 +193,8 @@ export default function Checkout() {
               <label><span className={label}>Full name</span><input name="name" required autoComplete="name" className={field} /></label>
               {cf.email !== "hidden" && <label className="sm:col-span-2"><span className={label}>Email{cf.email === "optional" ? " (optional)" : ""}</span><input name="email" type="email" required={cf.email === "required"} autoComplete="email" className={field} /></label>}
               {cf.phone !== "hidden" && <label><span className={label}>Phone{cf.phone === "optional" ? " (optional)" : ""}</span><input name="phone" required={cf.phone === "required"} type="tel" autoComplete="tel" placeholder="03XX XXXXXXX" minLength={7} className={field} onChange={(e) => { const d = e.target.value.replace(/\D/g, ""); setPhoneHint(d.length > 0 && !/^(92|0)?3\d{9}$/.test(d) && !/^0\d{9,10}$/.test(d)); }} />{phoneHint && <span className="mt-1 block text-xs text-accent">Mobile numbers look like 03XX XXXXXXX. Please double-check so the courier can reach you.</span>}</label>}
+              {(cf.city !== "hidden" || cf.address !== "hidden") && <fieldset className="grid gap-4 border border-line p-4 sm:col-span-2 sm:grid-cols-2 sm:p-5">
+              <legend className="px-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-accent">Address</legend>
               {cf.city !== "hidden" && <label><span className={label}>City{cf.city === "optional" ? " (optional)" : ""}</span>{store.allowManualCity
                 ? <><input name="city" required={cf.city === "required"} list="tcs-cities" autoComplete="address-level2" className={field} onChange={(e) => setCityVal(e.target.value)} /><datalist id="tcs-cities">{TCS_CITIES.map((c) => <option key={c} value={c} />)}</datalist></>
                 : <select name="city" required={cf.city === "required"} defaultValue="" autoComplete="address-level2" className={field} onChange={(e) => setCityVal(e.target.value)}><option value="" disabled>Select your city</option>{TCS_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}</select>}</label>}
@@ -204,8 +206,13 @@ export default function Checkout() {
                 </div>
                 {areas.length > 0 && <label className="sm:col-span-2"><span className={label}>Area, colony or mohalla</span><select key={cityVal} value={areaSel} onChange={(e) => setAreaSel(e.target.value)} required={cf.address === "required"} className={field}><option value="" disabled>Select your area</option>{areas.map((a) => <option key={a} value={a}>{a}</option>)}<option value={AREA_OTHER}>My area is not listed</option></select><span className="mt-1 block text-[0.65rem] text-muted">Area names from OpenStreetMap contributors.</span></label>}
                 {typedArea && <label className="sm:col-span-2"><span className={label}>{areas.length > 0 ? "Type your area, colony or mohalla" : "Area, colony or mohalla"}</span><input value={areaTxt} onChange={(e) => setAreaTxt(e.target.value)} required={cf.address === "required"} placeholder="e.g. Gulshan-e-Iqbal Block 13" autoComplete="off" className={field} /></label>}
-                <label className="sm:col-span-2"><span className={label}>Your full address (filled in automatically)</span><input name="line1" value={addr} readOnly tabIndex={-1} placeholder="Fill in the boxes above" className={`${field} opacity-80`} /></label>
+                <div className="sm:col-span-2 border-l-2 border-accent bg-card/40 px-4 py-3" aria-live="polite">
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted">Your address will read</p>
+                  <p className={`mt-1 text-sm leading-relaxed ${addr ? "text-fg" : "text-muted"}`}>{addr || "It builds itself as you fill in the boxes above."}</p>
+                  <input type="hidden" name="line1" value={addr} />
+                </div>
               </>}
+              </fieldset>}
               {cf.postalCode !== "hidden" && <label><span className={label}>Postal code{cf.postalCode === "optional" ? " (optional)" : ""}</span><input name="postalCode" required={cf.postalCode === "required"} autoComplete="postal-code" className={field} /></label>}
             </div>
             {ready && user && <label className="mt-4 flex cursor-pointer items-center gap-3 text-sm"><input type="checkbox" checked={saveAddr} onChange={(e) => setSaveAddr(e.target.checked)} className="h-4 w-4 accent-[rgb(var(--accent))]" />Save this address to my account</label>}
