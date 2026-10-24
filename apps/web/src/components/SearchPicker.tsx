@@ -46,9 +46,10 @@ export function searchList(items: string[], query: string, popular: string[] | u
     if (s < 99) scored.push([s, c]);
   }
   if (rank) {
-    // exact or short-name hit first, then the major cities (biggest first), then everything else A to Z
+    // how well it matches comes first (exact or short name, then names that start with what was typed, then a word that starts with it, then text inside a word, then close spellings);
+    // inside each of those groups the major cities come first (biggest first) and everything else follows A to Z
     const pos = (c: string) => { const i = rank.indexOf(c); return i < 0 ? 9999 : i; };
-    scored.sort((a, b) => (a[0] === 0 ? 0 : 1) - (b[0] === 0 ? 0 : 1) || pos(a[1]) - pos(b[1]) || az(a[1], b[1]));
+    scored.sort((a, b) => Math.min(a[0], 4) - Math.min(b[0], 4) || pos(a[1]) - pos(b[1]) || az(a[1], b[1]));
     return scored.slice(0, 80).map((x) => x[1]);
   }
   scored.sort((a, b) => a[0] - b[0] || a[1].length - b[1].length || a[1].localeCompare(b[1]));
