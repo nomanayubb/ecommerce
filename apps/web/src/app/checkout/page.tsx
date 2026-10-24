@@ -11,6 +11,7 @@ import { MascotFigure } from "@/components/Mascot";
 import { GiftOptions, PromoField, useCartPricing } from "@/components/CartExtras";
 import { fireConfetti, mascotSay } from "@/lib/motion";
 import { AREA_OTHER, TCS_CITIES, loadAreas, tcsCity } from "@/lib/tcs-cities";
+import { CityPicker } from "@/components/CityPicker";
 import { PrintButton } from "@/components/PrintButton";
 import { DispatchNote } from "@/components/Dispatch";
 
@@ -90,8 +91,8 @@ export default function Checkout() {
   const fillAddr = (a: Addr) => {
     const form = document.getElementById("checkout-form") as HTMLFormElement | null;
     if (!form) return;
-    const set = (n: string, v: string) => { if (n === "line1") { setAddr(v); return; } const el = form.elements.namedItem(n) as HTMLInputElement | null; if (el) el.value = n === "city" && !store.allowManualCity ? tcsCity(v) : v; };
-    set("name", a.name); set("phone", a.phone); set("line1", a.line1); set("city", a.city); set("postalCode", a.postal_code ?? ""); setCityVal(a.city);
+    const set = (n: string, v: string) => { if (n === "line1") { setAddr(v); return; } if (n === "city" && !store.allowManualCity) { setCityVal(tcsCity(v)); return; } const el = form.elements.namedItem(n) as HTMLInputElement | null; if (el) el.value = n === "city" && !store.allowManualCity ? tcsCity(v) : v; };
+    set("name", a.name); set("phone", a.phone); set("line1", a.line1); set("city", a.city); set("postalCode", a.postal_code ?? ""); if (store.allowManualCity) setCityVal(a.city);
   };
   // Guests: bring back the details used last time on this device.
   useEffect(() => {
@@ -103,8 +104,8 @@ export default function Checkout() {
         const form = document.getElementById("checkout-form") as HTMLFormElement | null;
         if (!form) return;
         if (d.line1) setAddr((cur) => cur || String(d.line1));
-        for (const k of ["name", "phone", "city", "postalCode"]) { const el = form.elements.namedItem(k) as HTMLInputElement | null; if (el && !el.value && d[k]) el.value = k === "city" && !store.allowManualCity ? tcsCity(String(d[k])) : d[k]; }
-        if (d.city) setCityVal(String(d.city));
+        for (const k of store.allowManualCity ? ["name", "phone", "city", "postalCode"] : ["name", "phone", "postalCode"]) { const el = form.elements.namedItem(k) as HTMLInputElement | null; if (el && !el.value && d[k]) el.value = k === "city" && !store.allowManualCity ? tcsCity(String(d[k])) : d[k]; }
+        if (d.city) setCityVal(store.allowManualCity ? String(d.city) : tcsCity(String(d.city)));
       }, 0);
     } catch {}
   }, [user, ready]);
@@ -197,7 +198,7 @@ export default function Checkout() {
               <legend className="px-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-accent">Address</legend>
               {cf.city !== "hidden" && <label><span className={label}>City{cf.city === "optional" ? " (optional)" : ""}</span>{store.allowManualCity
                 ? <><input name="city" required={cf.city === "required"} list="tcs-cities" autoComplete="address-level2" className={field} onChange={(e) => setCityVal(e.target.value)} /><datalist id="tcs-cities">{TCS_CITIES.map((c) => <option key={c} value={c} />)}</datalist></>
-                : <select name="city" required={cf.city === "required"} defaultValue="" autoComplete="address-level2" className={field} onChange={(e) => setCityVal(e.target.value)}><option value="" disabled>Select your city</option>{TCS_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}</select>}</label>}
+                : <CityPicker cities={TCS_CITIES} value={cityVal} onChange={setCityVal} required={cf.city === "required"} className={field} />}</label>}
               {cf.address !== "hidden" && <>
                 <div className="grid gap-4 sm:col-span-2 sm:grid-cols-3">
                   <label><span className={label}>House name or number</span><input value={house} onChange={(e) => setHouse(e.target.value)} required={cf.address === "required"} placeholder="e.g. House 12" autoComplete="off" className={field} /></label>
