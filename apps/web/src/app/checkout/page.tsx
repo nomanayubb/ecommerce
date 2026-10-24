@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { pkr, type FieldMode, type PayMethod } from "@/lib/api";
 import { useSite } from "@/components/Site";
 import { send } from "@/lib/client";
@@ -10,7 +10,7 @@ import { useCart } from "@/components/CartProvider";
 import { MascotFigure } from "@/components/Mascot";
 import { GiftOptions, PromoField, useCartPricing } from "@/components/CartExtras";
 import { fireConfetti, mascotSay } from "@/lib/motion";
-import { AREA_OTHER, TCS_CITIES, loadAreas, loadStreets, tcsCity } from "@/lib/tcs-cities";
+import { AREA_OTHER, TCS_CITIES, loadAreas, tcsCity } from "@/lib/tcs-cities";
 import { PrintButton } from "@/components/PrintButton";
 import { DispatchNote } from "@/components/Dispatch";
 
@@ -69,15 +69,20 @@ export default function Checkout() {
     return () => { live = false; };
   }, [cityVal]);
 
-  // Street suggestions: loaded when the street box is first used, then filtered as the customer types (at most 30 shown).
-  const [streets, setStreets] = useState<string[]>([]);
-  const [streetQ, setStreetQ] = useState("");
-  const streetHits = useMemo(() => {
-    const q = streetQ.trim().toLowerCase();
-    return q.length < 2 ? [] : streets.filter((x) => x.toLowerCase().includes(q)).slice(0, 30);
-  }, [streets, streetQ]);
-  useEffect(() => { setStreets([]); setStreetQ(""); }, [cityVal]);
-  const wantStreets = () => { const c = tcsCity(cityVal); if (c && streets.length === 0) loadStreets(c).then(setStreets); };
+  // Structured address: house, street and area are filled in separate boxes and joined into the Address box automatically.
+  const [house, setHouse] = useState("");
+  const [streetNo, setStreetNo] = useState("");
+  const [areaSel, setAreaSel] = useState("");
+  const [areaTxt, setAreaTxt] = useState("");
+  const [extra, setExtra] = useState("");
+  const [addr, setAddr] = useState("");
+  const typedArea = areas.length === 0 || areaSel === AREA_OTHER;
+  const areaName = typedArea ? areaTxt.trim() : areaSel;
+  useEffect(() => { setAreaSel(""); }, [cityVal]);
+  useEffect(() => {
+    const parts = [house.trim(), streetNo.trim(), areaName, extra.trim()].filter(Boolean);
+    if (parts.length) setAddr(parts.join(", "));
+  }, [house, streetNo, areaName, extra]);
 
   const payload = lines.map((l) => ({ productId: l.productId, variantId: l.variantId, quantity: l.quantity }));
 
@@ -85,7 +90,7 @@ export default function Checkout() {
   const fillAddr = (a: Addr) => {
     const form = document.getElementById("checkout-form") as HTMLFormElement | null;
     if (!form) return;
-    const set = (n: string, v: string) => { const el = form.elements.namedItem(n) as HTMLInputElement | null; if (el) el.value = n === "city" && !store.allowManualCity ? tcsCity(v) : v; };
+    const set = (n: string, v: string) => { if (n === "line1") { setAddr(v); return; } const el = form.elements.namedItem(n) as HTMLInputElement | null; if (el) el.value = n === "city" && !store.allowManualCity ? tcsCity(v) : v; };
     set("name", a.name); set("phone", a.phone); set("line1", a.line1); set("city", a.city); set("postalCode", a.postal_code ?? ""); setCityVal(a.city);
   };
   // Guests: bring back the details used last time on this device.
@@ -97,7 +102,8 @@ export default function Checkout() {
       setTimeout(() => {
         const form = document.getElementById("checkout-form") as HTMLFormElement | null;
         if (!form) return;
-        for (const k of ["name", "phone", "line1", "city", "postalCode"]) { const el = form.elements.namedItem(k) as HTMLInputElement | null; if (el && !el.value && d[k]) el.value = k === "city" && !store.allowManualCity ? tcsCity(String(d[k])) : d[k]; }
+        if (d.line1) setAddr((cur) => cur || String(d.line1));
+        for (const k of ["name", "phone", "city", "postalCode"]) { const el = form.elements.namedItem(k) as HTMLInputElement | null; if (el && !el.value && d[k]) el.value = k === "city" && !store.allowManualCity ? tcsCity(String(d[k])) : d[k]; }
         if (d.city) setCityVal(String(d.city));
       }, 0);
     } catch {}
@@ -113,10 +119,7 @@ export default function Checkout() {
     setBusy(true);
     setError("");
     try {
-      const area = String(f.get("area") ?? "");
-      const house = String(f.get("line1") ?? "").trim();
-      const street = String(f.get("street") ?? "").trim();
-      const fullLine1 = [house, street && !house.toLowerCase().includes(street.toLowerCase()) ? street : "", area && area !== AREA_OTHER ? area : ""].filter(Boolean).join(", ");
+      const fullLine1 = addr.trim();
       const res = await send<{ orderNumber: number; grandTotal: number; paymentInstructions?: { type: string; message: string; method?: string } }>("POST", "checkout/process", {
         items: payload,
         shippingAddress: { name: f.get("name"), email: f.get("email") || undefined, phone: f.get("phone") || undefined, line1: fullLine1 || undefined, city: f.get("city") || undefined, postalCode: f.get("postalCode") || undefined, country: "PK" },
@@ -190,12 +193,19 @@ export default function Checkout() {
               <label><span className={label}>Full name</span><input name="name" required autoComplete="name" className={field} /></label>
               {cf.email !== "hidden" && <label className="sm:col-span-2"><span className={label}>Email{cf.email === "optional" ? " (optional)" : ""}</span><input name="email" type="email" required={cf.email === "required"} autoComplete="email" className={field} /></label>}
               {cf.phone !== "hidden" && <label><span className={label}>Phone{cf.phone === "optional" ? " (optional)" : ""}</span><input name="phone" required={cf.phone === "required"} type="tel" autoComplete="tel" placeholder="03XX XXXXXXX" minLength={7} className={field} onChange={(e) => { const d = e.target.value.replace(/\D/g, ""); setPhoneHint(d.length > 0 && !/^(92|0)?3\d{9}$/.test(d) && !/^0\d{9,10}$/.test(d)); }} />{phoneHint && <span className="mt-1 block text-xs text-accent">Mobile numbers look like 03XX XXXXXXX. Please double-check so the courier can reach you.</span>}</label>}
-              {cf.address !== "hidden" && <label className="sm:col-span-2"><span className={label}>Address{cf.address === "optional" ? " (optional)" : ""}</span><input name="line1" required={cf.address === "required"} autoComplete="street-address" className={field} /></label>}
               {cf.city !== "hidden" && <label><span className={label}>City{cf.city === "optional" ? " (optional)" : ""}</span>{store.allowManualCity
                 ? <><input name="city" required={cf.city === "required"} list="tcs-cities" autoComplete="address-level2" className={field} onChange={(e) => setCityVal(e.target.value)} /><datalist id="tcs-cities">{TCS_CITIES.map((c) => <option key={c} value={c} />)}</datalist></>
                 : <select name="city" required={cf.city === "required"} defaultValue="" autoComplete="address-level2" className={field} onChange={(e) => setCityVal(e.target.value)}><option value="" disabled>Select your city</option>{TCS_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}</select>}</label>}
-              {cf.city !== "hidden" && areas.length > 0 && <label><span className={label}>Area</span><select key={cityVal} name="area" required defaultValue="" className={field}><option value="" disabled>Select your area</option>{areas.map((a) => <option key={a} value={a}>{a}</option>)}<option value={AREA_OTHER}>My area is not listed</option></select><span className="mt-1 block text-[0.65rem] text-muted">Colony, mohalla, block or town names from OpenStreetMap contributors. Put the house number and street in the Address box above.</span></label>}
-              {cf.city !== "hidden" && tcsCity(cityVal) && <label className="sm:col-span-2"><span className={label}>Main road or street (optional)</span><input name="street" list="street-hits" autoComplete="off" placeholder="Start typing, then pick from the list" className={field} onFocus={wantStreets} onChange={(e) => { wantStreets(); setStreetQ(e.target.value); }} /><datalist id="street-hits">{streetHits.map((x) => <option key={x} value={x} />)}</datalist></label>}
+              {cf.address !== "hidden" && <>
+                <div className="grid gap-4 sm:col-span-2 sm:grid-cols-3">
+                  <label><span className={label}>House name or number</span><input value={house} onChange={(e) => setHouse(e.target.value)} required={cf.address === "required"} placeholder="e.g. House 12" autoComplete="off" className={field} /></label>
+                  <label><span className={label}>Street number or name</span><input value={streetNo} onChange={(e) => setStreetNo(e.target.value)} required={cf.address === "required"} placeholder="e.g. Street 5" autoComplete="off" className={field} /></label>
+                  <label><span className={label}>Additional address info (optional)</span><input value={extra} onChange={(e) => setExtra(e.target.value)} placeholder="e.g. near Jamia Masjid, 2nd floor" autoComplete="off" className={field} /></label>
+                </div>
+                {areas.length > 0 && <label className="sm:col-span-2"><span className={label}>Area, colony or mohalla</span><select key={cityVal} value={areaSel} onChange={(e) => setAreaSel(e.target.value)} required={cf.address === "required"} className={field}><option value="" disabled>Select your area</option>{areas.map((a) => <option key={a} value={a}>{a}</option>)}<option value={AREA_OTHER}>My area is not listed</option></select><span className="mt-1 block text-[0.65rem] text-muted">Area names from OpenStreetMap contributors.</span></label>}
+                {typedArea && <label className="sm:col-span-2"><span className={label}>{areas.length > 0 ? "Type your area, colony or mohalla" : "Area, colony or mohalla"}</span><input value={areaTxt} onChange={(e) => setAreaTxt(e.target.value)} required={cf.address === "required"} placeholder="e.g. Gulshan-e-Iqbal Block 13" autoComplete="off" className={field} /></label>}
+                <label className="sm:col-span-2"><span className={label}>Your full address (filled in automatically)</span><input name="line1" value={addr} readOnly tabIndex={-1} placeholder="Fill in the boxes above" className={`${field} opacity-80`} /></label>
+              </>}
               {cf.postalCode !== "hidden" && <label><span className={label}>Postal code{cf.postalCode === "optional" ? " (optional)" : ""}</span><input name="postalCode" required={cf.postalCode === "required"} autoComplete="postal-code" className={field} /></label>}
             </div>
             {ready && user && <label className="mt-4 flex cursor-pointer items-center gap-3 text-sm"><input type="checkbox" checked={saveAddr} onChange={(e) => setSaveAddr(e.target.checked)} className="h-4 w-4 accent-[rgb(var(--accent))]" />Save this address to my account</label>}
