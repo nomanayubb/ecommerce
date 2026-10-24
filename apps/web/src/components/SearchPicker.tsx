@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { latinOnly, noNonLatin } from "@/lib/latin";
 
 /** Searchable picker for a long list (the 550+ TCS cities, the 1,000+ areas of a big city). Type to search: starts-with first, then any word, then text inside a word,
  *  then a close spelling (one or two letters wrong), plus short names from `aliases`. An empty box shows `popular` (or the first entries). An optional `extra` row
@@ -77,7 +78,8 @@ export function SearchPicker({
   useEffect(() => { document.getElementById(`${id}-o${hi}`)?.scrollIntoView({ block: "nearest" }); }, [hi, id]);
 
   const pick = (v: string) => { onChange(v); setQuery(labelOf(v)); setOpen(false); };
-  const type = (v: string) => {
+  const type = (raw: string) => {
+    const v = latinOnly(raw);                                          // English letters only: Urdu and other scripts are dropped
     setQuery(v); setOpen(true);
     if (value && v.toLowerCase() !== labelOf(value).toLowerCase()) onChange("");   // typing again drops the old choice
     const exact = items.find((c) => c.toLowerCase() === v.trim().toLowerCase());
@@ -94,7 +96,7 @@ export function SearchPicker({
   return (
     <div ref={boxRef} className="relative">
       <input
-        ref={inputRef} value={query} onChange={(e) => type(e.target.value)} onFocus={() => setOpen(true)} onKeyDown={key}
+        ref={inputRef} value={query} onChange={(e) => type(e.target.value)} onBeforeInput={noNonLatin} onFocus={() => setOpen(true)} onKeyDown={key}
         role="combobox" aria-expanded={open} aria-controls={`${id}-list`} aria-autocomplete="list" aria-activedescendant={open && rows[hi] ? `${id}-o${hi}` : undefined}
         required={required} autoComplete="off" autoCapitalize="words" spellCheck={false} enterKeyHint="done" placeholder={placeholder}
         className={`${className ?? ""} !text-base sm:!text-sm`}
