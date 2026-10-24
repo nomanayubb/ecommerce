@@ -67,6 +67,7 @@ export function SearchPicker({
   const [query, setQuery] = useState(labelOf(value));
   const [open, setOpen] = useState(false);
   const [hi, setHi] = useState(0);
+  const [err, setErr] = useState("");                                   // shown next to the box when it is left without a real choice
   const inputRef = useRef<HTMLInputElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   const id = useId();
@@ -77,6 +78,7 @@ export function SearchPicker({
 
   useEffect(() => { setQuery(labelOf(value)); }, [value]);              // a value set from outside (saved address, remembered city)
   useEffect(() => { setHi(0); }, [query]);
+  useEffect(() => { if (value) setErr(""); }, [value]);
   useEffect(() => { inputRef.current?.setCustomValidity(required && !value ? invalidMessage : ""); }, [required, value, invalidMessage]);
   useEffect(() => {
     const out = (e: PointerEvent) => { if (!boxRef.current?.contains(e.target as Node)) setOpen(false); };
@@ -88,10 +90,18 @@ export function SearchPicker({
   const pick = (v: string) => { onChange(v); setQuery(labelOf(v)); setOpen(false); };
   const type = (raw: string) => {
     const v = latinOnly(raw);                                          // English letters only: Urdu and other scripts are dropped
-    setQuery(v); setOpen(true);
+    setQuery(v); setOpen(true); setErr("");
     if (value && v.toLowerCase() !== labelOf(value).toLowerCase()) onChange("");   // typing again drops the old choice
     const exact = items.find((c) => c.toLowerCase() === v.trim().toLowerCase());
     if (exact) onChange(exact);
+  };
+  // Leaving the box: a real choice is fine. Text that is not in the list is cleared (no custom entries) and an error appears next to the box; an empty required box gets the same error.
+  const leave = () => {
+    setOpen(false);
+    if (value) { setErr(""); return; }
+    const q = query.trim();
+    if (q) { setErr(`“${q}” is not in the list. ${invalidMessage}`); setQuery(""); }
+    else if (required) setErr(invalidMessage);
   };
   const key = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") { e.preventDefault(); setOpen(true); setHi((h) => Math.min(h + 1, rows.length - 1)); }
@@ -104,12 +114,14 @@ export function SearchPicker({
   return (
     <div ref={boxRef} className="relative">
       <input
-        ref={inputRef} value={query} onChange={(e) => type(e.target.value)} onBeforeInput={noNonLatin} onFocus={() => setOpen(true)} onKeyDown={key}
+        ref={inputRef} value={query} onChange={(e) => type(e.target.value)} onBeforeInput={noNonLatin} onFocus={() => setOpen(true)} onBlur={leave} onInvalid={() => setErr((cur) => cur || invalidMessage)} onKeyDown={key}
         role="combobox" aria-expanded={open} aria-controls={`${id}-list`} aria-autocomplete="list" aria-activedescendant={open && rows[hi] ? `${id}-o${hi}` : undefined}
         required={required} autoComplete="off" autoCapitalize="words" spellCheck={false} enterKeyHint="done" placeholder={placeholder}
-        className={`${className ?? ""} !text-base sm:!text-sm`}
+        aria-invalid={err ? true : undefined} aria-describedby={err ? `${id}-err` : undefined}
+        className={`${className ?? ""} !text-base sm:!text-sm ${err ? "!border-red-400" : ""}`}
       />
       {name && <input type="hidden" name={name} value={value} />}
+      {err && !open && <p id={`${id}-err`} role="alert" className="mt-1.5 text-xs font-medium text-red-400">{err}</p>}
       {open && (
         <ul id={`${id}-list`} role="listbox" className="absolute inset-x-0 top-full z-30 mt-1 max-h-[min(18rem,45vh)] overflow-y-auto overscroll-contain border border-line bg-card shadow-xl">
           {!query.trim() && <li role="presentation" className="px-4 pb-1 pt-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted">{hint(rows.length - (extra ? 1 : 0), items.length)}</li>}
