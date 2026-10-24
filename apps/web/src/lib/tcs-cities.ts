@@ -578,3 +578,18 @@ export const loadAreas = async (cityName: string): Promise<string[]> => {
   } catch { return []; }
 };
 export const AREA_OTHER = "__other";
+
+/** Named streets and roads of a TCS city from OpenStreetMap (one file per city in /public/streets), loaded when the street box is first used. [] when none. */
+const streetCache = new Map<string, string[]>();
+export const loadStreets = async (cityName: string): Promise<string[]> => {
+  const slug = cityName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  if (!slug) return [];
+  const hit = streetCache.get(slug);
+  if (hit) return hit;
+  try {
+    const r = await fetch(`/streets/${slug}.json`);
+    const list: string[] = r.ok ? await r.json() : [];
+    streetCache.set(slug, list);
+    return list;
+  } catch { return []; }
+};

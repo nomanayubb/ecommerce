@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { pkr, type FieldMode, type PayMethod } from "@/lib/api";
 import { useSite } from "@/components/Site";
 import { send } from "@/lib/client";
@@ -10,7 +10,7 @@ import { useCart } from "@/components/CartProvider";
 import { MascotFigure } from "@/components/Mascot";
 import { GiftOptions, PromoField, useCartPricing } from "@/components/CartExtras";
 import { fireConfetti, mascotSay } from "@/lib/motion";
-import { AREA_OTHER, TCS_CITIES, loadAreas, tcsCity } from "@/lib/tcs-cities";
+import { AREA_OTHER, TCS_CITIES, loadAreas, loadStreets, tcsCity } from "@/lib/tcs-cities";
 import { PrintButton } from "@/components/PrintButton";
 import { DispatchNote } from "@/components/Dispatch";
 
@@ -69,6 +69,16 @@ export default function Checkout() {
     return () => { live = false; };
   }, [cityVal]);
 
+  // Street suggestions: loaded when the street box is first used, then filtered as the customer types (at most 30 shown).
+  const [streets, setStreets] = useState<string[]>([]);
+  const [streetQ, setStreetQ] = useState("");
+  const streetHits = useMemo(() => {
+    const q = streetQ.trim().toLowerCase();
+    return q.length < 2 ? [] : streets.filter((x) => x.toLowerCase().includes(q)).slice(0, 30);
+  }, [streets, streetQ]);
+  useEffect(() => { setStreets([]); setStreetQ(""); }, [cityVal]);
+  const wantStreets = () => { const c = tcsCity(cityVal); if (c && streets.length === 0) loadStreets(c).then(setStreets); };
+
   const payload = lines.map((l) => ({ productId: l.productId, variantId: l.variantId, quantity: l.quantity }));
 
   type Addr = (typeof saved)[number];
@@ -104,7 +114,9 @@ export default function Checkout() {
     setError("");
     try {
       const area = String(f.get("area") ?? "");
-      const fullLine1 = [String(f.get("line1") ?? "").trim(), area && area !== AREA_OTHER ? area : ""].filter(Boolean).join(", ");
+      const house = String(f.get("line1") ?? "").trim();
+      const street = String(f.get("street") ?? "").trim();
+      const fullLine1 = [house, street && !house.toLowerCase().includes(street.toLowerCase()) ? street : "", area && area !== AREA_OTHER ? area : ""].filter(Boolean).join(", ");
       const res = await send<{ orderNumber: number; grandTotal: number; paymentInstructions?: { type: string; message: string; method?: string } }>("POST", "checkout/process", {
         items: payload,
         shippingAddress: { name: f.get("name"), email: f.get("email") || undefined, phone: f.get("phone") || undefined, line1: fullLine1 || undefined, city: f.get("city") || undefined, postalCode: f.get("postalCode") || undefined, country: "PK" },
@@ -182,7 +194,8 @@ export default function Checkout() {
               {cf.city !== "hidden" && <label><span className={label}>City{cf.city === "optional" ? " (optional)" : ""}</span>{store.allowManualCity
                 ? <><input name="city" required={cf.city === "required"} list="tcs-cities" autoComplete="address-level2" className={field} onChange={(e) => setCityVal(e.target.value)} /><datalist id="tcs-cities">{TCS_CITIES.map((c) => <option key={c} value={c} />)}</datalist></>
                 : <select name="city" required={cf.city === "required"} defaultValue="" autoComplete="address-level2" className={field} onChange={(e) => setCityVal(e.target.value)}><option value="" disabled>Select your city</option>{TCS_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}</select>}</label>}
-              {cf.city !== "hidden" && areas.length > 0 && <label><span className={label}>Area</span><select key={cityVal} name="area" required defaultValue="" className={field}><option value="" disabled>Select your area</option>{areas.map((a) => <option key={a} value={a}>{a}</option>)}<option value={AREA_OTHER}>My area is not listed</option></select><span className="mt-1 block text-[0.65rem] text-muted">Area names from OpenStreetMap contributors. Put the house number and street in the Address box above.</span></label>}
+              {cf.city !== "hidden" && areas.length > 0 && <label><span className={label}>Area</span><select key={cityVal} name="area" required defaultValue="" className={field}><option value="" disabled>Select your area</option>{areas.map((a) => <option key={a} value={a}>{a}</option>)}<option value={AREA_OTHER}>My area is not listed</option></select><span className="mt-1 block text-[0.65rem] text-muted">Colony, mohalla, block or town names from OpenStreetMap contributors. Put the house number and street in the Address box above.</span></label>}
+              {cf.city !== "hidden" && tcsCity(cityVal) && <label className="sm:col-span-2"><span className={label}>Main road or street (optional)</span><input name="street" list="street-hits" autoComplete="off" placeholder="Start typing, then pick from the list" className={field} onFocus={wantStreets} onChange={(e) => { wantStreets(); setStreetQ(e.target.value); }} /><datalist id="street-hits">{streetHits.map((x) => <option key={x} value={x} />)}</datalist></label>}
               {cf.postalCode !== "hidden" && <label><span className={label}>Postal code{cf.postalCode === "optional" ? " (optional)" : ""}</span><input name="postalCode" required={cf.postalCode === "required"} autoComplete="postal-code" className={field} /></label>}
             </div>
             {ready && user && <label className="mt-4 flex cursor-pointer items-center gap-3 text-sm"><input type="checkbox" checked={saveAddr} onChange={(e) => setSaveAddr(e.target.checked)} className="h-4 w-4 accent-[rgb(var(--accent))]" />Save this address to my account</label>}
