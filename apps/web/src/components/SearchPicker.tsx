@@ -23,7 +23,7 @@ function dl(a: string, b: string): number {
   return d[m][n];
 }
 
-export function searchList(items: string[], query: string, popular: string[] | undefined, aliases: Record<string, string> | undefined, rank?: string[]): string[] {
+export function searchList(items: string[], query: string, popular: string[] | undefined, aliases: Record<string, string> | undefined, rank?: string[], keepOrder?: boolean): string[] {
   const q = norm(query);
   const az = (a: string, b: string) => a.localeCompare(b, "en", { numeric: true, sensitivity: "base" });
   if (!q) return rank ? [...items].sort(az) : popular ? popular.filter((c) => items.includes(c)) : items.slice(0, 25);
@@ -51,6 +51,12 @@ export function searchList(items: string[], query: string, popular: string[] | u
     const pos = (c: string) => { const i = rank.indexOf(c); return i < 0 ? 9999 : i; };
     scored.sort((a, b) => Math.min(a[0], 4) - Math.min(b[0], 4) || pos(a[1]) - pos(b[1]) || az(a[1], b[1]));
     return scored.slice(0, 80).map((x) => x[1]);
+  }
+  if (keepOrder) {
+    // the list is already in order of importance (well-known areas first): how well it matches first, then its place in the list
+    const at = new Map(items.map((c, i) => [c, i]));
+    scored.sort((a, b) => Math.min(a[0], 4) - Math.min(b[0], 4) || (at.get(a[1]) ?? 0) - (at.get(b[1]) ?? 0));
+    return scored.slice(0, 40).map((x) => x[1]);
   }
   scored.sort((a, b) => a[0] - b[0] || a[1].length - b[1].length || a[1].localeCompare(b[1]));
   return scored.slice(0, 40).map((x) => x[1]);
