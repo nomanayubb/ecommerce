@@ -133,6 +133,17 @@ export const pdpSchema = z.object({
 export type PdpSettings = z.infer<typeof pdpSchema>;
 export const DEFAULT_PDP: PdpSettings = pdpSchema.parse({});
 
+/** Boxes the shop owner adds to the checkout form from the admin (for example "Alternate phone", "Preferred delivery time"). Answers are saved with the order. */
+export const customFieldSchema = z.object({
+  id: z.string().regex(/^[a-z0-9_]{1,30}$/),
+  label: z.string().trim().min(1).max(60),
+  type: z.enum(["text", "textarea", "select", "number", "checkbox"]).default("text"),
+  required: z.boolean().default(false),
+  placeholder: z.string().trim().max(80).default(""),
+  options: z.array(z.string().trim().min(1).max(40)).max(20).default([]),
+});
+export type CustomField = z.infer<typeof customFieldSchema>;
+
 export const storeSchema = z.object({
   freeShippingThreshold: z.number().int().min(0).max(10_000_000),
   shippingFee: z.number().int().min(0).max(1_000_000),
@@ -144,12 +155,13 @@ export const storeSchema = z.object({
   checkoutFields: checkoutFieldsSchema.default(DEFAULT_CHECKOUT_FIELDS),
   /** Checkout city box: false = pick from the TCS city list only, true = customers may type any city (the TCS list is offered as suggestions). */
   allowManualCity: z.boolean().default(false),
+  customFields: z.array(customFieldSchema).max(12).default([]),
   paymentMethods: z.array(payMethod).max(8).default(DEFAULT_PAYMENTS),
   pdp: pdpSchema.default(DEFAULT_PDP),
   headerMenuCount: z.number().int().min(1).max(12).default(4),
 });
 export type Store = z.infer<typeof storeSchema>;
-const STORE_DEFAULT: Store = { freeShippingThreshold: 5000, shippingFee: 250, dispatchCutoff: 0, deliveryMinDays: 2, deliveryMaxDays: 4, giftWrapEnabled: false, giftWrapFee: 0, checkoutFields: DEFAULT_CHECKOUT_FIELDS, allowManualCity: false, paymentMethods: DEFAULT_PAYMENTS, pdp: DEFAULT_PDP, headerMenuCount: 4 };
+const STORE_DEFAULT: Store = { freeShippingThreshold: 5000, shippingFee: 250, dispatchCutoff: 0, deliveryMinDays: 2, deliveryMaxDays: 4, giftWrapEnabled: false, giftWrapFee: 0, checkoutFields: DEFAULT_CHECKOUT_FIELDS, allowManualCity: false, customFields: [], paymentMethods: DEFAULT_PAYMENTS, pdp: DEFAULT_PDP, headerMenuCount: 4 };
 
 const load = async <T>(key: string, fallback?: T) => {
   const { rows } = await pool.query("SELECT value FROM site_settings WHERE key = $1", [key]);

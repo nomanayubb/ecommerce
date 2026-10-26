@@ -6,7 +6,7 @@ import { api, pkr, type AdminOrder } from "@/lib/api";
 const STATUSES = ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELED", "REFUNDED"] as const;
 
 interface Detail {
-  customer_email: string | null; shipping_address: { name: string; phone: string; line1: string; city: string; postalCode?: string };
+  customer_email: string | null; shipping_address: { name: string; phone: string; line1: string; city: string; postalCode?: string; custom?: Record<string, string> };
   items: { title: string; sku: string; unit_price: string; quantity: number; total_price: string }[];
   subtotal: string; discount_total: string; shipping_fee: string; gift_wrap_fee: string; grand_total: string;
   coupon_code: string | null; gift_wrap: boolean; gift_message: string | null; notes: string | null;
@@ -24,6 +24,7 @@ function OrderDetail({ id }: { id: string }) {
       <div>
         <p className="mb-1 text-xs font-semibold uppercase text-muted">Ship to</p>
         <p>{a.name} · {a.phone}</p><p>{a.line1}, {a.city} {a.postalCode ?? ""}</p>
+        {a.custom && Object.keys(a.custom).length > 0 && <div className="mt-3"><span className="text-xs font-semibold uppercase text-muted">Extra details</span>{Object.entries(a.custom).map(([k, v]) => <p key={k}><span className="text-muted">{k}:</span> {v}</p>)}</div>}
         {d.customer_email && <p className="text-muted">{d.customer_email}</p>}
         {d.notes && <p className="mt-3"><span className="text-xs font-semibold uppercase text-muted">Customer note</span><br />{d.notes}</p>}
         {d.gift_wrap && <p className="mt-3 rounded border border-line p-2"><span className="text-xs font-semibold uppercase text-muted">Gift wrap</span><br />{d.gift_message || "No message"}</p>}

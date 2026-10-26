@@ -30,6 +30,7 @@ const checkoutSchema = z.object({
   couponCode: z.string().max(30).optional(),
   giftWrap: z.boolean().optional(),
   giftMessage: z.string().trim().max(300).optional(),
+  customFields: z.record(z.string().max(40), z.string().max(500)).optional(),   // answers to the boxes the shop owner added in admin, by box id
 });
 
 /** Optional auth: guests allowed, but a valid token enables wholesale pricing and links the order. */
@@ -59,6 +60,17 @@ export const checkoutRoutes: FastifyPluginAsync = async (app) => {
     if (cf.email !== "hidden" && a.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.email)) return reply.status(400).send({ success: false, error: "Please enter a valid email address" });
     if (cf.phone !== "hidden" && a.phone && a.phone.replace(/\D/g, "").length < 7) return reply.status(400).send({ success: false, error: "Please enter a valid phone number" });
     if (cf.note === "required" && !b.notes) return reply.status(400).send({ success: false, error: "A delivery note is required" });
+    // The shop owner's own boxes (admin, Settings, Checkout form): check them against the definitions and keep the answers under the box label.
+    const custom: Record<string, string> = {};
+    for (const d of (await loadStore()).customFields ?? []) {
+      const raw = String(b.customFields?.[d.id] ?? "").trim();
+      if (!raw) { if (d.required) return reply.status(400).send({ success: false, error: `${d.label} is required` }); continue; }
+      if (d.type === "select" && !d.options.includes(raw)) return reply.status(400).send({ success: false, error: `Please choose a valid option for ${d.label}` });
+      if (d.type === "number" && !/^-?\d+([.,]\d+)?$/.test(raw)) return reply.status(400).send({ success: false, error: `${d.label} must be a number` });
+      if (d.type === "checkbox" && raw !== "Yes") { if (d.required) return reply.status(400).send({ success: false, error: `${d.label} must be ticked` }); continue; }
+      custom[d.label] = raw;
+    }
+    if (Object.keys(custom).length) (b.shippingAddress as Record<string, unknown>).custom = custom;
     const method = (await loadStore()).paymentMethods.find((m) => m.id === b.paymentMethod && m.enabled);
     if (!method) return reply.status(400).send({ success: false, error: `${b.paymentMethod} is not available` });
     const user = await optionalUser(req);

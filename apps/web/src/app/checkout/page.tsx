@@ -71,6 +71,10 @@ export default function Checkout() {
     loadAreas(c).then((l) => { if (live) setAreas(l); });
     return () => { live = false; };
   }, [cityVal]);
+  // Boxes the shop owner added in admin (Settings, Checkout form): answers kept by box id, sent with the order and saved on it.
+  const customDefs = store.customFields ?? [];
+  const [custom, setCustom] = useState<Record<string, string>>({});
+  const setAnswer = (id: string, v: string) => { setCustom((c) => ({ ...c, [id]: v })); need("c:" + id, false); };
   // Name, phone, city, house, street and area are mandatory: leaving one empty (or sending the form with it empty) shows a red message right under the box.
   const [miss, setMiss] = useState<Record<string, boolean>>({});
   const need = (k: string, empty: boolean) => setMiss((m) => (m[k] === empty ? m : { ...m, [k]: empty }));
@@ -133,6 +137,7 @@ export default function Checkout() {
         items: payload,
         shippingAddress: { name: f.get("name"), email: f.get("email") || undefined, phone: f.get("phone") || undefined, line1: fullLine1 || undefined, city: f.get("city") || undefined, postalCode: f.get("postalCode") || undefined, country: "PK" },
         notes: extras.note || undefined,
+        customFields: customDefs.length ? custom : undefined,
         couponCode: extras.coupon || undefined,
         giftWrap: extras.giftWrap || undefined,
         giftMessage: extras.giftWrap ? extras.giftMessage || undefined : undefined,
@@ -200,7 +205,7 @@ export default function Checkout() {
             )}
             <div className="grid gap-4 sm:grid-cols-2">
               <label><span className={label}>Full name</span><input name="name" required autoComplete="name" className={`${field} ${miss.name ? "!border-red-400" : ""}`} {...latinInput} {...watch("name", true)} onChange={() => need("name", false)} />{bad("name", "Please enter your full name")}</label>
-              {cf.email !== "hidden" && <label className="sm:col-span-2"><span className={label}>Email{cf.email === "optional" ? " (optional)" : ""}</span><input name="email" type="email" required={cf.email === "required"} autoComplete="email" className={field} /></label>}
+              {cf.email !== "hidden" && <label className="sm:col-span-2"><span className={label}>Email{cf.email === "optional" ? " (optional)" : ""}</span><input name="email" type="email" required={cf.email === "required"} autoComplete="email" className={`${field} ${miss.email ? "!border-red-400" : ""}`} {...watch("email", cf.email === "required")} onChange={() => need("email", false)} />{bad("email", "Please enter your email address")}</label>}
               {cf.phone !== "hidden" && <label><span className={label}>Phone{cf.phone === "optional" ? " (optional)" : ""}</span><input name="phone" required={cf.phone === "required"} type="tel" autoComplete="tel" placeholder="03XX XXXXXXX" minLength={7} className={`${field} ${miss.phone ? "!border-red-400" : ""}`} {...watch("phone", cf.phone === "required")} onChange={(e) => { need("phone", false); const d = e.target.value.replace(/\D/g, ""); setPhoneHint(d.length > 0 && !/^(92|0)?3\d{9}$/.test(d) && !/^0\d{9,10}$/.test(d)); }} />{phoneHint && <span className="mt-1 block text-xs text-accent">Mobile numbers look like 03XX XXXXXXX. Please double-check so the courier can reach you.</span>}{bad("phone", "Please enter your phone number")}</label>}
               {(cf.city !== "hidden" || cf.house !== "hidden" || cf.street !== "hidden" || cf.area !== "hidden" || cf.extra !== "hidden") && <fieldset className="grid gap-4 border border-line p-4 sm:col-span-2 sm:grid-cols-2 sm:p-5">
               <legend className="px-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-accent">Address</legend>
@@ -222,7 +227,26 @@ export default function Checkout() {
                 </div>
               </>
               </fieldset>}
-              {cf.postalCode !== "hidden" && <label><span className={label}>Postal code{cf.postalCode === "optional" ? " (optional)" : ""}</span><input name="postalCode" required={cf.postalCode === "required"} autoComplete="postal-code" className={field} /></label>}
+              {cf.postalCode !== "hidden" && <label><span className={label}>Postal code{cf.postalCode === "optional" ? " (optional)" : ""}</span><input name="postalCode" required={cf.postalCode === "required"} autoComplete="postal-code" className={`${field} ${miss.postal ? "!border-red-400" : ""}`} {...watch("postal", cf.postalCode === "required")} onChange={() => need("postal", false)} />{bad("postal", "Please enter your postal code")}</label>}
+              {customDefs.map((d) => {
+                const val = custom[d.id] ?? "";
+                const err = miss["c:" + d.id];
+                const msg = d.type === "checkbox" ? `Please tick “${d.label}”` : d.type === "select" ? `Please choose ${d.label}` : `Please fill in ${d.label}`;
+                const cls = `${field} ${err ? "!border-red-400" : ""}`;
+                const watchC = { onBlur: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => { if (d.required) need("c:" + d.id, d.type === "checkbox" ? val !== "Yes" : !e.target.value.trim()); }, onInvalid: () => need("c:" + d.id, true) };
+                if (d.type === "checkbox") {
+                  return <label key={d.id} className="flex cursor-pointer items-start gap-3 text-sm sm:col-span-2"><input type="checkbox" checked={val === "Yes"} required={d.required} onChange={(e) => setAnswer(d.id, e.target.checked ? "Yes" : "")} onInvalid={watchC.onInvalid} className="mt-0.5 h-4 w-4 accent-[rgb(var(--accent))]" /><span><span>{d.label}{d.required ? "" : " (optional)"}</span>{err && <span role="alert" className="mt-1 block text-xs font-medium text-red-400">{msg}</span>}</span></label>;
+                }
+                return (
+                  <label key={d.id} className={d.type === "textarea" ? "sm:col-span-2" : ""}>
+                    <span className={label}>{d.label}{d.required ? "" : " (optional)"}</span>
+                    {d.type === "textarea" ? <textarea value={val} onChange={(e) => setAnswer(d.id, latinOnly(e.target.value).slice(0, 500))} onBeforeInput={noNonLatin as never} required={d.required} rows={3} placeholder={d.placeholder} className={cls} {...watchC} />
+                      : d.type === "select" ? <select value={val} onChange={(e) => setAnswer(d.id, e.target.value)} required={d.required} className={cls} {...watchC}><option value="">{d.placeholder || "Select…"}</option>{d.options.map((o) => <option key={o} value={o}>{o}</option>)}</select>
+                      : <input value={val} onChange={(e) => setAnswer(d.id, d.type === "number" ? e.target.value.replace(/[^0-9.,-]/g, "").slice(0, 30) : latinOnly(e.target.value).slice(0, 200))} onBeforeInput={noNonLatin} required={d.required} inputMode={d.type === "number" ? "decimal" : undefined} placeholder={d.placeholder} autoComplete="off" className={cls} {...watchC} />}
+                    {err && <span role="alert" className="mt-1.5 block text-xs font-medium text-red-400">{msg}</span>}
+                  </label>
+                );
+              })}
             </div>
             {ready && user && <label className="mt-4 flex cursor-pointer items-center gap-3 text-sm"><input type="checkbox" checked={saveAddr} onChange={(e) => setSaveAddr(e.target.checked)} className="h-4 w-4 accent-[rgb(var(--accent))]" />Save this address to my account</label>}
             <div className="mt-4"><GiftOptions /></div>

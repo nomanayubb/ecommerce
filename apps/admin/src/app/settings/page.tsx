@@ -23,6 +23,7 @@ type Visuals = {
 };
 const DEFAULT_VISUALS: Visuals = { cursor: "none", background: "none", depth: "flat", transition: "none", imageHover: "zoom", cardStage: "round", particles: "none", scrollIndicator: "bar", headerStyle: "flat", loader: "ring", addSplash: false, sound: false, mascotOutfit: "none", mascotVoice: false, splash: false, logoMorph: false, logoSparkles: false, watermark: false, cardGlow: false, priceCountUp: false };
 import { ProductPageSettings, type PdpValues } from "@/components/ProductPageSettings";
+import { CustomFieldsEditor, type CustomField } from "@/components/CustomFieldsEditor";
 type FieldMode = "required" | "optional" | "hidden";
 type CheckoutFields = Record<"email" | "phone" | "address" | "city" | "postalCode" | "note" | "house" | "street" | "area" | "extra", FieldMode>;
 interface PayMethod { id: "COD" | "EASYPAISA" | "JAZZCASH" | "BANK_TRANSFER"; label: string; description: string; instructions: string; enabled: boolean }
@@ -33,7 +34,7 @@ const PAY_DEFAULTS: PayMethod[] = [
   { id: "JAZZCASH", label: "JazzCash", description: "Send the amount from your JazzCash app.", instructions: "", enabled: false },
   { id: "BANK_TRANSFER", label: "Bank transfer", description: "Transfer to our bank account.", instructions: "", enabled: false },
 ];
-interface Store { allowManualCity?: boolean; headerMenuCount?: number; pdp?: Partial<PdpValues>; checkoutFields?: CheckoutFields; paymentMethods?: PayMethod[]; freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number; dispatchCutoff?: number; deliveryMinDays?: number; deliveryMaxDays?: number }
+interface Store { customFields?: CustomField[]; allowManualCity?: boolean; headerMenuCount?: number; pdp?: Partial<PdpValues>; checkoutFields?: CheckoutFields; paymentMethods?: PayMethod[]; freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number; dispatchCutoff?: number; deliveryMinDays?: number; deliveryMaxDays?: number }
 interface Footer { columns: { title: string; links: { label: string; href: string }[] }[]; showNewsletter: boolean; showPerks: boolean; showPayments: boolean; note: string }
 
 // Keep in sync with apps/web/src/themes/index.ts
@@ -136,6 +137,7 @@ export default function Settings() {
             </select>
           </label>
         </div>
+        <CustomFieldsEditor value={store.customFields ?? []} onChange={(v) => setStore({ ...store, customFields: v })} input={input} label={label} />
       </Group>
 
       <Group title="Payment methods">
