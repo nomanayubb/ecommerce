@@ -1,6 +1,7 @@
 // Imports a whole partner Shopify store (its collections as sub collections, all products, all photos, product types as filter tags) under ALL ORGANIC.
 //   npx tsx scripts/import-store.ts <store-url> "<sub collection name>"            products saved as DRAFT, collections hidden
 //   npx tsx scripts/import-store.ts <store-url> "<sub collection name>" --publish  publishes that store's products and shows its collections
+//   add --skip "<regex>" to leave out collections whose handle or title matches (sale shelves, upsells, catch-all "shop" shelves)
 // Prices get the shop's sliding mark-up (scripts/markup.ts), photos are shrunk to WebP (max 900 px) into apps/web/public/cs/ (not in git). Resumable.
 import fs from "node:fs";
 import path from "node:path";
@@ -25,6 +26,8 @@ const opt = (n: string) => { const i = args.indexOf(`--${n}`); return i >= 0 ? a
 
 // No real stock figures are known, so an available item gets a large number (a small one would stop shoppers ordering more than that); sold-out items stay at 0.
 const STOCK = 9999;
+// --rate N: the partner store sells in another currency (for example USD); every price is multiplied by N (rupees per unit) before the mark-up.
+const RATE = Number(opt("rate") ?? 1) || 1;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const slugify = (s: string) => s.toLowerCase().replace(/&/g, " and ").replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 const decode = (s: string) => s.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;|&rsquo;|&lsquo;/g, "'");
@@ -66,7 +69,7 @@ type KProduct = { id: number; title: string; handle: string; body_html: string |
 
 // ---- 1. collections: the partner's flat list arranged into a menu: the store's name under ALL ORGANIC
 const PARENT_SLUG = "all-organic";
-const collections = (await getJson<{ collections: { handle: string; title: string }[] }>(`${BASE}/collections.json?limit=250`))!.collections.filter((c) => !/^(frontpage|home-?page|all)$/i.test(c.handle));   // catch-all shelves are not copied
+const collections = (await getJson<{ collections: { handle: string; title: string }[] }>(`${BASE}/collections.json?limit=250`))!.collections.filter((c) => !(/^(frontpage|home-?page|all)$/i.test(c.handle) && /^(frontpage|home ?page|all|home|featured.*)$/i.test(c.title.trim())) && !(opt("skip") && new RegExp(opt("skip")!, "i").test(`${c.handle} ${c.title}`)));   // catch-all shelves are not copied
 console.log(`partner collections: ${collections.length}`);
 
 const usedSlug = new Set<string>((await pool.query("SELECT slug FROM categories")).rows.map((r) => r.slug as string));
@@ -157,11 +160,11 @@ for (let i = 0; i < todo.length; i += CH) {
   for (const { p, slug } of plan) {
     const v0 = p.variants[0]; if (!v0) continue;
     const title = clean1252(noQM(decode(p.title))).slice(0, 200);
-    const base = Math.round(Number(v0.price) || 0);
+    const base = Math.round((Number(v0.price) || 0) * RATE);
     const pct = markupPct(base);
     const up = (n: number) => Math.round(n * (1 + pct / 100));
     const sell = up(base);
-    const cmp = up(Math.round(Number(v0.compare_at_price) || 0));
+    const cmp = up(Math.round((Number(v0.compare_at_price) || 0) * RATE));
     const marked = cmp > sell ? cmp : sell;
     let desc = clean1252(noQM(strip(p.body_html ?? "")));
     if (desc.length < 40) desc = `${title}. Buy ${title} online in Pakistan at AVERIXA with cash on delivery and delivery across Pakistan.`;
@@ -187,7 +190,7 @@ for (let i = 0; i < todo.length; i += CH) {
           const attrs: Record<string, string> = {};
           p.options.forEach((o, k) => { const val = [v.option1, v.option2, v.option3][k]; if (val && o.name !== "Title") attrs[clean1252(noQM(o.name)).toLowerCase()] = clean1252(noQM(val)); });
           const ix = v.featured_image?.position ? v.featured_image.position - 1 : null;
-          const vp = Math.round(Number(v.price) || 0);
+          const vp = Math.round((Number(v.price) || 0) * RATE);
           await c.query(
             "INSERT INTO product_variants (product_id, title, sku, price, stock_quantity, variant_attributes, image_index) VALUES ($1,$2,$3,$4,$5,$6,$7)",
             [pid, clean1252(noQM(v.title)).slice(0, 200), uniqueSku(v.sku || `CS-${v.id}`), vp ? Math.round(vp * (1 + markupPct(vp) / 100)) : sell, v.available ? STOCK : 0, JSON.stringify(attrs), ix !== null && ix < images.length ? ix : null]
