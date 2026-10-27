@@ -48,7 +48,7 @@ export function brandingCss(b: Branding): string {
     `--brand:${str(brandDark)};--on-brand:${onColor(brandDark)};--accent:${str(brandDark)};`;
 
   return (
-    `html:root{${light}--dark:${str(dark)};--on-dark:${str(cream)};--accent-bright:${str(brandDark)};--radius:${radius}px;--font:${font};--font-heading:${heading};--maxw:${maxw}}` +
+    `html:root{${light}${isHex(b.brandColorDark) && b.brandColorDark.toLowerCase() !== "#d4aa46" ? `--logo-glow:${str(brandDark)};` : ""}--dark:${str(dark)};--on-dark:${str(cream)};--accent-bright:${str(brandDark)};--radius:${radius}px;--font:${font};--font-heading:${heading};--maxw:${maxw}}` +
     `html[data-theme="dark"]{${darkTheme(dark)}}` +
     `html[data-theme="oled"]{${darkTheme(BLACK)}}`
   );

@@ -484,7 +484,7 @@ html[data-contrast] .glass, html[data-contrast] .header-bar, html[data-contrast]
   background: linear-gradient(105deg, transparent 36%, rgb(var(--accent-bright)) 50%, transparent 64%); background-size: 260% 100%; background-position: 160% 0; animation: logo-sheen 2.25s linear 0s infinite; }
 @keyframes logo-sheen { 0% { background-position: 160% 0; } 100% { background-position: -60% 0; } }
 .logo-full img { animation: logo-glow 4s ease-in-out infinite; }
-@keyframes logo-glow { 0%, 100% { filter: drop-shadow(0 0 0 rgba(200, 156, 58, 0)); } 50% { filter: drop-shadow(0 0 7px rgba(200, 156, 58, .38)); } }
+@keyframes logo-glow { 0%, 100% { filter: drop-shadow(0 0 0 rgb(var(--logo-glow, 200 156 58) / 0)); } 50% { filter: drop-shadow(0 0 7px rgb(var(--logo-glow, 200 156 58) / .38)); } }
 @media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) :is(.logo-sheen, .logo-full img) { animation: none; } html:not([data-motion-pref="on"]) .logo-sheen { display: none; } }
 [data-motion="subtle"] :is(.logo-sheen, .logo-full img), [data-motion="off"] :is(.logo-sheen, .logo-full img) { animation: none !important; }
 /* Header logo drifts a little to the right and back, like the footer logo breathes. Transform only, so nothing around it moves. */
@@ -578,3 +578,6 @@ html[data-stage="square"] .pcard-disc, html[data-stage="square"] .pcard-ring, ht
 [data-card="catalog"] .pcard[data-stock="out"] > div:last-child > .mt-2::after { content: "Out of stock"; border-color: rgb(var(--line)); color: rgb(var(--muted)); }
 [data-card="catalog"] .pcard > div:last-child::after { content: "View details"; display: block; margin-top: .9rem; padding: .6rem 0; text-align: center; border: 1px solid rgb(var(--brand)); background: rgb(var(--brand)); color: rgb(var(--on-brand)); font-size: .68rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; transition: background .2s, color .2s; }
 [data-card="catalog"] .pcard:hover > div:last-child::after { background: transparent; color: rgb(var(--brand)); }
+/* Catalog cards: no gold hover frame, corner marks or glow from the older card rules (the colour comes from the store's own tokens). */
+[data-card="catalog"] .pcard:has(.pcard-stage):hover { border-color: rgb(var(--accent) / .7) !important; box-shadow: none !important; }
+[data-card="catalog"] .pcard::before, [data-card="catalog"] .pcard::after, [data-card="catalog"] .pcard-img::after { display: none !important; }
