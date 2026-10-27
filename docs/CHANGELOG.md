@@ -617,3 +617,7 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 ## Checkout: Email and Postal code boxes hidden (2026-10-27)
 - Owner: remove the Email and Postal code boxes from checkout, but the admin must be able to add them back. Done by setting both to "Hidden" in the store setting (`site_settings` key `store`, `checkoutFields.email` / `.postalCode`); no code change. The admin can switch either back to Shown and required / Shown optional in Settings, Checkout form. The server does not ask for hidden boxes.
 - Verified: API returns both as hidden; the live checkout page has no Email or Postal code input (the footer newsletter email box is unrelated and unchanged). Not tested: placing a real order without them.
+
+## New collection ALL ORGANIC in the menu (2026-10-27)
+- Owner: make a new collection menu called ALL ORGANIC under "More". Done: new top-level collection `ALL ORGANIC` (slug `all-organic`, sort order after the last one, active, no products yet) inserted into `categories`; because the header shows only the first few menus (Settings, Menu links count) and puts the rest under "More", it appears there (and in the phone menu). Data only, no code change. Products are added to it from admin > Products (collections box) or admin > Collections.
+- Verified: category tree API lists it last; `/collections/all-organic` returns 200 and shows the name; the menu on `/products` mentions it after the 5-minute menu cache refreshed. Not checked by eye: how the More dropdown looks with it, and the empty collection page layout.
