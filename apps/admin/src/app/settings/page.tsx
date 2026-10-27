@@ -8,7 +8,7 @@ interface Branding {
   name: string; tagline: string; logoUrl: string; logoUrlDark: string; brandColor: string; brandColorDark: string; accentColor: string;
   radius: number; font: Font; headingFont: "inherit" | Font; defaultTheme: "light" | "dark" | "oled"; announcement: string; announcements: string[];
   pack: string; motion: "off" | "subtle" | "full"; motionPolicy: "respect" | "always"; inkColor: string; creamColor: string; darkColor: string; heroText: string; promiseText: string; footerText: string;
-  buttonStyle: "solid" | "outline" | "pill"; cardStyle: "classic" | "minimal" | "compact" | "soft"; badgeStyle: "solid" | "outline" | "pill"; layoutWidth: "boxed" | "wide" | "full";
+  buttonStyle: "solid" | "outline" | "pill"; cardStyle: "classic" | "minimal" | "compact" | "soft" | "catalog"; badgeStyle: "solid" | "outline" | "pill"; layoutWidth: "boxed" | "wide" | "full";
   headerCta: { label: string; href: string };
   visuals: Visuals;
   searchHints: string[]; navLinks: { label: string; href: string }[]; effects: Record<"ripple" | "flyToCart" | "backToTop" | "cookieNotice" | "newsletterPopup" | "iconBadges" | "whatsappButton", boolean>;
@@ -232,7 +232,7 @@ export default function Settings() {
         <label className={label}>Corner radius: {b.radius}px<input type="range" min={0} max={28} value={b.radius} onChange={(e) => set("radius", Number(e.target.value))} className="w-full" /></label>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className={label}>Button style<select className={input} value={b.buttonStyle} onChange={(e) => set("buttonStyle", e.target.value as Branding["buttonStyle"])}><option value="solid">Solid</option><option value="outline">Outline</option><option value="pill">Solid, pill-shaped</option></select></label>
-          <label className={label}>Product card style<select className={input} value={b.cardStyle} onChange={(e) => set("cardStyle", e.target.value as Branding["cardStyle"])}><option value="classic">Classic (framed)</option><option value="minimal">Minimal (no frame)</option><option value="soft">Soft (raised, neumorphic)</option><option value="compact">Compact (square photo)</option></select></label>
+          <label className={label}>Product card style<select className={input} value={b.cardStyle} onChange={(e) => set("cardStyle", e.target.value as Branding["cardStyle"])}><option value="classic">Classic (framed)</option><option value="catalog">Catalog (brand, title, price, stock, View details)</option><option value="minimal">Minimal (no frame)</option><option value="soft">Soft (raised, neumorphic)</option><option value="compact">Compact (square photo)</option></select></label>
           <label className={label}>Discount badge style<select className={input} value={b.badgeStyle} onChange={(e) => set("badgeStyle", e.target.value as Branding["badgeStyle"])}><option value="solid">Solid</option><option value="outline">Outline</option><option value="pill">Pill</option></select></label>
           <label className={label}>Page width<select className={input} value={b.layoutWidth} onChange={(e) => set("layoutWidth", e.target.value as Branding["layoutWidth"])}><option value="boxed">Boxed (1280px)</option><option value="wide">Wide (1600px)</option><option value="full">Full width</option></select></label>
         </div>

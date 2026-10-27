@@ -19,7 +19,7 @@ export function ProductCard({ p, priority = false }: { p: ProductSummary; priori
   return (
     <Tilt>
       <div className="group/card relative [container-type:inline-size]">
-      <Link href={`/products/${p.slug}`} className="lift pcard group block border border-line bg-card">
+      <Link href={`/products/${p.slug}`} data-stock={soldOut ? "out" : "in"} className="lift pcard group block border border-line bg-card">
         <div className="pcard-img pcard-stage relative aspect-[4/5] overflow-hidden">
           <span className="pcard-ring" aria-hidden />
           <div className={`pcard-disc ${p.images[0]?.includes("/kk/c/") ? "is-cut" : ""}`}>
