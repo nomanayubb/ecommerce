@@ -112,7 +112,7 @@ function Hero({ s, ctx }: P) {
             {v.imageUrlMobile && <source media="(max-width: 639px)" srcSet={String(v.imageUrlMobile)} />}
             <img src={v.imageUrl} alt="" className="h-full w-full object-cover" />
           </picture>
-          <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--dark))] via-[rgb(var(--dark))]/30 to-transparent sm:bg-gradient-to-r sm:from-black/75 sm:via-black/40 sm:to-transparent" />
+          <div className="absolute inset-0 bg-[linear-gradient(0deg,rgb(var(--dark))_0%,transparent_20%)] sm:bg-[linear-gradient(90deg,rgba(0,0,0,.6)_0%,rgba(0,0,0,.25)_35%,transparent_48%)]" />
         </div>
         {parts}<div className="relative -mt-6 sm:mt-0">{copy}</div>
       </section>

@@ -1,4 +1,4 @@
-// Builds the AVERIXA ELECTRONICS logo set from brand-source/logo-electronics.jpg into apps/web/public/brand/electronics/ (the main shop's logo files are NOT touched):
+// Builds the AVERIXA ELECTRONICS logo set from brand-source/logo-electronics.jpg into apps/web/public/brand/electronics/ (the electronics storefront copy; the main shop's logo files are NOT touched):
 // the cream background is keyed out, the old tagline is replaced by "ELECTRONICS", and a light-theme and a dark-theme version of each file is written.
 //   npx tsx scripts/build-electronics-logo.ts
 import fs from "node:fs";
@@ -8,7 +8,7 @@ import sharp from "sharp";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const SRC = path.join(root, "brand-source/logo-electronics.jpg");
-const OUT = path.join(root, "apps/web/public/brand/electronics");
+const OUT = path.join(root, "apps/web-electronics/public/brand/electronics");
 fs.mkdirSync(OUT, { recursive: true });
 
 // 1. flat, solid-colour version of the glossy 3D logo (the shop's own style is flat and solid, not gradients):
@@ -18,7 +18,8 @@ const SS = 2;
 const src0 = await sharp(SRC).metadata();
 const { data, info } = await sharp(SRC).removeAlpha().resize({ width: src0.width! * SS, height: src0.height! * SS, kernel: "lanczos3" }).raw().toBuffer({ resolveWithObject: true });
 const { width: W, height: H } = info;
-const BLUE = [47, 93, 170], SILVER = [184, 190, 199];
+// colours per theme: deeper blue and steel grey on the white header (the pale silver was too faint there), lighter on dark
+const COLORS = { light: { BLUE: [31, 79, 168], SILVER: [96, 108, 124] }, dark: { BLUE: [92, 148, 240], SILVER: [196, 202, 212] } };
 const N = W * H;
 const isBg = new Uint8Array(N), blue = new Uint8Array(N);
 for (let i = 0; i < N; i++) {
@@ -31,22 +32,22 @@ for (let i = 0; i < N; i++) {
 const y0 = 790 * SS;                                              // the old tagline and its lines
 const dil = (src: Uint8Array) => { const o = new Uint8Array(N); for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const i = y * W + x; o[i] = src[i] | src[i - 1] | src[i + 1] | src[i - W] | src[i + W] | src[i - W - 1] | src[i - W + 1] | src[i + W - 1] | src[i + W + 1]; } return o; };
 const blueNear = dil(dil(blue));
-const mask = new Uint8Array(N * 4);                          // 0/255 shape mask, softened below for anti-aliased edges
-const rgba = Buffer.alloc(N * 4);
-for (let i = 0; i < N; i++) {
-  const inside = !isBg[i] && Math.floor(i / W) < y0;
-  const c = blueNear[i] ? BLUE : SILVER;
-  rgba[i * 4] = c[0]; rgba[i * 4 + 1] = c[1]; rgba[i * 4 + 2] = c[2]; rgba[i * 4 + 3] = inside ? 255 : 0;
-}
-const flat = new Uint8Array(N); for (let i = 0; i < N; i++) flat[i] = rgba[i * 4 + 3];
-const soft = await sharp(Buffer.from(flat), { raw: { width: W, height: H, channels: 1 } }).blur(0.9 * SS).extractChannel(0).raw().toBuffer({ resolveWithObject: true });
-if (soft.info.channels !== 1 || soft.data.length !== N) throw new Error(`unexpected mask shape: ${soft.info.channels} channels, ${soft.data.length} bytes`);
-const alpha = soft.data;
-for (let i = 0; i < N; i++) rgba[i * 4 + 3] = alpha[i] < 40 ? 0 : alpha[i] > 215 ? 255 : alpha[i];
-void mask;
-const keyed = sharp(await sharp(rgba, { raw: { width: W, height: H, channels: 4 } }).resize({ width: W / SS, height: H / SS, kernel: "lanczos3" }).png().toBuffer());
-const part = async (top: number, bottom: number) => sharp(await keyed.clone().extract({ left: 0, top, width: W / SS, height: bottom - top }).png().toBuffer()).trim({ threshold: 1 }).png().toBuffer();
-const mark = await part(0, 625), word = await part(625, 790);       // the "A + cart" symbol and the AVERIXA letters
+const buildParts = async (BLUE: number[], SILVER: number[]) => {
+  const rgba = Buffer.alloc(N * 4);
+  for (let i = 0; i < N; i++) {
+    const inside = !isBg[i] && Math.floor(i / W) < y0;
+    const c = blueNear[i] ? BLUE : SILVER;
+    rgba[i * 4] = c[0]; rgba[i * 4 + 1] = c[1]; rgba[i * 4 + 2] = c[2]; rgba[i * 4 + 3] = inside ? 255 : 0;
+  }
+  const flat = new Uint8Array(N); for (let i = 0; i < N; i++) flat[i] = rgba[i * 4 + 3];
+  const soft = await sharp(Buffer.from(flat), { raw: { width: W, height: H, channels: 1 } }).blur(0.9 * SS).extractChannel(0).raw().toBuffer({ resolveWithObject: true });
+  if (soft.info.channels !== 1 || soft.data.length !== N) throw new Error(`unexpected mask shape: ${soft.info.channels} channels, ${soft.data.length} bytes`);
+  const alpha = soft.data;
+  for (let i = 0; i < N; i++) rgba[i * 4 + 3] = alpha[i] < 40 ? 0 : alpha[i] > 215 ? 255 : alpha[i];
+  const keyed = sharp(await sharp(rgba, { raw: { width: W, height: H, channels: 4 } }).resize({ width: W / SS, height: H / SS, kernel: "lanczos3" }).png().toBuffer());
+  const part = async (top: number, bottom: number) => sharp(await keyed.clone().extract({ left: 0, top, width: W / SS, height: bottom - top }).png().toBuffer()).trim({ threshold: 1 }).png().toBuffer();
+  return { mark: await part(0, 625), word: await part(625, 790) };      // the "A + cart" symbol and the AVERIXA letters
+};
 
 const INK = "#1b1d1c", CREAM = "#f5f1e6";
 const textSvg = (w: number, h: number, size: number, spacing: number, color: string, lines: boolean) => Buffer.from(
@@ -56,9 +57,9 @@ const textSvg = (w: number, h: number, size: number, spacing: number, color: str
   `</g></svg>`);
 
 const save = async (img: sharp.Sharp, name: string) => { await img.clone().webp({ quality: 92, alphaQuality: 100 }).toFile(path.join(OUT, `${name}.webp`)); await img.clone().png().toFile(path.join(OUT, `${name}.png`)); };
-const wm = await sharp(word).metadata(), mm = await sharp(mark).metadata();
-
-for (const [suffix, color] of [["", INK], ["-dark", CREAM]] as const) {
+let mark!: Buffer, word!: Buffer, wm!: sharp.Metadata, mm!: sharp.Metadata;
+for (const [suffix, color, pal] of [["", INK, COLORS.light], ["-dark", CREAM, COLORS.dark]] as const) {
+  ({ mark, word } = await buildParts(pal.BLUE, pal.SILVER)); wm = await sharp(word).metadata(); mm = await sharp(mark).metadata();
   // full logo: symbol, wordmark, then "ELECTRONICS" between two lines, as in the original layout
   const GAP = 40, TAG_H = 60, w = Math.max(wm.width!, mm.width!);
   const canvasH = mm.height! + GAP + wm.height! + GAP + TAG_H;

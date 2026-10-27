@@ -599,3 +599,8 @@ body { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org
 [data-card="catalog"] .cbtn-add svg, [data-card="catalog"] .cbtn-view svg { width: 16px !important; height: 16px !important; }
 [data-card="catalog"] .cbtn-add:hover, [data-card="catalog"] .cbtn-view:hover { transform: scale(1.08); }
 [data-card="catalog"] .cbtn-add.is-done { background: rgb(var(--brand)) !important; color: rgb(var(--on-brand)) !important; }
+
+/* ---- Electronics: calmer hero headline, and a logo that stays crisp (no scale resampling, soft thin glow) ---- */
+.hero-title { font-size: clamp(1.75rem, 4.4vw, 3rem) !important; line-height: 1.15 !important; letter-spacing: .02em !important; }
+@keyframes logo-sway { 50% { transform: translateX(4px); opacity: .94; } }
+@keyframes logo-glow { 0%, 100% { filter: drop-shadow(0 0 0 rgb(var(--accent-bright) / 0)); } 50% { filter: drop-shadow(0 0 3px rgb(var(--accent-bright) / .28)); } }
