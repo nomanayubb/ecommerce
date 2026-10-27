@@ -66,7 +66,7 @@ type KProduct = { id: number; title: string; handle: string; body_html: string |
 
 // ---- 1. collections: the partner's flat list arranged into a menu: the store's name under ALL ORGANIC
 const PARENT_SLUG = "all-organic";
-const collections = (await getJson<{ collections: { handle: string; title: string }[] }>(`${BASE}/collections.json?limit=250`))!.collections;
+const collections = (await getJson<{ collections: { handle: string; title: string }[] }>(`${BASE}/collections.json?limit=250`))!.collections.filter((c) => !/^(frontpage|home-?page|all)$/i.test(c.handle));   // catch-all shelves are not copied
 console.log(`partner collections: ${collections.length}`);
 
 const usedSlug = new Set<string>((await pool.query("SELECT slug FROM categories")).rows.map((r) => r.slug as string));
@@ -194,7 +194,7 @@ for (let i = 0; i < todo.length; i += CH) {
           );
         }
       }
-      for (const cid of productCats.get(p.handle) ?? []) await c.query("INSERT INTO product_categories (product_id, category_id) VALUES ($1,$2) ON CONFLICT DO NOTHING", [pid, cid]);
+      for (const cid of productCats.get(p.handle)?.size ? productCats.get(p.handle)! : [rootId]) await c.query("INSERT INTO product_categories (product_id, category_id) VALUES ($1,$2) ON CONFLICT DO NOTHING", [pid, cid]);
       await c.query("COMMIT"); done++;
     } catch (e) { await c.query("ROLLBACK"); console.log(`  skipped ${slug}: ${(e as Error).message}`); } finally { c.release(); }
   }
