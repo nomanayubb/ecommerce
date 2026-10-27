@@ -25,3 +25,5 @@ apps/api/kk-tiles.json
 .web.out.log
 .api.err.log
 .web.err.log
+apps/web/public/cs/
+.import-cs.log
