@@ -107,7 +107,7 @@ function Hero({ s, ctx }: P) {
     const cover = (
       <section className={`${frame} pb-14 sm:py-28`} style={{ background: "rgb(var(--dark))" }}>
         {/* Phones: the whole photo as a band on top, text below. Desktop: photo behind the text. */}
-        <div className="relative -mx-6 aspect-[16/10] overflow-hidden sm:absolute sm:inset-0 sm:mx-0 sm:mb-0 sm:aspect-auto">
+        <div className="hero-fade relative -mx-6 aspect-[16/10] overflow-hidden sm:absolute sm:inset-0 sm:mx-0 sm:mb-0 sm:aspect-auto">
           <picture>
             {v.imageUrlMobile && <source media="(max-width: 639px)" srcSet={String(v.imageUrlMobile)} />}
             <img src={v.imageUrl} alt="" className="h-full w-full object-cover" />
