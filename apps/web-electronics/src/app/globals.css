@@ -569,7 +569,7 @@ html[data-stage="square"] .pcard-disc, html[data-stage="square"] .pcard-ring, ht
 [data-card="catalog"] .pcard-stage { background: #f7f7f7 !important; background-image: none !important; animation: none !important; }
 [data-theme="dark"] [data-card="catalog"] .pcard-stage, [data-theme="oled"] [data-card="catalog"] .pcard-stage { background: #1a1a1d !important; }
 [data-card="catalog"] .pcard-stage::before, [data-card="catalog"] .pcard-stage::after { display: none !important; }
-[data-card="catalog"] .pcard-ring, [data-card="catalog"] .pcard-shadow, [data-card="catalog"] .card-add-bar { display: none !important; }
+[data-card="catalog"] .pcard-ring, [data-card="catalog"] .pcard-shadow { display: none !important; }
 [data-card="catalog"] .pcard-disc, [data-card="catalog"] .pcard:hover .pcard-disc { position: absolute !important; inset: 0 !important; left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important; aspect-ratio: auto !important; transform: none !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
 [data-card="catalog"] .pcard-disc .pcard-photo { object-fit: contain !important; padding: 0 !important; mix-blend-mode: multiply !important; filter: none !important; }
 [data-theme="dark"] [data-card="catalog"] .pcard-disc .pcard-photo, [data-theme="oled"] [data-card="catalog"] .pcard-disc .pcard-photo { mix-blend-mode: normal !important; }
@@ -588,3 +588,14 @@ html[data-stage="square"] .pcard-disc, html[data-stage="square"] .pcard-ring, ht
 /* ---- Electronics wallpaper: faint circuit traces behind every page (this storefront only). ---- */
 body { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cg fill='none' stroke='%231f4fa8' stroke-opacity='.07' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M0 48H64V96H128'/%3E%3Cpath d='M240 36H176V84H140'/%3E%3Cpath d='M40 240V184H96V148'/%3E%3Cpath d='M200 240V200H160V164H128'/%3E%3Cpath d='M0 168H28V132'/%3E%3Cpath d='M240 156H212V120'/%3E%3Crect x='122' y='90' width='14' height='14' rx='2'/%3E%3Crect x='88' y='140' width='14' height='14' rx='2'/%3E%3C/g%3E%3Cg fill='%231f4fa8' fill-opacity='.10'%3E%3Ccircle cx='64' cy='48' r='3'/%3E%3Ccircle cx='128' cy='96' r='3'/%3E%3Ccircle cx='176' cy='36' r='3'/%3E%3Ccircle cx='140' cy='84' r='3'/%3E%3Ccircle cx='96' cy='184' r='3'/%3E%3Ccircle cx='160' cy='200' r='3'/%3E%3Ccircle cx='28' cy='168' r='3'/%3E%3Ccircle cx='212' cy='156' r='3'/%3E%3C/g%3E%3C/svg%3E"); background-size: 240px 240px; }
 [data-theme="dark"] body, [data-theme="oled"] body { background-blend-mode: screen; }
+
+/* Round cart button on the photo corner (like the Mashallah cards): adds the product to the bag; products with options get a round eye button (quick view) instead. */
+[data-card="catalog"] .card-add-bar { display: flex !important; position: absolute !important; inset: auto !important; top: 8px !important; right: 8px !important; z-index: 10; width: auto !important; height: auto !important; opacity: 1 !important; transform: none !important; pointer-events: auto !important; }
+[data-card="catalog"] .card-add-bar > div { display: contents; }
+[data-card="catalog"] .cbtn-qty, [data-card="catalog"] .cbtn-lbl { display: none !important; }
+[data-card="catalog"] .card-add-bar:has(.cbtn-add) .cbtn-view { display: none !important; }
+[data-card="catalog"] .cbtn-add, [data-card="catalog"] .cbtn-view { display: grid !important; place-items: center; width: 34px !important; height: 34px !important; min-width: 0; padding: 0 !important; border: 1px solid rgb(var(--line)) !important; border-radius: 9999px !important; background: #fff !important; color: rgb(var(--brand)) !important; font-size: 0 !important; box-shadow: 0 2px 8px rgb(0 0 0 / .14); cursor: pointer; transition: transform .15s, background .15s; }
+[data-card="catalog"] .cbtn-add::before, [data-card="catalog"] .cbtn-view::before { display: none !important; }
+[data-card="catalog"] .cbtn-add svg, [data-card="catalog"] .cbtn-view svg { width: 16px !important; height: 16px !important; }
+[data-card="catalog"] .cbtn-add:hover, [data-card="catalog"] .cbtn-view:hover { transform: scale(1.08); }
+[data-card="catalog"] .cbtn-add.is-done { background: rgb(var(--brand)) !important; color: rgb(var(--on-brand)) !important; }
