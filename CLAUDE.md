@@ -14,7 +14,7 @@ Do not browse the repo, `node_modules`, lockfiles, or unrelated files. Rules are
 - `apps/web` — Next.js 15 storefront :3000 (Tailwind, Framer Motion). Theme packs in `src/themes/`
 - `apps/admin` — Next.js admin panel :3001 (login, dashboard, products grid + create, orders, brand & theme settings)
 - `docker-compose.yml` — Postgres 16, Redis 7, Typesense 27 (dev). Docker is broken on this PC, see blockers.
-- `stores.json` — subdomain shops (electronics :3002/API 4001, dryfruits created): see `docs/ARCHITECTURE.md` 4o; one admin switches stores; new store: `apps/api/scripts/new-store.ts`
+- `stores.json` — subdomain shops (electronics :3002/API 4001, dryfruits created): see `docs/ARCHITECTURE.md` 4o; electronics storefront = its own code copy `apps/web-electronics`; one admin switches stores; new store: `apps/api/scripts/new-store.ts`
 - `docs/` — ARCHITECTURE, REMAINING_TASKS, CHANGELOG, SPEC_NOTES
 
 ## Current status (update on every milestone)

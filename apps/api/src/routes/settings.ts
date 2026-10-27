@@ -30,7 +30,7 @@ export const brandingSchema = z.object({
   footerText: text(300),
   headingFont: z.enum(["inherit", "system", "serif", "rounded", "mono"]).default("inherit"),
   buttonStyle: z.enum(["solid", "outline", "pill"]).default("solid"),
-  cardStyle: z.enum(["classic", "minimal", "compact", "soft", "catalog"]).default("classic"),
+  cardStyle: z.enum(["classic", "minimal", "compact", "soft"]).default("classic"),
   badgeStyle: z.enum(["solid", "outline", "pill"]).default("solid"),
   layoutWidth: z.enum(["boxed", "wide", "full"]).default("boxed"),
   announcements: z.array(z.string().trim().max(200)).max(5).default([]),

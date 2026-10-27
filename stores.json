@@ -26,7 +26,8 @@
       "database": "shop_dryfruits",
       "apiPort": 4002,
       "webPort": 3004,
-      "adminPort": 3005
+      "adminPort": 3005,
+      "inLinks": false
     }
   ]
 }

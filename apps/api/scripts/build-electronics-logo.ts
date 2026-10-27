@@ -13,7 +13,10 @@ fs.mkdirSync(OUT, { recursive: true });
 
 // 1. flat, solid-colour version of the glossy 3D logo (the shop's own style is flat and solid, not gradients):
 //    the cream background is removed (tight test, so pale silver highlights are kept), then every shape pixel becomes ONE solid blue or ONE solid silver.
-const { data, info } = await sharp(SRC).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+// Everything is worked out at 2x size and shrunk at the end, so the edges are anti-aliased (smooth) instead of stair-stepped.
+const SS = 2;
+const src0 = await sharp(SRC).metadata();
+const { data, info } = await sharp(SRC).removeAlpha().resize({ width: src0.width! * SS, height: src0.height! * SS, kernel: "lanczos3" }).raw().toBuffer({ resolveWithObject: true });
 const { width: W, height: H } = info;
 const BLUE = [47, 93, 170], SILVER = [184, 190, 199];
 const N = W * H;
@@ -25,7 +28,7 @@ for (let i = 0; i < N; i++) {
   const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
   blue[i] = !isBg[i] && mx > 0 && (mx - mn) / mx > 0.32 && b > r + 25 ? 1 : 0;
 }
-const y0 = 790;                                              // the old tagline and its lines
+const y0 = 790 * SS;                                              // the old tagline and its lines
 const dil = (src: Uint8Array) => { const o = new Uint8Array(N); for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const i = y * W + x; o[i] = src[i] | src[i - 1] | src[i + 1] | src[i - W] | src[i + W] | src[i - W - 1] | src[i - W + 1] | src[i + W - 1] | src[i + W + 1]; } return o; };
 const blueNear = dil(dil(blue));
 const mask = new Uint8Array(N * 4);                          // 0/255 shape mask, softened below for anti-aliased edges
@@ -36,13 +39,13 @@ for (let i = 0; i < N; i++) {
   rgba[i * 4] = c[0]; rgba[i * 4 + 1] = c[1]; rgba[i * 4 + 2] = c[2]; rgba[i * 4 + 3] = inside ? 255 : 0;
 }
 const flat = new Uint8Array(N); for (let i = 0; i < N; i++) flat[i] = rgba[i * 4 + 3];
-const soft = await sharp(Buffer.from(flat), { raw: { width: W, height: H, channels: 1 } }).blur(0.9).extractChannel(0).raw().toBuffer({ resolveWithObject: true });
+const soft = await sharp(Buffer.from(flat), { raw: { width: W, height: H, channels: 1 } }).blur(0.9 * SS).extractChannel(0).raw().toBuffer({ resolveWithObject: true });
 if (soft.info.channels !== 1 || soft.data.length !== N) throw new Error(`unexpected mask shape: ${soft.info.channels} channels, ${soft.data.length} bytes`);
 const alpha = soft.data;
 for (let i = 0; i < N; i++) rgba[i * 4 + 3] = alpha[i] < 40 ? 0 : alpha[i] > 215 ? 255 : alpha[i];
 void mask;
-const keyed = sharp(rgba, { raw: { width: W, height: H, channels: 4 } });
-const part = async (top: number, bottom: number) => sharp(await keyed.clone().extract({ left: 0, top, width: W, height: bottom - top }).png().toBuffer()).trim({ threshold: 1 }).png().toBuffer();
+const keyed = sharp(await sharp(rgba, { raw: { width: W, height: H, channels: 4 } }).resize({ width: W / SS, height: H / SS, kernel: "lanczos3" }).png().toBuffer());
+const part = async (top: number, bottom: number) => sharp(await keyed.clone().extract({ left: 0, top, width: W / SS, height: bottom - top }).png().toBuffer()).trim({ threshold: 1 }).png().toBuffer();
 const mark = await part(0, 625), word = await part(625, 790);       // the "A + cart" symbol and the AVERIXA letters
 
 const INK = "#1b1d1c", CREAM = "#f5f1e6";

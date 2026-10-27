@@ -1,7 +1,7 @@
-// Re-frames downloaded product photos so the product fills the card: trims the empty border, fits the product into a 4:5 canvas (like the shop's product cards)
-// with a soft light-grey background, so white appliances (fridges, washing machines) stay visible instead of vanishing into a white card.
+// Re-frames downloaded product photos so the product fills the card: trims the empty border, fits the product into a square canvas (like the shop's product cards)
+// with a plain white background, so white appliances (fridges, washing machines) stay visible instead of vanishing into a white card.
 //   npx tsx scripts/frame-photos.ts <file-prefix> [--dry]        e.g.  npx tsx scripts/frame-photos.ts e-      (only files in apps/web/public/cs/ that start with the prefix)
-// Safe to re-run: an already framed photo (4:5 canvas, 900x1125) is skipped.
+// Safe to re-run: an already framed photo (square canvas, 900x900) is skipped.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,7 +13,7 @@ const prefix = process.argv[2];
 if (!prefix) throw new Error("usage: frame-photos.ts <file-prefix> [--dry]");
 const dry = process.argv.includes("--dry");
 const DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../web/public/cs");
-const W = 900, H = 1125, FILL = 0.88, BG = { r: 242, g: 242, b: 240, alpha: 1 };
+const W = 900, H = 900, FILL = 0.9, BG = { r: 255, g: 255, b: 255, alpha: 1 };
 const files = fs.readdirSync(DIR).filter((f) => f.startsWith(prefix) && f.endsWith(".webp"));
 let done = 0, skipped = 0, failed = 0;
 for (const f of files) {

@@ -10,7 +10,7 @@ if (!/electronics/.test(db)) throw new Error(`refusing to run on database "${db}
 const col = (icon: string, title: string, text: string) => ({ type: "column", settings: { icon, title, text } });
 const sections = sanitizeSections([
   { id: "hero-1", type: "hero", settings: {
-    variant: "gradient", eyebrow: "AVERIXA Electronics", heading: "Everything for your home, *original and warrantied*",
+    variant: "split", imageUrl: "/cs/ec-hero.webp", eyebrow: "AVERIXA Electronics", heading: "Everything for your home, *original and warrantied*",
     text: "Air conditioners, refrigerators, washing machines, kitchen and home appliances from the brands you trust, at honest prices with cash on delivery.",
     primaryLabel: "Shop products", primaryHref: "/products", secondaryLabel: "Air conditioners", secondaryHref: "/collections/air-conditioners-and-cooling", height: "lg" } },
   { id: "trust-1", type: "trust-strip", settings: {

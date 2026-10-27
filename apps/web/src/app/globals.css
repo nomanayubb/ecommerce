@@ -484,7 +484,7 @@ html[data-contrast] .glass, html[data-contrast] .header-bar, html[data-contrast]
   background: linear-gradient(105deg, transparent 36%, rgb(var(--accent-bright)) 50%, transparent 64%); background-size: 260% 100%; background-position: 160% 0; animation: logo-sheen 2.25s linear 0s infinite; }
 @keyframes logo-sheen { 0% { background-position: 160% 0; } 100% { background-position: -60% 0; } }
 .logo-full img { animation: logo-glow 4s ease-in-out infinite; }
-@keyframes logo-glow { 0%, 100% { filter: drop-shadow(0 0 0 rgb(var(--logo-glow, 200 156 58) / 0)); } 50% { filter: drop-shadow(0 0 7px rgb(var(--logo-glow, 200 156 58) / .38)); } }
+@keyframes logo-glow { 0%, 100% { filter: drop-shadow(0 0 0 rgba(200, 156, 58, 0)); } 50% { filter: drop-shadow(0 0 7px rgba(200, 156, 58, .38)); } }
 @media (prefers-reduced-motion: reduce) { html:not([data-motion-pref="on"]) :is(.logo-sheen, .logo-full img) { animation: none; } html:not([data-motion-pref="on"]) .logo-sheen { display: none; } }
 [data-motion="subtle"] :is(.logo-sheen, .logo-full img), [data-motion="off"] :is(.logo-sheen, .logo-full img) { animation: none !important; }
 /* Header logo drifts a little to the right and back, like the footer logo breathes. Transform only, so nothing around it moves. */
@@ -557,27 +557,3 @@ html[data-stage="square"] .pcard-disc, html[data-stage="square"] .pcard-ring, ht
 .pcard-ring { border-color: rgb(var(--accent) / .3); }
 
 /* The product card hover and button design lives in public/card-fx.css (loaded by the layout), so it can be edited without a build. */
-
-/* ---- Catalog card style (Brand & settings > Product card style > Catalog): clean framed photo, brand, title, price, stock label and a View details button.
-   Only stores that pick this style are affected; every rule starts with [data-card="catalog"]. Colours come from the store's own tokens (--accent, --brand, --line, --card). ---- */
-[data-card="catalog"] .tilt { transform: none !important; }
-[data-card="catalog"] .pcard { display: flex; flex-direction: column; box-shadow: none; }
-[data-card="catalog"] .pcard:hover { border-color: rgb(var(--accent) / .7); transform: none; }
-[data-card="catalog"] .pcard-stage { background: #f2f2f0 !important; background-image: none !important; animation: none !important; }
-[data-card="catalog"] .pcard-stage::before, [data-card="catalog"] .pcard-stage::after { display: none !important; }
-[data-card="catalog"] .pcard-ring, [data-card="catalog"] .pcard-shadow, [data-card="catalog"] .card-add-bar { display: none !important; }
-[data-card="catalog"] .pcard-disc, [data-card="catalog"] .pcard:hover .pcard-disc { position: absolute !important; inset: 0 !important; left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important; aspect-ratio: auto !important; transform: none !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
-[data-card="catalog"] .pcard-disc .pcard-photo { object-fit: contain !important; padding: 0 !important; mix-blend-mode: normal !important; filter: none !important; }
-[data-card="catalog"] .pcard:hover .pcard-disc .pcard-photo { transform: scale(1.03) !important; }
-[data-card="catalog"] .pcard > div:last-child { display: flex; flex: 1; flex-direction: column; padding: 1rem; }
-[data-card="catalog"] .pcard .eyebrow { color: rgb(var(--accent)) !important; font-weight: 600; letter-spacing: .14em; }
-[data-card="catalog"] .pcard h3 { font-weight: 600; letter-spacing: .01em; }
-[data-card="catalog"] .pcard > div:last-child > div:first-of-type { margin-top: auto; padding-top: .5rem; }
-[data-card="catalog"] .pcard > div:last-child .font-semibold { font-size: 1.05rem; }
-[data-card="catalog"] .pcard > div:last-child > .mt-2::after { content: "In Stock"; display: inline-block; margin-top: .55rem; padding: .15rem .6rem; border: 1px solid rgb(var(--accent) / .55); color: rgb(var(--accent)); font-size: .62rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
-[data-card="catalog"] .pcard[data-stock="out"] > div:last-child > .mt-2::after { content: "Out of stock"; border-color: rgb(var(--line)); color: rgb(var(--muted)); }
-[data-card="catalog"] .pcard > div:last-child::after { content: "View details"; display: block; margin-top: .9rem; padding: .6rem 0; text-align: center; border: 1px solid rgb(var(--brand)); background: rgb(var(--brand)); color: rgb(var(--on-brand)); font-size: .68rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; transition: background .2s, color .2s; }
-[data-card="catalog"] .pcard:hover > div:last-child::after { background: transparent; color: rgb(var(--brand)); }
-/* Catalog cards: no gold hover frame, corner marks or glow from the older card rules (the colour comes from the store's own tokens). */
-[data-card="catalog"] .pcard:has(.pcard-stage):hover { border-color: rgb(var(--accent) / .7) !important; box-shadow: none !important; }
-[data-card="catalog"] .pcard::before, [data-card="catalog"] .pcard::after, [data-card="catalog"] .pcard-img::after { display: none !important; }

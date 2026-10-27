@@ -1,0 +1,50 @@
+import { getSite } from "@/lib/api";
+
+// On-brand placeholder artwork until real product photography is uploaded. /ph/<slug>?ar=4x3|4x5&v=2
+// Colours + name come from the brand settings, so a new project is restyled automatically.
+const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+const ok = (h: unknown, d: string) => (typeof h === "string" && /^#[0-9a-fA-F]{6}$/.test(h) ? h : d);
+const mix = (a: string, b: string, t: number) => {
+  const pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16);
+  const ch = (s: number) => Math.round(((pa >> s) & 255) * (1 - t) + ((pb >> s) & 255) * t);
+  return "#" + [16, 8, 0].map((s) => ch(s).toString(16).padStart(2, "0")).join("");
+};
+
+export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const { branding } = await getSite();
+  const dark = ok(branding.darkColor, "#0f0f11");
+  const gold = ok(branding.brandColorDark, "#d4aa46");
+  const cream = ok(branding.creamColor, "#faf6ee");
+  const brand = esc(branding.name.toUpperCase());
+  const url = new URL(req.url);
+  const ar = url.searchParams.get("ar");
+  const cover = ar === "cover";
+  const wide = ar === "4x3" || cover;
+  const [w, h] = cover ? [1600, 640] : wide ? [800, 600] : [800, 1000];
+  const v = url.searchParams.get("v");
+  const title = esc(slug.replace(/[^a-z0-9]+/gi, " ").trim().toUpperCase().slice(0, 40));
+  const shift = v === "2" ? 80 : 0;
+  // v=3: close-up detail (art enlarged, off-centre). v=4: lifestyle (art smaller, rings and horizon line). cover: wide banner.
+  const cx = cover ? w * 0.68 : v === "4" ? w * 0.42 : w / 2, cy = cover ? h * 0.5 : v === "3" ? h * 0.5 : h * 0.42;
+  const k = cover ? 1.5 : v === "3" ? 1.9 : v === "4" ? 0.8 : 1;
+  const art = `translate(${cx} ${cy}) scale(${k}) translate(${-cx} ${-cy})`;
+  const extra = v === "4" || cover
+    ? `<g fill="none" stroke="${gold}" stroke-opacity=".22" stroke-width="1.5"><circle cx="${cx}" cy="${cy}" r="${(cover ? 250 : 210)}"/><circle cx="${cx}" cy="${cy}" r="${(cover ? 340 : 290)}" stroke-opacity=".12"/><path d="M0 ${h * 0.78} H${w}" stroke-opacity=".3"/></g>`
+    : v === "3" ? `<g stroke="${gold}" stroke-opacity=".10">${Array.from({ length: 9 }, (_, n) => `<path d="M${n * 100} 0 V${h}"/>`).join("")}${Array.from({ length: 11 }, (_, n) => `<path d="M0 ${n * 100} H${w}"/>`).join("")}</g>` : "";
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${mix(dark, cream, 0.07)}"/><stop offset="1" stop-color="${dark}"/></linearGradient>
+<radialGradient id="r" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="${gold}" stop-opacity=".18"/><stop offset="1" stop-color="${gold}" stop-opacity="0"/></radialGradient></defs>
+<rect width="${w}" height="${h}" fill="url(#g)"/><rect width="${w}" height="${h}" fill="url(#r)"/>
+${extra}
+<g fill="none" stroke="${gold}" stroke-width="${v === "3" ? 1.4 : 2}" stroke-linecap="square" transform="${art} translate(${shift ? 30 : 0} 0)">
+<path d="M${cx - 150} ${cy + 130} L${cx} ${cy - 130} L${cx + 40} ${cy - 130}" opacity=".9"/>
+<path d="M${cx - 80} ${cy + 130} L${cx + 30} ${cy - 40}" opacity=".5"/>
+<path d="M${cx - 20} ${cy + 20} L${cx + 140} ${cy + 20} L${cx + 170} ${cy - 60} L${cx + 200} ${cy - 60}"/>
+<path d="M${cx} ${cy + 20} L${cx + 15} ${cy + 80} L${cx + 130} ${cy + 80} L${cx + 150} ${cy + 20}" opacity=".8"/>
+<circle cx="${cx + 35}" cy="${cy + 108}" r="11" opacity=".9"/><circle cx="${cx + 110}" cy="${cy + 108}" r="11" opacity=".9"/></g>
+<rect x="24" y="24" width="${w - 48}" height="${h - 48}" fill="none" stroke="${gold}" stroke-opacity=".25"/>
+${cover ? "" : wide ? "" : `<text x="${w / 2}" y="${h - 70}" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="22" letter-spacing="7" fill="${cream}" fill-opacity=".75">${title}</text>
+<text x="${w / 2}" y="${h - 42}" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="12" letter-spacing="6" fill="${gold}">${brand}</text>`}</svg>`;
+  return new Response(svg, { headers: { "content-type": "image/svg+xml", "cache-control": "public, max-age=300" } });
+}
