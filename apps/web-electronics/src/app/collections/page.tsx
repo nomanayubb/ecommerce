@@ -16,10 +16,11 @@ export default async function Collections() {
       <h1 className="mt-2 text-3xl font-semibold uppercase tracking-[0.12em]">Collections</h1>
       <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {tree.map((c) => (
-          <Link key={c.id} href={`/collections/${c.slug}`} className="lift group relative block overflow-hidden border border-line">
-            <img src={c.image_url || `/cimg/${c.slug}?ar=4x3`} alt="" loading="lazy" width={800} height={600} className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105" />
-            <CardLogo className="right-3 top-3" />
-            <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-sm font-semibold uppercase tracking-[0.15em] text-white">{c.name}</span>
+          <Link key={c.id} href={`/collections/${c.slug}`} className="group block">
+            <span className="block overflow-hidden rounded-[10px] border border-line bg-[#f4f7fc] transition group-hover:border-accent">
+              <img src={c.image_url || `/cimg/${c.slug}?ar=4x3`} alt={c.name} loading="lazy" width={800} height={600} className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+            </span>
+            <span className="mt-3 block text-center text-sm font-bold sm:text-base">{c.name}</span>
           </Link>
         ))}
       </div>
