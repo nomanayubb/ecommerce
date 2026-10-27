@@ -20,6 +20,8 @@ const args = process.argv.slice(2);
 const flag = (n: string) => args.includes(`--${n}`);
 const opt = (n: string) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : undefined; };
 
+// No real stock figures are known, so an available item gets a large number (a small one would stop shoppers ordering more than that); sold-out items stay at 0.
+const STOCK = 9999;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const slugify = (s: string) => s.toLowerCase().replace(/&/g, " and ").replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 const decode = (s: string) => s.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;|&rsquo;|&lsquo;/g, "'");
@@ -173,7 +175,7 @@ for (let i = 0; i < todo.length; i += CH) {
     const type = clean1252(noQM(p.product_type || "")).trim();
     const tags = [...new Set([type, ...p.tags].filter((t) => t && t.length < 30 && !PROMO.test(t)).map((t) => slugify(noQM(t))).filter(Boolean))].slice(0, 8);
     const multi = p.variants.length > 1 || (p.options[0] && p.options[0].name !== "Title");
-    const stock = p.variants.reduce((s, v) => s + (v.available ? 20 : 0), 0);
+    const stock = p.variants.reduce((s, v) => s + (v.available ? STOCK : 0), 0);
     const c = await pool.connect();
     try {
       await c.query("BEGIN");
@@ -193,7 +195,7 @@ for (let i = 0; i < todo.length; i += CH) {
           const vp = Math.round(Number(v.price) || 0);
           await c.query(
             "INSERT INTO product_variants (product_id, title, sku, price, stock_quantity, variant_attributes, image_index) VALUES ($1,$2,$3,$4,$5,$6,$7)",
-            [pid, clean1252(noQM(v.title)).slice(0, 200), uniqueSku(v.sku || `CS-${v.id}`), vp ? Math.round(vp * (1 + markupPct(vp) / 100)) : sell, v.available ? 20 : 0, JSON.stringify(attrs), ix !== null && ix < images.length ? ix : null]
+            [pid, clean1252(noQM(v.title)).slice(0, 200), uniqueSku(v.sku || `CS-${v.id}`), vp ? Math.round(vp * (1 + markupPct(vp) / 100)) : sell, v.available ? STOCK : 0, JSON.stringify(attrs), ix !== null && ix < images.length ? ix : null]
           );
         }
       }
