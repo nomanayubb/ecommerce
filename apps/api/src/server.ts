@@ -15,6 +15,7 @@ import { accountRoutes } from "./routes/account.js";
 import { engagementRoutes } from "./routes/engagement.js";
 import { templateRoutes } from "./routes/templates.js";
 import { CartError } from "./lib/pricing.js";
+import { maskStock, stockRule } from "./lib/stock.js";
 
 export type Role = "SUPER_ADMIN" | "ADMIN" | "WAREHOUSE" | "CUSTOMER" | "WHOLESALE";
 
@@ -44,6 +45,12 @@ app.setErrorHandler((err: any, _req, reply) => {
   if (err.statusCode && err.statusCode < 500) return reply.status(err.statusCode).send({ success: false, error: err.message });
   app.log.error(err);
   reply.status(500).send({ success: false, error: "Internal server error" });
+});
+
+// Public answers show stock the way the shop's stock rule says (admin, Settings, Stock); the admin panel always sees the real numbers.
+app.addHook("preSerialization", async (req, _reply, payload) => {
+  if (req.url.startsWith("/api/v1/admin") || !payload || typeof payload !== "object") return payload;
+  return maskStock(payload, await stockRule());
 });
 
 app.get("/health", async () => ({ ok: true }));

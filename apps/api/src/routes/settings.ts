@@ -159,9 +159,15 @@ export const storeSchema = z.object({
   paymentMethods: z.array(payMethod).max(8).default(DEFAULT_PAYMENTS),
   pdp: pdpSchema.default(DEFAULT_PDP),
   headerMenuCount: z.number().int().min(1).max(12).default(4),
+  /** Stock rule (see lib/stock.ts): off = always show `shown`, never count down; onDelivery / onOrder = real stock counting down. */
+  stock: z.object({
+    countDown: z.enum(["off", "onDelivery", "onOrder"]).default("off"),
+    shown: z.number().int().min(1).max(1_000_000).default(9999),
+    sellWhenOut: z.boolean().default(true),
+  }).default({ countDown: "off", shown: 9999, sellWhenOut: true }),
 });
 export type Store = z.infer<typeof storeSchema>;
-const STORE_DEFAULT: Store = { freeShippingThreshold: 5000, shippingFee: 250, dispatchCutoff: 0, deliveryMinDays: 2, deliveryMaxDays: 4, giftWrapEnabled: false, giftWrapFee: 0, checkoutFields: DEFAULT_CHECKOUT_FIELDS, allowManualCity: false, customFields: [], paymentMethods: DEFAULT_PAYMENTS, pdp: DEFAULT_PDP, headerMenuCount: 4 };
+const STORE_DEFAULT: Store = { freeShippingThreshold: 5000, shippingFee: 250, dispatchCutoff: 0, deliveryMinDays: 2, deliveryMaxDays: 4, giftWrapEnabled: false, giftWrapFee: 0, checkoutFields: DEFAULT_CHECKOUT_FIELDS, allowManualCity: false, customFields: [], paymentMethods: DEFAULT_PAYMENTS, pdp: DEFAULT_PDP, headerMenuCount: 4, stock: { countDown: "off", shown: 9999, sellWhenOut: true } };
 
 const load = async <T>(key: string, fallback?: T) => {
   const { rows } = await pool.query("SELECT value FROM site_settings WHERE key = $1", [key]);
@@ -197,7 +203,7 @@ export const loadFooter = () => cached("settings:footer", 60, () => load<FooterS
 export const loadStore = () => cached("settings:store", 60, async () => {
   const saved = await load<Partial<Store>>("store", {});
   // Nested groups are merged key by key so settings added later still get their defaults.
-  return { ...STORE_DEFAULT, ...saved, pdp: { ...DEFAULT_PDP, ...(saved.pdp ?? {}) }, checkoutFields: withAddressMode({ ...DEFAULT_CHECKOUT_FIELDS, ...(saved.checkoutFields ?? {}) }) };
+  return { ...STORE_DEFAULT, ...saved, pdp: { ...DEFAULT_PDP, ...(saved.pdp ?? {}) }, stock: { ...STORE_DEFAULT.stock, ...(saved.stock ?? {}) }, checkoutFields: withAddressMode({ ...DEFAULT_CHECKOUT_FIELDS, ...(saved.checkoutFields ?? {}) }) };
 });
 
 const save = async (key: string, value: unknown) => {

@@ -2,7 +2,7 @@ import type { FastifyPluginAsync } from "fastify";
 import { z } from "zod";
 import { pool } from "../lib/db.js";
 import { cached, delPattern } from "../lib/redis.js";
-import { brandingSchema, footerSchema, saveBranding, saveFooter, saveStore, storeSchema } from "./settings.js";
+import { brandingSchema, footerSchema, loadStore, saveBranding, saveFooter, saveStore, storeSchema } from "./settings.js";
 import { templateAdminRoutes } from "./templates.js";
 import { couponAdminRoutes } from "./coupons.js";
 import { productAdminRoutes } from "./productsAdmin.js";
@@ -204,11 +204,24 @@ export const adminRoutes: FastifyPluginAsync = async (app) => {
     const { status } = z
       .object({ status: z.enum(["PROCESSING", "SHIPPED", "DELIVERED", "CANCELED", "REFUNDED"]) })
       .parse(req.body);
+    const before = (await pool.query("SELECT order_status FROM orders WHERE id = $1", [req.params.id])).rows[0]?.order_status as string | undefined;
     const r = await pool.query("UPDATE orders SET order_status = $2, updated_at = now() WHERE id = $1 RETURNING id", [
       req.params.id,
       status,
     ]);
     if (!r.rowCount) return reply.status(404).send({ success: false, error: "Order not found" });
+    // Stock rule "count down on delivery" (Settings, Stock): take the items off the stock once, when the order first becomes delivered.
+    if (status === "DELIVERED" && before !== "DELIVERED" && (await loadStore()).stock.countDown === "onDelivery") {
+      for (const it of (await pool.query("SELECT product_id, variant_id, quantity FROM order_items WHERE order_id = $1", [req.params.id])).rows) {
+        await pool.query(
+          it.variant_id
+            ? "UPDATE product_variants SET stock_quantity = GREATEST(stock_quantity - $2, 0) WHERE id = $1"
+            : "UPDATE products SET stock_quantity = GREATEST(stock_quantity - $2, 0) WHERE id = $1 AND NOT is_digital",
+          [it.variant_id ?? it.product_id, it.quantity]
+        );
+      }
+      await delPattern("catalog:*");
+    }
     // TODO: tracking SMS once an SMS provider is chosen.
     return { id: r.rows[0].id, status };
   });

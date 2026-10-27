@@ -32,6 +32,8 @@ export async function priceCart(
 ) {
   const lines: PricedLine[] = [];
   const lock = opts.lock ? " FOR UPDATE" : "";
+  const rule = (await loadStore()).stock;
+  const checkStock = rule.countDown !== "off" && !rule.sellWhenOut;     // the shop's stock rule (admin, Settings, Stock)
 
   for (const item of items) {
     const { rows } = await db.query(
@@ -64,7 +66,7 @@ export async function priceCart(
       stock = v.stock_quantity;
     }
 
-    if (tracked && item.quantity > stock) {
+    if (tracked && checkStock && item.quantity > stock) {
       throw new CartError(`${title}: only ${stock} in stock`, 409);
     }
 

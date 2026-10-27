@@ -53,7 +53,9 @@ export const checkoutRoutes: FastifyPluginAsync = async (app) => {
   app.post("/checkout/process", async (req, reply) => {
     const b = checkoutSchema.parse(req.body);
     // The shop decides which checkout boxes are shown and required (admin: Settings, Checkout form).
-    const cf = (await loadStore()).checkoutFields;
+    const storeNow = await loadStore();
+    const cf = storeNow.checkoutFields;
+    const stockCountDown = storeNow.stock.countDown;     // admin, Settings, Stock
     const a = b.shippingAddress;
     const need: [string, string, string][] = [["email", a.email, "Email"], ["phone", a.phone, "Phone"], ["address", a.line1, "Address"], ["city", a.city, "City"]];
     for (const [k, v, label] of need) if (cf[k as keyof typeof cf] === "required" && !v) return reply.status(400).send({ success: false, error: `${label} is required` });
@@ -109,10 +111,10 @@ export const checkoutRoutes: FastifyPluginAsync = async (app) => {
            VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
           [order.id, l.productId, l.variantId, l.title, l.sku, l.unitPrice, l.quantity, l.totalPrice]
         );
-        await client.query(
+        if (stockCountDown === "onOrder") await client.query(
           l.variantId
-            ? "UPDATE product_variants SET stock_quantity = stock_quantity - $2 WHERE id = $1"
-            : "UPDATE products SET stock_quantity = stock_quantity - $2 WHERE id = $1 AND NOT is_digital",
+            ? "UPDATE product_variants SET stock_quantity = GREATEST(stock_quantity - $2, 0) WHERE id = $1"
+            : "UPDATE products SET stock_quantity = GREATEST(stock_quantity - $2, 0) WHERE id = $1 AND NOT is_digital",
           [l.variantId ?? l.productId, l.quantity]
         );
       }

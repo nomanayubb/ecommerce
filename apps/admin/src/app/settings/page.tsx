@@ -34,7 +34,8 @@ const PAY_DEFAULTS: PayMethod[] = [
   { id: "JAZZCASH", label: "JazzCash", description: "Send the amount from your JazzCash app.", instructions: "", enabled: false },
   { id: "BANK_TRANSFER", label: "Bank transfer", description: "Transfer to our bank account.", instructions: "", enabled: false },
 ];
-interface Store { customFields?: CustomField[]; allowManualCity?: boolean; headerMenuCount?: number; pdp?: Partial<PdpValues>; checkoutFields?: CheckoutFields; paymentMethods?: PayMethod[]; freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number; dispatchCutoff?: number; deliveryMinDays?: number; deliveryMaxDays?: number }
+interface StockRule { countDown: "off" | "onDelivery" | "onOrder"; shown: number; sellWhenOut: boolean }
+interface Store { stock?: StockRule; customFields?: CustomField[]; allowManualCity?: boolean; headerMenuCount?: number; pdp?: Partial<PdpValues>; checkoutFields?: CheckoutFields; paymentMethods?: PayMethod[]; freeShippingThreshold: number; shippingFee: number; giftWrapEnabled?: boolean; giftWrapFee?: number; dispatchCutoff?: number; deliveryMinDays?: number; deliveryMaxDays?: number }
 interface Footer { columns: { title: string; links: { label: string; href: string }[] }[]; showNewsletter: boolean; showPerks: boolean; showPayments: boolean; note: string }
 
 // Keep in sync with apps/web/src/themes/index.ts
@@ -140,6 +141,26 @@ export default function Settings() {
         <CustomFieldsEditor value={store.customFields ?? []} onChange={(v) => setStore({ ...store, customFields: v })} input={input} label={label} />
       </Group>
 
+      <Group title="Stock">
+        <div className="grid gap-4 sm:grid-cols-2">
+          {(() => { const st: StockRule = { countDown: "off", shown: 9999, sellWhenOut: true, ...(store.stock ?? {}) }; const set = (patch: Partial<StockRule>) => setStore({ ...store, stock: { ...st, ...patch } }); return (<>
+            <label className={label}>How stock counts down
+              <select className={input} value={st.countDown} onChange={(e) => set({ countDown: e.target.value as StockRule["countDown"] })}>
+                <option value="off">Never counts down: every product always shows the number below</option>
+                <option value="onDelivery">Counts down when the order is marked Delivered</option>
+                <option value="onOrder">Counts down when the order is placed</option>
+              </select>
+            </label>
+            <label className={label}>Number shown {st.countDown === "off" ? "on every product (it stays the same, 20 stays 20)" : "when a product has no stock left"}
+              <input type="number" min={1} max={1000000} className={input} value={st.shown} onChange={(e) => set({ shown: Math.max(1, Math.min(1000000, Math.round(Number(e.target.value) || 1))) })} />
+            </label>
+            {st.countDown !== "off" && (
+              <label className="flex items-center gap-2 text-sm sm:col-span-2"><input type="checkbox" checked={st.sellWhenOut} onChange={(e) => set({ sellWhenOut: e.target.checked })} />Keep selling a product after its stock is used up (it shows the number above and can still be ordered)</label>
+            )}
+            <p className="text-xs text-muted sm:col-span-2">The stock you type on each product in the product list is only used when stock counts down. With &ldquo;Never counts down&rdquo; shoppers always see the number above and can order any quantity. Press Save at the bottom of the page.</p>
+          </>); })()}
+        </div>
+      </Group>
       <Group title="Payment methods">
         <p className="text-xs text-muted">Turn methods on or off and change the wording shoppers see. Cash on delivery is automatic. For EasyPaisa, JazzCash and bank transfer the shopper pays by transfer: write your account details in "Instructions" and mark the order paid yourself once the money arrives.</p>
         {(store.paymentMethods ?? PAY_DEFAULTS).map((m, i) => {
