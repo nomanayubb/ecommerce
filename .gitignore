@@ -18,3 +18,10 @@ start-shop.log
 apps/web/dev3000.log
 .next-new
 apps/api/kk-tiles.json
+
+.watchdog.log
+.watchdog-pause
+.api.out.log
+.web.out.log
+.api.err.log
+.web.err.log
