@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { api } from "@/lib/api";
+import { api, apiBase } from "@/lib/api";
 
 interface Field { key: string; label: string; type: string; options?: { value: string; label: string }[]; min?: number; max?: number; help?: string; maxLength?: number }
 interface BlockDef { type: string; label: string; max: number; fields: Field[]; defaults: Record<string, any> }
@@ -13,7 +13,6 @@ interface Section { id: string; type: string; enabled: boolean; settings: Record
 interface Version { id: string; label: string | null; created_at: string }
 
 const STORE = process.env.NEXT_PUBLIC_STORE_URL ?? "http://localhost:3000";
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
 const uid = () => Math.random().toString(36).slice(2, 10);
 const input = "w-full rounded border border-line bg-card px-3 py-2 text-sm outline-none focus:border-accent";
 const btn = "rounded border border-line px-3 py-1.5 text-xs transition hover:border-accent hover:text-accent disabled:opacity-40";
@@ -72,7 +71,7 @@ function Editor() {
       const [d, item, c, p, pr] = await Promise.all([
         api<{ sections: Def[] }>("/admin/section-schemas"),
         api<any>(`/admin/templates/item?key=${encodeURIComponent(key)}`),
-        fetch(`${API_BASE}/categories/tree`).then((r) => r.json()).catch(() => []),
+        fetch(`${apiBase()}/categories/tree`).then((r) => r.json()).catch(() => []),
         api<any[]>("/admin/products?status=PUBLISHED").catch(() => []),
         api<any[]>("/admin/section-presets").catch(() => []),
       ]);

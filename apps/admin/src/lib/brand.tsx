@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
+import { apiBase } from "./api";
+
 export interface AdminBrand { name: string; logoUrl: string; logoUrlDark: string }
 const FALLBACK: AdminBrand = { name: "Admin", logoUrl: "", logoUrlDark: "" };
 
@@ -10,7 +11,7 @@ const FALLBACK: AdminBrand = { name: "Admin", logoUrl: "", logoUrlDark: "" };
 export function useBrand(): AdminBrand {
   const [b, setB] = useState<AdminBrand>(FALLBACK);
   useEffect(() => {
-    fetch(`${BASE}/settings`).then((r) => r.json()).then((d) => d.branding && setB({ name: d.branding.name, logoUrl: d.branding.logoUrl ?? "", logoUrlDark: d.branding.logoUrlDark ?? "" })).catch(() => {});
+    fetch(`${apiBase()}/settings`).then((r) => r.json()).then((d) => d.branding && setB({ name: d.branding.name, logoUrl: d.branding.logoUrl ?? "", logoUrlDark: d.branding.logoUrlDark ?? "" })).catch(() => {});
   }, []);
   return b;
 }

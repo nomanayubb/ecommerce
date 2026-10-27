@@ -1,6 +1,6 @@
 # Remaining tasks
 
-_Last updated: 2026-10-09. Update after every task (see `.claude/rules/workflow.md`)._
+_Last updated: 2026-10-27. Update after every task (see `.claude/rules/workflow.md`)._
 
 ## Blockers
 - Docker Desktop engine won't start (WSL VM stuck) -> worked around with embedded Postgres. Optional later: fix Docker or install Redis (Memurai) for caching.
@@ -15,6 +15,13 @@ _Last updated: 2026-10-09. Update after every task (see `.claude/rules/workflow.
 ## Feature backlogs (user lists, 2026-10-08): read only the one you are working on
 - `docs/FEATURES_VISUAL_100.md` (visual/product/cart/search/account/trust/technical), `docs/FEATURES_THEME_100.md` (section library + theme settings), `docs/FEATURES_KITCHEN_130.md` (kitchen, icons, mascot, 3D, brand magic; open question: is the store kitchen-focused?).
 - ALL must follow `docs/DESIGN_SYSTEM_RULES.md` (one coherent system aligned with the logo; palette table there). Batching (user approved this order 2026-10-08): (1) premium-feel visuals + shared icon set + motion setting [DONE], (2) make every brand value swappable from settings [DONE, see NEW_PROJECT_GUIDE for what remains], (3) product experience [DONE], (4) mascot/3D [DONE as a 2D logo-style character + CSS-3D logo; richer 3D optional], (5) account/engagement [DONE: login, account, orders, addresses, loyalty, reviews, tracking, newsletter; email-dependent parts need a provider], (6) section/theme editor + remaining theme-list items [DONE: JSON section templates, 16 section types, drag/drop editor, presets, versions, preview, theme options, footer/header builders; left from the theme list: video hero, blog, custom-code section, transparent header, predictive search, currency/language selectors, popup newsletter, about/team/contact/locator pages, hierarchy for collection/blog templates] ; (7a) icon set + effects DONE 2026-10-09; (7b) recipe/ingredient/3D-scene parts of the kitchen list wait for the kitchen-store answer; NEXT is (7b), (7) kitchen vertical (needs the user to confirm the store is kitchen-focused), (2) product experience, (3) mascot/3D, (4) account/engagement (needs backend), (5) section/theme editor.
+
+## Open (2026-10-27)
+- Dry Fruits store (`shop_dryfruits`): needs the owner's product source; then start its API (:4002) and build/start its shop (:3004). Electronics shop runs by hand on :3002 (API :4001): add to the watchdog before going live.
+- Go-live: public domain + hosting (Hostinger VPS or Railway discussed), host -> port routing for the subdomains, per-store Redis, set `domain` in `stores.json` then `npx tsx scripts/store-links.ts`.
+- Facebook/Meta: catalogue feed + Pixel (needs Pixel ID and the public domain) and Meta product tags: owner said not to touch site code yet. SEO text exists only for electronics products (`metafields.seoTitle/seoDescription`); a script for all other products is still to do.
+- Natural Hair Wellness 5 (sudtana.com, USD) skipped by the owner; NHW 7 (store.edenroc.biz) blocks automated requests, not fetched. Honey > Black Forest Honey is empty (needs a product link).
+- Untested: admin "All stores" settings save and the Store dropdown by a real login.
 
 ## Needs a decision/keys from the user
 - **Email provider** (Resend / Brevo / SMTP): unlocks password reset, magic-link login, order confirmation emails, back-in-stock emails (requests are already stored), newsletter welcome, abandoned-cart reminders, low-stock alerts.

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-import { getToken, setToken } from "@/lib/api";
+import { chooseStore, getScope, getStore, getStores, getToken, setScope, setStores, setToken, type StoreInfo } from "@/lib/api";
 import { BrandLogo, useBrand } from "@/lib/brand";
 
 const NAV: { heading?: string; items: { href: string; label: string }[] }[] = [
@@ -18,6 +18,20 @@ export function Shell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [ready, setReady] = useState(false);
   const brand = useBrand();
+  const [stores, setList] = useState<StoreInfo[]>([]);
+  const [store, setStore] = useState("");
+  const [scope, setScopeState] = useState<"this" | "all">("this");
+
+  // The shops this admin can manage (public/stores.json); the chosen one decides which shop's data every page shows.
+  useEffect(() => {
+    setList(getStores()); setStore(getStore()?.slug ?? getStores()[0]?.slug ?? ""); setScopeState(getScope());
+    fetch("/stores.json", { cache: "no-store" }).then((r) => r.json()).then((l: StoreInfo[]) => {
+      if (!Array.isArray(l) || !l.length) return;
+      setStores(l); setList(l);
+      const cur = getStore()?.slug ?? l[0].slug; chooseStore(cur); setStore(cur);
+      if (!getStore() || getStore()!.api !== l.find((x) => x.slug === cur)!.api) window.location.reload();
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (path === "/login") return setReady(true);
@@ -31,7 +45,23 @@ export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen">
       <aside className="w-56 shrink-0 border-r border-line bg-card p-4">
-        <div className="mb-6"><BrandLogo brand={brand} className="h-7" /><p className="mt-2 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-accent">Admin</p></div>
+        <div className="mb-6"><BrandLogo brand={brand} className="h-7" /><p className="mt-2 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-accent">Admin</p>
+          {stores.length > 1 && (
+            <label className="mt-3 block text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted">Store
+              <select value={store} onChange={(e) => { chooseStore(e.target.value); window.location.href = "/"; }} className="mt-1 w-full rounded border border-line bg-card px-2 py-1.5 text-sm normal-case tracking-normal text-fg">
+                {stores.map((s) => <option key={s.slug} value={s.slug}>{s.name}</option>)}
+              </select>
+            </label>
+          )}
+          {stores.length > 1 && (
+            <label className="mt-3 block text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted">Settings changes apply to
+              <select value={scope} onChange={(e) => { const v = e.target.value === "all" ? "all" : "this"; setScope(v); setScopeState(v); }} className={`mt-1 w-full rounded border bg-card px-2 py-1.5 text-sm normal-case tracking-normal ${scope === "all" ? "border-accent text-accent" : "border-line text-fg"}`}>
+                <option value="this">This store only</option>
+                <option value="all">All stores</option>
+              </select>
+            </label>
+          )}
+        </div>
         <nav className="space-y-5 text-sm">
           {NAV.map((g, gi) => (
             <div key={gi} className="space-y-1">

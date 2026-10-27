@@ -1,0 +1,32 @@
+{
+  "domain": "",
+  "stores": [
+    {
+      "slug": "main",
+      "name": "AVERIXA",
+      "subdomain": "",
+      "database": "shop",
+      "apiPort": 4000,
+      "webPort": 3000,
+      "adminPort": 3001
+    },
+    {
+      "slug": "electronics",
+      "name": "AVERIXA Electronics",
+      "subdomain": "electronics",
+      "database": "shop_electronics",
+      "apiPort": 4001,
+      "webPort": 3002,
+      "adminPort": 3003
+    },
+    {
+      "slug": "dryfruits",
+      "name": "AVERIXA Dry Fruits",
+      "subdomain": "dryfruits",
+      "database": "shop_dryfruits",
+      "apiPort": 4002,
+      "webPort": 3004,
+      "adminPort": 3005
+    }
+  ]
+}

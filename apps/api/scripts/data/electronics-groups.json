@@ -1,0 +1,9 @@
+{
+  "Air Conditioners and Cooling": ["Air Conditioners (Split)", "Air Conditioners (Floor Standing)", "Air Conditioner (Ceiling Cassette)", "Air Cooler", "Fans"],
+  "Kitchen Appliances": ["Microwave Oven", "Built-In Oven", "Cooking Range", "Gas Hob", "Range Hood", "Electric Table Grill", "Dish Washer", "Kitchen appliances"],
+  "Refrigerators and Freezers": ["Refrigerators", "Deep Freezer", "Vertical Freezer", "Visi Cooler", "Water Dispenser", "Electric Water Cooler"],
+  "Laundry and Home Care": ["Washing Machines", "Dryer Machine", "Iron", "Garments Steamer", "Vacuum Cleaner", "Sewing Machine", "Insect Killer"],
+  "TV, Audio and Power": ["LED TV", "Home Theater/Speaker", "UPS (Inverter)"],
+  "Heating and Water": ["Geyser", "Heater"],
+  "Personal Care and Comfort": ["Beauty Products", "Foot Massager", "Choki"]
+}

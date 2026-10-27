@@ -1,0 +1,17 @@
+[
+  {
+    "slug": "main",
+    "name": "AVERIXA",
+    "api": "http://localhost:4000/api/v1"
+  },
+  {
+    "slug": "electronics",
+    "name": "AVERIXA Electronics",
+    "api": "http://localhost:4001/api/v1"
+  },
+  {
+    "slug": "dryfruits",
+    "name": "AVERIXA Dry Fruits",
+    "api": "http://localhost:4002/api/v1"
+  }
+]
