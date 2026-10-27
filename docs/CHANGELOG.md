@@ -668,3 +668,9 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - **Natural Hair Wellness 6** (freshrootsorganic.store): 10 products, 22 photos, directly in the sub collection (only a "frontpage" shelf at the source). Published.
 - NOT done: **sudtana.com** (planned Natural Hair Wellness 5): not a Pakistani store (USD prices); the owner said not to add it. It was test-imported as draft and fully removed again (114 products, 13 collections, 431 photos). **store.edenroc.biz** (planned 7) answers automated requests with "Not Acceptable"; not fetched (no workaround attempted).
 - Shop on :3000 restarted via `scripts/shop-watchdog.ps1` (new files in `public/`); `/` and the NHW4, Textiles 2, Natural Skin 1 and NHW6 collection pages answered 200. Photos not viewed by eye.
+
+## 2026-10-27 - Electronics 1 (zentvolt.com) imported as DRAFT under ALL ORGANIC
+- Owner asked for electronics under ALL ORGANIC only, sub collections by name only (no menu pictures), products only in the bottom-level sub collections, and left the choice of store to me. Chose zentvolt.com (Pakistani Shopify store, PKR prices, COD).
+- `import-store.ts` (no code change): 31 products, 115 photos, sub collections Chargers (2), Earbuds (12), Handsfree (3), Latest Tech Gadgets (11), Smart Watches (0, empty: delete before publishing). "Best Sellers" and "New Arrivals" shelves skipped. Mark-up applied (e.g. 3000 -> 4200, 2000 -> 2800).
+- NOT published: all products DRAFT and collections hidden until the owner confirms the store. To publish: `npx tsx scripts/import-store.ts https://zentvolt.com/ "Electronics 1" --skip "best-sellers|new-arrivals" --publish`, then restart the shop on :3000 (new photos in `public/cs`).
+- Also this session: Sudtana (sudtana.com, USD, not Pakistani) test-imported then fully removed on the owner's word. Pixel/catalogue feed/SEO and hosting (Hostinger VPS or Railway) discussed only; nothing built.
