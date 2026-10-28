@@ -22,16 +22,45 @@ const bg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" hei
 <polygon points="${PX},${PY} ${PX + PW - CUT},${PY} ${PX + PW},${PY + CUT} ${PX + PW},${PY + PH} ${PX},${PY + PH}" fill="url(#p)" stroke="#ff5a1f" stroke-width="3"/>
 <polygon points="${PX + PW - CUT},${PY} ${PX + PW},${PY + CUT} ${PX + PW - CUT},${PY + CUT}" fill="#ff5a1f"/></svg>`);
 
-const cats = (await pool.query("SELECT id, name, slug, parent_id FROM categories WHERE is_active ORDER BY parent_id NULLS FIRST, sort_order")).rows as { id: string; name: string; slug: string; parent_id: string | null }[];
+// Hand-picked photos (looked at one by one): a clean single-product shot per menu, no seller banners, text collages, people or whole cars. A menu with no entry here is left as it is.
+const PICKS: Record<string, string> = {
+  "air-fresheners-and-perfume": "ap-114369.webp",
+  "body-panels-and-liners": "ap-105625.webp",
+  "car-covers": "ap-110064.webp",
+  "cleaning-and-detailing": "ap-116692.webp",
+  "dashboard-covers": "ap-60782.webp",
+  "emblems-and-decor": "ap-116705.webp",
+  "engine-and-brakes": "ap-105445.webp",
+  "filters": "ap-105607.webp",
+  "floor-mats": "ap-113511.webp",
+  "grilles-and-body-styling": "ap-111319.webp",
+  "headlights-and-bulbs": "ap-118687.webp",
+  "interior-lighting": "ap-109797.webp",
+  "interior-trim": "ap-116868.webp",
+  "key-covers-and-cases": "ap-114514.webp",
+  "lamps-and-lights": "ap-110701.webp",
+  "mirror-covers": "ap-111664.webp",
+  "other-accessories": "ap-111487.webp",
+  "seat-covers": "ap-116856.webp",
+  "steering-and-gear-knobs": "ap-111580.webp",
+  "sunshades-and-curtains": "ap-111422.webp",
+  "tools-and-accessories": "ap-72214.webp",
+  "wheel-and-brake-covers": "ap-117078.webp",
+  "wiper-blades": "ap-116834.webp",
+  "interior": "ap-60782.webp",
+  "exterior": "ap-111319.webp",
+  "lighting": "ap-110701.webp",
+  "wipers-and-filters": "ap-105607.webp",
+  "care-and-cleaning": "ap-114369.webp",
+  "body-and-mechanical": "ap-105625.webp",
+  "accessories": "ap-111487.webp"
+};
+const cats = (await pool.query("SELECT id, slug FROM categories WHERE is_active")).rows as { id: string; slug: string }[];
 let n = 0, none = 0;
 for (const c of cats) {
-  // a menu uses its own parts and those of its sub-menus; the second most expensive keeps it from being an odd outlier, and only parts whose photo is on disk count
-  const rows = (await pool.query(
-    `SELECT p.images->>0 img FROM products p JOIN product_categories pc ON pc.product_id=p.id JOIN categories k ON k.id=pc.category_id
-      WHERE p.status='PUBLISHED' AND p.images->>0 LIKE '/cs/ap-%' AND (k.id=$1 OR k.parent_id=$1) ORDER BY p.selling_price DESC LIMIT 6`, [c.id])).rows as { img: string }[];
-  const src = rows.map((r) => path.join(DIR, path.basename(r.img))).filter((f) => fs.existsSync(f))[1] ?? rows.map((r) => path.join(DIR, path.basename(r.img))).find((f) => fs.existsSync(f));
-  if (!src) { none++; continue; }
-  const photo = await sharp(fs.readFileSync(src)).trim({ threshold: 14 }).resize({ width: Math.round(PW * 0.8), height: Math.round(PH * 0.8), fit: "inside" }).png().toBuffer({ resolveWithObject: true });
+  const pic = PICKS[c.slug]; const src = pic && path.join(DIR, pic);
+  if (!src || !fs.existsSync(src)) { none++; continue; }
+  const photo = await sharp(fs.readFileSync(src)).trim({ threshold: 14 }).resize({ width: Math.round(PW * 0.84), height: Math.round(PH * 0.84), fit: "inside" }).png().toBuffer({ resolveWithObject: true });
   const out = await sharp(bg).composite([{ input: photo.data, left: PX + Math.round((PW - photo.info.width) / 2), top: PY + Math.round((PH - photo.info.height) / 2), blend: "multiply" }]).webp({ quality: 88 }).toBuffer();
   const f = `apc-${c.slug}.webp`; fs.writeFileSync(path.join(DIR, f), out);
   await pool.query("UPDATE categories SET image_url=$2 WHERE id=$1", [c.id, `/cs/${f}`]); n++;
