@@ -28,6 +28,16 @@
       "webPort": 3004,
       "adminPort": 3005,
       "inLinks": false
+    },
+    {
+      "slug": "mobiles",
+      "name": "AVERIXA Mobiles",
+      "subdomain": "mobiles",
+      "database": "shop_mobiles",
+      "apiPort": 4003,
+      "webPort": 3006,
+      "adminPort": 3007,
+      "inLinks": false
     }
   ]
 }

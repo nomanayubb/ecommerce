@@ -13,5 +13,10 @@
     "slug": "dryfruits",
     "name": "AVERIXA Dry Fruits",
     "api": "http://localhost:4002/api/v1"
+  },
+  {
+    "slug": "mobiles",
+    "name": "AVERIXA Mobiles",
+    "api": "http://localhost:4003/api/v1"
   }
 ]
