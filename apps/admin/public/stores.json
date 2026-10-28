@@ -18,5 +18,10 @@
     "slug": "mobiles",
     "name": "AVERIXA Mobiles",
     "api": "http://localhost:4003/api/v1"
+  },
+  {
+    "slug": "autoparts",
+    "name": "AVERIXA Auto Parts",
+    "api": "http://localhost:4004/api/v1"
   }
 ]

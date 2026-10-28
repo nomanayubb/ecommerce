@@ -49,7 +49,6 @@
       "apiPort": 4004,
       "webPort": 3004,
       "adminPort": 3011,
-      "inLinks": false,
       "webDir": "web-autoparts"
     }
   ]
