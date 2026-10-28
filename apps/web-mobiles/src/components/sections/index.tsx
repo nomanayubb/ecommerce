@@ -1,0 +1,538 @@
+import { CardLogo } from "../CardLogo";
+import { HeroSlideshow } from "../HeroSlideshow";
+import { isFileVideo } from "@/lib/media";
+import { Scene3D } from "./Scene3DLazy";
+import { Timeline, Team, Contact, PlaceMap, Gallery as PhotoGallery, Events, Podcast, VideoStory, Stats, BlogGrid, RecipeGrid, CustomCode, Chips, Marquee, PromoBanner, Steps, BrandGrid, PickedForYou } from "./Extra";
+import Link from "next/link";
+import type { CSSProperties, ReactNode } from "react";
+import { api, type ProductDetail, type ProductSummary } from "@/lib/api";
+import type { Section, SectionCtx } from "@/lib/sections";
+import { ProductCard } from "../ProductCard";
+import { Reveal } from "../Motion";
+import { ArrowRightIcon, CashIcon, HeartIcon, PackageIcon, ShieldIcon, StarIcon, SupportIcon, TruckIcon } from "../icons";
+import dynamic from "next/dynamic";
+// Heavier interactive pieces load only on pages that actually render them (keeps the first load small).
+const HeroParticles = dynamic(() => import("./HeroFx").then((m) => m.HeroParticles));
+const Magnetic = dynamic(() => import("./HeroFx").then((m) => m.Magnetic));
+const KineticHeading = dynamic(() => import("./HeroFx").then((m) => m.KineticHeading));
+const ParallaxLayers = dynamic(() => import("./HeroFx").then((m) => m.ParallaxLayers));
+const FloatingDoodles = dynamic(() => import("./HeroFx").then((m) => m.FloatingDoodles));
+const CompareSlider = dynamic(() => import("./HeroFx").then((m) => m.CompareSlider));
+const MascotStory = dynamic(() => import("./HeroFx").then((m) => m.MascotStory));
+const Logo3D = dynamic(() => import("../Logo3D").then((m) => m.Logo3D));
+const RecentlyViewed = dynamic(() => import("../RecentlyViewed").then((m) => m.RecentlyViewed));
+const NewsletterForm = dynamic(() => import("../NewsletterForm").then((m) => m.NewsletterForm));
+const Gallery = dynamic(() => import("../Gallery").then((m) => m.Gallery));
+const BuyPanel = dynamic(() => import("../BuyPanel").then((m) => m.BuyPanel));
+const Countdown = dynamic(() => import("./Countdown").then((m) => m.Countdown));
+
+type P = { s: Section; ctx: SectionCtx };
+type Settings = Record<string, any>;
+
+function A({ href, className, children }: { href: string; className?: string; children: ReactNode }) {
+  return href.startsWith("/") ? <Link href={href} className={className}>{children}</Link> : <a href={href} target="_blank" rel="noopener noreferrer" className={className}>{children}</a>;
+}
+
+function Head({ eyebrow, heading, href, linkLabel = "View all", center }: { eyebrow?: string; heading?: string; href?: string; linkLabel?: string; center?: boolean }) {
+  if (!eyebrow && !heading) return null;
+  return (
+    <div className={`sec-head mb-6 flex items-end justify-between ${center ? "justify-center text-center" : ""}`}>
+      <div>{eyebrow && <p className="eyebrow">{eyebrow}</p>}{heading && <h2 className="mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">{heading}</h2>}</div>
+      {href && <A href={href} className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] transition hover:text-accent">{linkLabel} <ArrowRightIcon size={16} /></A>}
+    </div>
+  );
+}
+
+/** Angular line art echoing the logo's strokes. Decorative only. */
+function HeroArt() {
+  const i = (n: number) => ({ "--i": n }) as CSSProperties;
+  return (
+    <svg aria-hidden viewBox="0 0 600 600" className="pointer-events-none absolute right-0 top-1/2 hidden h-[112%] -translate-y-1/2 opacity-90 lg:block" fill="none" strokeLinecap="square">
+      <g className="float-g">
+        <g stroke="rgb(var(--accent-bright))" strokeWidth="2">
+          <path className="draw" style={i(0)} pathLength={1} d="M120 540 L300 60 L360 60" opacity=".9" />
+          <path className="draw" style={i(1)} pathLength={1} d="M200 540 L360 130" opacity=".55" />
+          <path className="draw" style={i(2)} pathLength={1} d="M300 340 L520 340 L560 200 L600 200" />
+          <path className="draw" style={i(3)} pathLength={1} d="M330 340 L350 420 L520 420 L548 340" opacity=".8" />
+        </g>
+        <g stroke="rgb(var(--accent-bright))" strokeWidth="2" opacity=".85">
+          <circle className="draw" style={i(4)} pathLength={1} cx="380" cy="470" r="16" /><circle className="draw" style={i(5)} pathLength={1} cx="490" cy="470" r="16" />
+        </g>
+      </g>
+      <g stroke="rgb(var(--on-dark))" strokeOpacity=".12" strokeWidth="1">
+        {Array.from({ length: 10 }, (_, n) => <path key={n} d={`M${60 + n * 56} 600 L${300 + n * 30} 0`} />)}
+      </g>
+    </svg>
+  );
+}
+
+function Hero({ s, ctx }: P) {
+  const v = s.settings as Settings;
+  const b = ctx.branding;
+  const heading = v.heading || b.tagline || "Your world. Our store.";
+  const eyebrow = v.eyebrow || b.name;
+  const text = v.text || b.heroText || "";
+  const pad = v.height === "md" ? "py-14 sm:py-20" : "py-20 sm:py-28";
+  const packGrad = ctx.pack.decor?.heroGradient;
+  const gradient = packGrad ?? "linear-gradient(120deg, rgb(var(--dark)) 0%, color-mix(in srgb, rgb(var(--dark)) 86%, rgb(var(--accent-bright))) 55%, rgb(var(--dark)) 100%)";
+  const elegant = v.headingStyle === "elegant";
+  // *word* marks the gold accent in the elegant look; in the bold look the stars are simply dropped
+  const words = heading.split(" ").map((w: string, n: number, all: string[]) => {
+    const open = all.slice(0, n + 1).join(" ").split("*").length % 2 === 0;
+    const accent = elegant && (open || /^\*|\*$/.test(w));
+    return <span key={n} className={`kword ${accent ? "hero-accent" : ""}`} style={{ "--i": n } as CSSProperties}>{w.replace(/\*/g, "")}&nbsp;</span>;
+  });
+  const variant = String(v.variant ?? "gradient");
+  const rotating = String(v.rotatingWords ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+  const story = String(v.storyLines ?? "").split("\n").map((x) => x.trim()).filter(Boolean);
+  const primary = v.primaryLabel && v.primaryHref ? (
+    <A href={v.primaryHref} className="btn btn-shimmer bg-gold text-darksurface hover:bg-ondark">{v.primaryLabel}</A>
+  ) : null;
+  const copy = (
+    <div className="relative max-w-xl">
+      <p className={`eyebrow ${elegant ? "hero-eyebrow-elegant" : ""}`}>{eyebrow}</p>
+      {variant === "kinetic" ? <KineticHeading heading={heading} words={rotating} /> : <h1 className={elegant ? "hero-title hero-title-elegant mt-5" : "hero-title mt-5 text-4xl font-semibold uppercase leading-[1.08] tracking-[0.04em] sm:text-6xl"}>{words}</h1>}
+      {text && <p className="mt-6 max-w-md text-base leading-relaxed text-ondark/70">{text}</p>}
+      {variant === "mascot" && story.length > 0 && <div className="mt-8"><MascotStory lines={story} /></div>}
+      <div className="mt-10 flex flex-wrap items-center gap-4">
+        {primary && (v.magnetic ? <Magnetic>{primary}</Magnetic> : primary)}
+        {v.secondaryLabel && v.secondaryHref && <A href={v.secondaryHref} className="btn border border-ondark/40 text-ondark hover:border-gold hover:text-gold">{v.secondaryLabel}</A>}
+      </div>
+    </div>
+  );
+  const parts = v.particles && v.particles !== "none" ? <HeroParticles kind={v.particles as "flour"} /> : null;
+  const frame = "relative -mx-4 overflow-hidden px-6 text-ondark sm:mx-0 sm:px-14";
+
+  if (variant === "image" && v.imageUrl) {
+    const cover = (
+      <section className={`${frame} pb-14 sm:py-28`} style={{ background: "rgb(var(--dark))" }}>
+        {/* Phones: the whole photo as a band on top, text below. Desktop: photo behind the text. */}
+        <div className="hero-fade relative -mx-6 aspect-[16/10] overflow-hidden sm:absolute sm:inset-0 sm:mx-0 sm:mb-0 sm:aspect-auto">
+          <picture>
+            {v.imageUrlMobile && <source media="(max-width: 639px)" srcSet={String(v.imageUrlMobile)} />}
+            <img src={v.imageUrl} alt="" className="h-full w-full object-cover" />
+          </picture>
+          <div className="absolute inset-0 bg-[linear-gradient(0deg,rgb(var(--dark))_0%,transparent_20%)] sm:bg-[linear-gradient(90deg,rgba(0,0,0,.6)_0%,rgba(0,0,0,.25)_35%,transparent_48%)]" />
+        </div>
+        {parts}<div className="relative -mt-6 sm:mt-0">{copy}</div>
+      </section>
+    );
+    // Extra slides (admin: the hero section, Extra slide) follow the cover; the cover itself is unchanged.
+    const extra = (s.blocks ?? []).filter((b) => b.settings.heading || b.settings.imageUrl);
+    if (!extra.length) return cover;
+    return <HeroSlideshow first={cover} seconds={Number(v.slideSeconds) || 6} slides={extra.map((b) => ({ id: b.id, eyebrow: String(b.settings.eyebrow ?? ""), heading: String(b.settings.heading ?? ""), text: String(b.settings.text ?? ""), buttonLabel: String(b.settings.buttonLabel ?? ""), buttonHref: String(b.settings.buttonHref ?? ""), imageUrl: String(b.settings.imageUrl ?? ""), art: String(b.settings.art ?? "") }))} />;
+  }
+  if (variant === "video" && v.videoUrl)
+    return (
+      <section className={`${frame} ${pad}`} style={{ background: "rgb(var(--dark))" }}>
+        <video src={String(v.videoUrl)} poster={v.imageUrl ? String(v.imageUrl) : undefined} autoPlay muted loop playsInline preload="metadata" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent" />
+        {parts}{copy}
+      </section>
+    );
+  if (variant === "parallax")
+    return (
+      <section className={`${frame} ${pad}`} style={{ background: "rgb(var(--dark))" }}>
+        <ParallaxLayers imageUrl={v.imageUrl ? String(v.imageUrl) : undefined} />
+        {parts}{copy}
+      </section>
+    );
+  if (variant === "split" || variant === "compare")
+    return (
+      <section className="-mx-4 grid overflow-hidden text-ondark sm:mx-0 md:grid-cols-2" style={{ background: "rgb(var(--dark))" }}>
+        <div className={`relative px-6 sm:px-14 ${pad}`}>{parts}{copy}</div>
+        <div className="relative min-h-72 md:min-h-full">
+          {variant === "compare" && v.imageUrl && v.imageUrl2 ? <CompareSlider before={String(v.imageUrl)} after={String(v.imageUrl2)} />
+            : v.imageUrl ? <img src={String(v.imageUrl)} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <div className="absolute inset-0" style={{ background: gradient }} />}
+        </div>
+      </section>
+    );
+  if (variant === "scene3d")
+    return (
+      <section className={`${packGrad ? "" : "hero-anim"} relative -mx-4 overflow-hidden text-ondark sm:mx-0`} style={{ background: gradient }}>
+        <div className="hero-glow" aria-hidden />
+        {parts}
+        <div className="relative grid items-center md:grid-cols-2">
+          <div className={`px-6 sm:px-14 ${pad}`}>{copy}</div>
+          <Scene3D className="h-72 w-full md:h-[28rem]" />
+        </div>
+      </section>
+    );
+  return (
+    <section className={`${packGrad ? "" : "hero-anim"} fade-up ${frame} ${pad}`} style={{ background: gradient }}>
+      <div className="hero-glow" aria-hidden />
+      {variant === "floating" ? <FloatingDoodles /> : <HeroArt />}
+      {parts}
+      {copy}
+    </section>
+  );
+}
+
+/** Every top-level collection as a card: picture with the animated logo, name, size, and a few of its sub menus. */
+function CollectionShowcase({ s, ctx }: P) {
+  const v = s.settings as Settings;
+  const pick = String(v.slugs ?? "").split(",").map((x) => x.trim().toLowerCase()).filter(Boolean);
+  const pool = pick.length ? pick.map((sl) => ctx.categories.find((c) => c.slug === sl)).filter((c): c is NonNullable<typeof c> => !!c) : ctx.categories;
+  const cats = pool.slice(0, Math.min(40, v.count ?? 40));
+  if (!cats.length) return null;
+  return (
+    <section>
+      <Reveal><Head eyebrow={v.eyebrow} heading={v.heading} /></Reveal>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-4">
+        {cats.map((c, i) => {
+          const wide = !!v.featured && i < 2;
+          const subs = c.children;
+          return (
+            <Reveal key={c.id} delay={(i % 4) * 70} className={wide ? "col-span-2" : ""}>
+              <article className="group">
+                <Link href={`/collections/${c.slug}`} className="relative block overflow-hidden rounded-[10px] border border-line bg-[#f4f7fc] transition hover:border-accent">
+                  <img src={c.image_url || `/cimg/${c.slug}?ar=4x3`} alt={c.name} loading={i < 4 ? "eager" : "lazy"} width={800} height={600}
+                    className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+                </Link>
+                <p className="mt-3 text-center text-sm font-bold sm:text-base">{c.name}</p>
+                {subs.length > 0 && (
+                  <ul className="mt-2 flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs text-muted">
+                    {subs.slice(0, wide ? 6 : 3).map((k) => <li key={k.id}><Link href={`/collections/${k.slug}`} className="transition hover:text-accent">{k.name}</Link></li>)}
+                    <li><Link href={`/collections/${c.slug}`} className="font-semibold text-accent hover:underline">{subs.length > (wide ? 6 : 3) ? `+${subs.length - (wide ? 6 : 3)} more` : "View all"} →</Link></li>
+                  </ul>
+                )}
+              </article>
+            </Reveal>
+          );
+        })}
+      </div>
+      <Reveal><div className="mt-10 text-center"><Link href="/collections" className="btn btn-ghost">Browse every collection</Link></div></Reveal>
+    </section>
+  );
+}
+
+function CollectionList({ s, ctx }: P) {
+  const v = s.settings as Settings;
+  if (v.layout === "all") return <CollectionShowcase s={s} ctx={ctx} />;
+  const cats = ctx.categories.slice(0, v.count ?? 5);
+  if (!cats.length) return null;
+  return (
+    <section>
+      <Reveal><Head eyebrow={v.eyebrow} heading={v.heading} /></Reveal>
+      <div className="grid auto-rows-[190px] grid-cols-2 gap-4 md:auto-rows-[210px] md:grid-cols-4">
+        {cats.map((c, i) => (
+          <Reveal key={c.id} delay={i * 90} className={i === 0 ? "col-span-2 row-span-2" : i < 3 ? "md:col-span-2" : ""}>
+            <Link href={`/collections/${c.slug}`} className="group relative block h-full overflow-hidden rounded-[10px] border border-line bg-[#f4f7fc] transition hover:border-accent">
+              <img src={c.image_url || `/cimg/${c.slug}?ar=4x3`} alt={c.name} loading="lazy" width={800} height={600} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+              <p className="absolute inset-x-0 bottom-0 bg-white/90 px-3 py-2 text-center text-sm font-bold text-[#16191f]">{c.name}</p>
+            </Link>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+const products = async (v: Settings) => {
+  const qs = new URLSearchParams({ pageSize: String(v.count ?? 8), sort: v.sort ?? "newest" });
+  if (v.categorySlug) qs.set("category", v.categorySlug);
+  return (await api<{ items: ProductSummary[] }>(`/products?${qs}`).catch(() => ({ items: [] as ProductSummary[] }))).items;
+};
+
+async function FeaturedCollection({ s }: P) {
+  const v = s.settings as Settings;
+  const items = await products(v);
+  const cols = ({ "2": "md:grid-cols-2", "3": "md:grid-cols-3", "4": "md:grid-cols-4" } as Record<string, string>)[String(v.columns)] ?? "md:grid-cols-4";
+  return (
+    <section>
+      <Reveal><Head eyebrow={v.eyebrow} heading={v.heading} href={v.showViewAll ? (v.categorySlug ? `/collections/${v.categorySlug}` : "/products") : undefined} /></Reveal>
+      <div className={`grid grid-cols-2 gap-4 ${cols}`}>{items.map((p, i) => <Reveal key={p.id} delay={(i % 4) * 80}><ProductCard p={p} /></Reveal>)}</div>
+      {!items.length && <p className="text-muted">No products to show yet.</p>}
+    </section>
+  );
+}
+
+async function ProductCarousel({ s }: P) {
+  const v = s.settings as Settings;
+  const items = await products({ ...v, sort: v.sort || "newest" });
+  if (!items.length) return null;
+  return (
+    <section>
+      <Head eyebrow={v.eyebrow} heading={v.heading} href={v.categorySlug ? `/collections/${v.categorySlug}` : "/products"} />
+      <div className={v.mediaUrl ? "flex flex-col gap-4 md:flex-row" : ""}>
+        {v.mediaUrl && (
+          <div className="relative aspect-[4/5] w-full shrink-0 overflow-hidden border border-line bg-card md:aspect-auto md:w-[34%]">
+            {isFileVideo(String(v.mediaUrl))
+              ? <video src={String(v.mediaUrl)} autoPlay muted loop playsInline preload="metadata" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+              : <img src={String(v.mediaUrl)} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          </div>
+        )}
+        <div className={`${v.mediaUrl ? "min-w-0 flex-1" : ""} -mx-4 -mt-2 flex snap-x snap-proximity gap-4 overflow-x-auto px-4 pb-3 pt-2 [scrollbar-width:thin] md:-mx-1 md:px-1`} tabIndex={0} aria-label={v.heading || "Products"}>
+          {items.map((p) => <div key={p.id} className="w-56 shrink-0 snap-start sm:w-64"><ProductCard p={p} /></div>)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+async function Spotlight({ s }: P) {
+  const v = s.settings as Settings;
+  if (!v.productSlug) return null;
+  const p = await api<ProductDetail>(`/products/${v.productSlug}`).catch(() => null);
+  if (!p) return null;
+  return (
+    <section>
+      <Head eyebrow={v.eyebrow} heading={v.heading} />
+      <div className="grid gap-10 md:grid-cols-2 lg:gap-16">
+        <Gallery images={p.images} title={p.title} />
+        <div>
+          {p.brand_name && <p className="eyebrow">{p.brand_name}</p>}
+          <h3 className="mb-6 mt-2 text-3xl font-semibold leading-tight">{p.title}</h3>
+          <BuyPanel p={p} compact />
+          <Link href={`/products/${p.slug}`} className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] hover:text-accent">Full details <ArrowRightIcon size={16} /></Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ImageWithText({ s }: P) {
+  const v = s.settings as Settings;
+  const text = (
+    <div>
+      {v.eyebrow && <p className="eyebrow">{v.eyebrow}</p>}
+      {v.heading && <h2 className="mt-3 text-3xl font-semibold uppercase tracking-[0.1em]">{v.heading}</h2>}
+      {v.text && <p className="mt-5 whitespace-pre-line leading-relaxed text-muted">{v.text}</p>}
+      {v.buttonLabel && v.buttonHref && <A href={v.buttonHref} className="btn btn-primary mt-8">{v.buttonLabel}</A>}
+    </div>
+  );
+  if (v.layout === "overlay")
+    return (
+      <section className="relative overflow-hidden border border-line text-ondark" style={{ background: "rgb(var(--dark))" }}>
+        {v.imageUrl && <img src={v.imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover opacity-70" />}
+        <div className="relative max-w-xl px-6 py-20 sm:px-14 [&_p]:text-ondark/80">{text}</div>
+      </section>
+    );
+  return (
+    <section className="grid items-center gap-10 md:grid-cols-2 lg:gap-16">
+      <div className={v.layout === "right" ? "md:order-2" : ""}>{v.imageUrl ? <img src={v.imageUrl} alt="" loading="lazy" className="aspect-[4/3] w-full border border-line object-cover" /> : <div className="aspect-[4/3] w-full border border-dashed border-line" />}</div>
+      {text}
+    </section>
+  );
+}
+
+function RichText({ s }: P) {
+  const v = s.settings as Settings;
+  const paras = String(v.body ?? "").split(/\n\s*\n/).filter(Boolean);
+  return (
+    <section className={`mx-auto max-w-3xl ${v.align === "center" ? "text-center" : ""}`}>
+      {v.eyebrow && <p className="eyebrow">{v.eyebrow}</p>}
+      {v.heading && <h2 className="mt-3 text-3xl font-semibold uppercase tracking-[0.1em]">{v.heading}</h2>}
+      <div className="mt-6 space-y-4 leading-relaxed text-muted">{paras.map((t, i) => <p key={i} className="whitespace-pre-line">{t}</p>)}</div>
+    </section>
+  );
+}
+
+const ICON: Record<string, (p: { size?: number }) => ReactNode> = { truck: TruckIcon, cash: CashIcon, shield: ShieldIcon, support: SupportIcon, package: PackageIcon, star: StarIcon, heart: HeartIcon };
+
+function Multicolumn({ s }: P) {
+  const v = s.settings as Settings;
+  const cols = ({ "2": "md:grid-cols-2", "3": "md:grid-cols-3", "4": "md:grid-cols-4" } as Record<string, string>)[String(v.columns)] ?? "md:grid-cols-3";
+  return (
+    <section>
+      <Head heading={v.heading} />
+      <div className={`grid gap-px border border-line bg-line ${cols}`}>
+        {s.blocks.map((b) => {
+          const Ic = ICON[b.settings.icon] ?? PackageIcon;
+          return <div key={b.id} className="bg-card p-6"><span className="text-fg"><Ic size={28} /></span><h3 className="mt-4 text-sm font-semibold uppercase tracking-[0.18em]">{b.settings.title}</h3><p className="mt-2 text-sm leading-relaxed text-muted">{b.settings.text}</p></div>;
+        })}
+      </div>
+    </section>
+  );
+}
+
+function Testimonials({ s }: P) {
+  const v = s.settings as Settings;
+  if (!s.blocks.length) return null;
+  return (
+    <section>
+      <Head eyebrow={v.eyebrow} heading={v.heading} />
+      <div className="grid gap-4 md:grid-cols-3">
+        {s.blocks.map((b) => (
+          <figure key={b.id} className="border border-line bg-card p-6">
+            <blockquote className="leading-relaxed">“{b.settings.quote}”</blockquote>
+            <figcaption className="mt-4 text-xs uppercase tracking-[0.18em] text-muted"><span className="text-fg">{b.settings.name}</span>{b.settings.role ? ` · ${b.settings.role}` : ""}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function LogoBar({ s }: P) {
+  const v = s.settings as Settings;
+  if (!s.blocks.length) return null;
+  return (
+    <section className="text-center">
+      {v.heading && <p className="eyebrow mb-6">{v.heading}</p>}
+      <ul className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
+        {s.blocks.map((b) => {
+          const inner = b.settings.imageUrl ? <img src={b.settings.imageUrl} alt={b.settings.name} className="h-8 w-auto opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0" /> : <span className="text-sm font-semibold uppercase tracking-[0.3em] text-muted">{b.settings.name}</span>;
+          return <li key={b.id}>{b.settings.href ? <A href={b.settings.href}>{inner}</A> : inner}</li>;
+        })}
+      </ul>
+    </section>
+  );
+}
+
+function Faq({ s }: P) {
+  const v = s.settings as Settings;
+  if (!s.blocks.length) return null;
+  const ld = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: s.blocks.map((b) => ({ "@type": "Question", name: b.settings.question, acceptedAnswer: { "@type": "Answer", text: b.settings.answer } })) };
+  return (
+    <section className="mx-auto max-w-3xl">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
+      <Head eyebrow={v.eyebrow} heading={v.heading} />
+      <div className="divide-y divide-line border-y border-line">
+        {s.blocks.map((b) => (
+          <details key={b.id} className="group py-4">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold">{b.settings.question}<span className="text-accent transition group-open:rotate-45">+</span></summary>
+            <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{b.settings.answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CountdownBanner({ s }: P) {
+  const v = s.settings as Settings;
+  return (
+    <section className="border border-line px-6 py-12 text-center text-ondark sm:px-14" style={{ background: "linear-gradient(120deg, rgb(var(--dark)), color-mix(in srgb, rgb(var(--dark)) 80%, rgb(var(--accent-bright))))" }}>
+      {v.eyebrow && <p className="eyebrow">{v.eyebrow}</p>}
+      {v.heading && <h2 className="mt-3 text-3xl font-semibold uppercase tracking-[0.1em]">{v.heading}</h2>}
+      {v.text && <p className="mx-auto mt-4 max-w-xl text-ondark/75">{v.text}</p>}
+      {v.endsAt && <Countdown endsAt={v.endsAt} expiredText={v.expiredText} />}
+      {v.buttonLabel && v.buttonHref && <A href={v.buttonHref} className="btn bg-gold text-darksurface hover:bg-ondark mt-8">{v.buttonLabel}</A>}
+    </section>
+  );
+}
+
+function Newsletter({ s }: P) {
+  const v = s.settings as Settings;
+  return (
+    <section className="border border-line bg-card px-6 py-12 text-center sm:px-14">
+      {v.heading && <h2 className="text-2xl font-semibold uppercase tracking-[0.12em]">{v.heading}</h2>}
+      {v.text && <p className="mx-auto mt-3 max-w-md text-muted">{v.text}</p>}
+      <div className="mx-auto max-w-sm text-left"><NewsletterForm /></div>
+    </section>
+  );
+}
+
+/** KK Mart style cards: each card shows 4 collections (picture and name) or one big one, with a link under it. */
+async function CollectionCards({ s }: P) {
+  const v = s.settings as Settings;
+  const cards = (s.blocks ?? []).map((b) => {
+    const st = b.settings;
+    const slugs = (st.layout === "one" ? [st.cat1] : [st.cat1, st.cat2, st.cat3, st.cat4]).map(String).filter(Boolean);
+    return { id: b.id, title: String(st.title ?? ""), one: st.layout === "one", slugs, linkLabel: String(st.linkLabel || "See more"), linkHref: String(st.linkHref || (slugs[0] ? `/collections/${slugs[0]}` : "/collections")) };
+  }).filter((c) => c.slugs.length);
+  if (!cards.length) return null;
+  const all = [...new Set(cards.flatMap((c) => c.slugs))];
+  const covers = await api<{ slug: string; name: string | null; image: string | null }[]>(`/categories/covers?slugs=${all.join(",")}`, { revalidate: 300 }).catch(() => []);
+  const by = new Map(covers.map((c) => [c.slug, c]));
+  return (
+    <section>
+      {(v.eyebrow || v.heading) && <Reveal><Head eyebrow={v.eyebrow} heading={v.heading} /></Reveal>}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((c, n) => (
+          <Reveal key={c.id} delay={(n % 4) * 70}>
+            <article className="flex h-full flex-col rounded-lg border border-line bg-card p-4 shadow-[0_8px_24px_-16px_rgb(0_0_0/.6)] sm:p-5">
+              {c.title && <h3 className="mb-4 text-lg font-semibold leading-snug">{c.title}</h3>}
+              <div className={c.one ? "flex-1" : "grid flex-1 grid-cols-2 gap-3"}>
+                {c.slugs.map((slug) => {
+                  const it = by.get(slug);
+                  return (
+                    <Link key={slug} href={`/collections/${slug}`} className="group block">
+                      <span className={`relative block overflow-hidden rounded border border-line bg-white ${c.one ? "aspect-[4/5]" : "aspect-square"}`}>
+                        <img src={it?.image || `/cimg/${slug}?ar=4x3`} alt="" loading="lazy" width={400} height={400} className={`h-full w-full transition duration-500 group-hover:scale-105 ${it?.image ? "object-contain p-2" : "object-cover"}`} />
+                      </span>
+                      <span className="mt-2 line-clamp-2 block text-center text-sm leading-snug text-fg transition group-hover:text-accent">{it?.name || slug}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </article>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+const TRUST_ICONS = { truck: TruckIcon, price: CashIcon, shield: ShieldIcon, package: PackageIcon, support: SupportIcon } as const;
+/** Three promises in a row (icon, title, line), in the theme's gold line style. */
+function TrustStrip({ s }: P) {
+  const v = s.settings as Settings;
+  const items = [
+    { icon: v.icon1 || "truck", title: v.title1 || "Delivering across Pakistan", text: v.text1 || "Fast, Reliable & Nationwide Coverage" },
+    { icon: v.icon2 || "price", title: v.title2 || "Unbeatable Prices", text: v.text2 || "Low on Price, High on Value" },
+    { icon: v.icon3 || "shield", title: v.title3 || "Trusted Quality", text: v.text3 || "Delivering Trust Through Quality" },
+  ].filter((i) => i.title || i.text);
+  return (
+    <Reveal>
+      <section aria-label="Our promises" className="trust-strip relative grid overflow-hidden rounded-[10px] border border-line bg-card/40 md:grid-cols-3">
+        {items.map((it, n) => {
+          const Ic = TRUST_ICONS[it.icon as keyof typeof TRUST_ICONS] ?? TruckIcon;
+          return (
+            <div key={n} className="relative z-[1] flex items-center gap-4 px-5 py-6 sm:px-8 sm:py-7">
+              <span className="grid h-14 w-14 shrink-0 place-items-center border border-accent/40 bg-bg text-fg shadow-[0_14px_28px_-18px_rgb(var(--accent)/.7)]"><Ic size={26} /></span>
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.16em]">{it.title}</p>
+                <p className="mt-1 text-sm text-muted">{it.text}</p>
+              </div>
+            </div>
+          );
+        })}
+      </section>
+    </Reveal>
+  );
+}
+
+function PromiseSection({ s, ctx }: P) {
+  const v = s.settings as Settings;
+  const b = ctx.branding;
+  const logo = b.logoUrl || "";
+  const has3d = !!v.show3dLogo && logo.includes("logo-horizontal");
+  return (
+    <Reveal>
+      <section className={`border border-line bg-card px-6 py-14 sm:px-16 ${has3d ? "grid items-center gap-10 text-center md:grid-cols-[240px_1fr] md:text-left" : "text-center"}`}>
+        {has3d && <Logo3D src={logo.replace("logo-horizontal", "logo-mark")} srcDark={(b.logoUrlDark || logo).replace("logo-horizontal", "logo-mark")} alt={b.name} size={200} />}
+        <div>
+          <p className="eyebrow">{v.eyebrow || `The ${b.name} promise`}</p>
+          <p className="mx-auto mt-4 max-w-2xl text-xl font-medium leading-relaxed sm:text-2xl">{v.text || b.promiseText || "Every order is checked, packed with care and sent with tracking."}</p>
+        </div>
+      </section>
+    </Reveal>
+  );
+}
+
+const MAP: Record<string, (p: P) => any> = {
+  hero: Hero, "collection-list": CollectionList, "featured-collection": FeaturedCollection, "product-carousel": ProductCarousel, "product-spotlight": Spotlight,
+  "image-with-text": ImageWithText, "rich-text": RichText, multicolumn: Multicolumn, testimonials: Testimonials, "logo-bar": LogoBar, faq: Faq,
+  "countdown-banner": CountdownBanner, newsletter: Newsletter, promise: PromiseSection, "trust-strip": TrustStrip, "collection-cards": CollectionCards,
+  "recently-viewed": ({ s }) => <RecentlyViewed title={s.settings.heading || "Recently viewed"} />,
+  timeline: Timeline, team: Team, contact: Contact, map: PlaceMap, gallery: PhotoGallery, events: Events, podcast: Podcast, "video-story": VideoStory, stats: Stats,
+  chips: Chips, marquee: Marquee, "promo-banner": PromoBanner, steps: Steps, "brand-grid": BrandGrid, "picked-for-you": PickedForYou,
+  "blog-grid": BlogGrid, "recipe-grid": RecipeGrid, "custom-code": CustomCode,
+  spacer: ({ s }) => <div aria-hidden style={{ height: Number(s.settings.height) || 48 }} />,
+};
+
+/** Renders a page's enabled sections in order. Unknown section types are skipped (never crash the page). */
+export function SectionList({ sections, ctx }: { sections: Section[]; ctx: SectionCtx }) {
+  return (
+    <>
+      {sections.filter((s) => s.enabled).map((s, i) => {
+        const C = MAP[s.type] as any;
+        if (!C) return null;
+        return <div key={s.id} data-section={s.type} className={i === 0 || s.type === "spacer" ? "" : "mt-20"}><C s={s} ctx={ctx} /></div>;
+      })}
+    </>
+  );
+}

@@ -33,3 +33,4 @@ apps/web/public/cs/
 apps/web-electronics/public/cs/
 .api-*.log
 .web-*.log
+apps/web-mobiles/public/cs/
