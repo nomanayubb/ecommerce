@@ -31,3 +31,5 @@ apps/web/public/cs/
 .next-*
 .*-el.*.log
 apps/web-electronics/public/cs/
+.api-*.log
+.web-*.log
