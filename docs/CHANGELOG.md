@@ -732,3 +732,7 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 ## 2026-10-28 (later) — collection pictures redone by hand
 - Owner: the first tiles looked unprofessional (seller banners with text, collages, people, whole cars). `make-autoparts-collections.ts` no longer picks "most expensive part": it uses a hand-picked `PICKS` map (clean single-product photos, found by looking at contact sheets of candidates), 30 tiles, the 7 home menus each with their own distinct photo. Plate fill 84 %.
 - Seen on screen at phone width (home "Shop by category": Interior, Exterior, Lighting, Wipers and Filters, Care and Cleaning, Body and Mechanical). Not checked: desktop width, the sub-menu tiles on collection pages. Weak ones remain: Wiper Blades (squeegee, no real wiper photo exists in stock), Sunshades, Seat Covers, Interior Trim.
+
+## 2026-10-28 (later) — main shop top menu back to how it was
+- Owner: adding Electronics and Auto Parts to the top menu of :3000 pushed the header off to the right (page 1441 px wide at a 1280 px screen). Removed them from the main header; `stores.json` main has `"noHeaderLinks": true` and `scripts/store-links.ts` honours it (header links of that shop stay empty, footer column "Our stores" is unchanged). Other shops still show the store links in their header.
+- Checked at 1280 px: nav = AVERIXA, Grocery, Cosmetics, Household, More; page width 1270 px (no sideways overflow). Not checked: widths 1024-1180 px (header has other items); the other shops' headers may overflow the same way.

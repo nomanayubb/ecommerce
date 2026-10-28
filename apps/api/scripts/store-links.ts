@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import pg from "pg";
 import "../src/lib/db.js";   // loads apps/api/.env (DATABASE_URL)
 
-const reg = JSON.parse(fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../stores.json"), "utf8")) as { domain: string; stores: { slug: string; name: string; subdomain: string; database: string; webPort: number; inLinks?: boolean }[] };
+const reg = JSON.parse(fs.readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../stores.json"), "utf8")) as { domain: string; stores: { slug: string; name: string; subdomain: string; database: string; webPort: number; inLinks?: boolean; noHeaderLinks?: boolean }[] };
 const urlFor = (db: string) => { const u = new URL(process.env.DATABASE_URL!); u.pathname = `/${db}`; return u.toString(); };
 const addr = (s: (typeof reg.stores)[number]) => (reg.domain ? `https://${s.subdomain ? s.subdomain + "." : ""}${reg.domain}` : `http://localhost:${s.webPort}`);
 const merge = <T extends { label: string }>(list: T[], add: T[], drop: string[]) => [...list.filter((x) => !add.some((a) => a.label === x.label) && !drop.includes(x.label)), ...add];
@@ -15,8 +15,8 @@ const shown = reg.stores.filter((o) => o.inLinks !== false);   // a store with "
 const label = (o: (typeof reg.stores)[number]) => (o.slug === "main" ? "AVERIXA Home" : o.name.replace(/^AVERIXA\s+/i, ""));
 for (const s of reg.stores) {
   const p = new pg.Pool({ connectionString: urlFor(s.database) });
-  const others = shown.filter((o) => o.slug !== s.slug);
-  const hidden = reg.stores.filter((o) => o.inLinks === false).map(label);
+  const others = s.noHeaderLinks ? [] : shown.filter((o) => o.slug !== s.slug);   // "noHeaderLinks": true keeps the shop's top menu free of store links (the footer column stays)
+  const hidden = (s.noHeaderLinks ? reg.stores : reg.stores.filter((o) => o.inLinks === false)).map(label);
   const br = (await p.query("SELECT value FROM site_settings WHERE key='branding'")).rows[0].value;
   br.navLinks = merge(br.navLinks ?? [], others.map((o) => ({ label: label(o), href: addr(o) })), hidden).slice(0, 12);
   await p.query("UPDATE site_settings SET value=$1 WHERE key='branding'", [br]);

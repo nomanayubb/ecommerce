@@ -8,7 +8,8 @@
       "database": "shop",
       "apiPort": 4000,
       "webPort": 3000,
-      "adminPort": 3001
+      "adminPort": 3001,
+      "noHeaderLinks": true
     },
     {
       "slug": "electronics",
