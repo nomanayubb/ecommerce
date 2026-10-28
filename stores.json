@@ -17,7 +17,8 @@
       "database": "shop_electronics",
       "apiPort": 4001,
       "webPort": 3002,
-      "adminPort": 3003
+      "adminPort": 3003,
+      "webDir": "web-electronics"
     },
     {
       "slug": "dryfruits",
@@ -25,8 +26,8 @@
       "subdomain": "dryfruits",
       "database": "shop_dryfruits",
       "apiPort": 4002,
-      "webPort": 3004,
-      "adminPort": 3005,
+      "webPort": 3008,
+      "adminPort": 3009,
       "inLinks": false
     },
     {
@@ -37,7 +38,19 @@
       "apiPort": 4003,
       "webPort": 3003,
       "adminPort": 3007,
-      "inLinks": false
+      "inLinks": false,
+      "webDir": "web-mobiles"
+    },
+    {
+      "slug": "autoparts",
+      "name": "AVERIXA Auto Parts",
+      "subdomain": "autoparts",
+      "database": "shop_autoparts",
+      "apiPort": 4004,
+      "webPort": 3004,
+      "adminPort": 3011,
+      "inLinks": false,
+      "webDir": "web-autoparts"
     }
   ]
 }

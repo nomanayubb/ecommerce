@@ -26,3 +26,26 @@ if (-not (Up 3000)) {
     Start-Detached "cmd.exe /c set NEXT_DIST_DIR=$d&& npx next start -p 3000 -H 0.0.0.0 > ..\..\.web.out.log 2> ..\..\.web.err.log" $web
   } else { Note "shop (3000) down but no production build found" }
 }
+
+# ---- the other shops (stores.json): each with its own API (own database) and, if it has a "webDir" with a build, its own shop. Same rule as above: start what is down.
+try {
+  $reg = Get-Content (Join-Path $root "stores.json") -Raw | ConvertFrom-Json
+  $envLine = @(Get-Content (Join-Path $root "apps\api\.env") | Where-Object { $_ -match '^DATABASE_URL=' })[0]
+  $dbUrl = ($envLine -replace '^DATABASE_URL=', '').Trim()
+  foreach ($st in $reg.stores) {
+    if ($st.slug -eq "main" -or $st.slug -eq "dryfruits") { continue }
+    if (-not (Up $st.apiPort)) {
+      Note ("{0} API ({1}) down, starting" -f $st.slug, $st.apiPort)
+      $u = [regex]::Replace($dbUrl, '/[^/]+$', "/$($st.database)")
+      Start-Detached ('cmd.exe /c set PORT={0}&& set DATABASE_URL={1}&& npx tsx src/server.ts > ..\..\.api-{2}.out.log 2> ..\..\.api-{2}.err.log' -f $st.apiPort, $u, $st.slug) (Join-Path $root "apps\api")
+      Start-Sleep -Seconds 12
+    }
+    if ($st.webDir) {
+      $wd = Join-Path $root ("apps\" + $st.webDir)
+      if ((-not (Up $st.webPort)) -and (Test-Path (Join-Path $wd ".next\BUILD_ID"))) {
+        Note ("{0} shop ({1}) down, starting" -f $st.slug, $st.webPort)
+        Start-Detached ('cmd.exe /c npx next start -p {0} -H 0.0.0.0 > ..\..\.web-{1}.out.log 2> ..\..\.web-{1}.err.log' -f $st.webPort, $st.slug) $wd
+      }
+    }
+  }
+} catch { Note ("other shops check failed: " + $_.Exception.Message) }
