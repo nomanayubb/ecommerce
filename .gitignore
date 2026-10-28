@@ -34,3 +34,6 @@ apps/web-electronics/public/cs/
 .api-*.log
 .web-*.log
 apps/web-mobiles/public/cs/
+apps/api/data/
+apps/web-autoparts/public/cs/
+apps/web-autoparts/public/vehicles.json
