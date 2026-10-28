@@ -35,7 +35,7 @@
       "subdomain": "mobiles",
       "database": "shop_mobiles",
       "apiPort": 4003,
-      "webPort": 3006,
+      "webPort": 3003,
       "adminPort": 3007,
       "inLinks": false
     }
