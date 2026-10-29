@@ -14,9 +14,12 @@ const [slug, name, sub] = process.argv.slice(2);
 if (!slug || !name || !/^[a-z][a-z0-9_]{1,30}$/.test(slug)) throw new Error('usage: new-store.ts <slug a-z0-9_> "<Store name>" [subdomain]');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 const regFile = path.join(root, "stores.json");
-const reg = JSON.parse(fs.readFileSync(regFile, "utf8")) as { domain: string; stores: { slug: string; name: string; subdomain: string; database: string; apiPort: number; webPort: number; adminPort: number }[] };
+const reg = JSON.parse(fs.readFileSync(regFile, "utf8")) as { domain: string; stores: { slug: string; name: string; subdomain: string; database: string; apiPort: number; webPort: number; adminPort: number; inLinks?: boolean }[] };
 if (reg.stores.some((s) => s.slug === slug)) throw new Error(`store "${slug}" already exists in stores.json`);
-const entry = { slug, name, subdomain: sub ?? slug, database: `shop_${slug}`, apiPort: Math.max(...reg.stores.map((s) => s.apiPort)) + 1, webPort: Math.max(...reg.stores.map((s) => s.webPort)) + 2, adminPort: Math.max(...reg.stores.map((s) => s.adminPort)) + 2 };
+const entry = { slug, name, subdomain: sub ?? slug, database: `shop_${slug}`, apiPort: Math.max(...reg.stores.map((s) => s.apiPort)) + 1, webPort: Math.max(...reg.stores.map((s) => s.webPort)) + 2, adminPort: Math.max(...reg.stores.map((s) => s.adminPort)) + 2, inLinks: false };   // a new shop stays out of every header/footer until the owner opens it (set inLinks/footerOnly in stores.json, run store-links.ts)
+if (process.env.WEB_PORT) entry.webPort = Number(process.env.WEB_PORT);   // optional fixed ports: WEB_PORT=3005 API_PORT=4005 ADMIN_PORT=3012
+if (process.env.API_PORT) entry.apiPort = Number(process.env.API_PORT);
+if (process.env.ADMIN_PORT) entry.adminPort = Number(process.env.ADMIN_PORT);
 const mainUrl = new URL(process.env.DATABASE_URL!);
 const urlFor = (db: string) => { const u = new URL(mainUrl); u.pathname = `/${db}`; return u.toString(); };
 

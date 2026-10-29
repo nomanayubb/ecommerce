@@ -740,3 +740,9 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 ## 2026-10-29 — Mobiles in the footer "Our stores" column
 - Owner asked for AVERIXA Mobiles in the footer. `stores.json` mobiles got `"footerOnly": true` (still `inLinks:false`, so no header link anywhere); `scripts/store-links.ts` builds the footer column from `inLinks !== false || footerOnly`. Footer column in every shop now: AVERIXA, Electronics, Mobiles, Auto Parts (Dry Fruits stays hidden).
 - Checked: main page HTML contains the Mobiles link (http://localhost:3003) and the main header nav still has no store links. Not checked on screen.
+
+## 2026-10-29 — new store "attire" (AVERIXA Attire) created, nothing imported yet
+- Source: attirebulk.com (wholesale clothing). `apps/api/scripts/new-store.ts` now creates stores hidden (`inLinks:false`) and accepts `WEB_PORT/API_PORT/ADMIN_PORT`. Ran it: database `shop_attire`, API :4005, shop :3005, admin :3012 (in `stores.json` and the admin copy). Not in any header/footer.
+- Source facts (checked with a few public requests): product pages need a session cookie but no login; names, photos, colours, size sets and descriptions are public; the price is shown only after login ("Login to see price"). Prices are NOT to be taken from the page source (decision: only from the owner's own logged-in Chrome); Claude in Chrome was not connected, so no price has been read yet.
+- Sample of 150 random ids (1-4450), 27 real products: avg 3.3 colours, size set of about 6, so about 800 products / 2,600 colours / 15,000 colour x size combos (small sample, rough). The "80,000+ styles" claim is not reproduced from public data.
+- Not done: storefront copy (`apps/web-attire`), crawler, importer, design, API/shop processes.

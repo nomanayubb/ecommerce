@@ -52,6 +52,16 @@
       "webPort": 3004,
       "adminPort": 3011,
       "webDir": "web-autoparts"
+    },
+    {
+      "slug": "attire",
+      "name": "AVERIXA Attire",
+      "subdomain": "attire",
+      "database": "shop_attire",
+      "apiPort": 4005,
+      "webPort": 3005,
+      "adminPort": 3012,
+      "inLinks": false
     }
   ]
 }

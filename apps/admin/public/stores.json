@@ -23,5 +23,10 @@
     "slug": "autoparts",
     "name": "AVERIXA Auto Parts",
     "api": "http://localhost:4004/api/v1"
+  },
+  {
+    "slug": "attire",
+    "name": "AVERIXA Attire",
+    "api": "http://localhost:4005/api/v1"
   }
 ]
