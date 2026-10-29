@@ -40,7 +40,8 @@
       "webPort": 3003,
       "adminPort": 3007,
       "inLinks": false,
-      "webDir": "web-mobiles"
+      "webDir": "web-mobiles",
+      "footerOnly": true
     },
     {
       "slug": "autoparts",
