@@ -83,7 +83,8 @@ let added = 0, skipped = 0;
 for (const [page, name, code, price, fabric] of LIST) {
   const sku = `BSW-${code}`, f = fabric.replace("Light ", "");
   await onWhite(await modelPhoto(page)).toFile(path.join(PHOTOS, fileOf(code, 1)));
-  await onWhite(await sharp(pg(page)).extract({ left: 2, top: 2, width: 765, height: 796 }).toBuffer()).toFile(path.join(PHOTOS, fileOf(code, 2)));
+  // picture 2 = the card without the printed price, barcode, QR code and web address (the bottom right strip, x >= 487 and y >= 688, is painted out)
+  await onWhite(await sharp(pg(page)).extract({ left: 2, top: 2, width: 763, height: 796 }).composite([{ input: { create: { width: 278, height: 112, channels: 3, background: "#ffffff" } }, left: 485, top: 686 }]).png().toBuffer()).toFile(path.join(PHOTOS, fileOf(code, 2)));
   if ((await pool.query("SELECT 1 FROM products WHERE sku=$1", [sku])).rowCount) { skipped++; continue; }
   const desc = [`${name} by Bonanza Satrangi, from the Lia unstitched collection: a 3-piece ${f.toLowerCase()} suit for winter 2026, sold unstitched.`,
     `Shirt: digital printed ${fabric.toLowerCase()}, 1.75 m (maximum shirt length up to 42 inch). Dupatta: digital printed ${fabric.toLowerCase()}, 2.50 m. Bottom: printed ${fabric.toLowerCase()}, 1.50 m.`,

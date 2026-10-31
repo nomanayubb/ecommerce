@@ -753,3 +753,7 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Prices are the printed retail prices as they are (no wholesale markup rule: the PDF is a consumer price list). Stock is not in the PDF: 20 pieces each (placeholder, edit in admin). Brand "Bonanza Satrangi", moq 1, no colour variants (each suit is one design).
 - Files: `apps/api/scripts/import-bonanza-winter.ts` (idempotent), `apps/api/scripts/extract-pdf-images.py`; `import-attire-menus.ts` now keeps categories whose slug starts with `2026-winter-collection` (it used to delete every category).
 - Verified: `/collections/2026-winter-collection` shows 24 products, product page renders with price and photo, home contains the banner and row (shop :3005 restarted once for the new files). Not verified: phone layout of the banner, the winter products inside Women > unstitched menus (not linked there).
+
+## 2026-10-31 (later) — winter collection: printed price and barcode painted out of picture 2
+- Picture 2 of each winter suit (the whole PDF card) showed the printed "Price: 4890/-", barcode, QR code and web address. The bottom right strip is now painted out in `import-bonanza-winter.ts` (pictures regenerated, all 24 checked on two samples). The model photo (picture 1) never contained them.
+- Open: the shop price of the suits is still the PDF's printed price (Rs. 4,890 / 5,290); the owner has not yet said which price to use.
