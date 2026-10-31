@@ -757,3 +757,6 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 ## 2026-10-31 (later) — winter collection: printed price and barcode painted out of picture 2
 - Picture 2 of each winter suit (the whole PDF card) showed the printed "Price: 4890/-", barcode, QR code and web address. The bottom right strip is now painted out in `import-bonanza-winter.ts` (pictures regenerated, all 24 checked on two samples). The model photo (picture 1) never contained them.
 - Open: the shop price of the suits is still the PDF's printed price (Rs. 4,890 / 5,290); the owner has not yet said which price to use.
+
+## 2026-10-31 (later) — winter collection price = Rs. 3,300 for all 24 suits (owner's decision)
+- `import-bonanza-winter.ts`: `PRICE = 3300` for every suit (marked and selling price, no markup rule); the PDF's printed 4,890 / 5,290 are kept only in `metafields.pdfPrice`. Running the script again updates the price of products already in the database. Ran it: 24 products at 3,300.00; the collection page shows Rs. 3,300 on all 24 cards (after the 30 s page cache).

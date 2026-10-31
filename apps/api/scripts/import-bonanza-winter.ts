@@ -2,7 +2,7 @@
 // suits listed in "Bonanza Winter.pdf" (one product card per page 2-25; page 1 is the cover), plus a banner and a product row on the home page. Safe to run again (existing products are skipped).
 //   python scripts/extract-pdf-images.py "C:/Users/noman/Desktop/Bonanza Winter.pdf" data/attire/bonanza-winter
 //   DATABASE_URL=postgres://.../shop_attire npx tsx scripts/import-bonanza-winter.ts
-// Prices are the printed retail prices (Rs. 4,890 khaddar, Rs. 5,290 karandi) as they are: no wholesale markup rule is applied. Stock is not in the PDF, so each suit gets STOCK pieces (edit in admin).
+// Price: the owner's own price, Rs. 3,300 for every suit (PRICE below; the PDF's printed 4,890 / 5,290 are kept only in metafields.pdfPrice). No markup rule is applied. Stock is not in the PDF, so each suit gets STOCK pieces (edit in admin).
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -17,7 +17,7 @@ if (!/attire/.test(db)) throw new Error(`refusing to run on database "${db}"`);
 const here = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.join(here, "../data/attire/bonanza-winter"), PHOTOS = path.resolve(here, "../../web-attire/public/cs");
 fs.mkdirSync(PHOTOS, { recursive: true });
-const STOCK = 20, GROUP = "2026 Winter Collection", GSLUG = "2026-winter-collection";
+const PRICE = 3300, STOCK = 20, GROUP = "2026 Winter Collection", GSLUG = "2026-winter-collection";
 
 // [page, name, code, price, fabric]  (read from the cards of the PDF)
 const K = "Light Khaddar", R = "Light Karandi";
@@ -85,7 +85,11 @@ for (const [page, name, code, price, fabric] of LIST) {
   await onWhite(await modelPhoto(page)).toFile(path.join(PHOTOS, fileOf(code, 1)));
   // picture 2 = the card without the printed price, barcode, QR code and web address (the bottom right strip, x >= 487 and y >= 688, is painted out)
   await onWhite(await sharp(pg(page)).extract({ left: 2, top: 2, width: 763, height: 796 }).composite([{ input: { create: { width: 278, height: 112, channels: 3, background: "#ffffff" } }, left: 485, top: 686 }]).png().toBuffer()).toFile(path.join(PHOTOS, fileOf(code, 2)));
-  if ((await pool.query("SELECT 1 FROM products WHERE sku=$1", [sku])).rowCount) { skipped++; continue; }
+  if ((await pool.query("SELECT 1 FROM products WHERE sku=$1", [sku])).rowCount) {   // already there: only the price is brought up to date
+    await pool.query("UPDATE products SET marked_price=$2, selling_price=$2, metafields = (metafields - 'retailPrice') || jsonb_build_object('pdfPrice', $3::int), updated_at=now() WHERE sku=$1", [sku, PRICE, price]);
+    await pool.query("UPDATE product_variants SET price=$2 WHERE product_id IN (SELECT id FROM products WHERE sku=$1)", [sku, PRICE]);
+    skipped++; continue;
+  }
   const desc = [`${name} by Bonanza Satrangi, from the Lia unstitched collection: a 3-piece ${f.toLowerCase()} suit for winter 2026, sold unstitched.`,
     `Shirt: digital printed ${fabric.toLowerCase()}, 1.75 m (maximum shirt length up to 42 inch). Dupatta: digital printed ${fabric.toLowerCase()}, 2.50 m. Bottom: printed ${fabric.toLowerCase()}, 1.50 m.`,
     `Article code ${code}. Care: ${CARE}`, "Actual colour may vary slightly from the picture."].join(" ");
@@ -94,9 +98,9 @@ for (const [page, name, code, price, fabric] of LIST) {
   const pid = (await pool.query(
     `INSERT INTO products (title, slug, sku, description, status, marked_price, selling_price, brand_id, stock_quantity, moq, images, tags, metafields)
      VALUES ($1,$2,$3,$4,'PUBLISHED',$5,$5,$6,$7,1,$8,$9,$10) RETURNING id`,
-    [`${name} - ${code}`, slug, sku, desc, price, brandId, STOCK, JSON.stringify([`/cs/${fileOf(code, 1)}`, `/cs/${fileOf(code, 2)}`]), tags,
-      JSON.stringify({ source: "bonanza-winter-pdf", pdfPage: page, articleCode: code, collection: "Lia unstitched 2026", pieces: 3, markupApplied: false, retailPrice: price, material: f, madeBy: "Bonanza Satrangi", style: "Unstitched 3 piece",
-        seoTitle: `${name} ${code} Lia Winter 2026`.slice(0, 62), seoDescription: `Buy ${name} (${code}), Bonanza Satrangi Lia 3-piece unstitched ${f.toLowerCase()} suit, Rs. ${price.toLocaleString("en-US")}. Cash on delivery across Pakistan.`.slice(0, 158) })])).rows[0].id as string;
+    [`${name} - ${code}`, slug, sku, desc, PRICE, brandId, STOCK, JSON.stringify([`/cs/${fileOf(code, 1)}`, `/cs/${fileOf(code, 2)}`]), tags,
+      JSON.stringify({ source: "bonanza-winter-pdf", pdfPage: page, articleCode: code, collection: "Lia unstitched 2026", pieces: 3, markupApplied: false, pdfPrice: price, material: f, madeBy: "Bonanza Satrangi", style: "Unstitched 3 piece",
+        seoTitle: `${name} ${code} Lia Winter 2026`.slice(0, 62), seoDescription: `Buy ${name} (${code}), Bonanza Satrangi Lia 3-piece unstitched ${f.toLowerCase()} suit, Rs. ${PRICE.toLocaleString("en-US")}. Cash on delivery across Pakistan.`.slice(0, 158) })])).rows[0].id as string;
   for (const c of [group, sub.get(fabric)!]) await pool.query("INSERT INTO product_categories (product_id, category_id) VALUES ($1,$2) ON CONFLICT DO NOTHING", [pid, c]);
   added++;
 }
