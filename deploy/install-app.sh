@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Builds and starts the live site (run on the SERVER as root, after server-setup.sh, the code upload and copy-databases.sh):
 #   bash /srv/shop/app/deploy/install-app.sh averixa.pk main,attire
-# Steps: generate the server files -> npm ci -> write each app's addresses -> next build of every shop + the admin -> Caddy + hosts -> pm2 (starts at boot) -> shop links (scripts/store-links.ts).
+# Steps: generate the server files -> npm install -> write each app's addresses -> next build of every shop + the admin -> Caddy + hosts -> pm2 (starts at boot) -> shop links (scripts/store-links.ts).
 # Takes about 10-15 minutes the first time (the builds). Run it again after every code upload.
 set -euo pipefail
 [ "$(id -u)" = 0 ] || { echo "run as root"; exit 1; }
@@ -17,8 +17,8 @@ cp deploy/out/stores.json stores.json
 cp deploy/out/admin-stores.json apps/admin/public/stores.json
 chown -R shop:shop /srv/shop
 
-say "npm ci (as user shop)"
-sudo -u shop bash -c "cd $APP && npm ci --no-audit --no-fund"
+say "npm install (as user shop; the lockfile does not list the copied shop forks, so npm ci would refuse)"
+sudo -u shop bash -c "cd $APP && npm install --no-audit --no-fund"
 
 say "builds"
 while read -r dir; do
