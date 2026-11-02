@@ -7,6 +7,8 @@ param(
   [string]$Key = "$env:USERPROFILE\.ssh\averixa_server"
 )
 $ErrorActionPreference = "Stop"
+$Stores = @($Stores | ForEach-Object { $_ -split "," })   # "main,attire" given as one word also works
+$keyArgs = @(); if (Test-Path $Key) { $keyArgs = @("-i", $Key) }   # without that key file the default ssh key is used
 $root = Split-Path -Parent $PSScriptRoot
 $reg = Get-Content (Join-Path $root "stores.json") -Raw | ConvertFrom-Json
 $skip = @("node_modules", ".next*", ".git", ".pgdata", "*.log", ".watchdog*", "apps/api/.env", "apps/api/data", "domain details", "deploy/out")
@@ -17,6 +19,6 @@ Push-Location $root
 try { & tar -czf $tar @ex . } finally { Pop-Location }
 if ($LASTEXITCODE -ne 0) { throw "tar failed" }
 "{0:N0} MB packed, uploading to $Ip ..." -f ((Get-Item $tar).Length / 1MB)
-& scp -i $Key -o StrictHostKeyChecking=accept-new $tar "root@${Ip}:/root/averixa-code.tgz"
+& scp @keyArgs -o StrictHostKeyChecking=accept-new $tar "root@${Ip}:/root/averixa-code.tgz"
 if ($LASTEXITCODE -ne 0) { throw "upload failed" }
 "uploaded. On the server run:  mkdir -p /srv/shop/app && tar -xzf /root/averixa-code.tgz -C /srv/shop/app && chown -R shop:shop /srv/shop"
