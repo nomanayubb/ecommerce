@@ -778,3 +778,9 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Ran from the PC with the owner's go-ahead ("jo krna hai khud krein"): `generate.mjs` + Caddy reload (`CADDY-OK`), then `deploy/update.ps1 -Apps web,web-attire,web-electronics,web-mobiles,web-autoparts` (`UPDATE-OK`, all pm2 apps online).
 - Verified live: public pages send `Cache-Control: public, s-maxage=60, stale-while-revalidate=300` (Cloudflare still shows DYNAMIC: the owner has not made the Cloudflare Cache Rule yet, it needs their login); product pages with 2+ photos have the phone arrows (checked on main, attire, mobiles; electronics and autoparts have only one photo per product); on a 390 px screen the attire product page shows the arrows and the checkout thumbnail is 72x96 with the whole photo (`object-contain`).
 - Not done: Cloudflare Cache Rule (owner), the phone that cannot open `averixa.pk` (waiting for the error text), attire photo panel shows light grey side bands on phones (fork gallery uses `bg-[#f7f7f7]` + `object-contain`).
+
+## 2026-11-02 — Arrow icon fix + fast-update tools for the live server
+- `ArrowRightIcon` (all 5 shop forks, `components/icons/index.tsx`): shaft shortened `h15` -> `h13`; its square cap no longer pokes out beside the gold arrow tip. Deployed to all five live shops.
+- New `apps/<shop>/public/live-fx.css` (linked last in each layout `<head>`) + `deploy/push-css.ps1`: design edits in that file go live in about 7 s (scp, no build, no restart; measured 6.7 s for one shop).
+- `deploy/update.sh`: the build now starts from the previous build cache (`.next/cache` copied into `.next-new`) so later builds should be faster; not yet timed (the deploy that introduced it took 288 s for all five shops, cold cache).
+- Not verified: warm-cache build time; Cloudflare may serve an older CSS copy for up to a minute until the Cache Rule exists.

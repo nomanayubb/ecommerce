@@ -66,6 +66,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <style dangerouslySetInnerHTML={{ __html: brandingCss(branding) }} />
         <link rel="stylesheet" href="/card-fx.css" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <link rel="stylesheet" href="/live-fx.css" />
       </head>
       <body>
         <a href="#main" className="skip-link">Skip to content</a>

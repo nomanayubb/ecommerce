@@ -11,7 +11,7 @@ for dir in "$@"; do
   name=$([ "$dir" = web ] && echo web-main || echo "$dir")
   [ -d "$APP/apps/$dir" ] || { echo "no such app: $dir"; exit 1; }
   echo "==> building apps/$dir"
-  sudo -u shop bash -c "cd $APP/apps/$dir && rm -rf .next-new && NEXT_DIST_DIR=.next-new NODE_OPTIONS=--max-old-space-size=3072 npx next build" > "/root/update-$dir.log" 2>&1 || { echo "BUILD FAILED for $dir (the running shop was not touched):"; tail -n 25 "/root/update-$dir.log"; exit 1; }
+  sudo -u shop bash -c "cd $APP/apps/$dir && rm -rf .next-new && mkdir -p .next-new && { [ -d .next/cache ] && cp -a .next/cache .next-new/cache || true; } && NEXT_DIST_DIR=.next-new NODE_OPTIONS=--max-old-space-size=3072 npx next build" > "/root/update-$dir.log" 2>&1 || { echo "BUILD FAILED for $dir (the running shop was not touched):"; tail -n 25 "/root/update-$dir.log"; exit 1; }
   echo "==> swapping $dir"
   sudo -u shop bash -c "cd $APP/apps/$dir && rm -rf .next-old && mv .next .next-old && mv .next-new .next && pm2 restart $name --update-env"
 done

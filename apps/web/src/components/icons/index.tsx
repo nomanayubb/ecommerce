@@ -27,7 +27,7 @@ export const HeartIcon = ({ filled, ...p }: Props & { filled?: boolean }) => <Ic
 export const UserIcon = (p: Props) => <Icon {...p}><path d="M12 4l3 3v3l-3 3-3-3V7l3-3z" /><path d="M5 20l2-4h10l2 4" stroke={A} /></Icon>;
 export const MenuIcon = (p: Props) => <Icon {...p}><path d="M4 7h16M4 17h16" /><path d="M4 12h10" stroke={A} /></Icon>;
 export const CloseIcon = (p: Props) => <Icon {...p}><path d="M6 6l12 12" /><path d="M18 6L6 18" stroke={A} /></Icon>;
-export const ArrowRightIcon = (p: Props) => <Icon {...p}><path d="M4 12h15" /><path d="M13 6l6 6-6 6" stroke={A} /></Icon>;
+export const ArrowRightIcon = (p: Props) => <Icon {...p}><path d="M4 12h13" /><path d="M13 6l6 6-6 6" stroke={A} /></Icon>;
 export const CheckIcon = (p: Props) => <Icon {...p}><path d="M5 12.5l4.5 4.5L19 7.5" stroke={A} /></Icon>;
 export const TruckIcon = (p: Props) => <Icon {...p}><path d="M2 7h12v9H2zM14 10h4l3 3v3h-7" /><circle cx="6" cy="17.5" r="1.8" stroke={A} /><circle cx="17" cy="17.5" r="1.8" stroke={A} /></Icon>;
 export const ShieldIcon = (p: Props) => <Icon {...p}><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z" /><path d="M8.5 12l2.5 2.5 4.5-5" stroke={A} /></Icon>;
