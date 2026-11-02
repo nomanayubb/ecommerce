@@ -34,11 +34,22 @@ const caddy = [`(common) {
   @immutable path /_next/static/*
   header @immutable Cache-Control "public, max-age=31536000, immutable"
   @media path /cs/* /brand/* /areas/* /kk/*
-  header @media Cache-Control "public, max-age=86400"
+  header @media Cache-Control "public, max-age=604800"
+}
+
+# public shop pages: the same for everybody, so Cloudflare may keep a copy for 60 s and serve it up to 5 minutes more while it fetches a fresh one (admin edits show after 1-6 minutes).
+# Never for the API, the account / cart / checkout pages, or a visitor carrying a login cookie (ax_at / ax_rt).
+(cachepages) {
+  @pub {
+    method GET HEAD
+    not path /api/* /account* /login* /register* /checkout* /cart* /track* /wishlist* /compare* /uploads/* /_next/image*
+    not header_regexp Cookie (^|;\\s*)ax_
+  }
+  header @pub >Cache-Control "public, s-maxage=60, stale-while-revalidate=300"
 }
 `, `www.${domain} {\n  redir https://${domain}{uri} permanent\n}\n`];
 for (const s of stores) {
-  caddy.push(`${host(s)} {\n  import common\n  reverse_proxy 127.0.0.1:${s.webPort}\n}\n`);
+  caddy.push(`${host(s)} {\n  import common\n  import cachepages\n  reverse_proxy 127.0.0.1:${s.webPort}\n}\n`);
   caddy.push(`${apiHost(s)} {\n  encode zstd gzip\n  reverse_proxy 127.0.0.1:${s.apiPort}\n}\n`);
 }
 caddy.push(`${adminHost} {\n  import common\n  reverse_proxy 127.0.0.1:3001\n}\n`);
