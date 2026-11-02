@@ -280,7 +280,7 @@ export default function Checkout() {
             <ul className="mt-5 divide-y divide-line">
               {lines.map((l) => (
                 <li key={`${l.productId}:${l.variantId}`} className="flex gap-4 py-4 text-sm">
-                  {l.image && <img src={l.image} alt="" width={56} height={70} className="h-[70px] w-14 border border-line object-cover" />}
+                  {l.image && <img src={l.image} alt="" width={56} height={70} className="h-[70px] w-14 shrink-0 border border-line bg-card object-contain" />}
                   <div className="flex-1">
                     <p className="leading-snug">{l.title}</p>
                     <div className="mt-2 inline-flex items-center border border-line text-sm" role="group" aria-label={`Quantity of ${l.title}`}>
