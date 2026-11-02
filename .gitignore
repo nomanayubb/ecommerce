@@ -37,3 +37,8 @@ apps/web-mobiles/public/cs/
 apps/api/data/
 apps/web-autoparts/public/cs/
 apps/web-autoparts/public/vehicles.json
+apps/web-attire/public/cs/
+apps/api/data/
+
+# generated server files (deploy/generate.mjs)
+deploy/out/

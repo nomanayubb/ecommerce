@@ -760,3 +760,9 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 
 ## 2026-10-31 (later) — winter collection price = Rs. 3,300 for all 24 suits (owner's decision)
 - `import-bonanza-winter.ts`: `PRICE = 3300` for every suit (marked and selling price, no markup rule); the PDF's printed 4,890 / 5,290 are kept only in `metafields.pdfPrice`. Running the script again updates the price of products already in the database. Ran it: 24 products at 3,300.00; the collection page shows Rs. 3,300 on all 24 cards (after the 30 s page cache).
+
+## 2026-11-02 — deployment kit for the live server (`deploy/`)
+- Domain `averixa.pk` (PKNIC) bought; server = Hostinger VPS, Indonesia (123 ms from the owner's PC), 76.13.209.242, Ubuntu, SSH key login (public key only in Hostinger). Cloudflare Free planned in front.
+- New: `deploy/generate.mjs` (Caddyfile, pm2 file, hosts, admin store list, per-app NEXT_PUBLIC env from `stores.json` + domain), `server-setup.sh` (Node 22, pm2, PostgreSQL 18, Redis, Caddy, swap, ufw, fail2ban, key-only SSH, secrets file), `pack.ps1` (code archive + upload), `copy-databases.sh` (PC databases to the server through an SSH reverse tunnel), `install-app.sh` (npm ci, builds, Caddy, pm2, store links), `backup.sh` (daily dump, 7 days), `README.md` (order of steps).
+- Verified: `generate.mjs` runs and its Caddyfile/pm2 output looks right, all shell scripts pass `bash -n`. NOT run on the server yet (no step was executed there).
+- Known gaps: API does not trust the proxy (client IP), no email provider, Typesense not installed (search uses the database), only main + attire planned for the first launch.
