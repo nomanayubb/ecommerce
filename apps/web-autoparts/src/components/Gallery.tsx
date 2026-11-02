@@ -74,9 +74,10 @@ export function Gallery({ images, title, videoUrl, spinImages, modelUrl, thumbs 
         ))}
       </div>
       {media}
+      <div className={`order-1 relative ${below ? "" : "sm:order-2"} ${tab !== "photos" ? "hidden" : ""}`}>
       <button
         type="button" aria-label="Open image full screen" onClick={() => setBox(true)}
-        className={`gallery-main order-1 relative aspect-square cursor-zoom-in overflow-hidden border border-line bg-card ${below ? "" : "sm:order-2"} ${tab !== "photos" ? "hidden" : ""}`}
+        className="gallery-main relative block aspect-square w-full cursor-zoom-in overflow-hidden border border-line bg-card"
         onMouseMove={(e) => {
           const r = e.currentTarget.getBoundingClientRect();
           setZoom({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
@@ -92,6 +93,13 @@ export function Gallery({ images, title, videoUrl, spinImages, modelUrl, thumbs 
         {list.length > 1 && <span aria-hidden className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5 sm:hidden">{list.map((_, n) => <span key={n} className={`h-1.5 rounded-full transition-all ${n === i ? "w-5 bg-accent" : "w-1.5 bg-fg/40"}`} />)}</span>}
         {mark && <img src={mark} alt="" aria-hidden width={120} height={24} className="pointer-events-none absolute bottom-3 right-3 h-5 w-auto opacity-40 drop-shadow" />}
       </button>
+      {list.length > 1 && tab === "photos" && (
+        <>
+          <button type="button" aria-label="Previous image" onClick={() => go(-1)} className="absolute left-2 top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 rotate-180 place-items-center border border-line bg-card/85 text-fg sm:hidden"><ArrowRightIcon size={18} /></button>
+          <button type="button" aria-label="Next image" onClick={() => go(1)} className="absolute right-2 top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center border border-line bg-card/85 text-fg sm:hidden"><ArrowRightIcon size={18} /></button>
+        </>
+      )}
+      </div>
 
       {box && (
         <div ref={lightbox} role="dialog" aria-modal="true" aria-label={`${title} images`} className="fixed inset-0 z-[80] flex items-center justify-center bg-black/90 p-4" onClick={() => setBox(false)}>

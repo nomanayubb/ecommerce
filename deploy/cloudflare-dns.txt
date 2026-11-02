@@ -1,0 +1,13 @@
+$ORIGIN averixa.pk.
+@ 1 IN A 76.13.209.242
+www 1 IN A 76.13.209.242
+admin 1 IN A 76.13.209.242
+api 1 IN A 76.13.209.242
+attire 1 IN A 76.13.209.242
+api-attire 1 IN A 76.13.209.242
+electronics 1 IN A 76.13.209.242
+api-electronics 1 IN A 76.13.209.242
+mobiles 1 IN A 76.13.209.242
+api-mobiles 1 IN A 76.13.209.242
+autoparts 1 IN A 76.13.209.242
+api-autoparts 1 IN A 76.13.209.242

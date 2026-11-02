@@ -1,0 +1,140 @@
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { api, getSite, pkr, type ProductDetail, type ProductSummary } from "@/lib/api";
+import { BuyPanel } from "@/components/BuyPanel";
+import { Gallery } from "@/components/Gallery";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { ProductCard } from "@/components/ProductCard";
+import { Reviews } from "@/components/Reviews";
+import { Stars } from "@/components/Stars";
+import { RecentlyViewed, RecordView } from "@/components/RecentlyViewed";
+import { CareSteps, LiveViewers, ProductQA, SpecsTable, type Meta } from "@/components/PdpExtras";
+import { CookingTimer } from "@/components/CookingTimer";
+import { BackLink } from "@/components/BackLink";
+import { SectionTabs } from "@/components/SectionTabs";
+import { PdpActions, SkuCopy } from "@/components/PdpActions";
+import { DEFAULT_PDP } from "@/lib/api";
+import { ShareButton } from "@/components/ShareButton";
+import { RecipeCard } from "@/components/RecipeBits";
+import type { RecipeCardData } from "@/lib/content";
+
+const load = (slug: string) => api<ProductDetail>(`/products/${slug}`).catch(() => null);
+
+const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const p = await load((await params).slug);
+  if (!p) return { title: "Product not found" };
+  const m = (p.metafields ?? {}) as { seoTitle?: string; seoDescription?: string };
+  const clean = (t: string) => t.replace(/\s+/g, " ").trim();
+  const title = m.seoTitle || (p.title.length > 48 ? p.title : `${p.title} – Buy Online in Pakistan`);
+  const desc = m.seoDescription || clean(p.description ?? p.title).slice(0, 155);
+  return { title, description: desc, alternates: { canonical: `/products/${(await params).slug}` }, openGraph: { title, description: desc, type: "website", images: p.images.filter((i) => !i.endsWith(".svg") && !i.startsWith("/ph/") && !i.startsWith("/cimg/")).slice(0, 1) } };
+}
+
+export default async function PDP({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const p = await load(slug);
+  if (!p) notFound();
+  const { store, branding } = await getSite();
+  const waNum = String(branding.social?.whatsapp ?? "").match(/(?:wa\.me\/|phone=)\+?(\d{6,15})/)?.[1];
+  const askHref = waNum ? `https://wa.me/${waNum}?text=${encodeURIComponent(`Hello, I have a question about ${p.title}: ${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/products/${slug}`)}` : "";
+  const related = await api<{ items: ProductSummary[] }>(`/products/${slug}/related`).then((r) => r.items).catch(() => []);
+  const recipes = await api<{ items: RecipeCardData[] }>(`/products/${slug}/recipes`).then((r) => r.items).catch(() => [] as RecipeCardData[]);
+
+  const meta = (p.metafields ?? {}) as Meta;
+  const pdp = { ...DEFAULT_PDP, ...(store.pdp ?? {}) };
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.title,
+    sku: (p as unknown as { sku?: string }).sku,
+    image: p.images,
+    description: p.description ?? undefined,
+    url: `${SITE}/products/${slug}`,
+    brand: p.brand_name ? { "@type": "Brand", name: p.brand_name } : undefined,
+    aggregateRating: p.rating_count ? { "@type": "AggregateRating", ratingValue: p.rating_avg, reviewCount: p.rating_count } : undefined,
+    offers: { "@type": "Offer", url: `${SITE}/products/${slug}`, priceCurrency: "PKR", price: p.selling_price, itemCondition: "https://schema.org/NewCondition", priceValidUntil: new Date(Date.now() + 365 * 864e5).toISOString().slice(0, 10), seller: { "@type": "Organization", name: branding.name }, availability: p.stock_quantity > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" },
+  };
+
+  const details: [string, string][] = [
+    ["Description", p.description ?? "Details coming soon."],
+    ["Delivery & returns", `Orders are packed within 1–2 working days. Free delivery over ${pkr(store.freeShippingThreshold)}, otherwise a flat ${pkr(store.shippingFee)}. Cash on delivery is available. If something is not right, contact us within 7 days.`],
+    ["Payment", "Pay in cash when your order arrives. More payment methods are coming soon."],
+  ];
+  // Optional rich sections, shown only when the shop filled them in (admin > Products > edit).
+  const rich: [string, React.ReactNode][] = [];
+  if (meta.specs?.length) rich.push(["Specifications", <SpecsTable key="s" specs={meta.specs} />]);
+  if (meta.material) rich.push([`Material: ${meta.material}`, <p key="m" className="text-sm leading-relaxed text-muted">{meta.materialNote || `Made from ${meta.material.toLowerCase()}.`}</p>]);
+  if (meta.care?.length) rich.push(["Care & maintenance", <CareSteps key="c" steps={meta.care} />]);
+  const cookable = recipes.length > 0 || (p.tags ?? []).some((t) => ["oven-safe", "induction", "microwave-safe", "cookware"].includes(t));
+  if (cookable) rich.push(["Cooking timer", <CookingTimer key="t" compact minutes={10} />]);
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([jsonLd, { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [["Home", "/"], ["Shop", "/products"], [p.title, `/products/${slug}`]].map(([name, path], i) => ({ "@type": "ListItem", position: i + 1, name, item: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}${path}` })) }]).replace(/</g, "\\u003c") }} />
+      <RecordView p={{ id: p.id, slug, title: p.title, price: Number(p.selling_price), marked: Number(p.marked_price), image: p.images[0], brand: p.brand_name }} />
+      <BackLink />
+      <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Shop", href: "/products" }, { name: p.title }]} />
+      <div className="grid gap-10 md:grid-cols-2 lg:gap-16">
+        <div className={pdp.imageSide === "right" ? "md:order-2" : ""}><Gallery images={p.images} title={p.title} videoUrl={meta.videoUrl || undefined} spinImages={meta.spinImages} modelUrl={p.model_3d_url || undefined} thumbs={pdp.galleryThumbs} /></div>
+        <div className={pdp.stickyInfo ? "md:sticky md:top-24 md:self-start" : ""}>
+          {p.brand_name && <p className="eyebrow">{p.brand_name}</p>}
+          <h1 className="mt-2 text-3xl font-semibold leading-tight tracking-wide">{p.title}</h1>
+          {pdp.showShare && <div className="mt-2 flex flex-wrap items-center gap-5"><ShareButton title={p.title} text={`${p.title} at ${p.brand_name ?? "our shop"}`} />{askHref && <a href={askHref} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold uppercase tracking-[0.2em] text-accent hover:underline">Ask on WhatsApp</a>}</div>}
+          {pdp.showSaveCompare && <div className="mt-4"><PdpActions p={p} /></div>}
+          <div className="mb-6 mt-3 h-5">{pdp.showRating && !!p.rating_count && <a href="#reviews" className="inline-block" aria-label="Read reviews"><Stars value={Number(p.rating_avg)} size={16} count={p.rating_count} /></a>}</div>
+          <BuyPanel p={p} />
+          {pdp.showLiveViewers && <div className="mt-4"><LiveViewers slug={slug} /></div>}
+          <div className="mt-8 divide-y divide-line border-y border-line">
+            {pdp.showDetails && details.map(([t, body], i) => (
+              <details key={t} open={i === 0} className="group py-4">
+                <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase tracking-[0.2em]">
+                  {t}<span className="text-accent transition group-open:rotate-45">+</span>
+                </summary>
+                <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{body}</p>
+              </details>
+            ))}
+            {pdp.showTags && (p.tags ?? []).filter((t) => !["new", "limited", "bestseller", "sale", "recommended"].includes(t)).length > 0 && (
+              <div className="py-4"><p className="text-xs font-semibold uppercase tracking-[0.2em]">Tags</p>
+                <ul className="mt-3 flex flex-wrap gap-2">{(p.tags ?? []).filter((t) => !["new", "limited", "bestseller", "sale", "recommended"].includes(t)).map((t) => <li key={t}><Link href={`/products?tag=${t}`} className="border border-line px-2.5 py-1 text-[0.65rem] uppercase tracking-widest text-muted transition hover:border-accent hover:text-accent">{t.replace(/-/g, " ")}</Link></li>)}</ul></div>
+            )}
+            {pdp.showSku && (p as unknown as { sku?: string }).sku && <SkuCopy sku={(p as unknown as { sku: string }).sku} />}
+            {rich.map(([t, node]) => (
+              <details key={t} className="group py-4">
+                <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase tracking-[0.2em]">
+                  {t}<span className="text-accent transition group-open:rotate-45">+</span>
+                </summary>
+                <div className="mt-3">{node}</div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {pdp.showSectionTabs && <SectionTabs tabs={[{ id: "reviews", label: "Reviews" }, { id: "questions", label: "Questions" }, ...(recipes.length ? [{ id: "recipes", label: "Recipes" }] : []), ...(related.length ? [{ id: "related", label: "You may also like" }] : [])].filter((t) => (t.id === "reviews" ? pdp.showReviews : t.id === "questions" ? pdp.showQuestions : t.id === "recipes" ? pdp.showRecipes : pdp.showRelated))} />}
+      {pdp.showReviews && <Reviews slug={slug} />}
+      {pdp.showQuestions && <ProductQA slug={slug} />}
+
+      {pdp.showRecipes && recipes.length > 0 && (
+        <section id="recipes" className="mt-20 border-t border-line pt-12">
+          <p className="eyebrow">Kitchen</p>
+          <h2 className="mb-6 mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">Cooked with this</h2>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">{recipes.slice(0, 4).map((r) => <RecipeCard key={r.id} r={r} />)}</div>
+        </section>
+      )}
+
+      {pdp.showRelated && related.length > 0 && (
+        <section id="related" className="mt-24 pb-16 md:pb-0">
+          <div className="mb-6 flex items-end justify-between">
+            <div><p className="eyebrow">Complete the look</p><h2 className="mt-2 text-2xl font-semibold uppercase tracking-[0.12em]">You may also like</h2></div>
+            <Link href="/products" className="text-xs font-semibold uppercase tracking-[0.2em] hover:text-accent">View all →</Link>
+          </div>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">{related.map((r) => <ProductCard key={r.id} p={r} />)}</div>
+        </section>
+      )}
+      {pdp.showRecentlyViewed && <RecentlyViewed exclude={slug} />}
+    </>
+  );
+}
