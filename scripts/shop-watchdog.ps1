@@ -7,7 +7,11 @@ if (Test-Path (Join-Path $root ".watchdog-pause")) { exit 0 }
 
 function Note($m) { Add-Content -Path $log -Value ("{0} {1}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss"), $m) }
 function Up($port) { [bool](Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue) }
-function Start-Detached($cmd, $dir) { Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = $cmd; CurrentDirectory = $dir } | Out-Null }
+function Start-Detached($cmd, $dir) {
+  # ShowWindow = 0 (SW_HIDE): without it each restarted server opened a visible black cmd window ("next-server v15...") on the desktop
+  $si = New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly -Property @{ ShowWindow = [uint16]0 }
+  Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = $cmd; CurrentDirectory = $dir; ProcessStartupInformation = $si } | Out-Null
+}
 
 if (-not (Up 5432)) { Note "database (5432) is down, not started by the watchdog"; exit 0 }
 

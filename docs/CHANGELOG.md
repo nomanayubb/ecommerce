@@ -784,3 +784,8 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - New `apps/<shop>/public/live-fx.css` (linked last in each layout `<head>`) + `deploy/push-css.ps1`: design edits in that file go live in about 7 s (scp, no build, no restart; measured 6.7 s for one shop).
 - `deploy/update.sh`: the build now starts from the previous build cache (`.next/cache` copied into `.next-new`) so later builds should be faster; not yet timed (the deploy that introduced it took 288 s for all five shops, cold cache).
 - Not verified: warm-cache build time; Cloudflare may serve an older CSS copy for up to a minute until the Cache Rule exists.
+
+## 2026-11-04 — Watchdog no longer opens visible console windows
+- Cause: after the PC restarted (12:46) `scripts/shop-watchdog.ps1` restarted every local shop/API through `Win32_Process.Create`, which opened a visible black cmd window per server ("next-server v15.5.27").
+- Fix: `Start-Detached` now passes `Win32_ProcessStartup` with `ShowWindow = 0` (hidden). Tested with a dummy command (hidden, window handle 0); the next real restart after a PC reboot is the full proof.
+- Note: the live shops run on the VPS; these local servers are only for development.
