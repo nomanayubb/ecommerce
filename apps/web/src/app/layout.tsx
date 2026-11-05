@@ -66,6 +66,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <style dangerouslySetInnerHTML={{ __html: brandingCss(branding) }} />
         <link rel="stylesheet" href="/card-fx.css" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <meta name="facebook-domain-verification" content="1idl6xln4yc78tnwundqj9kc005q2k" />
         <link rel="stylesheet" href="/live-fx.css" />
       </head>
       <body>

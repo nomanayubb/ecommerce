@@ -789,3 +789,6 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Cause: after the PC restarted (12:46) `scripts/shop-watchdog.ps1` restarted every local shop/API through `Win32_Process.Create`, which opened a visible black cmd window per server ("next-server v15.5.27").
 - Fix: `Start-Detached` now passes `Win32_ProcessStartup` with `ShowWindow = 0` (hidden). Tested with a dummy command (hidden, window handle 0); the next real restart after a PC reboot is the full proof.
 - Note: the live shops run on the VPS; these local servers are only for development.
+
+## 2026-11-05 — Facebook domain verification tag
+- `apps/web/src/app/layout.tsx`: `<meta name="facebook-domain-verification" ...>` added to the `<head>` of the main shop (averixa.pk). Deployed (web only, 185 s); verified in the served HTML of https://averixa.pk/ inside `<head>`. Facebook's own "Verify" click is still the user's step.
