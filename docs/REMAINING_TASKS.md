@@ -23,7 +23,8 @@ _Last updated: 2026-11-07. Update after every task (see `.claude/rules/workflow.
   - Change the admin password (still the PC one); set `trustProxy` in the API; install the daily backup (`bash /srv/shop/app/deploy/backup.sh --install`); add an uptime alert; email provider.
   - Speed plan not started: image variants/long cache (home has ~224 images on mobile), pm2 cluster, Postgres index review, load test.
   - Attire product photo panel shows light grey bands on phones (fork gallery bg `#f7f7f7` + `object-contain`).
-  - Facebook: domain-verification tag is live on averixa.pk (2026-11-05); the user must click Verify. Pixel/catalogue feed still open.
+  - Facebook: domain-verification tag is live on averixa.pk (2026-11-05); the user must click Verify. Pixel code is built into all five shops but OFF: needs the owner's real Pixel ID (`NEXT_PUBLIC_META_PIXEL_ID` in each `apps/<shop>/.env.production` on the server, then rebuild), then check events in Events Manager > Test Events. Catalogue feed still open.
+  - Google: submit `https://averixa.pk/sitemap.xml` (and each shop's) in Search Console (needs the owner's Google login). SEO text now exists for every product of all five shops.
   - The PC watchdog + logon tasks are DISABLED (2026-11-06); local servers are for development only, the PC database is older than the live one.
 - Attire winter collection (2026-10-31): check the stock (20 each is a placeholder; price is 3,300 for all, set by the owner); if the shop is rebuilt with `set-attire-brand.ts` the winter banner/row on the home page must be re-added by running `import-bonanza-winter.ts` again.
 - Dry Fruits store (`shop_dryfruits`): needs the owner's product source; then start its API (:4002) and build/start its shop (:3008). Electronics, Mobiles and Auto Parts run on the VPS.

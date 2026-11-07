@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { api, type CategoryNode, type ProductSummary } from "@/lib/api";
+import { api, type CategoryNode } from "@/lib/api";
 
 const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 export const revalidate = 3600;
@@ -11,7 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const get = <T,>(p: string, d: T) => api<T>(p, { revalidate: 3600 }).catch(() => d);
   const [tree, products, recipes, posts, bundles] = await Promise.all([
     get<CategoryNode[]>("/categories/tree", []),
-    (async () => { const all: ProductSummary[] = []; for (let pg = 1; pg <= 40; pg++) { const r = await get<{ items: ProductSummary[]; total: number }>(`/products?pageSize=100&page=${pg}`, { items: [], total: 0 }); all.push(...r.items); if (all.length >= r.total || !r.items.length) break; } return { items: all }; })(),
+    get<{ slug: string }[]>("/products/sitemap", []).then((items) => ({ items })),
     get<{ items: { slug: string }[] }>("/recipes?pageSize=48", { items: [] }),
     get<{ items: { slug: string; published_at: string | null }[] }>("/posts?pageSize=30", { items: [] }),
     get<{ items: { slug: string }[] }>("/bundles", { items: [] }),

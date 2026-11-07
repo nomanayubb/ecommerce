@@ -1,3 +1,5 @@
+import { MetaPixel } from "@/components/MetaPixel";
+import { PIXEL_ID } from "@/lib/pixel";
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
@@ -96,6 +98,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         </CartProvider>
         </SessionProvider>
         </SiteProvider>
+        {PIXEL_ID ? <MetaPixel /> : null}
       </body>
     </html>
   );

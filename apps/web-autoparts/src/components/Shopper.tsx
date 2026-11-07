@@ -1,5 +1,6 @@
 "use client";
 
+import { px, pxItems } from "@/lib/pixel";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { ProductSummary } from "@/lib/api";
 
@@ -53,6 +54,7 @@ export function ShopperProvider({ children }: { children: ReactNode }) {
   const toggleWish = useCallback((l: Lite) => {
     const has = wish.some((x) => x.slug === l.slug);
     setWish(has ? wish.filter((x) => x.slug !== l.slug) : [l, ...wish]);
+    if (!has) px("AddToWishlist", { content_ids: [l.id], content_name: l.title, value: l.price, currency: "PKR" });
     return !has;
   }, [wish]);
 

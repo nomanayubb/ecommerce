@@ -792,3 +792,10 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 
 ## 2026-11-05 — Facebook domain verification tag
 - `apps/web/src/app/layout.tsx`: `<meta name="facebook-domain-verification" ...>` added to the `<head>` of the main shop (averixa.pk). Deployed (web only, 185 s); verified in the served HTML of https://averixa.pk/ inside `<head>`. Facebook's own "Verify" click is still the user's step.
+
+## 2026-11-07 — SEO for all products, sitemap + structured data fixes, Meta Pixel events (off until a real Pixel ID is set)
+- `apps/api/scripts/seo-fill.ts` (new): writes `metafields.seoTitle/seoDescription` for products that have none. Run on the live main DB: 21,134 products (the other four shops already had SEO text; recount after the run: 0 missing). Text uses only real data: name, price, category, brand, cash on delivery. Safe to re-run (skips products that have text).
+- `apps/api/src/routes/catalog.ts`: new `GET /products/sitemap` (all published slugs in one cached query). All five `sitemap.ts` now use it: the old paged loop stopped at 4,000 products, the main shop has about 21,000.
+- Product page structured data (all five forks): image URLs are now absolute (they were relative, e.g. `/kk/...`).
+- Meta Pixel (all five forks): `src/lib/pixel.ts` (`px()`), `src/components/MetaPixel.tsx` (loads fbevents.js only when the page is idle), hooks via `deploy/patch-pixel.py`: PageView (every page and in-site page change), ViewContent (product page), AddToCart (bag add, quick view, cards), BuyNowClick (custom event, Buy now button; also sends AddToCart), InitiateCheckout (checkout page), Purchase (order placed, value = grand total, eventID `order-<number>` against duplicates), Search, AddToWishlist, CompleteRegistration. Cookie notice text changes from "No tracking" when the Pixel is on.
+- Switched on by `NEXT_PUBLIC_META_PIXEL_ID` in `apps/<shop>/.env.production` (build-time; empty = nothing loaded, no network call). NO Pixel ID exists in the code. Type-checks in all five apps; events NOT yet seen in Meta Events Manager (needs the real ID: use Test Events there after the build).

@@ -1,5 +1,6 @@
 "use client";
 
+import { PIXEL_ID } from "@/lib/pixel";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { DEFAULT_EFFECTS, type Effects } from "@/lib/api";
@@ -134,7 +135,7 @@ function CookieNotice({ brandName }: { brandName: string }) {
     <div role="region" aria-label="Cookies" className="fade-up fixed bottom-[5.5rem] left-1/2 z-[60] flex w-[min(34rem,calc(100%-2rem))] -translate-x-1/2 items-center gap-3 border border-line bg-card p-3 shadow-2xl md:bottom-4">
       <MascotFigure mood="happy" size={44} className="hidden shrink-0 sm:block" />
       <p className="flex-1 text-xs leading-5 text-muted">
-        {brandName} only uses the small files it needs to remember your bag, your sign-in and your theme. No tracking.
+        {brandName} only uses the small files it needs to remember your bag, your sign-in and your theme.{PIXEL_ID ? " Facebook may count visits and purchases to improve our ads." : " No tracking."}
       </p>
       <button className="btn btn-primary !px-4 !py-2" onClick={() => { write(KEY_COOKIE, "1"); setOpen(false); }}>Got it</button>
     </div>

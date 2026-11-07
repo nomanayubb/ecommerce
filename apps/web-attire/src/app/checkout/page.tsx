@@ -1,5 +1,6 @@
 "use client";
 
+import { px, pxItems } from "@/lib/pixel";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { pkr, type FieldMode, type PayMethod } from "@/lib/api";
@@ -39,6 +40,8 @@ export default function Checkout() {
   useEffect(() => { setFlag(new URLSearchParams(window.location.search).get("buynow") === "1"); }, []);
   const buyNowMode = flag === true && !!buyNowLine;
   const lines = buyNowMode && buyNowLine ? [buyNowLine] : bag;
+  const sentIC = useRef(false);
+  useEffect(() => { if (flag === null || sentIC.current || !lines.length) return; sentIC.current = true; px("InitiateCheckout", pxItems(lines)); }, [flag, lines.length]); // eslint-disable-line react-hooks/exhaustive-deps
   // Remove is only for the normal checkout (whole bag); a Buy now order is the one product with no Remove.
   const removeLine = (l: { productId: string; variantId: string | null }) => setQty(l.productId, l.variantId, 0);
   // Quantity steps (1 to 99): the whole bag in normal checkout, the one product in a Buy now order.
@@ -148,6 +151,7 @@ export default function Checkout() {
       if (user && saveAddr) send("POST", "account/addresses", { name: f.get("name"), phone: f.get("phone"), line1: fullLine1, city: f.get("city"), postalCode: f.get("postalCode") || undefined, isDefault: false }).catch(() => {});
       if (buyNowMode) { setBuyNow(null); setExtras({ coupon: "", giftWrap: false, giftMessage: "" }); } else clear();
       setDone({ orderNumber: res.orderNumber, grandTotal: res.grandTotal, message: res.paymentInstructions?.type === "MANUAL_TRANSFER" ? res.paymentInstructions.message : undefined, method: res.paymentInstructions?.method });
+      px("Purchase", { ...pxItems(lines), value: res.grandTotal }, { eventID: `order-${res.orderNumber}` });
       fireConfetti();
       mascotSay("celebrate", "Order placed. Thank you!");
       window.scrollTo({ top: 0 });

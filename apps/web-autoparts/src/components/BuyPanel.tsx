@@ -1,5 +1,6 @@
 "use client";
 
+import { px, pxItems } from "@/lib/pixel";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DEFAULT_PDP, pkr, type ProductDetail } from "@/lib/api";
@@ -93,6 +94,9 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
   // Buy now orders only this product: it is not put in the bag, checkout gets it on its own (?buynow=1).
   const buyNow = () => {
     setBuyNow({ productId: p.id, variantId, title: variant ? `${p.title} - ${variant.title}` : p.title, price: unit, marked: Number(p.marked_price), image: p.images[0], quantity: qty });
+    const bl = { productId: p.id, quantity: qty, price: unit };
+    px("AddToCart", { ...pxItems([bl]), content_name: p.title });
+    px("BuyNowClick", { ...pxItems([bl]), content_name: p.title }, { custom: true });
     setOpen(false);
     router.push("/checkout?buynow=1");
   };

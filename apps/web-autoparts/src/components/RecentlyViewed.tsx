@@ -1,5 +1,6 @@
 "use client";
 
+import { px, pxItems } from "@/lib/pixel";
 import Link from "next/link";
 import { useEffect } from "react";
 import { pkr } from "@/lib/api";
@@ -36,7 +37,7 @@ export function LiteCard({ p, onRemove }: { p: Lite; onRemove?: () => void }) {
 /** Records the product being viewed. Renders nothing. */
 export function RecordView({ p }: { p: Lite }) {
   const { pushRecent } = useShopper();
-  useEffect(() => { pushRecent(p); }, [p.slug]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { pushRecent(p); px("ViewContent", { content_type: "product", content_ids: [p.id], content_name: p.title, value: p.price, currency: "PKR" }); }, [p.slug]); // eslint-disable-line react-hooks/exhaustive-deps
   return null;
 }
 

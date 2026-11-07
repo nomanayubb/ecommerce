@@ -1,5 +1,6 @@
 "use client";
 
+import { px, pxItems } from "@/lib/pixel";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
@@ -102,7 +103,7 @@ export function SearchBox({ hints, className, panelClass = "" }: { hints?: strin
 
   const go = (href: string, term?: string) => {
     const t = (term ?? "").trim();
-    if (t.length >= 2) { writeRecent(t); send("POST", "search/log", { q: t }).catch(() => {}); }
+    if (t.length >= 2) { writeRecent(t); px("Search", { search_string: t }); send("POST", "search/log", { q: t }).catch(() => {}); }
     setOpen(false);
     router.push(href);
   };

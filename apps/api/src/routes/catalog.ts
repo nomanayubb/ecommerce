@@ -86,6 +86,9 @@ export const catalogRoutes: FastifyPluginAsync = async (app) => {
     });
   });
 
+  // Every published slug in one query, for the sitemap (the paged list above would need 200+ requests for a big shop).
+  app.get("/products/sitemap", async () => cached("catalog:sitemap", 3600, async () => (await pool.query("SELECT slug FROM products WHERE status = 'PUBLISHED' ORDER BY updated_at DESC")).rows));
+
   // Live filter counts for the sidebar: brands, tags and the price range, given the other active filters.
   app.get("/products/facets", async (req) => {
     const f = listQuery.parse(req.query);

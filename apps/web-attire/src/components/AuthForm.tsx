@@ -1,5 +1,6 @@
 "use client";
 
+import { px, pxItems } from "@/lib/pixel";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
@@ -27,6 +28,7 @@ function Inner({ mode }: { mode: "login" | "register" }) {
       const d = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(d.error ?? "Something went wrong");
       await refresh();
+      if (mode === "register") px("CompleteRegistration", { status: true });
       router.replace(next);
       router.refresh();
     } catch (err) {

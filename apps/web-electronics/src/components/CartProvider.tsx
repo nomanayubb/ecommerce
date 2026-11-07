@@ -1,5 +1,6 @@
 "use client";
 
+import { px, pxItems } from "@/lib/pixel";
 import { announce, flyToCart } from "@/lib/motion";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
@@ -78,6 +79,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const add = (l: CartLine) => {
     setLines((cur) => merge(cur, l));
+    px("AddToCart", { ...pxItems([l]), content_name: l.title });
     // Adding something you saved for later counts as moving it.
     setSaved((cur) => cur.filter((x) => !same(x, l.productId, l.variantId)));
     flyToCart(l.image);

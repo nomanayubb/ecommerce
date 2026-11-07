@@ -50,7 +50,7 @@ export default async function PDP({ params }: { params: Promise<{ slug: string }
     "@type": "Product",
     name: p.title,
     sku: (p as unknown as { sku?: string }).sku,
-    image: p.images,
+    image: p.images.map((i) => (i.startsWith("http") ? i : `${SITE}${i}`)),
     description: p.description ?? undefined,
     url: `${SITE}/products/${slug}`,
     brand: p.brand_name ? { "@type": "Brand", name: p.brand_name } : undefined,
