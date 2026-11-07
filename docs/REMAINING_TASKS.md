@@ -1,6 +1,6 @@
 # Remaining tasks
 
-_Last updated: 2026-10-27. Update after every task (see `.claude/rules/workflow.md`)._
+_Last updated: 2026-11-07. Update after every task (see `.claude/rules/workflow.md`)._
 
 ## Blockers
 - Docker Desktop engine won't start (WSL VM stuck) -> worked around with embedded Postgres. Optional later: fix Docker or install Redis (Memurai) for caching.
@@ -17,9 +17,16 @@ _Last updated: 2026-10-27. Update after every task (see `.claude/rules/workflow.
 - ALL must follow `docs/DESIGN_SYSTEM_RULES.md` (one coherent system aligned with the logo; palette table there). Batching (user approved this order 2026-10-08): (1) premium-feel visuals + shared icon set + motion setting [DONE], (2) make every brand value swappable from settings [DONE, see NEW_PROJECT_GUIDE for what remains], (3) product experience [DONE], (4) mascot/3D [DONE as a 2D logo-style character + CSS-3D logo; richer 3D optional], (5) account/engagement [DONE: login, account, orders, addresses, loyalty, reviews, tracking, newsletter; email-dependent parts need a provider], (6) section/theme editor + remaining theme-list items [DONE: JSON section templates, 16 section types, drag/drop editor, presets, versions, preview, theme options, footer/header builders; left from the theme list: video hero, blog, custom-code section, transparent header, predictive search, currency/language selectors, popup newsletter, about/team/contact/locator pages, hierarchy for collection/blog templates] ; (7a) icon set + effects DONE 2026-10-09; (7b) recipe/ingredient/3D-scene parts of the kitchen list wait for the kitchen-store answer; NEXT is (7b), (7) kitchen vertical (needs the user to confirm the store is kitchen-focused), (2) product experience, (3) mascot/3D, (4) account/engagement (needs backend), (5) section/theme editor.
 
 ## Open (2026-10-27)
-- GO LIVE (2026-11-02): follow `deploy/README.md` (Cloudflare + PKNIC name servers, then server steps 2-5). Nothing has run on the server yet. After launch: change the admin password, set `trustProxy` in the API, add an email provider.
+- LIVE since 2026-11-02 (VPS 76.13.209.242, Cloudflare, averixa.pk + 4 shop subdomains + admin). Tools: `deploy/update.ps1` (code, ~1-3 min), `deploy/push-css.ps1` (live-fx.css / card-fx.css, ~7 s). Still to do:
+  - Cloudflare Cache Rule (user login needed; steps in chat/CHANGELOG): until then pages are not cached at the edge.
+  - Phones cannot open the apex `averixa.pk` (subdomains work): need the exact error text + carrier; suspected mobile-DNS cache.
+  - Change the admin password (still the PC one); set `trustProxy` in the API; install the daily backup (`bash /srv/shop/app/deploy/backup.sh --install`); add an uptime alert; email provider.
+  - Speed plan not started: image variants/long cache (home has ~224 images on mobile), pm2 cluster, Postgres index review, load test.
+  - Attire product photo panel shows light grey bands on phones (fork gallery bg `#f7f7f7` + `object-contain`).
+  - Facebook: domain-verification tag is live on averixa.pk (2026-11-05); the user must click Verify. Pixel/catalogue feed still open.
+  - The PC watchdog + logon tasks are DISABLED (2026-11-06); local servers are for development only, the PC database is older than the live one.
 - Attire winter collection (2026-10-31): check the stock (20 each is a placeholder; price is 3,300 for all, set by the owner); if the shop is rebuilt with `set-attire-brand.ts` the winter banner/row on the home page must be re-added by running `import-bonanza-winter.ts` again.
-- Dry Fruits store (`shop_dryfruits`): needs the owner's product source; then start its API (:4002) and build/start its shop (:3008). Electronics, Mobiles and Auto Parts are kept running by the watchdog.
+- Dry Fruits store (`shop_dryfruits`): needs the owner's product source; then start its API (:4002) and build/start its shop (:3008). Electronics, Mobiles and Auto Parts run on the VPS.
 - Auto Parts (:3004): only 2,202 priced in-stock parts are public on autoaxis.pk (about 80% of its ~80,000 pages show price 0); owner says 1-5 lakh products exist: needs a dealer export (CSV/Excel) for a bulk importer + 100k-product indexes. Not yet checked on screen: product page, vehicle finder flow, desktop width. Collection tile photos are hand-picked in `PICKS` of `make-autoparts-collections.ts` (a few sub-menus, e.g. Wiper Blades, Sunshades, Seat Covers, have no clean photo yet).
 - Dark-card selector bug (`[data-theme] [data-card]` on separate elements) still in web-mobiles and web-electronics (default theme is light, so unseen).
 - Go-live: public domain + hosting (Hostinger VPS or Railway discussed), host -> port routing for the subdomains, per-store Redis, set `domain` in `stores.json` then `npx tsx scripts/store-links.ts`.
