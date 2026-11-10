@@ -1,10 +1,12 @@
 /* live-fx.css: design tweaks that go live in about 2 seconds (no build): deploy/push-css.ps1 copies this file to the server. Loaded after every other stylesheet. */
 
-/* Product page quantity stepper: a framed, divided control that reads on both the dark and the light theme (accent line, QTY label, filled hover). */
-[role="group"][aria-label="Quantity"] { position: relative; overflow: hidden; border: 1px solid rgb(var(--accent) / .7) !important; border-radius: var(--radius); background: linear-gradient(180deg, rgb(var(--accent) / .10), rgb(var(--accent) / .03)); box-shadow: inset 0 0 0 1px rgb(var(--accent) / .08); }
-[role="group"][aria-label="Quantity"]::before { content: "QTY"; position: absolute; top: .5rem; left: 50%; transform: translateX(-50%); font-size: .56rem; font-weight: 600; letter-spacing: .24em; color: rgb(var(--accent)); opacity: .85; pointer-events: none; }
-[role="group"][aria-label="Quantity"] button { align-self: stretch; width: 3rem; padding-inline: 0 !important; font-size: 1.35rem; font-weight: 500; line-height: 1; color: rgb(var(--accent)); transition: background-color .15s ease, color .15s ease; }
-[role="group"][aria-label="Quantity"] button:hover, [role="group"][aria-label="Quantity"] button:focus-visible { background: rgb(var(--accent)); color: rgb(var(--on-brand, 255 255 255)); outline: none; }
-[role="group"][aria-label="Quantity"] button:active { filter: brightness(.9); }
-[role="group"][aria-label="Quantity"] input { align-self: stretch; width: 3.4rem; padding-top: 1rem; text-align: center; font-size: 1.1rem; font-weight: 600; font-variant-numeric: tabular-nums; color: rgb(var(--fg)); border-inline: 1px solid rgb(var(--accent) / .45); background: rgb(var(--bg) / .35); }
-[role="group"][aria-label="Quantity"] input:focus { background: rgb(var(--accent) / .10); }
+/* Product PAGE quantity stepper only (data-q="page"; the quick view, product cards and checkout keep their own design): a small framed stepper on its own row under a QUANTITY label, then Add to bag and Buy now full width. */
+div:has(> [role="group"][aria-label="Quantity"][data-q="page"]) { flex-direction: column; align-items: stretch; gap: .9rem; }
+div:has(> [role="group"][aria-label="Quantity"][data-q="page"])::before { content: "Quantity"; font-size: .68rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: rgb(var(--fg) / .65); }
+[role="group"][aria-label="Quantity"][data-q="page"] { align-self: flex-start; min-height: 0; height: 2.75rem; overflow: hidden; border: 1px solid rgb(var(--accent) / .6) !important; border-radius: var(--radius); background: transparent; box-shadow: none; transition: border-color .15s ease; }
+[role="group"][aria-label="Quantity"][data-q="page"]:hover, [role="group"][aria-label="Quantity"][data-q="page"]:focus-within { border-color: rgb(var(--accent)) !important; }
+[role="group"][aria-label="Quantity"][data-q="page"] button { align-self: stretch; width: 2.75rem; padding-inline: 0 !important; font-size: 1.15rem; font-weight: 500; line-height: 1; color: rgb(var(--accent)); transition: background-color .15s ease, color .15s ease; }
+[role="group"][aria-label="Quantity"][data-q="page"] button:hover, [role="group"][aria-label="Quantity"][data-q="page"] button:focus-visible { background: rgb(var(--accent)); color: rgb(var(--on-brand, 255 255 255)); outline: none; }
+[role="group"][aria-label="Quantity"][data-q="page"] button:active { filter: brightness(.9); }
+[role="group"][aria-label="Quantity"][data-q="page"] input { align-self: stretch; width: 3.25rem; padding: 0; text-align: center; font-size: .95rem; font-weight: 600; font-variant-numeric: tabular-nums; color: rgb(var(--fg)); border-inline: 1px solid rgb(var(--accent) / .45); background: transparent; }
+[role="group"][aria-label="Quantity"][data-q="page"] input:focus { background: rgb(var(--accent) / .10); }

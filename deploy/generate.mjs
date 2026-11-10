@@ -49,7 +49,9 @@ const caddy = [`(common) {
 }
 `, `www.${domain} {\n  redir https://${domain}{uri} permanent\n}\n`];
 for (const s of stores) {
-  caddy.push(`${host(s)} {\n  import common\n  import cachepages\n  reverse_proxy 127.0.0.1:${s.webPort}\n}\n`);
+  // averixa.pk only: the two plain design stylesheets are always re-checked, so a CSS edit pushed with push-css.ps1 reaches returning visitors at once (the other shops keep the 4 h browser cache)
+  const fx = s.slug === "main" ? '  @fx path /live-fx.css /card-fx.css\n  header @fx >Cache-Control "no-cache"\n' : "";
+  caddy.push(`${host(s)} {\n  import common\n  import cachepages\n${fx}  reverse_proxy 127.0.0.1:${s.webPort}\n}\n`);
   caddy.push(`${apiHost(s)} {\n  encode zstd gzip\n  reverse_proxy 127.0.0.1:${s.apiPort}\n}\n`);
 }
 caddy.push(`${adminHost} {\n  import common\n  reverse_proxy 127.0.0.1:3001\n}\n`);

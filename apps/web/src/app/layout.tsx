@@ -69,7 +69,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <link rel="stylesheet" href="/card-fx.css" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <meta name="facebook-domain-verification" content="1idl6xln4yc78tnwundqj9kc005q2k" />
-        <link rel="stylesheet" href="/live-fx.css?v=2" />
+        <link rel="stylesheet" href="/live-fx.css?v=3" />
       </head>
       <body>
         <a href="#main" className="skip-link">Skip to content</a>

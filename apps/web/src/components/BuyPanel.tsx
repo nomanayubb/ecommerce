@@ -201,11 +201,11 @@ export function BuyPanel({ p, compact = false, onAdded }: { p: ProductDetail; co
         </div>
       )}
 
-      {canBuy && <div className="flex items-stretch gap-3">
-        <div className="flex min-h-[3.25rem] items-center self-stretch border border-line" role="group" aria-label="Quantity">
-          <button className="h-full px-5 text-xl transition hover:text-accent" onClick={() => setQty((q) => clamp(q - 1))} aria-label="Decrease quantity">−</button>
-          <input value={qty} onChange={(e) => setQty(clamp(Number(e.target.value) || p.moq))} inputMode="numeric" onFocus={(e) => e.currentTarget.select()} aria-label="Quantity" className="w-14 bg-transparent text-center text-base outline-none" />
-          <button className="h-full px-5 text-xl transition hover:text-accent" onClick={() => setQty((q) => clamp(q + 1))} aria-label="Increase quantity">+</button>
+      {canBuy && <div className={compact ? "flex items-end gap-3" : "flex items-stretch gap-3"}>
+        <div className={`flex items-center border border-line ${compact ? "h-[2.725rem]" : "min-h-[3.25rem] self-stretch"}`} role="group" aria-label="Quantity" data-q={compact ? undefined : "page"}>
+          <button className={`h-full transition hover:text-accent ${compact ? "px-4 text-lg" : "px-5 text-xl"}`} onClick={() => setQty((q) => clamp(q - 1))} aria-label="Decrease quantity">−</button>
+          <input value={qty} onChange={(e) => setQty(clamp(Number(e.target.value) || p.moq))} inputMode="numeric" onFocus={(e) => e.currentTarget.select()} aria-label="Quantity" className={`bg-transparent text-center outline-none ${compact ? "w-12 text-sm" : "w-14 text-base"}`} />
+          <button className={`h-full transition hover:text-accent ${compact ? "px-4 text-lg" : "px-5 text-xl"}`} onClick={() => setQty((q) => clamp(q + 1))} aria-label="Increase quantity">+</button>
         </div>
         <div ref={ctaRef} className="flex-1">{cta}</div>
       </div>}
