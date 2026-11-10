@@ -61,7 +61,20 @@
       "apiPort": 4005,
       "webPort": 3005,
       "adminPort": 3012,
-      "inLinks": false
+      "inLinks": false,
+      "webDir": "web-attire"
+    },
+    {
+      "slug": "books",
+      "name": "Barkat Books",
+      "subdomain": "books",
+      "database": "shop_books",
+      "apiPort": 4006,
+      "webPort": 3006,
+      "adminPort": 3013,
+      "inLinks": false,
+      "webDir": "web-books",
+      "standalone": true
     }
   ]
 }

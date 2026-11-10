@@ -33,7 +33,7 @@ const caddy = [`(common) {
   }
   @immutable path /_next/static/*
   header @immutable Cache-Control "public, max-age=31536000, immutable"
-  @media path /cs/* /brand/* /areas/* /kk/*
+  @media path /cs/* /brand/* /areas/* /kk/* /bk/*
   header @media Cache-Control "public, max-age=604800"
 }
 
@@ -42,7 +42,7 @@ const caddy = [`(common) {
 (cachepages) {
   @pub {
     method GET HEAD
-    not path /api/* /account* /login* /register* /checkout* /cart* /track* /wishlist* /compare* /uploads/* /_next/* /cs/* /brand/* /areas/* /kk/*
+    not path /api/* /account* /login* /register* /checkout* /cart* /track* /wishlist* /compare* /uploads/* /_next/* /cs/* /brand/* /areas/* /kk/* /bk/*
     not header_regexp Cookie (^|;\\s*)ax_
   }
   header @pub >Cache-Control "public, s-maxage=60, stale-while-revalidate=300"

@@ -4,7 +4,8 @@
 param(
   [Parameter(Mandatory = $true)][string[]]$Apps,
   [string]$Ip = "76.13.209.242",
-  [string]$Key = "$env:USERPROFILE\.ssh\averixa_server"
+  [string]$Key = "$env:USERPROFILE\.ssh\averixa_server",
+  [switch]$UploadOnly   # only send and unpack the code (first install of a NEW app: its address file and pm2 entry must exist before the first build)
 )
 $ErrorActionPreference = "Stop"
 $Apps = @($Apps | ForEach-Object { $_ -split "," })
@@ -20,4 +21,5 @@ if ($LASTEXITCODE -ne 0) { throw "tar failed" }
 & scp @keyArgs -o StrictHostKeyChecking=accept-new $tar "root@${Ip}:/root/averixa-code-only.tgz"
 if ($LASTEXITCODE -ne 0) { throw "upload failed" }
 $list = $Apps -join " "
+if ($UploadOnly) { & ssh @keyArgs -o ConnectTimeout=20 "root@$Ip" "mkdir -p /srv/shop/app && tar -xzf /root/averixa-code-only.tgz -C /srv/shop/app && chown -R shop:shop /srv/shop/app && echo UPLOAD-OK"; return }
 & ssh @keyArgs -o ConnectTimeout=20 -o ServerAliveInterval=15 "root@$Ip" "mkdir -p /srv/shop/app && tar -xzf /root/averixa-code-only.tgz -C /srv/shop/app && bash /srv/shop/app/deploy/update.sh $list"
