@@ -844,3 +844,6 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 
 ## 2026-11-10 averixa.pk quantity box: aligned left
 - `apps/web/public/live-fx.css`: spacer removed, box has margin-right 61px instead, so the box starts at the same left edge as the title and price; Add to bag / Buy now unchanged (827 px, 393 wide, measured in the browser pane with injected CSS before the push).
+
+## 2026-11-10 averixa.pk quantity box: buttons next to the box
+- `apps/web/public/live-fx.css`: the row keeps `padding-right: 61px`, so the box (104x54) starts at the title edge and Add to bag / Buy now (393x30, 393x44) start 12 px after it. Measured live on the product page at 1246 px viewport after the push. (An intermediate push widened the buttons to about 454 px for a minute; it was replaced.)

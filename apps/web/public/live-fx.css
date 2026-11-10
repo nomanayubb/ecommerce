@@ -9,5 +9,5 @@
 [role="group"][aria-label="Quantity"][data-q="page"] input { align-self: stretch; flex: 1; min-width: 0; width: auto; padding: 0; text-align: center; font-size: .95rem; font-weight: 600; font-variant-numeric: tabular-nums; color: rgb(var(--fg)); border-inline: 1px solid rgb(var(--accent) / .45); background: transparent; }
 [role="group"][aria-label="Quantity"][data-q="page"] input:focus { background: rgb(var(--accent) / .10); }
 
-/* The box sits on the left edge (aligned with the title and the price). The old box slot was 165 px; 104 box + 61 right margin = 165, so Add to bag / Buy now keep EXACTLY their old width and position. */
-[role="group"][aria-label="Quantity"][data-q="page"] { margin-right: 61px; }
+/* The box sits on the left edge (aligned with the title and the price) and the buttons follow at the normal 12 px gap. The row keeps 61 px free on the right (old 165 px slot minus the 104 px box), so the box and the buttons keep EXACTLY their sizes. */
+div:has(> [role="group"][aria-label="Quantity"][data-q="page"]) { padding-right: 61px; }
