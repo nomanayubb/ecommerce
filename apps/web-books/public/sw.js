@@ -1,5 +1,5 @@
 /* Tiny service worker: installable app + offline fallback. Never caches API calls, accounts or checkout. */
-const VERSION = "v1";
+const VERSION = "v2";
 const STATIC = `static-${VERSION}`;
 const PAGES = `pages-${VERSION}`;
 

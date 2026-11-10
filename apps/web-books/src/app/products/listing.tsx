@@ -96,11 +96,6 @@ export async function Listing({ sp, base }: { sp: SP; base: string }) {
         <p className="text-sm text-muted">{data.total} {data.total === 1 ? "product" : "products"}</p>
       </div>
       {cat && !sp.q && cat.description && <p className="-mt-2 mb-6 max-w-3xl text-sm leading-relaxed text-muted">{cat.description}</p>}
-      {!sp.q && (() => {
-        const on = sp.brand === "averixa";
-        const o = keep({ ...sp, brand: on ? undefined : "averixa", page: undefined });
-        return <div className="mb-6"><Link href={`${base}${Object.keys(o).length ? `?${new URLSearchParams(o)}` : ""}`} aria-pressed={on} className={`inline-flex items-center gap-2 border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${on ? "border-accent bg-accent/10 text-accent" : "border-line text-muted hover:border-accent hover:text-accent"}`}><span aria-hidden>{on ? "✓" : "○"}</span>AVERIXA products only</Link></div>;
-      })()}
 
       <FiltersFab count={activeCount} />
       <div className="grid gap-10 lg:grid-cols-[230px_1fr]">

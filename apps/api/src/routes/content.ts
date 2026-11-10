@@ -37,7 +37,7 @@ export const bundleSchema = z.object({
   items: z.array(z.object({ slug, qty: z.number().int().min(1).max(50).default(1) })).min(1).max(20), status: z.enum(["DRAFT", "PUBLISHED"]),
 });
 
-const PRODUCT_COLS = `p.id, p.title, p.slug, p.selling_price, p.marked_price, p.stock_quantity, p.images[1] AS image, p.moq,
+const PRODUCT_COLS = `p.id, p.title, p.slug, p.selling_price, p.marked_price, p.stock_quantity, p.images->>0 AS image, p.moq,
   EXISTS (SELECT 1 FROM product_variants v WHERE v.product_id = p.id) AS has_variants`;
 const productsBySlug = async (slugs: string[]) => {
   if (!slugs.length) return new Map<string, any>();

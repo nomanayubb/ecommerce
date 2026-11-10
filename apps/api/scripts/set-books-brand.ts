@@ -8,17 +8,17 @@ if (!/books/.test(db)) throw new Error(`refusing to run on database "${db}" (thi
 
 const b = (await pool.query("SELECT value FROM site_settings WHERE key='branding'")).rows[0].value;
 Object.assign(b, {
-  name: "Barkat Books", tagline: "Buy Books on Discount", logoUrl: "", logoUrlDark: "",
+  name: "AVERIXA Books", tagline: "Buy Books on Discount", logoUrl: "", logoUrlDark: "",
   brandColor: "#910f3f", brandColorDark: "#c4366a", accentColor: "#910f3f", inkColor: "#3d081b", creamColor: "#f2efdd", darkColor: "#240510",
   radius: 10, font: "system", defaultTheme: "light", buttonStyle: "solid", cardStyle: "classic", pack: "default",
   announcements: ["11.11 Sale live 70% Off!"], announcement: "",
-  heroText: "Buy books on discount: English, Urdu, kids, Islamic and exam books, delivered across Pakistan.", footerText: "Barkat Books: books on discount, delivered across Pakistan.",
+  heroText: "Buy books on discount: English, Urdu, kids, Islamic and exam books, delivered across Pakistan.", footerText: "AVERIXA Books: books on discount, delivered across Pakistan.",
   navLinks: [],
 });
 await pool.query("UPDATE site_settings SET value=$1 WHERE key='branding'", [b]);
 
 const sections = sanitizeSections([
-  { id: "hero-1", type: "hero", settings: { variant: "image", imageUrl: "/bk/hero-wide.webp", imageUrlMobile: "/bk/hero-wide.webp", eyebrow: "Barkat Books", heading: "11.11 Big Sale", text: "Up to 75% off on best selling books.", primaryLabel: "Shop the sale", primaryHref: "/collections/sales-3", secondaryLabel: "All books", secondaryHref: "/products", height: "md" } },
+  { id: "banner-1", type: "image-banner", settings: { imageUrl: "/bk/hero-wide.webp", alt: "11.11 Big Sale, up to 75% off", href: "/collections/sales-3" } },
   { id: "sale-1", type: "product-carousel", settings: { eyebrow: "", heading: "Sale 75% off", categorySlug: "sales-3", count: 12, sort: "newest" } },
   { id: "trend-1", type: "collection-list", settings: { eyebrow: "", heading: "Trending Collections", layout: "bento", count: 6, slugs: "english,urdu-books,childerss-books,sales-2,islamic-books,sales" } },
 ]);

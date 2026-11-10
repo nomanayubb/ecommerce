@@ -53,7 +53,7 @@ export const collectionAdminRoutes: FastifyPluginAsync = async (app) => {
     const c = (await pool.query("SELECT id, name, slug, description, image_url, parent_id, is_active, sort_order FROM categories WHERE id = $1", [req.params.id])).rows[0];
     if (!c) return reply.status(404).send({ success: false, error: "Not found" });
     const products = (await pool.query(
-      `SELECT p.id, p.title, p.slug, p.status, p.images[1] AS image, p.selling_price, p.stock_quantity
+      `SELECT p.id, p.title, p.slug, p.status, p.images->>0 AS image, p.selling_price, p.stock_quantity
          FROM product_categories pc JOIN products p ON p.id = pc.product_id WHERE pc.category_id = $1 ORDER BY p.title`, [c.id]
     )).rows;
     return { ...c, products };

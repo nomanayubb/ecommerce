@@ -477,6 +477,19 @@ async function CollectionCards({ s }: P) {
 }
 
 const TRUST_ICONS = { truck: TruckIcon, price: CashIcon, shield: ShieldIcon, package: PackageIcon, support: SupportIcon } as const;
+/** A plain picture across the page (the words are in the picture), optionally a link. */
+function ImageBanner({ s }: P) {
+  const v = s.settings as Settings;
+  if (!v.imageUrl) return null;
+  const pic = (
+    <picture>
+      {v.imageUrlMobile ? <source media="(max-width: 640px)" srcSet={v.imageUrlMobile} /> : null}
+      <img src={v.imageUrl} alt={v.alt || ""} width={1600} height={800} fetchPriority="high" className="block h-auto w-full rounded-[var(--radius)]" />
+    </picture>
+  );
+  return v.href ? <Link href={v.href} className="block">{pic}</Link> : pic;
+}
+
 /** Three promises in a row (icon, title, line), in the theme's gold line style. */
 function TrustStrip({ s }: P) {
   const v = s.settings as Settings;
@@ -526,7 +539,7 @@ function PromiseSection({ s, ctx }: P) {
 const MAP: Record<string, (p: P) => any> = {
   hero: Hero, "collection-list": CollectionList, "featured-collection": FeaturedCollection, "product-carousel": ProductCarousel, "product-spotlight": Spotlight,
   "image-with-text": ImageWithText, "rich-text": RichText, multicolumn: Multicolumn, testimonials: Testimonials, "logo-bar": LogoBar, faq: Faq,
-  "countdown-banner": CountdownBanner, newsletter: Newsletter, promise: PromiseSection, "trust-strip": TrustStrip, "collection-cards": CollectionCards,
+  "countdown-banner": CountdownBanner, newsletter: Newsletter, promise: PromiseSection, "trust-strip": TrustStrip, "image-banner": ImageBanner, "collection-cards": CollectionCards,
   "recently-viewed": ({ s }) => <RecentlyViewed title={s.settings.heading || "Recently viewed"} />,
   timeline: Timeline, team: Team, contact: Contact, map: PlaceMap, gallery: PhotoGallery, events: Events, podcast: Podcast, "video-story": VideoStory, stats: Stats,
   chips: Chips, marquee: Marquee, "promo-banner": PromoBanner, steps: Steps, "brand-grid": BrandGrid, "picked-for-you": PickedForYou,

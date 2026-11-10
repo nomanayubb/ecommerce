@@ -14,7 +14,7 @@ export const searchRoutes: FastifyPluginAsync = async (app) => {
       const like = `%${q.replace(/[%_]/g, "")}%`;
       const [products, categories, brands] = await Promise.all([
         pool.query(
-          `SELECT p.title, p.slug, p.images[1] AS image, p.selling_price, p.stock_quantity,
+          `SELECT p.title, p.slug, p.images->>0 AS image, p.selling_price, p.stock_quantity,
                   CASE WHEN p.marked_price > p.selling_price THEN round((p.marked_price - p.selling_price) / p.marked_price * 100) END AS discount_pct
            FROM products p WHERE p.status = 'PUBLISHED' AND (p.title ILIKE $1 OR p.sku ILIKE $1 OR EXISTS (SELECT 1 FROM unnest(p.tags) t WHERE t ILIKE $1))
            ORDER BY (p.title ILIKE $2) DESC, p.title LIMIT 6`,

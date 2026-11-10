@@ -239,6 +239,10 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
+    type: "image-banner", label: "Image banner", group: "Hero & banners", description: "Just a picture across the page (any text is part of the picture), optionally a link.",
+    fields: [url("imageUrl", "Picture", ""), url("imageUrlMobile", "Phone picture (optional)", ""), t("alt", "Description of the picture", "", { maxLength: 140 }), url("href", "Link (optional)", "")],
+  },
+  {
     type: "steps", label: "How it works", group: "Content", description: "Numbered steps with icons, e.g. order, we pack, you pay on delivery.",
     fields: [t("eyebrow", "Small heading", "Simple"), t("heading", "Heading", "How it works")],
     block: { type: "step", label: "Step", max: 6, fields: [sel("icon", "Icon", ICONS, "package"), t("title", "Title", ""), ta("text", "Text", "", { maxLength: 200 })] },
