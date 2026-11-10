@@ -834,3 +834,5 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - averixa.pk `layout.tsx`: the stylesheet link is now `/live-fx.css?v=<mtime of public/live-fx.css>` read on every (re)render (ISR ~30 s), so after `push-css.ps1 -Apps web` all visitors load the new CSS within about 30 s, no `?v=` bump, no build, no Caddy rule. Verified live (v=1794309600 serves the compact box CSS). Other shops still use the plain `/live-fx.css` link (4 h browser cache) until the same 3-line change is made and built there (only when asked).
 
 - averixa.pk quantity box narrowed to 112x44 (was 165): the Add to bag / Buy now buttons keep their height and style but fill the freed 53 px (width 393 -> 446 on desktop).
+
+- averixa.pk quantity box: 104 px wide x 54 px high (taller, narrower, as asked). Started from the file as found on disk (130 px x 3.1rem, an uncommitted edit by someone else), not from my last commit (112 x 44). Buttons unchanged in height (29 / 44).
