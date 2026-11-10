@@ -847,3 +847,7 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 
 ## 2026-11-10 averixa.pk quantity box: buttons next to the box
 - `apps/web/public/live-fx.css`: the row keeps `padding-right: 61px`, so the box (104x54) starts at the title edge and Add to bag / Buy now (393x30, 393x44) start 12 px after it. Measured live on the product page at 1246 px viewport after the push. (An intermediate push widened the buttons to about 454 px for a minute; it was replaced.)
+
+## 2026-11-10 City / area search list no longer hides on phone scroll (all six shops, code only)
+- `apps/*/src/components/SearchPicker.tsx` (identical in web, web-attire, web-electronics, web-mobiles, web-autoparts, web-books): the list used to close on `pointerdown` anywhere outside it, so touching the page to scroll hid the list and the typed city had to be searched again. Now it closes on a real tap outside (`click`), options are picked on `click` (with `mousedown` prevented so the box keeps focus), and while a finger is on the picker the blur handler does not close the list or clear the text.
+- Type-checks (web). NOT deployed yet: the production deploy command was blocked by the permission check, so the live shops still have the old behaviour. Not tested on a phone.

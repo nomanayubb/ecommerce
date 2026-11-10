@@ -76,6 +76,7 @@ export function SearchPicker({
   const [err, setErr] = useState("");                                   // shown next to the box when it is left without a real choice
   const inputRef = useRef<HTMLInputElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
+  const touching = useRef(false);
   const id = useId();
   const rows = useMemo(() => {
     const r = searchList(items, query, popular, aliases, rank);
@@ -87,9 +88,10 @@ export function SearchPicker({
   useEffect(() => { if (value) setErr(""); }, [value]);
   useEffect(() => { inputRef.current?.setCustomValidity(required && !value ? invalidMessage : ""); }, [required, value, invalidMessage]);
   useEffect(() => {
-    const out = (e: PointerEvent) => { if (!boxRef.current?.contains(e.target as Node)) setOpen(false); };
-    document.addEventListener("pointerdown", out);
-    return () => document.removeEventListener("pointerdown", out);
+    // close on a real tap outside (a click), never on the start of a finger scroll: on a phone, scrolling the page or the list must not hide the list
+    const out = (e: Event) => { if (!boxRef.current?.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("click", out);
+    return () => document.removeEventListener("click", out);
   }, []);
   useEffect(() => { document.getElementById(`${id}-o${hi}`)?.scrollIntoView({ block: "nearest" }); }, [hi, id]);
 
@@ -103,6 +105,7 @@ export function SearchPicker({
   };
   // Leaving the box: a real choice is fine. Text that is not in the list is cleared (no custom entries) and an error appears next to the box; an empty required box gets the same error.
   const leave = () => {
+    if (touching.current) return;                                      // a finger is on the list (scrolling it): keep the text and the list
     setOpen(false);
     if (value) { setErr(""); return; }
     const q = query.trim();
@@ -118,7 +121,7 @@ export function SearchPicker({
   const noHits = rows.length === (extra ? 1 : 0);
 
   return (
-    <div ref={boxRef} className="relative">
+    <div ref={boxRef} className="relative" onPointerDown={() => { touching.current = true; }} onPointerUp={() => { touching.current = false; }} onPointerCancel={() => { touching.current = false; }}>
       <input
         ref={inputRef} value={query} onChange={(e) => type(e.target.value)} onBeforeInput={noNonLatin} onFocus={() => setOpen(true)} onBlur={leave} onInvalid={() => setErr((cur) => cur || invalidMessage)} onKeyDown={key}
         role="combobox" aria-expanded={open} aria-controls={`${id}-list`} aria-autocomplete="list" aria-activedescendant={open && rows[hi] ? `${id}-o${hi}` : undefined}
@@ -133,7 +136,7 @@ export function SearchPicker({
           {!query.trim() && <li role="presentation" className="px-4 pb-1 pt-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted">{hint(rows.length - (extra ? 1 : 0), items.length)}</li>}
           {noHits && <li role="presentation" className="px-4 py-4 text-sm text-muted">{noMatch(query)}</li>}
           {rows.map((c, i) => (
-            <li key={c} id={`${id}-o${i}`} role="option" aria-selected={c === value} onPointerDown={(e) => { e.preventDefault(); pick(c); }} onMouseMove={() => setHi(i)}
+            <li key={c} id={`${id}-o${i}`} role="option" aria-selected={c === value} onMouseDown={(e) => e.preventDefault()} onClick={() => pick(c)} onMouseMove={() => setHi(i)}
               className={`flex min-h-11 cursor-pointer items-center px-4 py-2.5 text-base sm:text-sm ${extra && c === extra.value ? "border-t border-line text-muted italic " : ""}${i === hi ? "bg-accent/15 text-accent" : extra && c === extra.value ? "" : "text-fg"} ${c === value ? "font-semibold" : ""}`}>
               {labelOf(c)}
             </li>
