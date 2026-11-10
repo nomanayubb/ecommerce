@@ -838,3 +838,6 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - averixa.pk quantity box: 104 px wide x 54 px high (taller, narrower, as asked). Started from the file as found on disk (130 px x 3.1rem, an uncommitted edit by someone else), not from my last commit (112 x 44). Buttons unchanged in height (29 / 44).
 
 - averixa.pk quantity box: buttons restored to EXACTLY their original size (Add to bag 393x29, Buy now 393x44 at the 1246 px test width = row - 165 box slot - 12 gap). My extra `margin-inline` was removed: the slot is already kept by the QTY label rule (49 label + 12 gap + 104 box = 165) added by another session; adding my margin on top had shrunk the buttons to 332. Box 104x54.
+
+## 2026-11-10 averixa.pk quantity box: QTY label removed
+- `apps/web/public/live-fx.css`: the "QTY" text before the box is gone; its 49 px slot stays empty so Add to bag / Buy now keep their exact width. CSS only, pushed with push-css.ps1 -Apps web. Not re-measured in the browser.

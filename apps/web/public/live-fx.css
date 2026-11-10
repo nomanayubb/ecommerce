@@ -9,5 +9,5 @@
 [role="group"][aria-label="Quantity"][data-q="page"] input { align-self: stretch; flex: 1; min-width: 0; width: auto; padding: 0; text-align: center; font-size: .95rem; font-weight: 600; font-variant-numeric: tabular-nums; color: rgb(var(--fg)); border-inline: 1px solid rgb(var(--accent) / .45); background: transparent; }
 [role="group"][aria-label="Quantity"][data-q="page"] input:focus { background: rgb(var(--accent) / .10); }
 
-/* The old box was 165 px wide; the slim box (104 px) leaves 49 px which carries a small QTY label, so the Add to bag / Buy now buttons keep EXACTLY their old width (165 = 49 label + 12 gap + 104 box). */
-div:has(> [role="group"][aria-label="Quantity"][data-q="page"])::before { content: "QTY"; flex: 0 0 49px; display: flex; align-items: center; font-size: .62rem; font-weight: 600; letter-spacing: .2em; color: rgb(var(--fg) / .6); }
+/* The old box was 165 px wide; the slim box (104 px) leaves 49 px which stays empty (no label), so the Add to bag / Buy now buttons keep EXACTLY their old width (165 = 49 spacer + 12 gap + 104 box). */
+div:has(> [role="group"][aria-label="Quantity"][data-q="page"])::before { content: ""; flex: 0 0 49px; }
