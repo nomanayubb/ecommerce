@@ -1,6 +1,8 @@
 import { MetaPixel } from "@/components/MetaPixel";
 import { PIXEL_ID } from "@/lib/pixel";
 import "./globals.css";
+import fs from "node:fs";
+import path from "node:path";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { api, getSite, DEFAULT_VISUALS, type CategoryNode } from "@/lib/api";
@@ -20,6 +22,8 @@ import { SessionProvider } from "@/components/SessionProvider";
 import { ShopperProvider } from "@/components/Shopper";
 
 const getBranding = () => getSite().then((s) => s.branding);
+/** Version of public/live-fx.css = its last-modified time, read on every (re)render: a CSS push changes the link within one revalidation (about 30 s), so no browser keeps the old file for hours. */
+const fxVersion = () => { try { return Math.floor(fs.statSync(path.join(process.cwd(), "public", "live-fx.css")).mtimeMs / 1000); } catch { return 0; } };
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 /** Organisation + site-search data for search engines. */
 const siteLd = (name: string, tagline: string) => [
@@ -69,7 +73,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <link rel="stylesheet" href="/card-fx.css" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <meta name="facebook-domain-verification" content="1idl6xln4yc78tnwundqj9kc005q2k" />
-        <link rel="stylesheet" href="/live-fx.css?v=3" />
+        <link rel="stylesheet" href={`/live-fx.css?v=${fxVersion()}`} />
       </head>
       <body>
         <a href="#main" className="skip-link">Skip to content</a>
