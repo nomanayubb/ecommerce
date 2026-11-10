@@ -34,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
     title: { default: `${b.name} | ${desc}`, template: `%s | ${b.name}` },
     description: desc,
-    icons: { icon: "/favicon.ico", apple: "/brand/apple-touch-icon.png" },
+    icons: { icon: [{ url: "/brand/icon-192.png?v=ab", type: "image/png" }, { url: "/favicon.ico?v=ab" }], apple: "/brand/apple-touch-icon.png?v=ab" },
     openGraph: { title: b.name, description: desc, siteName: b.name, type: "website", images: ["/brand/og-image.jpg"] },
     twitter: { card: "summary_large_image", title: b.name, description: desc, images: ["/brand/og-image.jpg"] },
   };

@@ -9,9 +9,9 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     name: b.name, short_name: b.name.slice(0, 12), description: b.tagline, start_url: "/", scope: "/", display: "standalone",
     background_color: dark, theme_color: dark,
     icons: [
-      { src: "/brand/icon-192.png", sizes: "192x192", type: "image/png" },
-      { src: "/brand/icon-512.png", sizes: "512x512", type: "image/png" },
-      { src: "/brand/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      { src: "/brand/icon-192.png?v=ab", sizes: "192x192", type: "image/png" },
+      { src: "/brand/icon-512.png?v=ab", sizes: "512x512", type: "image/png" },
+      { src: "/brand/icon-512.png?v=ab", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
   };
 }
