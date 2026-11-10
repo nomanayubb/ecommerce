@@ -820,3 +820,5 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 
 ## 2026-11-10 - quantity stepper design (all shops)
 - `apps/*/public/live-fx.css` (all six forks, identical): the product-page quantity box (`[role=group][aria-label=Quantity]`) now has an accent-coloured frame, a "QTY" label, divided cells (− / number / +) and a filled hover, so it is visible on the black theme (before the border was near-invisible on black). Pure CSS, pushed live with `deploy/push-css.ps1` (no build). Checked in the browser on averixa.pk (dark) and books (light); the other four shops use the same file, not opened one by one.
+
+- Correction: the stepper design was asked for averixa.pk ONLY. The other five shops (attire, electronics, mobiles, autoparts, books) had it removed again (their `live-fx.css` is back to the 166-byte original); only `apps/web/public/live-fx.css` carries it. (The taller box markup in `BuyPanel.tsx` is still in all six shops, as asked earlier.)
