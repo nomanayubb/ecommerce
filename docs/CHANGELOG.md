@@ -816,5 +816,4 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 ## 2026-11-10 - books shop fixes: blank carousel cards and search thumbnails
 - Bug (all shops): `p.images[1]` in `routes/search.ts`, `collections.ts`, `content.ts` read the SECOND photo of the jsonb `images` (subscript is 0-based on jsonb), so products with one photo had no picture in home carousels, section grids and search suggestions. Now `p.images->>0` (first photo). Only `api-books` was restarted so far; the other APIs take the fix at their next restart (`pm2 restart api-main api-electronics ...`).
 - `apps/web-books/public/sw.js` VERSION v2 (the service worker caches `/brand/*` cache-first, so the old "BB" icons would otherwise stay in browsers that had visited).
-
-- Product page quantity box: the taller/bigger version (d46adec) was reverted at the owner's request in all six shops: back to the original small box beside the buttons (`h-[2.725rem]`, `items-end`).
+- Product page quantity box (all six shops, `BuyPanel.tsx`): now stretches the full height of the Add to bag + Buy now stack (min 3.25rem, bigger +/- and number) instead of sitting beside Buy now only.
