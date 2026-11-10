@@ -841,3 +841,6 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 
 ## 2026-11-10 averixa.pk quantity box: QTY label removed
 - `apps/web/public/live-fx.css`: the "QTY" text before the box is gone; its 49 px slot stays empty so Add to bag / Buy now keep their exact width. CSS only, pushed with push-css.ps1 -Apps web. Not re-measured in the browser.
+
+## 2026-11-10 averixa.pk quantity box: aligned left
+- `apps/web/public/live-fx.css`: spacer removed, box has margin-right 61px instead, so the box starts at the same left edge as the title and price; Add to bag / Buy now unchanged (827 px, 393 wide, measured in the browser pane with injected CSS before the push).
