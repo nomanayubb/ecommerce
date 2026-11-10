@@ -832,3 +832,5 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - averixa.pk quantity box (final): beside the Add to bag / Buy now stack at the OLD width (165 px) so the buttons keep exactly their old size, 44 px high, centred against them, accent frame; no column layout, no label. Measured in the browser: box 165x44, Add to bag 393x29, Buy now 393x44 (desktop). Buttons were never restyled.
 
 - averixa.pk `layout.tsx`: the stylesheet link is now `/live-fx.css?v=<mtime of public/live-fx.css>` read on every (re)render (ISR ~30 s), so after `push-css.ps1 -Apps web` all visitors load the new CSS within about 30 s, no `?v=` bump, no build, no Caddy rule. Verified live (v=1794309600 serves the compact box CSS). Other shops still use the plain `/live-fx.css` link (4 h browser cache) until the same 3-line change is made and built there (only when asked).
+
+- averixa.pk quantity box narrowed to 112x44 (was 165): the Add to bag / Buy now buttons keep their height and style but fill the freed 53 px (width 393 -> 446 on desktop).
