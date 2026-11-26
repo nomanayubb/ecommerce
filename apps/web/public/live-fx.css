@@ -25,3 +25,6 @@ div:has(> [role="group"][aria-label="Quantity"][data-q="page"]) { padding-right:
   div.snap-x > .w-56.snap-start .pcard h3 + div p > span:first-child { font-size: .78rem; }
   div.snap-x > .w-56.snap-start .pcard h3 + div p > span.line-through { font-size: .62rem; }
 }
+
+/* Phone menu: no blue tap flash from the phone's browser on its lines; the tapped collection gets the AVERIXA gold highlight instead (Header.tsx). */
+header details nav a, header details nav button, header details summary { -webkit-tap-highlight-color: transparent; }
