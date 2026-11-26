@@ -76,7 +76,6 @@ export function SearchPicker({
   const [err, setErr] = useState("");                                   // shown next to the box when it is left without a real choice
   const inputRef = useRef<HTMLInputElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
-  const touching = useRef(false);
   const id = useId();
   const rows = useMemo(() => {
     const r = searchList(items, query, popular, aliases, rank);
@@ -87,9 +86,10 @@ export function SearchPicker({
   useEffect(() => { setHi(0); }, [query]);
   useEffect(() => { if (value) setErr(""); }, [value]);
   useEffect(() => { inputRef.current?.setCustomValidity(required && !value ? invalidMessage : ""); }, [required, value, invalidMessage]);
+  const leaveRef = useRef<() => void>(() => {});
   useEffect(() => {
-    // close on a real tap outside (a click), never on the start of a finger scroll: on a phone, scrolling the page or the list must not hide the list
-    const out = (e: Event) => { if (!boxRef.current?.contains(e.target as Node)) setOpen(false); };
+    // close (and check the text) only on a real tap outside (a click), never on a finger scroll: on a phone, scrolling the page or the list must not hide the list
+    const out = (e: Event) => { if (!boxRef.current?.contains(e.target as Node)) leaveRef.current(); };
     document.addEventListener("click", out);
     return () => document.removeEventListener("click", out);
   }, []);
@@ -105,13 +105,16 @@ export function SearchPicker({
   };
   // Leaving the box: a real choice is fine. Text that is not in the list is cleared (no custom entries) and an error appears next to the box; an empty required box gets the same error.
   const leave = () => {
-    if (touching.current) return;                                      // a finger is on the list (scrolling it): keep the text and the list
     setOpen(false);
     if (value) { setErr(""); return; }
     const q = query.trim();
     if (q) { setErr(`“${q}” is not in the list. ${invalidMessage}`); setQuery(""); }
     else if (required) setErr(invalidMessage);
   };
+  leaveRef.current = () => { if (open) leave(); };                   // an outside tap only matters while the list is open (no early error on a box never touched)
+  // Losing focus: only when focus really went to another field outside (Tab, or tapping the next box). A touch on the list, a scroll, or the phone keyboard closing
+  // moves focus nowhere (relatedTarget is null): then the list stays and an outside tap closes it later.
+  const blur = (e: React.FocusEvent) => { const to = e.relatedTarget as Node | null; if (to && !boxRef.current?.contains(to)) leave(); };
   const key = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") { e.preventDefault(); setOpen(true); setHi((h) => Math.min(h + 1, rows.length - 1)); }
     else if (e.key === "ArrowUp") { e.preventDefault(); setHi((h) => Math.max(h - 1, 0)); }
@@ -121,9 +124,9 @@ export function SearchPicker({
   const noHits = rows.length === (extra ? 1 : 0);
 
   return (
-    <div ref={boxRef} className="relative" onPointerDown={() => { touching.current = true; }} onPointerUp={() => { touching.current = false; }} onPointerCancel={() => { touching.current = false; }}>
+    <div ref={boxRef} className="relative">
       <input
-        ref={inputRef} value={query} onChange={(e) => type(e.target.value)} onBeforeInput={noNonLatin} onFocus={() => setOpen(true)} onBlur={leave} onInvalid={() => setErr((cur) => cur || invalidMessage)} onKeyDown={key}
+        ref={inputRef} value={query} onChange={(e) => type(e.target.value)} onBeforeInput={noNonLatin} onFocus={() => setOpen(true)} onBlur={blur} onInvalid={() => setErr((cur) => cur || invalidMessage)} onKeyDown={key}
         role="combobox" aria-expanded={open} aria-controls={`${id}-list`} aria-autocomplete="list" aria-activedescendant={open && rows[hi] ? `${id}-o${hi}` : undefined}
         required={required} autoComplete="off" autoCapitalize="words" spellCheck={false} enterKeyHint="done" placeholder={placeholder}
         aria-invalid={err ? true : undefined} aria-describedby={err ? `${id}-err` : undefined}
@@ -132,7 +135,7 @@ export function SearchPicker({
       {name && <input type="hidden" name={name} value={value} />}
       {err && !open && <p id={`${id}-err`} role="alert" className="mt-1.5 text-xs font-medium text-red-400">{err}</p>}
       {open && (
-        <ul id={`${id}-list`} role="listbox" className="absolute inset-x-0 top-full z-30 mt-1 max-h-[min(18rem,45vh)] overflow-y-auto overscroll-contain border border-line bg-card shadow-xl">
+        <ul id={`${id}-list`} role="listbox" onMouseDown={(e) => e.preventDefault()} className="absolute inset-x-0 top-full z-30 mt-1 max-h-[min(18rem,45vh)] overflow-y-auto overscroll-contain border border-line bg-card shadow-xl">
           {!query.trim() && <li role="presentation" className="px-4 pb-1 pt-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted">{hint(rows.length - (extra ? 1 : 0), items.length)}</li>}
           {noHits && <li role="presentation" className="px-4 py-4 text-sm text-muted">{noMatch(query)}</li>}
           {rows.map((c, i) => (
