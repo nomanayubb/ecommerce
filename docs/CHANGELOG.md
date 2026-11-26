@@ -856,3 +856,9 @@ Newest at the bottom. One entry per task. State what was verified and what was n
 - Owner: on a phone the city list still vanished when scrolling it, and a tap on the list also hit the Area box underneath. Cause in the live shops: the fix of 17b8e18 was never deployed. Also found in that code: a touch on the list's non-option parts (hint row, padding) took focus off the box, `onBlur` closed the list before the click, so the click landed on the field underneath.
 - `apps/*/src/components/SearchPicker.tsx` (identical in all six): the whole list prevents `mousedown` (focus never leaves the box while the list is touched or scrolled); `onBlur` closes and checks the text only when focus went to another field outside (`relatedTarget` set); an outside tap (`click`) closes and checks only while the list is open; the pointer-tracking flag was removed.
 - Type-checks (web). NOT deployed: `deploy/update.ps1` was blocked by the permission check; owner to run `.\deploy\update.ps1 -Apps web,web-attire,web-electronics,web-mobiles,web-autoparts,web-books`. Not tested on a real phone.
+
+## 2026-11-26 City and area lists: no random touch closes them (all six shops, code only)
+- Owner: a random touch anywhere must not close the list, and the area box must behave the same.
+- `SearchPicker.tsx` (city): the outside-`click` close is gone; the list closes (and checks the text) only when another field gets focus (document `focusin` outside the box), on a pick, or on Escape.
+- `AreaInput.tsx` (area suggestions): same rule (was: closed on any `pointerdown` outside, so starting a page scroll hid it); options were picked on `pointerdown`, so a finger that started a scroll on the list picked that area and closed the list: now picked on `click`, list prevents `mousedown` so focus stays in the box.
+- Type-checks (web). Not deployed yet (owner runs `deploy/update.ps1`, six apps, about 6 minutes measured today). Not tested on a real phone.

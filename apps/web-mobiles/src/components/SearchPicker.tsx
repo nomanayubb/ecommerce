@@ -88,10 +88,11 @@ export function SearchPicker({
   useEffect(() => { inputRef.current?.setCustomValidity(required && !value ? invalidMessage : ""); }, [required, value, invalidMessage]);
   const leaveRef = useRef<() => void>(() => {});
   useEffect(() => {
-    // close (and check the text) only on a real tap outside (a click), never on a finger scroll: on a phone, scrolling the page or the list must not hide the list
-    const out = (e: Event) => { if (!boxRef.current?.contains(e.target as Node)) leaveRef.current(); };
-    document.addEventListener("click", out);
-    return () => document.removeEventListener("click", out);
+    // The list closes (and the text is checked) only when ANOTHER field gets focus (the shopper moved on to the next box, a button, Tab). Taps on empty parts of the page,
+    // scrolling the page or the list, and the phone keyboard closing never hide it (owner rule: no random touch closes the list).
+    const moved = (e: FocusEvent) => { if (!boxRef.current?.contains(e.target as Node)) leaveRef.current(); };
+    document.addEventListener("focusin", moved);
+    return () => document.removeEventListener("focusin", moved);
   }, []);
   useEffect(() => { document.getElementById(`${id}-o${hi}`)?.scrollIntoView({ block: "nearest" }); }, [hi, id]);
 
@@ -111,10 +112,7 @@ export function SearchPicker({
     if (q) { setErr(`“${q}” is not in the list. ${invalidMessage}`); setQuery(""); }
     else if (required) setErr(invalidMessage);
   };
-  leaveRef.current = () => { if (open) leave(); };                   // an outside tap only matters while the list is open (no early error on a box never touched)
-  // Losing focus: only when focus really went to another field outside (Tab, or tapping the next box). A touch on the list, a scroll, or the phone keyboard closing
-  // moves focus nowhere (relatedTarget is null): then the list stays and an outside tap closes it later.
-  const blur = (e: React.FocusEvent) => { const to = e.relatedTarget as Node | null; if (to && !boxRef.current?.contains(to)) leave(); };
+  leaveRef.current = () => { if (open) leave(); };                   // only while the list is open (no early error on a box never touched)
   const key = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") { e.preventDefault(); setOpen(true); setHi((h) => Math.min(h + 1, rows.length - 1)); }
     else if (e.key === "ArrowUp") { e.preventDefault(); setHi((h) => Math.max(h - 1, 0)); }
@@ -126,7 +124,7 @@ export function SearchPicker({
   return (
     <div ref={boxRef} className="relative">
       <input
-        ref={inputRef} value={query} onChange={(e) => type(e.target.value)} onBeforeInput={noNonLatin} onFocus={() => setOpen(true)} onBlur={blur} onInvalid={() => setErr((cur) => cur || invalidMessage)} onKeyDown={key}
+        ref={inputRef} value={query} onChange={(e) => type(e.target.value)} onBeforeInput={noNonLatin} onFocus={() => setOpen(true)} onInvalid={() => setErr((cur) => cur || invalidMessage)} onKeyDown={key}
         role="combobox" aria-expanded={open} aria-controls={`${id}-list`} aria-autocomplete="list" aria-activedescendant={open && rows[hi] ? `${id}-o${hi}` : undefined}
         required={required} autoComplete="off" autoCapitalize="words" spellCheck={false} enterKeyHint="done" placeholder={placeholder}
         aria-invalid={err ? true : undefined} aria-describedby={err ? `${id}-err` : undefined}

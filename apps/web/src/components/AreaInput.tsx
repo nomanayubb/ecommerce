@@ -5,7 +5,7 @@ import { latinOnly, noNonLatin } from "@/lib/latin";
 import { searchList } from "./SearchPicker";
 
 /** Area, colony or mohalla box: a normal typing box (any area can be written) that finds matches in the city's area list while the shopper types.
- *  Tap or press Enter on a suggestion to fill it in; nothing is forced. Suggestions are English letters only, like the box itself. */
+ *  Tap or press Enter on a suggestion to fill it in (a finger that starts a scroll on the list picks nothing); nothing is forced. Suggestions are English letters only, like the box itself. */
 export function AreaInput({
   items, value, onChange, required, className, placeholder, invalid, onBlurExtra, onInvalid,
 }: {
@@ -25,9 +25,10 @@ export function AreaInput({
 
   useEffect(() => { setHi(-1); }, [value]);
   useEffect(() => {
-    const out = (e: PointerEvent) => { if (!boxRef.current?.contains(e.target as Node)) setOpen(false); };
-    document.addEventListener("pointerdown", out);
-    return () => document.removeEventListener("pointerdown", out);
+    // Same rule as the city list: suggestions close only when ANOTHER field gets focus; taps on empty parts of the page and scrolling (page or list) never hide them.
+    const moved = (e: FocusEvent) => { if (!boxRef.current?.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("focusin", moved);
+    return () => document.removeEventListener("focusin", moved);
   }, []);
   useEffect(() => { if (hi >= 0) document.getElementById(`${id}-o${hi}`)?.scrollIntoView({ block: "nearest" }); }, [hi, id]);
 
@@ -49,9 +50,9 @@ export function AreaInput({
         className={`${className ?? ""} !text-base sm:!text-sm`}
       />
       {open && hits.length > 0 && (
-        <ul id={`${id}-list`} role="listbox" className="absolute inset-x-0 top-full z-30 mt-1 max-h-[min(16rem,40vh)] overflow-y-auto overscroll-contain border border-line bg-card shadow-xl">
+        <ul id={`${id}-list`} role="listbox" onMouseDown={(e) => e.preventDefault()} className="absolute inset-x-0 top-full z-30 mt-1 max-h-[min(16rem,40vh)] overflow-y-auto overscroll-contain border border-line bg-card shadow-xl">
           {hits.map((c, i) => (
-            <li key={c} id={`${id}-o${i}`} role="option" aria-selected={i === hi} onPointerDown={(e) => { e.preventDefault(); pick(c); }} onMouseMove={() => setHi(i)}
+            <li key={c} id={`${id}-o${i}`} role="option" aria-selected={i === hi} onMouseDown={(e) => e.preventDefault()} onClick={() => pick(c)} onMouseMove={() => setHi(i)}
               className={`flex min-h-11 cursor-pointer items-center px-4 py-2.5 text-base sm:text-sm ${i === hi ? "bg-accent/15 text-accent" : "text-fg"}`}>
               {c}
             </li>
