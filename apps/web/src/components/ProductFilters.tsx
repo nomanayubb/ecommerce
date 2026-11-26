@@ -92,13 +92,14 @@ export function ProductFilters({ params, facets }: { params: Params; facets: Fac
       {facets.brands.length > 0 && (
         <div>
           <p className="eyebrow mb-2">Brand</p>
-          {facets.brands.map((b) => <Check key={b.slug} on={brands.includes(b.slug)} onChange={() => toggle("brand", b.slug)} count={b.count}>{b.name}</Check>)}
+          {/* long lists scroll inside their own box (about 9 rows); scrolling it never moves the page behind */}
+          <div className="max-h-64 touch-pan-y overflow-y-auto overscroll-contain border-y border-line/60 pr-2">{facets.brands.map((b) => <Check key={b.slug} on={brands.includes(b.slug)} onChange={() => toggle("brand", b.slug)} count={b.count}>{b.name}</Check>)}</div>
         </div>
       )}
       {facets.tags.length > 0 && (
         <div>
           <p className="eyebrow mb-2">Features</p>
-          {facets.tags.map((t) => <Check key={t.tag} on={tags.includes(t.tag)} onChange={() => toggle("tag", t.tag)} count={t.count}>{label(t.tag)}</Check>)}
+          <div className="max-h-64 touch-pan-y overflow-y-auto overscroll-contain border-y border-line/60 pr-2">{facets.tags.map((t) => <Check key={t.tag} on={tags.includes(t.tag)} onChange={() => toggle("tag", t.tag)} count={t.count}>{label(t.tag)}</Check>)}</div>
         </div>
       )}
 

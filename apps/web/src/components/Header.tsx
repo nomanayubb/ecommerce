@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { pkr, type CategoryNode } from "@/lib/api";
 import { useCart } from "./CartProvider";
@@ -163,19 +164,22 @@ function MoreMenu({ nodes }: { nodes: CategoryNode[] }) {
   );
 }
 
-/** Phone menu: one line per top menu, opening to its sub menus. */
-function MobileCat({ node }: { node: CategoryNode }) {
+/** Phone menu: one line per top menu, opening to its sub menus. The tapped (or currently open) collection is highlighted: accent colour and a gold bar on the left. */
+function MobileCat({ node, active, onPick }: { node: CategoryNode; active: string; onPick: (slug: string) => void }) {
   const [open, setOpen] = useState(false);
   const kids = useBranch(node.slug, open && !!node.hasChildren);
+  const on = (slug: string) => active === slug;
   return (
     <div>
       <div className="flex items-center justify-between">
-        <Link href={`/collections/${node.slug}`} className="block flex-1 py-2 uppercase tracking-widest">{node.name}</Link>
+        <Link href={`/collections/${node.slug}`} onClick={() => onPick(node.slug)} aria-current={on(node.slug) ? "page" : undefined}
+          className={`block flex-1 border-l-2 py-2 pl-2 uppercase tracking-widest transition-colors active:text-accent ${on(node.slug) ? "border-accent font-semibold text-accent" : "border-transparent"}`}>{node.name}</Link>
         {node.hasChildren && <button type="button" aria-expanded={open} aria-label={`Show ${node.name} sub menus`} onClick={() => setOpen((v) => !v)} className="px-3 py-2 text-accent">{open ? "−" : "+"}</button>}
       </div>
       {open && (
-        <ul className="mb-2 ml-3 max-h-72 space-y-1 overflow-y-auto border-l border-line pl-3 text-muted">
-          {!kids ? <li>Loading…</li> : kids.map((c) => <li key={c.id}><Link href={`/collections/${c.slug}`} className="block py-1 hover:text-accent">{c.name}</Link></li>)}
+        <ul className="mb-2 ml-3 space-y-1 border-l border-line pl-3 text-muted">
+          {!kids ? <li>Loading…</li> : kids.map((c) => <li key={c.id}><Link href={`/collections/${c.slug}`} onClick={() => onPick(c.slug)} aria-current={on(c.slug) ? "page" : undefined}
+            className={`block py-1 transition-colors hover:text-accent active:text-accent ${on(c.slug) ? "font-semibold text-accent" : ""}`}>{c.name}</Link></li>)}
         </ul>
       )}
     </div>
@@ -191,6 +195,32 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
   const { user } = useSession();
   const [hidden, setHidden] = useState(false);
   const last = useRef(0);
+  const path = usePathname();
+  const [picked, setPicked] = useState("");                             // the menu line just tapped: highlighted at once, before its page has loaded
+  useEffect(() => { setPicked(""); }, [path]);
+  const activeSlug = picked || (path.startsWith("/collections/") ? decodeURIComponent(path.slice(13).split("/")[0]) : "");
+  const menuRef = useRef<HTMLDetailsElement>(null);
+
+  // Phone menu: a tap clearly outside it (more than 24 px from its panel) closes it, like the three-line button. Only a real tap (click) counts, so scrolling never closes it.
+  useEffect(() => {
+    const tap = (e: MouseEvent) => {
+      const d = menuRef.current;
+      if (!d?.open || d.contains(e.target as Node)) return;
+      const r = d.querySelector("nav")?.getBoundingClientRect();
+      if (r && e.clientX > r.left - 24 && e.clientX < r.right + 24 && e.clientY > r.top - 24 && e.clientY < r.bottom + 24) return;
+      d.open = false;
+    };
+    document.addEventListener("click", tap);
+    return () => document.removeEventListener("click", tap);
+  }, []);
+  // While the phone menu is open the page behind it does not scroll: a finger on the menu scrolls only the menu.
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const el = document.documentElement, prev = el.style.overflow;
+    el.style.overflow = "hidden"; document.body.style.overflow = "hidden";
+    return () => { el.style.overflow = prev; document.body.style.overflow = ""; };
+  }, [menuOpen]);
 
   // Mini-header behaviour: slide away while scrolling down, return on any scroll up.
   useEffect(() => {
@@ -207,11 +237,11 @@ export function Header({ categories, brand, cta, hints }: { categories: Category
     <header className={`header-bar sticky top-0 z-30 border-b border-line bg-bg/85 backdrop-blur-md ${hidden ? "header-hidden" : ""}`}>
       {useSite().branding.visuals?.headerStyle === "peek" && <span aria-hidden className="header-peek hidden text-fg sm:block"><MascotFigure mood="happy" size={34} /></span>}
       <div className="mx-auto flex max-w-[var(--maxw)] items-center gap-1 px-4 sm:gap-5">
-        <details className="relative lg:hidden">
+        <details ref={menuRef} onToggle={(e) => setMenuOpen(e.currentTarget.open)} className="relative lg:hidden">
           <summary className="cursor-pointer list-none p-2" aria-label="Menu"><MenuIcon size={22} /></summary>
-          <nav className="absolute left-0 top-full w-64 border border-line bg-card p-4 text-sm shadow-2xl">
+          <nav className="absolute left-0 top-full max-h-[calc(100dvh-5rem)] w-64 touch-pan-y overflow-y-auto overscroll-contain border border-line bg-card p-4 text-sm shadow-2xl">
             <div className="mb-3"><SearchBox hints={hints} className="w-full border-b border-line bg-transparent py-2 pl-6 text-sm outline-none placeholder:text-muted focus:border-accent" panelClass="!w-full" /></div>
-            <div className="max-h-[50vh] overflow-y-auto">{categories.map((c) => <MobileCat key={c.id} node={c} />)}</div>
+            <div>{categories.map((c) => <MobileCat key={c.id} node={c} active={activeSlug} onPick={setPicked} />)}</div>
             {(useSite().branding.navLinks ?? []).map((l) => <Link key={l.href + l.label} href={l.href} className="block py-2 uppercase tracking-widest text-accent">{l.label}</Link>)}
             <Link href="/products" className="block py-2 uppercase tracking-widest text-accent">All products</Link>
             <Link href={user ? "/account" : "/login"} className="block py-2 uppercase tracking-widest">{user ? "My account" : "Sign in"}</Link>
